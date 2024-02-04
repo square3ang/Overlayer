@@ -30,7 +30,7 @@ namespace Overlayer.Core.Patches
             finalizer = patchType.GetMethod("Finalizer", (BindingFlags)15420);
             target = attr.Resolve();
             if (attr.IsCompatible && target == null)
-                OverlayerDebug.Log($"ID:{attr.Id}, {attr.TargetType}.{attr.TargetMethod} Could Not Be Resolved!");
+                Main.Logger.Log($"ID:{attr.Id}, {attr.TargetType}.{attr.TargetMethod} Could Not Be Resolved!");
             Patches.Add(attr.Id, this);
         }
         public void Patch()
@@ -41,14 +41,14 @@ namespace Overlayer.Core.Patches
             var trans_hm = transpiler != null ? new HarmonyMethod(transpiler) : null;
             var final_hm = finalizer != null ? new HarmonyMethod(finalizer) : null;
             patch = harmony.Patch(target, pre_hm, post_hm, trans_hm, final_hm);
-            OverlayerDebug.Log($"ID:{attr.Id} Patched!");
+            Main.Logger.Log($"ID:{attr.Id} Patched!");
             Patched = true;
         }
         public void Unpatch()
         {
             if (!Patched || target == null || patch == null) return;
             harmony.Unpatch(target, patch);
-            OverlayerDebug.Log($"ID:{attr.Id} Unpatched!");
+            Main.Logger.Log($"ID:{attr.Id} Unpatched!");
             patch = null;
             Patched = false;
         }

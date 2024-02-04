@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Overlayer.Utils;
+using System;
 using System.Linq;
 using System.Reflection;
 
 namespace Overlayer.Core.Patches
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class LazyPatchAttribute : Attribute
     {
         public static readonly int CurrentVersion = (int)typeof(GCNS).GetField("releaseNumber").GetValue(null);
@@ -12,7 +13,7 @@ namespace Overlayer.Core.Patches
         public string TargetType { get; }
         public string TargetMethod { get; }
         public string[] TargetMethodArgs { get; }
-        public string[] Triggers { get; set; }
+        public string[] Triggers { get; set; } = new string[] { LazyPatch.InternalTrigger };
         public int MinVersion { get; set; } = -1;
         public int MaxVersion { get; set; } = -1;
         public LazyPatchAttribute(string id, string targetType, string targetMethod)
@@ -34,13 +35,13 @@ namespace Overlayer.Core.Patches
         {
             if (!IsCompatible)
             {
-                OverlayerDebug.Log($"Id {Id} Patch Is Not Compatible! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
+                Main.Logger.Log($"Id {Id} Patch Is Not Compatible! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
                 return null;
             }
             try
             {
                 var tt = MiscUtils.TypeByName(TargetType);
-                var tma = TargetMethodArgs?.Select(s => MiscUtils.TypeByName(s)).ToArray();
+                var tma = TargetMethodArgs?.Select(MiscUtils.TypeByName).ToArray();
                 if (TargetMethod == ".ctor")
                     return tma != null ?
                         tt?.GetConstructor((BindingFlags)15420, null, tma, null) :
@@ -52,7 +53,7 @@ namespace Overlayer.Core.Patches
             }
             catch (AmbiguousMatchException)
             {
-                OverlayerDebug.Log($"Id {Id} Patch Is Ambiguous Match! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
+                Main.Logger.Log($"Id {Id} Patch Is Ambiguous Match! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
                 return null;
             }
         }

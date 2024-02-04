@@ -9,24 +9,30 @@ namespace Overlayer.Core.Patches
     public static class LazyPatchManager
     {
         private static readonly Harmony Harmony = new Harmony("Overlayer.Core.Patches.LazyPatchManager");
-        private static readonly Dictionary<Type, LazyPatch> Patches = new Dictionary<Type, LazyPatch>();
+        private static readonly Dictionary<Type, List<LazyPatch>> Patches = new Dictionary<Type, List<LazyPatch>>();
         private static readonly HashSet<string> PatchedTriggers = new HashSet<string>();
         public static void Load(Assembly ass)
         {
             foreach (var type in ass.GetTypes())
             {
-                var lpa = type.GetCustomAttribute<LazyPatchAttribute>();
-                if (lpa != null) Patches.Add(type, new LazyPatch(Harmony, type, lpa));
+                var lpas = type.GetCustomAttributes<LazyPatchAttribute>();
+                if (lpas.Any())
+                {
+                    if (!Patches.TryGetValue(type, out var list))
+                        list = Patches[type] = new List<LazyPatch>();
+                    foreach (var patch in lpas)
+                        list.Add(new LazyPatch(Harmony, type, patch));
+                }
             }
         }
         public static void Unload(Assembly ass)
         {
             foreach (var type in ass.GetTypes())
             {
-                if (Patches.TryGetValue(type, out var patch))
+                if (Patches.TryGetValue(type, out var patches))
                 {
                     Unpatch(type);
-                    LazyPatch.Patches.Remove(patch.attr.Id);
+                    patches.ForEach(lp => LazyPatch.Patches.Remove(lp.attr.Id));
                     Patches.Remove(type);
                 }
             }
@@ -38,12 +44,13 @@ namespace Overlayer.Core.Patches
             PatchedTriggers.Clear();
             LazyPatch.Patches.Clear();
         }
+        public static void PatchInternal() => PatchAll(LazyPatch.InternalTrigger);
         public static void PatchAll(string trigger = null)
         {
             if (trigger != null)
             {
                 if (PatchedTriggers.Add(trigger))
-                    foreach (var patch in Patches.Values.Where(p => p.attr.Triggers.Contains(trigger)))
+                    foreach (var patch in Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)))
                         patch.Patch();
             }
             else
@@ -57,7 +64,7 @@ namespace Overlayer.Core.Patches
             if (trigger != null)
             {
                 if (PatchedTriggers.Remove(trigger))
-                    foreach (var patch in Patches.Values.Where(p => p.attr.Triggers.All(t => !PatchedTriggers.Contains(t))))
+                    foreach (var patch in Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.All(t => !PatchedTriggers.Contains(t))))
                         patch.Unpatch();
             }
             else
@@ -68,11 +75,21 @@ namespace Overlayer.Core.Patches
         }
         public static void Patch(Type patchType)
         {
-            if (Patches.TryGetValue(patchType, out var patch)) patch.Patch();
+            if (Patches.TryGetValue(patchType, out var patches)) patches.ForEach(lp => lp.Patch());
         }
         public static void Unpatch(Type patchType)
         {
-            if (Patches.TryGetValue(patchType, out var patch)) patch.Unpatch();
+            if (Patches.TryGetValue(patchType, out var patches)) patches.ForEach(lp => lp.Unpatch());
+        }
+        public static void PatchNested(Type patchType)
+        {
+            foreach (var nType in patchType.GetNestedTypes((BindingFlags)15420))
+                Patch(nType);
+        }
+        public static void UnpatchNested(Type patchType)
+        {
+            foreach (var nType in patchType.GetNestedTypes((BindingFlags)15420))
+                Unpatch(nType);
         }
     }
 }

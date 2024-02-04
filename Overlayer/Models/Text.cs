@@ -1,8 +1,8 @@
 ﻿using JSON;
 using Overlayer.Core.Interfaces;
+using Overlayer.Utils;
 using TMPro;
 using UnityEngine;
-using Overlayer.Utils;
 
 namespace Overlayer.Models
 {
@@ -12,7 +12,7 @@ namespace Overlayer.Models
         public bool IsExpanded = false;
         public string Name = string.Empty;
         public string Font = "Default";
-        public string PlayingText = "<color=#{FOHex}>{Overloads}</color> <color=#{TEHex}>{CurTE}</color> <color=#{VEHex}>{CurVE}</color> <color=#{EPHex}>{CurEP}</color> <color=#{PHex}>{CurP}</color> <color=#{LPHex}>{CurLP}</color> <color=#{VLHex}>{CurVL}</color> <color=#{TLHex}>{CurTL}</color> <color=#{FMHex}>{MissCount}</color>";
+        public string PlayingText = "<color=#{FOHex}>{Overloads}</color> <color=#{TEHex}>{CTE}</color> <color=#{VEHex}>{CVE}</color> <color=#{EPHex}>{CEP}</color> <color=#{PHex}>{CP}</color> <color=#{LPHex}>{CLP}</color> <color=#{VLHex}>{CVL}</color> <color=#{TLHex}>{CTL}</color> <color=#{FMHex}>{MissCount}</color>";
         public string NotPlayingText = string.Empty;
         public float FontSize = 44;
         public float OutlineWidth = 0;
@@ -54,7 +54,7 @@ namespace Overlayer.Models
             node[nameof(Font)] = Font;
             node[nameof(PlayingText)] = PlayingText;
             node[nameof(NotPlayingText)] = NotPlayingText;
-            node[nameof(FontSize)] = FontSize; 
+            node[nameof(FontSize)] = FontSize;
             node[nameof(OutlineWidth)] = OutlineWidth;
             node[nameof(LineSpacing)] = LineSpacing;
             node[nameof(LineSpacingAdj)] = LineSpacingAdj;

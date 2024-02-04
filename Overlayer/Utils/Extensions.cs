@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
@@ -11,12 +12,15 @@ namespace Overlayer.Utils
 {
     public static class Extensions
     {
+        public static readonly Regex RichTagBreaker = new Regex(@"<(color|material|quad|size)=(.|\n)*?>|<\/(color|material|quad|size)>|<(b|i)>|<\/(b|i)>", RegexOptions.Compiled | RegexOptions.Multiline);
+        public static string BreakRichTag(this string s) => RichTagBreaker.Replace(s, string.Empty);
         public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value)
         {
             key = kvp.Key;
             value = kvp.Value;
         }
         public static double Round(this double value, int digits = -1) => digits < 0 ? value : Math.Round(value, digits);
+        public static double Round(this float value, int digits = -1) => digits < 0 ? value : Math.Round(value, digits);
         public static bool IfTrue(this bool b, Action a)
         {
             if (b) a();

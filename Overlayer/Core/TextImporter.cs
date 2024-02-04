@@ -27,7 +27,7 @@ namespace Overlayer.Core
                     Directory.CreateDirectory(modulesDir);
                 foreach (var @ref in refs)
                 {
-                    
+
                 }
             }
             return profile;
@@ -35,7 +35,7 @@ namespace Overlayer.Core
         public static JsonArray GetReferences(Text profile)
         {
             List<Reference> references = new List<Reference>();
-            
+
             return ModelUtils.WrapList(references.Where(r => r != null).Distinct().ToList());
         }
         public class Reference : IModel, ICopyable<Reference>
@@ -65,6 +65,7 @@ namespace Overlayer.Core
                 }
                 return null;
             }
+            public static void Flush() => refCache.Clear();
             public JsonNode Serialize()
             {
                 var node = JsonNode.Empty;
