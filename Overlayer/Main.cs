@@ -1,4 +1,6 @@
 ﻿using Overlayer.Core.Patches;
+using Overlayer.Tags;
+using System;
 using System.Reflection;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
@@ -22,10 +24,13 @@ namespace Overlayer
             {
                 LazyPatchManager.Load(Ass);
                 LazyPatchManager.PatchInternal();
+                TagManager.Initialize();
             }
             else
             {
+                TagManager.Release();
                 LazyPatchManager.UnloadAll();
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
             }
             return true;
         }

@@ -32,7 +32,7 @@ namespace Overlayer.Core
             }
             return profile;
         }
-        public static JsonArray GetReferences(Text profile)
+        public static JsonArray GetReferences(Text text)
         {
             List<Reference> references = new List<Reference>();
 

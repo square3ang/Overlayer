@@ -395,6 +395,7 @@
     <Compile Include="Tags\Patches\PatchBase.cs" />
     <Compile Include="Tags\Patches\StatusPatch.cs" />
     <Compile Include="Tags\Status.cs" />
+    <Compile Include="Tags\TagManager.cs" />
     <Compile Include="Tags\Time.cs" />
     <Compile Include="Utils\ADOUtils.cs" />
     <Compile Include="Utils\EnumHelper.cs" />
