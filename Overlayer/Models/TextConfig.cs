@@ -6,10 +6,9 @@ using UnityEngine;
 
 namespace Overlayer.Models
 {
-    public class Text : IModel, ICopyable<Text>
+    public class TextConfig : IModel, ICopyable<TextConfig>
     {
         public bool Active = true;
-        public bool IsExpanded = false;
         public string Name = string.Empty;
         public string Font = "Default";
         public string PlayingText = "<color=#{FOHex}>{Overloads}</color> <color=#{TEHex}>{CTE}</color> <color=#{VEHex}>{CVE}</color> <color=#{EPHex}>{CEP}</color> <color=#{PHex}>{CP}</color> <color=#{LPHex}>{CLP}</color> <color=#{VLHex}>{CVL}</color> <color=#{TLHex}>{CTL}</color> <color=#{FMHex}>{MissCount}</color>";
@@ -24,32 +23,30 @@ namespace Overlayer.Models
         public Vector2 Position = Vector2.zero;
         public Vector3 Rotation = Vector3.zero;
         public TextAlignmentOptions Alignment = TextAlignmentOptions.TopLeft;
-        public Text Copy()
+        public TextConfig Copy()
         {
-            var newText = new Text();
-            newText.Active = Active;
-            newText.IsExpanded = IsExpanded;
-            newText.Name = Name;
-            newText.Font = Font;
-            newText.PlayingText = PlayingText;
-            newText.NotPlayingText = NotPlayingText;
-            newText.FontSize = FontSize;
-            newText.OutlineWidth = OutlineWidth;
-            newText.LineSpacing = LineSpacing;
-            newText.LineSpacingAdj = LineSpacingAdj;
-            newText.TextColor = TextColor;
-            newText.OutlineColor = OutlineColor;
-            newText.ShadowColor = ShadowColor;
-            newText.Position = Position;
-            newText.Rotation = Rotation;
-            newText.Alignment = Alignment;
-            return newText;
+            var newConfig = new TextConfig();
+            newConfig.Active = Active;
+            newConfig.Name = Name;
+            newConfig.Font = Font;
+            newConfig.PlayingText = PlayingText;
+            newConfig.NotPlayingText = NotPlayingText;
+            newConfig.FontSize = FontSize;
+            newConfig.OutlineWidth = OutlineWidth;
+            newConfig.LineSpacing = LineSpacing;
+            newConfig.LineSpacingAdj = LineSpacingAdj;
+            newConfig.TextColor = TextColor;
+            newConfig.OutlineColor = OutlineColor;
+            newConfig.ShadowColor = ShadowColor;
+            newConfig.Position = Position;
+            newConfig.Rotation = Rotation;
+            newConfig.Alignment = Alignment;
+            return newConfig;
         }
         public JsonNode Serialize()
         {
             var node = JsonNode.Empty;
             node[nameof(Active)] = Active;
-            node[nameof(IsExpanded)] = IsExpanded;
             node[nameof(Name)] = Name;
             node[nameof(Font)] = Font;
             node[nameof(PlayingText)] = PlayingText;
@@ -69,7 +66,6 @@ namespace Overlayer.Models
         public void Deserialize(JsonNode node)
         {
             Active = node[nameof(Active)];
-            IsExpanded = node[nameof(IsExpanded)];
             Name = node[nameof(Name)];
             Font = node[nameof(Font)];
             PlayingText = node[nameof(PlayingText)];
@@ -77,7 +73,7 @@ namespace Overlayer.Models
             FontSize = node[nameof(FontSize)];
             OutlineWidth = node[nameof(LineSpacing)];
             LineSpacing = node[nameof(LineSpacing)];
-            LineSpacingAdj = node[nameof(LineSpacingAdj)];
+            LineSpacingAdj = node[nameof(LineSpacingAdj)].IfNotExist(node["LineSpacingAdjustment"]);
             TextColor = ModelUtils.Unbox<GColor>(node[nameof(TextColor)]);
             OutlineColor = ModelUtils.Unbox<GColor>(node[nameof(OutlineColor)]);
             ShadowColor = ModelUtils.Unbox<GColor>(node[nameof(ShadowColor)]);

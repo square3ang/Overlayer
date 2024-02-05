@@ -20,6 +20,8 @@ namespace Overlayer.Tags
         [Tag(Hint = ReturnTypeHint.Int32)]
         public static int CheckPointUsed() => scrController.checkpointsUsed;
         [Tag(Hint = ReturnTypeHint.Int32)]
+        public static int CurCheckPoint;
+        [Tag(Hint = ReturnTypeHint.Int32)]
         public static int TotalCheckPoints;
         [Tag(Hint = ReturnTypeHint.Int32)]
         public static int Combo;
@@ -31,9 +33,12 @@ namespace Overlayer.Tags
         public static int SScore;
         [Tag(Hint = ReturnTypeHint.Int32)]
         public static int Score;
+        [Tag(Flags = AdvancedFlags.Round, Hint = ReturnTypeHint.Double)]
+        public static double BestProgress;
         public static void Reset()
         {
-            TotalCheckPoints = Combo = LScore = NScore = SScore = Score = 0;
+            CurCheckPoint = TotalCheckPoints = Combo = LScore = NScore = SScore = Score = 0;
+            //BestProgress = 0;
         }
     }
 }

@@ -14,14 +14,12 @@ namespace Overlayer.WebAPI
 
             // Configure the HTTP request pipeline.
 
-            app.UseHttpsRedirection();
-
             app.UseAuthorization();
 
 
             app.MapControllers();
 
-            app.Run("127.0.0.1:6969");
+            app.Run("http://0.0.0.0:7777");
         }
     }
 }

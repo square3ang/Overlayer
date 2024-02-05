@@ -8,31 +8,28 @@ using System.Linq;
 
 namespace Overlayer.Core
 {
-    public static class TextImporter
+    public static class TextConfigImporter
     {
-        public static Text Import(JsonNode node)
+        public static TextConfig Import(JsonNode node)
         {
-            var profile = ModelUtils.Unbox<Text>(node);
+            var config = ModelUtils.Unbox<TextConfig>(node);
             var refsNode = (JsonArray)node["References"].IfNotExist(new JsonArray());
             var refs = ModelUtils.UnwrapList<Reference>(refsNode);
             if (refs.Any())
             {
                 var refsDir = Path.Combine(Main.Mod.Path, "References");
                 var fontsDir = Path.Combine(refsDir, "Fonts");
-                var modulesDir = Path.Combine(refsDir, "Modules");
                 Directory.CreateDirectory(refsDir);
                 if (refs.Any(r => r.ReferenceType == Reference.Type.Font))
                     Directory.CreateDirectory(fontsDir);
-                if (refs.Any(r => r.ReferenceType == Reference.Type.Module))
-                    Directory.CreateDirectory(modulesDir);
                 foreach (var @ref in refs)
                 {
 
                 }
             }
-            return profile;
+            return config;
         }
-        public static JsonArray GetReferences(Text text)
+        public static JsonArray GetReferences(TextConfig text)
         {
             List<Reference> references = new List<Reference>();
 
@@ -43,7 +40,6 @@ namespace Overlayer.Core
             public enum Type
             {
                 Font,
-                Module,
             }
             public Type ReferenceType;
             public string From;

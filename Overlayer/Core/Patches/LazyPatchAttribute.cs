@@ -35,7 +35,7 @@ namespace Overlayer.Core.Patches
         {
             if (!IsCompatible)
             {
-                Main.Logger.Log($"Id {Id} Patch Is Not Compatible! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
+                Main.Logger.Log($"{Id} Patch Is Not Compatible! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
                 return null;
             }
             try
@@ -53,7 +53,7 @@ namespace Overlayer.Core.Patches
             }
             catch (AmbiguousMatchException)
             {
-                Main.Logger.Log($"Id {Id} Patch Is Ambiguous Match! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
+                Main.Logger.Log($"{Id} Patch Is Ambiguous Match! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
                 return null;
             }
         }

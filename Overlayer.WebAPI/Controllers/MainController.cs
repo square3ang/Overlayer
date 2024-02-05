@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JSON;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Overlayer.WebAPI.Controllers
 {
@@ -6,8 +7,12 @@ namespace Overlayer.WebAPI.Controllers
     [ApiController]
     public class MainController : ControllerBase
     {
-        public static readonly Version VERSION = Version.Parse(System.IO.File.ReadAllText("version.txt"));
+        public static readonly JsonNode Info = JsonNode.Parse(System.IO.File.ReadAllText("Info.json"));
         [HttpGet("version")]
-        public Version GetVersion() => VERSION;
+        public Version GetVersion() => Version.Parse(Info["version"].Value);
+        [HttpGet("discord")]
+        public string GetDiscordLink() => Info["discord"].Value;
+        [HttpGet("download")]
+        public string GetDownloadLink() => Info["download"].Value;
     }
 }

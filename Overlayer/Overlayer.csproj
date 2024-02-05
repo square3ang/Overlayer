@@ -363,40 +363,62 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\GUIController.cs" />
+    <Compile Include="Core\Drawer.cs" />
     <Compile Include="Core\FastDateTime.cs" />
     <Compile Include="Core\FontManager.cs" />
+    <Compile Include="Core\GUILayoutEx.cs" />
     <Compile Include="Core\Interfaces\ICopyable.cs" />
     <Compile Include="Core\Interfaces\IDrawable.cs" />
     <Compile Include="Core\Interfaces\IModel.cs" />
     <Compile Include="Core\MethodDrawable.cs" />
+    <Compile Include="Core\ModelDrawable.cs" />
+    <Compile Include="Core\OverlayerWebAPI.cs" />
     <Compile Include="Core\Patches\LazyPatch.cs" />
     <Compile Include="Core\Patches\LazyPatchAttribute.cs" />
     <Compile Include="Core\Patches\LazyPatchManager.cs" />
-    <Compile Include="Core\TextImporter.cs" />
+    <Compile Include="Core\TextConfigImporter.cs" />
+    <Compile Include="Core\TextManager.cs" />
     <Compile Include="Core\TextReplacing\Replacer.cs" />
     <Compile Include="Core\TextReplacing\Tag.cs" />
-    <Compile Include="Core\Translation\GID.cs" />
     <Compile Include="Core\Translation\Language.cs" />
-    <Compile Include="Core\Translation\SpreadSheet.cs" />
     <Compile Include="Core\Translation\TranslationKeys.cs" />
     <Compile Include="Lib\JSON.cs" />
     <Compile Include="Lib\JSON.Unity.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Models\FontMeta.cs" />
     <Compile Include="Models\GColor.cs" />
-    <Compile Include="Models\Text.cs" />
+    <Compile Include="Models\OverlayerLanguage.cs" />
+    <Compile Include="Models\TextConfig.cs" />
+    <Compile Include="Patches\FontPatch.cs" />
+    <Compile Include="Patches\TagResetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Tags\Attributes\AdvancedFlags.cs" />
     <Compile Include="Tags\Attributes\ReturnTypeHint.cs" />
     <Compile Include="Tags\Attributes\TagAttribute.cs" />
+    <Compile Include="Tags\Bpm.cs" />
+    <Compile Include="Tags\FrameRate.cs" />
     <Compile Include="Tags\Hex.cs" />
     <Compile Include="Tags\Hit.cs" />
     <Compile Include="Tags\Level.cs" />
+    <Compile Include="Tags\OverlayerTag.cs" />
+    <Compile Include="Tags\Patches\BpmPatch.cs" />
+    <Compile Include="Tags\Patches\FrameRatePatch.cs" />
     <Compile Include="Tags\Patches\HitPatch.cs" />
+    <Compile Include="Tags\Patches\HitTimingPatch.cs" />
     <Compile Include="Tags\Patches\PatchBase.cs" />
+    <Compile Include="Tags\Patches\SongPatch.cs" />
     <Compile Include="Tags\Patches\StatusPatch.cs" />
+    <Compile Include="Tags\Patches\TilePatch.cs" />
+    <Compile Include="Tags\Song.cs" />
     <Compile Include="Tags\Status.cs" />
     <Compile Include="Tags\TagManager.cs" />
+    <Compile Include="Tags\Tile.cs" />
     <Compile Include="Tags\Time.cs" />
+    <Compile Include="Tags\HitTiming.cs" />
+    <Compile Include="Unity\OverlayerText.cs" />
+    <Compile Include="Unity\StaticCoroutine.cs" />
     <Compile Include="Utils\ADOUtils.cs" />
     <Compile Include="Utils\EnumHelper.cs" />
     <Compile Include="Utils\Extensions.cs" />
@@ -404,6 +426,8 @@
     <Compile Include="Utils\MiscUtils.cs" />
     <Compile Include="Utils\ModelUtils.cs" />
     <Compile Include="Utils\StringConverter.cs" />
+    <Compile Include="Views\SettingsDrawer.cs" />
+    <Compile Include="Views\TextConfigDrawer.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

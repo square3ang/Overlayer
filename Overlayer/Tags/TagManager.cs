@@ -1,41 +1,68 @@
-﻿using Overlayer.Tags.Attributes;
+﻿using Overlayer.Core.Patches;
+using Overlayer.Tags.Attributes;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Overlayer.Core.TextReplacing;
-using System.Reflection.Emit;
 
 namespace Overlayer.Tags
 {
     public static class TagManager
     {
+        public static bool Initialized { get; private set; }
+        public static int Count => tags.Count;
+        private static Dictionary<string, OverlayerTag> tags;
+        public static IEnumerable<OverlayerTag> All => tags.Values;
+        public static IEnumerable<OverlayerTag> NP => tags.Values.Where(ot => ot.NotPlaying);
+        public static void Load(Assembly ass)
+        {
+            foreach (var t in ass.GetExportedTypes())
+                Load(t);
+        }
         public static void Load(Type type)
         {
-            foreach (var method in type.GetMethods((BindingFlags)15420))
+            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
             {
-                
+                var attr = method.GetCustomAttribute<TagAttribute>();
+                if (attr == null) continue;
+                SetTag(new OverlayerTag(method, attr));
             }
-            foreach (var field in type.GetFields((BindingFlags)15420))
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static))
             {
-
+                var attr = field.GetCustomAttribute<TagAttribute>();
+                if (attr == null) continue;
+                SetTag(new OverlayerTag(field, attr));
             }
+        }
+        public static OverlayerTag GetTag(string name)
+        {
+            return tags.TryGetValue(name, out var ot) ? ot : null;
+        }
+        public static void SetTag(OverlayerTag tag)
+        {
+            tags[tag.Name] = tag;
+        }
+        public static void RemoveTag(string name)
+        {
+            tags.Remove(name);
+        }
+        public static void UpdatePatch()
+        {
+            foreach (var tag in All)
+                if (!tag.Referenced) LazyPatchManager.UnpatchAll(tag.Name);
+                else LazyPatchManager.PatchAll(tag.Name);
         }
         public static void Initialize()
         {
-            ass = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("Overlayer.Tags.TagManager.FieldTagWrappers"), AssemblyBuilderAccess.RunAndCollect);
-            mod = ass.DefineDynamicModule("Overlayer.Tags.TagManager.FieldTagWrappers");
+            if (Initialized) return;
+            tags = new Dictionary<string, OverlayerTag>();
+            Initialized = true;
         }
         public static void Release()
         {
-            ass = null;
-            mod = null;
-        }
-        private static AssemblyBuilder ass;
-        private static ModuleBuilder mod;
-        private static Tag InitializeTag(MemberInfo member)
-        {
-            var tagAttr = member.GetCustomAttribute<TagAttribute>();
-            if (tagAttr == null) return null;
-            return new Tag(tagAttr.Name ?? member.Name);
+            if (!Initialized) return;
+            tags = null;
+            Initialized = false;
         }
     }
 }

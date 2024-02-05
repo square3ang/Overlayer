@@ -24,16 +24,22 @@ namespace Overlayer.Tags.Patches
                 Hit.Lenient = GetHitMargin(Difficulty.Lenient, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
                 Hit.Normal = GetHitMargin(Difficulty.Normal, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
                 Hit.Strict = GetHitMargin(Difficulty.Strict, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
-                if (!SafeMargin(ref Hit.Lenient)) IncreaseCount(GCS.difficulty, Hit.Lenient);
-                if (!SafeMargin(ref Hit.Normal)) IncreaseCount(GCS.difficulty, Hit.Normal);
-                if (!SafeMargin(ref Hit.Strict)) IncreaseCount(GCS.difficulty, Hit.Strict);
+                FixMargin(controller, ref Hit.Lenient);
+                FixMargin(controller, ref Hit.Normal);
+                FixMargin(controller, ref Hit.Strict);
                 Hit.Current = __result = Hit.GetCHit(GCS.difficulty);
-                IncreaseCCount(Hit.Current);
+                if (!IsSafe(controller))
+                {
+                    IncreaseCount(GCS.difficulty, Hit.Lenient);
+                    IncreaseCount(GCS.difficulty, Hit.Normal);
+                    IncreaseCount(GCS.difficulty, Hit.Strict);
+                    IncreaseCCount(Hit.Current);
+                }
                 return false;
             }
-            private static bool SafeMargin(ref HitMargin hitMargin)
+            public static bool IsSafe(scrController ctrl) => ctrl.currFloor?.isSafe ?? false;
+            public static void FixMargin(scrController ctrl, ref HitMargin hitMargin)
             {
-                scrController ctrl = scrController.instance;
                 if (ctrl.gameworld)
                 {
                     if (ctrl.noFailInfiniteMargin)
@@ -41,7 +47,6 @@ namespace Overlayer.Tags.Patches
                     if (ctrl.midspinInfiniteMargin || (RDC.auto && !RDC.useOldAuto))
                         hitMargin = HitMargin.Perfect;
                 }
-                return ctrl.currFloor?.isSafe ?? false;
             }
             private static void IncreaseCount(Difficulty diff, HitMargin hit)
             {

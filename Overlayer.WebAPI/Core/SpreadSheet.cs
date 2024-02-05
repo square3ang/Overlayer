@@ -35,7 +35,7 @@ namespace Overlayer.WebAPI.Core
         {
             return dict.TryGetValue(gid, out var kv) ? kv : null;
         }
-        public async Task<Dictionary<string, string>> Download(int gid, Action<Dictionary<string, string>> onDownloaded = null, bool force = false)
+        public async Task<Dictionary<string, string>> Download(int gid, Action<Dictionary<string, string>>? onDownloaded = null, bool force = false)
         {
             var exist = Get(gid);
             if (!force && exist != null)

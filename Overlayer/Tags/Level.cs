@@ -19,9 +19,6 @@ namespace Overlayer.Tags
         public static string AuthorRaw() => LevelData?.author;
         [Tag(Hint = ReturnTypeHint.String)]
         public static string ArtistRaw() => LevelData?.artist;
-        public static void Reset()
-        {
-
-        }
+        public static void Reset() { }
     }
 }

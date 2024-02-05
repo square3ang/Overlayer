@@ -23,6 +23,7 @@ namespace Overlayer.Core
         public static ReadOnlyCollection<Font> FallbackFonts { get; private set; }
         public static ReadOnlyCollection<TMP_FontAsset> FallbackTMPFonts { get; private set; }
         public static FontData GetFont(string name) => TryGetFont(name, out FontData font) ? font : defaultFont;
+        public static void SetFont(string name, FontData font) => Fonts[name] = font;
         public static bool TryGetFont(string name, out FontData font)
         {
             if (string.IsNullOrEmpty(name))

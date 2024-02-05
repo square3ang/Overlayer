@@ -18,6 +18,7 @@
         UIntPtr,
         String,
         Enum,
+        Boolean,
         Object,
     }
 }

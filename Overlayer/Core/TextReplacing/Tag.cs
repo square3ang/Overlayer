@@ -192,7 +192,6 @@ namespace Overlayer.Core.TextReplacing
             TagWrapperAssembly = null;
             TagWrapperModule = null;
             wrapperInitialized = false;
-            Main.Logger.Log("Released Tag Wrapper Assembly.");
         }
     }
 }

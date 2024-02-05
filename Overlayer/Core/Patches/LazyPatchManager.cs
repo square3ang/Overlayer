@@ -11,6 +11,9 @@ namespace Overlayer.Core.Patches
         private static readonly Harmony Harmony = new Harmony("Overlayer.Core.Patches.LazyPatchManager");
         private static readonly Dictionary<Type, List<LazyPatch>> Patches = new Dictionary<Type, List<LazyPatch>>();
         private static readonly HashSet<string> PatchedTriggers = new HashSet<string>();
+        public static int PatchedTriggersCount => PatchedTriggers.Count;
+        public static int Count => Patches.Sum(t => t.Value.Count);
+        public static bool IsInternalPatched => PatchedTriggers.Contains(LazyPatch.InternalTrigger);
         public static void Load(Assembly ass)
         {
             foreach (var type in ass.GetTypes())

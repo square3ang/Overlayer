@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -17,6 +18,7 @@ namespace Overlayer.Utils
         public static Type[] loadedTypes { get; private set; }
         public static void UpdateAssTypes()
         {
+            cache = new Dictionary<string, Type>();
             loadedAsss = loadedAsss != null ?
                 loadedAsss.Union(AppDomain.CurrentDomain.GetAssemblies()).ToArray() :
                 AppDomain.CurrentDomain.GetAssemblies();
@@ -79,11 +81,13 @@ namespace Overlayer.Utils
             val += amount;
             return Color.HSVToRGB(1, 1, val);
         }
+        private static Dictionary<string, Type> cache = new Dictionary<string, Type>();
         public static Type TypeByName(string typeName)
         {
+            if (cache.TryGetValue(typeName, out var t) && t != null) return t;
             if (loadedTypes == null)
                 loadedTypes = loadedAsss.Select(ass => ExecuteSafe(ass.GetTypes, out _)).Where(t => t != null).SelectMany(ts => ts).ToArray();
-            return Type.GetType(typeName, false) ??
+            return cache[typeName] = Type.GetType(typeName, false) ??
                 loadedTypes.FirstOrDefault(t => t.FullName == typeName) ??
                 loadedTypes.FirstOrDefault(t => t.Name == typeName);
         }
