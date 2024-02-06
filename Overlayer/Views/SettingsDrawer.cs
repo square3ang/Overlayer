@@ -58,7 +58,11 @@ namespace Overlayer.Views
             Drawer.DrawSingle(L(TKS.FpsUpdateRate), ref model.FPSUpdateRate);
             Drawer.DrawSingle(L(TKS.FrameTimeUpdateRate), ref model.FrameTimeUpdateRate);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(L(TKS.NewText))) TextManager.CreateText(new TextConfig());
+            if (GUILayout.Button(L(TKS.NewText)))
+            {
+                TextManager.CreateText(new TextConfig());
+                TextManager.Refresh();
+            }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             for (int i = 0; i < TextManager.Count; i++)

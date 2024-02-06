@@ -26,7 +26,7 @@ namespace Overlayer.Tags.Patches
             {
                 var controller = scrController.instance;
                 if (controller && controller.currFloor.freeroam) return;
-                if (__result != HitMargin.Perfect) Status.Combo++;
+                if (__result == HitMargin.Perfect) Status.Combo++;
                 else Status.Combo = 0;
                 var l = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Lenient, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
                 var n = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Normal, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);

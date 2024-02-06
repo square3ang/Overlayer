@@ -8,8 +8,10 @@ using Overlayer.Unity;
 using Overlayer.Utils;
 using Overlayer.Views;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
@@ -109,6 +111,7 @@ namespace Overlayer
         }
         public static async void InitializeWebAPI()
         {
+            Logger.Log($"Handshake Response:{await OverlayerWebAPI.Handshake()}");
             LastestVersion = await OverlayerWebAPI.GetVersion();
             DiscordLink = await OverlayerWebAPI.GetDiscordLink();
             DownloadLink = await OverlayerWebAPI.GetDownloadLink();

@@ -93,10 +93,10 @@ namespace Overlayer.Unity
             Text.lineSpacing = Config.LineSpacing;
             Text.lineSpacingAdjustment = Config.LineSpacingAdj;
             Text.colorGradient = Config.TextColor;
+            Text.rectTransform.pivot = Config.Pivot;
             Text.rectTransform.anchoredPosition = (Config.Position - new Vector2(0.5f, 0.5f)) * new Vector2(Screen.width, Screen.height);
             Text.rectTransform.eulerAngles = Config.Rotation;
             Text.fontSize = Config.FontSize;
-            Text.alignment = Config.Alignment;
             var mainMat = new Material(Text.fontSharedMaterial);
             mainMat.SetColor(ShaderUtilities.ID_OutlineColor, Config.OutlineColor);
             mainMat.SetFloat(ShaderUtilities.ID_OutlineWidth, Config.OutlineWidth);

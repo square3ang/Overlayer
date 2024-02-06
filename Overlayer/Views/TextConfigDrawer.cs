@@ -18,17 +18,8 @@ namespace Overlayer.Views
                 text.gameObject.SetActive(model.Active);
             bool changed = false;
             changed |= Drawer.DrawVector2(L(TKTC.Position), ref model.Position, 0, 1);
+            changed |= Drawer.DrawVector2(L(TKTC.Pivot), ref model.Pivot, 0, 1);
             changed |= Drawer.DrawVector3(L(TKTC.Rotation), ref model.Rotation, -180, 180);
-            GUILayout.BeginHorizontal();
-            Drawer.ButtonLabel(L(TKTC.Alignment), Main.OpenDiscordLink);
-            changed |= Drawer.DrawEnum(L(TKTC.Alignment), ref model.Alignment, model.GetHashCode());
-            if (GUILayout.Button(L(TKTC.Reset)))
-            {
-                changed = true;
-                model.Alignment = TextAlignmentOptions.TopLeft;
-            }
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
             changed |= Drawer.DrawString(L(TKTC.Font), ref model.Font);
             changed |= Drawer.DrawSingleWithSlider(L(TKTC.FontSize), ref model.FontSize, 0, 100, 300f);
             Drawer.DrawBool(L(TKTC.EditThis, L(TKTC.TextColor)), ref colorsExpanded[0]);
@@ -64,7 +55,7 @@ namespace Overlayer.Views
             if (GUILayout.Button(L(TKTC.Destroy)))
             {
                 TextManager.DestroyText(text);
-                Main.GUI.Skip(frames:2);
+                Main.GUI.Skip(frames: 2);
                 Main.GUI.Pop();
                 return;
             }

@@ -59,8 +59,6 @@ namespace Overlayer.Core
         public static void Release()
         {
             if (!Initialized) return;
-            foreach (var text in Texts)
-                UnityEngine.Object.Destroy(text.gameObject);
             Save();
             Texts = null;
             UnityEngine.Object.Destroy(OverlayerText.PCanvasObj);

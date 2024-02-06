@@ -35,6 +35,7 @@
             internal static readonly string NotPlayingText = Prefix + "NOT_PLAYING_TEXT";
             internal static readonly string Destroy = Prefix + "DESTROY";
             internal static readonly string EditThis = Prefix + "EDIT_THIS";
+            internal static readonly string Pivot = Prefix + "PIVOT";
         }
         public static class Misc
         {

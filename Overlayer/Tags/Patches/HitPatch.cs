@@ -30,9 +30,9 @@ namespace Overlayer.Tags.Patches
                 Hit.Current = __result = Hit.GetCHit(GCS.difficulty);
                 if (!IsSafe(controller))
                 {
-                    IncreaseCount(GCS.difficulty, Hit.Lenient);
-                    IncreaseCount(GCS.difficulty, Hit.Normal);
-                    IncreaseCount(GCS.difficulty, Hit.Strict);
+                    IncreaseCount(Difficulty.Lenient, Hit.Lenient);
+                    IncreaseCount(Difficulty.Normal, Hit.Normal);
+                    IncreaseCount(Difficulty.Strict, Hit.Strict);
                     IncreaseCCount(Hit.Current);
                 }
                 return false;

@@ -4,7 +4,7 @@ namespace Overlayer.Tags.Patches
 {
     public class FrameRatePatch : PatchBase<FrameRatePatch>
     {
-        [LazyPatch("Tags.FrameRate.FrameRateGetter", "scrController", "Update", Triggers = new string[]
+        [LazyPatch("Tags.FrameRate.FrameRateGetter", "scrCamera", "Update", Triggers = new string[]
         {
             nameof(FrameRate.Fps), nameof(FrameRate.FrameTime)
         })]

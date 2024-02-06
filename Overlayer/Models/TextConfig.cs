@@ -1,7 +1,6 @@
 ﻿using JSON;
 using Overlayer.Core.Interfaces;
 using Overlayer.Utils;
-using TMPro;
 using UnityEngine;
 
 namespace Overlayer.Models
@@ -20,9 +19,9 @@ namespace Overlayer.Models
         public GColor TextColor = Color.white;
         public GColor OutlineColor = Color.clear;
         public GColor ShadowColor = Color.black with { a = 0.5f };
-        public Vector2 Position = Vector2.zero;
+        public Vector2 Position = new Vector2(0.5f, 0.0175f);
+        public Vector2 Pivot = new Vector2(0.5f, 0.5f);
         public Vector3 Rotation = Vector3.zero;
-        public TextAlignmentOptions Alignment = TextAlignmentOptions.TopLeft;
         public TextConfig Copy()
         {
             var newConfig = new TextConfig();
@@ -39,8 +38,8 @@ namespace Overlayer.Models
             newConfig.OutlineColor = OutlineColor;
             newConfig.ShadowColor = ShadowColor;
             newConfig.Position = Position;
+            newConfig.Pivot = Pivot;
             newConfig.Rotation = Rotation;
-            newConfig.Alignment = Alignment;
             return newConfig;
         }
         public JsonNode Serialize()
@@ -59,8 +58,8 @@ namespace Overlayer.Models
             node[nameof(OutlineColor)] = OutlineColor.Serialize();
             node[nameof(ShadowColor)] = ShadowColor.Serialize();
             node[nameof(Position)] = Position;
+            node[nameof(Pivot)] = Pivot;
             node[nameof(Rotation)] = Rotation;
-            node[nameof(Alignment)] = Alignment.ToString();
             return node;
         }
         public void Deserialize(JsonNode node)
@@ -79,8 +78,8 @@ namespace Overlayer.Models
             OutlineColor = ModelUtils.Unbox<GColor>(node[nameof(OutlineColor)]);
             ShadowColor = ModelUtils.Unbox<GColor>(node[nameof(ShadowColor)]);
             Position = node[nameof(Position)];
+            Pivot = node[nameof(Pivot)];
             Rotation = node[nameof(Rotation)];
-            Alignment = EnumHelper<TextAlignmentOptions>.Parse(node[nameof(Alignment)]);
         }
     }
 }
