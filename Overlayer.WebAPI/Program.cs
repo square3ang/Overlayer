@@ -19,7 +19,7 @@ namespace Overlayer.WebAPI
 
             app.MapControllers();
 
-            app.Run("http://127.0.0.1:6974");
+            app.Run("http://127.0.0.1:7777");
         }
     }
 }
