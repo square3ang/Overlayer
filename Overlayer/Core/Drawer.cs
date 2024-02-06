@@ -4,7 +4,6 @@ using Overlayer.Utils;
 using System;
 using System.Linq;
 using UnityEngine;
-using TKS = Overlayer.Core.Translation.TranslationKeys.Settings;
 using TKM = Overlayer.Core.Translation.TranslationKeys.Misc;
 
 namespace Overlayer.Core
@@ -35,11 +34,11 @@ namespace Overlayer.Core
         }
         public static bool DrawGColor(ref GColor color, bool canEnableGradient)
         {
-            bool ge = color.gradientEnabled;
+            bool ge = color.gradientEnabled, prevGe = color.gradientEnabled;
             if (canEnableGradient && DrawBool(Main.Lang[TKM.EnableGradient], ref ge))
                 color = color with { gradientEnabled = ge };
             color.gradientEnabled &= canEnableGradient;
-            bool result = false;
+            bool result = ge != prevGe;
             if (color.gradientEnabled)
             {
                 Color tl = color.topLeft, tr = color.topRight,

@@ -1,8 +1,11 @@
-﻿using Overlayer.Core;
+﻿using JSON;
+using Overlayer.Core;
 using Overlayer.Core.Translation;
-using Overlayer.Utils;
-using UnityEngine;
 using Overlayer.Models;
+using Overlayer.Utils;
+using SFB;
+using System.IO;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using TKS = Overlayer.Core.Translation.TranslationKeys.Settings;
 using TKTC = Overlayer.Core.Translation.TranslationKeys.TextConfig;
@@ -61,6 +64,19 @@ namespace Overlayer.Views
             if (GUILayout.Button(L(TKS.NewText)))
             {
                 TextManager.CreateText(new TextConfig());
+                TextManager.Refresh();
+            }
+            if (GUILayout.Button(L(TKS.ImportText)))
+            {
+                var texts = StandaloneFileBrowser.OpenFilePanel(L(TKTC.SelectText), Main.Mod.Path, new[] { new ExtensionFilter("Text", "json") }, true);
+                foreach (var text in texts)
+                {
+                    var json = JsonNode.Parse(File.ReadAllText(text));
+                    if (json is JsonArray arr)
+                        ModelUtils.UnwrapList<TextConfig>(arr).ForEach(t => TextManager.CreateText(t));
+                    else if (json is JsonObject obj)
+                        TextManager.CreateText(ModelUtils.Unbox<TextConfig>(obj));
+                }
                 TextManager.Refresh();
             }
             GUILayout.FlexibleSpace();

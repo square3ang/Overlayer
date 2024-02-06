@@ -74,7 +74,7 @@ namespace Overlayer.Models
             LineSpacing = node[nameof(LineSpacing)];
             LineSpacingAdj = node[nameof(LineSpacingAdj)].IfNotExist(node["LineSpacingAdjustment"]);
             TextColor = ModelUtils.Unbox<GColor>(node[nameof(TextColor)]);
-            TextColor.gradientEnabled = node["GradientText"].IfNotExist(false);
+            TextColor.gradientEnabled = node["GradientText"].IfNotExist(TextColor.gradientEnabled);
             OutlineColor = ModelUtils.Unbox<GColor>(node[nameof(OutlineColor)]);
             ShadowColor = ModelUtils.Unbox<GColor>(node[nameof(ShadowColor)]);
             Position = node[nameof(Position)];

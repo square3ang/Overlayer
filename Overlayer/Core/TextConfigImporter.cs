@@ -24,7 +24,13 @@ namespace Overlayer.Core
                     Directory.CreateDirectory(fontsDir);
                 foreach (var @ref in refs)
                 {
-
+                    if (@ref.ReferenceType == Reference.Type.Font)
+                    {
+                        var targetPath = Path.Combine(fontsDir, @ref.Name);
+                        File.WriteAllBytes(targetPath, @ref.Raw.Decompress());
+                        if ((Path.GetFileName(config.Font?.Replace("{ModDir}", Main.Mod.Path)) ?? "") == @ref.Name)
+                            config.Font = targetPath;
+                    }
                 }
             }
             return config;
@@ -32,7 +38,8 @@ namespace Overlayer.Core
         public static JsonArray GetReferences(TextConfig text)
         {
             List<Reference> references = new List<Reference>();
-
+            if (!string.IsNullOrWhiteSpace(text.Font))
+                references.Add(Reference.GetReference(text.Font, Reference.Type.Font));
             return ModelUtils.WrapList(references.Where(r => r != null).Distinct().ToList());
         }
         public class Reference : IModel, ICopyable<Reference>

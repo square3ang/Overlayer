@@ -129,7 +129,7 @@ namespace Overlayer.Tags.Patches
             }
             public static int GetCheckPointIndex(scrFloor floor)
             {
-                if (floor == null) return 0;    
+                if (floor == null) return 0;
                 int i = 0;
                 foreach (var chkPt in CurrentCheckPointPreparer.AllCheckPoints)
                 {

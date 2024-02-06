@@ -1,8 +1,9 @@
 ﻿using Overlayer.Core;
 using Overlayer.Models;
 using Overlayer.Unity;
+using SFB;
+using System.IO;
 using UnityEngine;
-using TMPro;
 using TKTC = Overlayer.Core.Translation.TranslationKeys.TextConfig;
 
 namespace Overlayer.Views
@@ -47,6 +48,16 @@ namespace Overlayer.Views
             changed |= Drawer.DrawString(L(TKTC.PlayingText), ref model.PlayingText, true);
             changed |= Drawer.DrawString(L(TKTC.NotPlayingText), ref model.NotPlayingText, true);
             GUILayout.BeginHorizontal();
+            if (GUILayout.Button(L(TKTC.Export)))
+            {
+                string target = StandaloneFileBrowser.SaveFilePanel(L(TKTC.SelectText), Persistence.GetLastUsedFolder(), $"{model.Name}.json", "json");
+                if (!string.IsNullOrWhiteSpace(target))
+                {
+                    var node = model.Serialize();
+                    node["References"] = TextConfigImporter.GetReferences(model);
+                    File.WriteAllText(target, node.ToString(4));
+                }
+            }
             if (GUILayout.Button(L(TKTC.Reset)))
             {
                 changed = true;

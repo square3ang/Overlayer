@@ -29,7 +29,7 @@ namespace Overlayer.Core
         }
         public static OverlayerText CreateText(TextConfig config)
         {
-            if (string.IsNullOrEmpty(config.Name)) 
+            if (string.IsNullOrEmpty(config.Name))
                 config.Name = string.Format(Main.Lang[TranslationKeys.Misc.Text], Count + 1);
             GameObject go = new GameObject($"OverlayerText_{config.Name}");
             var text = go.AddComponent<OverlayerText>();
