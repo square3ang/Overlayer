@@ -100,6 +100,10 @@ namespace Overlayer.Tags.Patches
         {
             nameof(Status.CurCheckPoint)
         })]
+        [LazyPatch("Tags.Status.CurrentCheckPointPreparer_scnEditor", "scnEditor", "Play", Triggers = new string[]
+        {
+            nameof(Status.CurCheckPoint)
+        })]
         [LazyPatch("Tags.Status.CurrentCheckPointPreparer_scrPressToStart", "scrPressToStart", "ShowText", Triggers = new string[]
         {
             nameof(Status.CurCheckPoint)
@@ -120,10 +124,12 @@ namespace Overlayer.Tags.Patches
         {
             public static void Postfix(scrFloor floor)
             {
+                if (CurrentCheckPointPreparer.AllCheckPoints == null) return;
                 Status.CurCheckPoint = GetCheckPointIndex(floor);
             }
             public static int GetCheckPointIndex(scrFloor floor)
             {
+                if (floor == null) return 0;    
                 int i = 0;
                 foreach (var chkPt in CurrentCheckPointPreparer.AllCheckPoints)
                 {
