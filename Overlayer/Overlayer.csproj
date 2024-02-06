@@ -388,6 +388,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="Models\FontMeta.cs" />
     <Compile Include="Models\GColor.cs" />
+    <Compile Include="Models\GUIStatus.cs" />
     <Compile Include="Models\OverlayerLanguage.cs" />
     <Compile Include="Models\TextConfig.cs" />
     <Compile Include="Patches\FontPatch.cs" />

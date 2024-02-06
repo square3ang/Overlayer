@@ -54,8 +54,8 @@ namespace Overlayer.Unity
             Text.color = Color.white;
             Text.colorGradient = config.TextColor;
             var rt = Text.rectTransform;
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMin = new Vector2(1, 1);
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = new Vector2(1, 1);
             rt.pivot = new Vector2(0.5f, 0.5f);
             Text.enableAutoSizing = false;
             Text.lineSpacing = config.LineSpacing;
@@ -93,7 +93,7 @@ namespace Overlayer.Unity
             Text.lineSpacing = Config.LineSpacing;
             Text.lineSpacingAdjustment = Config.LineSpacingAdj;
             Text.colorGradient = Config.TextColor;
-            Text.rectTransform.anchoredPosition = Config.Position * new Vector2(Screen.width, Screen.height);
+            Text.rectTransform.anchoredPosition = (Config.Position - new Vector2(0.5f, 0.5f)) * new Vector2(Screen.width, Screen.height);
             Text.rectTransform.eulerAngles = Config.Rotation;
             Text.fontSize = Config.FontSize;
             Text.alignment = Config.Alignment;
@@ -102,7 +102,7 @@ namespace Overlayer.Unity
             mainMat.SetFloat(ShaderUtilities.ID_OutlineWidth, Config.OutlineWidth);
             mainMat.SetColor(ShaderUtilities.ID_UnderlayColor, Config.ShadowColor);
             Text.fontSharedMaterial = mainMat;
-            if (FontManager.TryGetFont(name, out FontData font))
+            if (FontManager.TryGetFont(Config.Font, out FontData font))
                 Text.font = font.fontTMP;
         }
     }

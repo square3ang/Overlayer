@@ -19,7 +19,7 @@ namespace Overlayer.Models
         public float LineSpacingAdj = 25f;
         public GColor TextColor = Color.white;
         public GColor OutlineColor = Color.clear;
-        public GColor ShadowColor = Color.white with { a = 0.5f };
+        public GColor ShadowColor = Color.black with { a = 0.5f };
         public Vector2 Position = Vector2.zero;
         public Vector3 Rotation = Vector3.zero;
         public TextAlignmentOptions Alignment = TextAlignmentOptions.TopLeft;
@@ -71,10 +71,11 @@ namespace Overlayer.Models
             PlayingText = node[nameof(PlayingText)];
             NotPlayingText = node[nameof(NotPlayingText)];
             FontSize = node[nameof(FontSize)];
-            OutlineWidth = node[nameof(LineSpacing)];
+            OutlineWidth = node[nameof(OutlineWidth)];
             LineSpacing = node[nameof(LineSpacing)];
             LineSpacingAdj = node[nameof(LineSpacingAdj)].IfNotExist(node["LineSpacingAdjustment"]);
             TextColor = ModelUtils.Unbox<GColor>(node[nameof(TextColor)]);
+            TextColor.gradientEnabled = node["GradientText"].IfNotExist(false);
             OutlineColor = ModelUtils.Unbox<GColor>(node[nameof(OutlineColor)]);
             ShadowColor = ModelUtils.Unbox<GColor>(node[nameof(ShadowColor)]);
             Position = node[nameof(Position)];

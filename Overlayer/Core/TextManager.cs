@@ -24,6 +24,7 @@ namespace Overlayer.Core
             if (File.Exists(textsPath))
                 configs = ModelUtils.UnwrapList<TextConfig>((JsonArray)JsonNode.Parse(File.ReadAllText(textsPath)));
             configs.ForEach(c => CreateText(c));
+            Refresh();
             Initialized = true;
         }
         public static OverlayerText CreateText(TextConfig config)
@@ -37,7 +38,8 @@ namespace Overlayer.Core
             return text;
         }
         public static OverlayerText Get(int index) => Texts[index];
-        public static void Remove(int index) => Texts.RemoveAt(index);
+        public static OverlayerText Find(TextConfig configRef) => Texts.Find(ot => ReferenceEquals(ot.Config, configRef));
+        public static void Remove(int index) => DestroyText(Texts[index]);
         public static void DestroyText(OverlayerText text)
         {
             UnityEngine.Object.Destroy(text.gameObject);
@@ -53,7 +55,6 @@ namespace Overlayer.Core
         public static void Refresh()
         {
             Texts.ForEach(ot => ot.ApplyConfig());
-            Texts = Texts.OrderBy(ot => ot.Config.Name).ToList();
         }
         public static void Release()
         {

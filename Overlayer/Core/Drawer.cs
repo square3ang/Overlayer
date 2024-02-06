@@ -1,19 +1,94 @@
 ﻿using Overlayer.Core.Interfaces;
+using Overlayer.Models;
 using Overlayer.Utils;
 using System;
 using System.Linq;
 using UnityEngine;
+using TKS = Overlayer.Core.Translation.TranslationKeys.Settings;
+using TKM = Overlayer.Core.Translation.TranslationKeys.Misc;
 
 namespace Overlayer.Core
 {
     public static class Drawer
     {
-        public static void TitleButton(string label, string btnLabel, Action pressed)
+        public static bool DrawVector2(string label, ref Vector2 vec2, float lValue, float rValue)
+        {
+            bool changed = false;
+            ButtonLabel($"<b>{label}</b>", Main.OpenDiscordLink);
+            changed |= DrawSingleWithSlider("X", ref vec2.x, lValue, rValue, 300f);
+            changed |= DrawSingleWithSlider("Y", ref vec2.y, lValue, rValue, 300f);
+            return changed;
+        }
+        public static bool DrawVector3(string label, ref Vector3 vec3, float lValue, float rValue)
+        {
+            bool changed = false;
+            ButtonLabel($"<b>{label}</b>", Main.OpenDiscordLink);
+            changed |= DrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f);
+            changed |= DrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f);
+            changed |= DrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f);
+            return changed;
+        }
+        public static void DrawGColor(string label, ref GColor color, bool canEnableGradient, Action onChange)
+        {
+            ButtonLabel(label, Main.OpenDiscordLink);
+            DrawGColor(ref color, canEnableGradient).IfTrue(onChange);
+        }
+        public static bool DrawGColor(ref GColor color, bool canEnableGradient)
+        {
+            bool ge = color.gradientEnabled;
+            if (canEnableGradient && DrawBool(Main.Lang[TKM.EnableGradient], ref ge))
+                color = color with { gradientEnabled = ge };
+            color.gradientEnabled &= canEnableGradient;
+            bool result = false;
+            if (color.gradientEnabled)
+            {
+                Color tl = color.topLeft, tr = color.topRight,
+                bl = color.bottomLeft, br = color.bottomRight;
+                ExpandableGUI(color.topLeftStatus, Main.Lang[TKM.TopLeft], () => result |= DrawColor(ref tl));
+                ExpandableGUI(color.topRightStatus, Main.Lang[TKM.TopRight], () => result |= DrawColor(ref tr));
+                ExpandableGUI(color.bottomLeftStatus, Main.Lang[TKM.BottomLeft], () => result |= DrawColor(ref bl));
+                ExpandableGUI(color.bottomRightStatus, Main.Lang[TKM.BottomRight], () => result |= DrawColor(ref br));
+                if (result)
+                {
+                    color.topLeft = tl;
+                    color.topRight = tr;
+                    color.bottomLeft = bl;
+                    color.bottomRight = br;
+                }
+            }
+            else
+            {
+                Color dummy = color.topLeft;
+                if (result = DrawColor(ref dummy)) color = dummy;
+            }
+            return result;
+        }
+        public static void ExpandableGUI(GUIStatus status, string label, Action drawer)
+        {
+            GUILayoutEx.ExpandableGUI(drawer, label, ref status.Expanded);
+        }
+        public static bool DrawColor(ref Color color)
+        {
+            bool result = false;
+            result |= DrawSingleWithSlider("<color=#FF0000>R</color>", ref color.r, 0, 1, 300f);
+            result |= DrawSingleWithSlider("<color=#00FF00>G</color>", ref color.g, 0, 1, 300f);
+            result |= DrawSingleWithSlider("<color=#0000FF>B</color>", ref color.b, 0, 1, 300f);
+            result |= DrawSingleWithSlider("A", ref color.a, 0, 1, 300f);
+            string hex = ColorUtility.ToHtmlStringRGBA(color);
+            if (DrawString("Hex:", ref hex))
+            {
+                result = true;
+                ColorUtility.TryParseHtmlString("#" + hex, out color);
+            }
+            return result;
+        }
+        public static void TitleButton(string label, string btnLabel, Action pressed, Action horizontal = null)
         {
             GUILayout.BeginHorizontal();
             ButtonLabel(label, Main.OpenDiscordLink);
             if (GUILayout.Button(btnLabel))
                 pressed?.Invoke();
+            horizontal?.Invoke();
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
@@ -231,12 +306,14 @@ namespace Overlayer.Core
             value = StringConverter.ToFloat(str);
             return result;
         }
-        public static bool DrawString(string label, ref string value)
+        public static bool DrawString(string label, ref string value, bool textArea = false)
         {
             string prev = value;
             GUILayout.BeginHorizontal();
-            Drawer.ButtonLabel(label, Main.OpenDiscordLink);
-            value = GUILayout.TextField(value);
+            ButtonLabel(label, Main.OpenDiscordLink);
+            if (!textArea)
+                value = GUILayout.TextField(value);
+            else value = GUILayout.TextArea(value);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             return prev != value;

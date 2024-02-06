@@ -5,6 +5,7 @@ using UnityEngine;
 using Overlayer.Models;
 using UnityEngine.SceneManagement;
 using TKS = Overlayer.Core.Translation.TranslationKeys.Settings;
+using TKTC = Overlayer.Core.Translation.TranslationKeys.TextConfig;
 
 namespace Overlayer.Views
 {
@@ -14,7 +15,7 @@ namespace Overlayer.Views
         public override void Draw()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(L(TKS.Langauge));
+            Drawer.ButtonLabel(L(TKS.Langauge), Main.OpenDiscordLink);
             if (Drawer.DrawEnum(L(TKS.Langauge), ref model.Lang, model.GetHashCode()))
                 Main.Lang = Language.GetLangauge(model.Lang);
             GUILayout.FlexibleSpace();
@@ -63,7 +64,16 @@ namespace Overlayer.Views
             for (int i = 0; i < TextManager.Count; i++)
             {
                 var text = TextManager.Get(i);
-                Drawer.TitleButton(L(TKS.EditThisText, text.Config.Name), L(TKS.Edit), () => Main.GUI.Push(new TextConfigDrawer(text.Config)));
+                Drawer.TitleButton(L(TKS.EditThisText, text.Config.Name), L(TKS.Edit), () => Main.GUI.Push(new TextConfigDrawer(text.Config)), () =>
+                {
+                    if (GUILayout.Button(L(TKTC.Destroy)))
+                    {
+                        TextManager.DestroyText(text);
+                        Main.GUI.Skip(frames: 2);
+                        Main.GUI.Pop();
+                        return;
+                    }
+                });
             }
         }
     }

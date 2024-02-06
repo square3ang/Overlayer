@@ -61,11 +61,13 @@ namespace Overlayer
                 OverlayerTag.Initialize();
                 TagManager.Initialize();
                 TagManager.Load(Ass);
+                FontManager.Initialize();
                 TextManager.Initialize();
             }
             else
             {
                 TextManager.Release();
+                FontManager.Release();
                 TagManager.Release();
                 OverlayerTag.Release();
                 Tag.ReleaseWrapperAssembly();

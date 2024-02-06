@@ -20,11 +20,31 @@
         public static class TextConfig
         {
             public const string Prefix = "TEXT_CONFIG_";
+            internal static readonly string Active = Prefix + "ACTIVE";
+            internal static readonly string Position = Prefix + "POSITION";
+            internal static readonly string Rotation = Prefix + "ROTATION";
+            internal static readonly string Alignment = Prefix + "ALIGNMENT";
+            internal static readonly string Reset = Prefix + "RESET";
+            internal static readonly string Font = Prefix + "FONT";
+            internal static readonly string FontSize = Prefix + "FONT_SIZE";
+            internal static readonly string TextColor = Prefix + "TEXT_COLOR";
+            internal static readonly string ShadowColor = Prefix + "SHADOW_COLOR";
+            internal static readonly string OutlineColor = Prefix + "OUTLINE_COLOR";
+            internal static readonly string OutlineWidth = Prefix + "OUTLINE_WIDTH";
+            internal static readonly string PlayingText = Prefix + "PLAYING_TEXT";
+            internal static readonly string NotPlayingText = Prefix + "NOT_PLAYING_TEXT";
+            internal static readonly string Destroy = Prefix + "DESTROY";
+            internal static readonly string EditThis = Prefix + "EDIT_THIS";
         }
         public static class Misc
         {
             public const string Prefix = "MISC_";
             internal static readonly string Text = Prefix + "TEXT";
+            internal static readonly string EnableGradient = Prefix + "ENABLE_GRADIENT";
+            internal static readonly string TopLeft = Prefix + "TOP_LEFT";
+            internal static readonly string TopRight = Prefix + "TOP_RIGHT";
+            internal static readonly string BottomLeft = Prefix + "BOTTOM_LEFT";
+            internal static readonly string BottomRight = Prefix + "BOTTOM_RIGHT";
         }
     }
 }
