@@ -103,7 +103,7 @@ namespace Overlayer.Models
                 r = node[nameof(r)];
                 g = node[nameof(g)];
                 b = node[nameof(b)];
-                r = node[nameof(a)].IfNotExist(1);
+                a = node[nameof(a)].IfNotExist(1);
             }
             else
             {

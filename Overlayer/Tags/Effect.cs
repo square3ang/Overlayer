@@ -13,7 +13,7 @@ namespace Overlayer.Tags
     {
         static Dictionary<string, double> tagValueCache = new Dictionary<string, double>();
         static Dictionary<string, long> tagStartTimeCache = new Dictionary<string, long>();
-        [Tag]
+        [Tag(Hint = ReturnTypeHint.String)]
         public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, string easeRaw = "Linear")
         {
             Tag tag = TagManager.GetTag(rawFunc)?.Tag;
@@ -36,7 +36,7 @@ namespace Overlayer.Tags
             Color newColor = new Color(((1 - eased) * min.r) + (eased * max.r), ((1 - eased) * min.g) + (eased * max.g), ((1 - eased) * min.b) + (eased * max.b), ((1 - eased) * min.a) + (eased * max.a));
             return ColorUtility.ToHtmlStringRGBA(newColor);
         }
-        [Tag]
+        [Tag(Hint = ReturnTypeHint.Double)]
         public static double MovingMan(string rawFunc = "Combo", double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool reverse = false, string easeRaw = "OutExpo")
         {
             Tag tag = TagManager.GetTag(rawFunc)?.Tag;
