@@ -76,23 +76,33 @@ namespace Overlayer.Core.Patches
                     Unpatch(patchType);
             }
         }
-        public static void Patch(Type patchType)
+        public static List<LazyPatch> Patch(Type patchType, bool force = false)
         {
-            if (Patches.TryGetValue(patchType, out var patches)) patches.ForEach(lp => lp.Patch());
+            if (Patches.TryGetValue(patchType, out var patches))
+            {
+                patches.ForEach(lp => lp.Patch(force));
+                return patches;
+            }
+            return null;
         }
-        public static void Unpatch(Type patchType)
+        public static List<LazyPatch> Unpatch(Type patchType, bool force = false)
         {
-            if (Patches.TryGetValue(patchType, out var patches)) patches.ForEach(lp => lp.Unpatch());
+            if (Patches.TryGetValue(patchType, out var patches))
+            {
+                patches.ForEach(lp => lp.Unpatch(force));
+                return patches;
+            }
+            return null;
         }
-        public static void PatchNested(Type patchType)
+        internal static void PatchNested(Type patchType, bool force = false, bool lockPatch = true)
         {
             foreach (var nType in patchType.GetNestedTypes((BindingFlags)15420))
-                Patch(nType);
+                Patch(nType, force)?.ForEach(p => p.Locked = lockPatch);
         }
-        public static void UnpatchNested(Type patchType)
+        internal static void UnpatchNested(Type patchType, bool force = false, bool lockPatch = true)
         {
             foreach (var nType in patchType.GetNestedTypes((BindingFlags)15420))
-                Unpatch(nType);
+                Unpatch(nType, force)?.ForEach(p => p.Locked = lockPatch);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Overlayer.Core
         public static JsonArray GetReferences(TextConfig text)
         {
             List<Reference> references = new List<Reference>();
-            if (!string.IsNullOrWhiteSpace(text.Font))
+            if (!string.IsNullOrWhiteSpace(text.Font) && text.Font != "Default")
                 references.Add(Reference.GetReference(text.Font, Reference.Type.Font));
             return ModelUtils.WrapList(references.Where(r => r != null).Distinct().ToList());
         }

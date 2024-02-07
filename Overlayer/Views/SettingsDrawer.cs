@@ -75,7 +75,7 @@ namespace Overlayer.Views
                     if (json is JsonArray arr)
                         ModelUtils.UnwrapList<TextConfig>(arr).ForEach(t => TextManager.CreateText(t));
                     else if (json is JsonObject obj)
-                        TextManager.CreateText(ModelUtils.Unbox<TextConfig>(obj));
+                        TextManager.CreateText(TextConfigImporter.Import(obj));
                 }
                 TextManager.Refresh();
             }
