@@ -88,11 +88,11 @@ namespace Overlayer.Models
             node[nameof(topRight)] = topRight;
             node[nameof(bottomLeft)] = bottomLeft;
             node[nameof(bottomRight)] = bottomRight;
-            node[nameof(status)] = status.Serialize();
-            node[nameof(topLeftStatus)] = topLeftStatus.Serialize();
-            node[nameof(topRightStatus)] = topRightStatus.Serialize();
-            node[nameof(bottomLeftStatus)] = bottomLeftStatus.Serialize();
-            node[nameof(bottomRightStatus)] = bottomRightStatus.Serialize();
+            node[nameof(status)] = status?.Serialize();
+            node[nameof(topLeftStatus)] = topLeftStatus?.Serialize();
+            node[nameof(topRightStatus)] = topRightStatus?.Serialize();
+            node[nameof(bottomLeftStatus)] = bottomLeftStatus?.Serialize();
+            node[nameof(bottomRightStatus)] = bottomRightStatus?.Serialize();
             return node;
         }
         public void Deserialize(JsonNode node)

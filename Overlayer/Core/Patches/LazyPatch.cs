@@ -56,7 +56,7 @@ namespace Overlayer.Core.Patches
             if (!Patched || target == null || patch == null) return;
             if (!force && Locked)
             {
-                Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Patched!");
+                Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Unpatched!");
                 return;
             }
             if (force) Locked = false;

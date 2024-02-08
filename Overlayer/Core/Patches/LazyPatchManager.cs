@@ -48,32 +48,35 @@ namespace Overlayer.Core.Patches
             LazyPatch.Patches.Clear();
         }
         public static void PatchInternal() => PatchAll(LazyPatch.InternalTrigger);
-        public static void PatchAll(string trigger = null)
+        public static List<LazyPatch> PatchAll(string trigger = null)
         {
+            List<LazyPatch> patches = new List<LazyPatch>();
             if (trigger != null)
             {
                 if (PatchedTriggers.Add(trigger))
-                    foreach (var patch in Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)))
+                    foreach (var patch in patches = Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)).ToList())
                         patch.Patch();
             }
             else
             {
                 foreach (var patchType in Patches.Keys)
-                    Patch(patchType);
+                    patches.AddRange(Patch(patchType));
             }
+            return patches;
         }
         public static void UnpatchAll(string trigger = null)
         {
+            List<LazyPatch> patches = new List<LazyPatch>();
             if (trigger != null)
             {
                 if (PatchedTriggers.Remove(trigger))
-                    foreach (var patch in Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.All(t => !PatchedTriggers.Contains(t))))
+                    foreach (var patch in patches = Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)).ToList())
                         patch.Unpatch();
             }
             else
             {
                 foreach (var patchType in Patches.Keys)
-                    Unpatch(patchType);
+                    patches.AddRange(Unpatch(patchType));
             }
         }
         public static List<LazyPatch> Patch(Type patchType, bool force = false)

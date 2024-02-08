@@ -363,13 +363,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomParameter.cs" />
-    <Compile Include="FIWrapper.cs" />
-    <Compile Include="JavaScriptImpl.cs" />
-    <Compile Include="JSUtils.cs" />
+    <Compile Include="Impl.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Expression.cs" />
-    <Compile Include="Result.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Overlayer\Overlayer.csproj">
@@ -378,4 +375,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer.Scripting\Overlayer.Scripting.dll"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

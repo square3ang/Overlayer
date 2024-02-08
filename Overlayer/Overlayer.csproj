@@ -428,6 +428,7 @@
     <Compile Include="Utils\MiscUtils.cs" />
     <Compile Include="Utils\ModelUtils.cs" />
     <Compile Include="Utils\StringConverter.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Views\SettingsDrawer.cs" />
     <Compile Include="Views\TextConfigDrawer.cs" />
   </ItemGroup>
