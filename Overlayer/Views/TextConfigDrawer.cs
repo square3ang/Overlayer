@@ -45,6 +45,13 @@ namespace Overlayer.Views
                 GUILayoutEx.EndIndent();
             }
             changed |= Drawer.DrawSingleWithSlider(L(TKTC.OutlineWidth), ref model.OutlineWidth, 0, 1, 300f);
+
+            GUILayout.BeginHorizontal();
+            Drawer.ButtonLabel(L(TKTC.Alignment), Main.OpenDiscordLink);
+            changed |= Drawer.DrawEnum(L(TKTC.Alignment), ref model.Alignment);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
             changed |= Drawer.DrawString(L(TKTC.PlayingText), ref model.PlayingText, true);
             changed |= Drawer.DrawString(L(TKTC.NotPlayingText), ref model.NotPlayingText, true);
             GUILayout.BeginHorizontal();

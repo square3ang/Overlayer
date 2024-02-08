@@ -16,6 +16,8 @@ namespace Overlayer.Tags
         public static double StartProg;
         [Tag(Hint = ReturnTypeHint.Boolean)]
         public static bool IsStarted;
+        [Tag(Hint = ReturnTypeHint.Double)]
+        public static double MarginScale() => scrController.instance?.currFloor?.marginScale ?? 0;
         public static void Reset()
         {
             LeftTile = CurTile = TotalTile = StartTile = 0;

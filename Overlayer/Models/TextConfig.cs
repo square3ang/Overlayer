@@ -1,6 +1,7 @@
 ﻿using JSON;
 using Overlayer.Core.Interfaces;
 using Overlayer.Utils;
+using TMPro;
 using UnityEngine;
 
 namespace Overlayer.Models
@@ -22,6 +23,7 @@ namespace Overlayer.Models
         public Vector2 Position = new Vector2(0.5f, 0.0175f);
         public Vector2 Pivot = new Vector2(0.5f, 0.5f);
         public Vector3 Rotation = Vector3.zero;
+        public TextAlignmentOptions Alignment = TextAlignmentOptions.Center;
         public TextConfig Copy()
         {
             var newConfig = new TextConfig();
@@ -40,6 +42,7 @@ namespace Overlayer.Models
             newConfig.Position = Position;
             newConfig.Pivot = Pivot;
             newConfig.Rotation = Rotation;
+            newConfig.Alignment = Alignment;
             return newConfig;
         }
         public JsonNode Serialize()
@@ -60,6 +63,7 @@ namespace Overlayer.Models
             node[nameof(Position)] = Position;
             node[nameof(Pivot)] = Pivot;
             node[nameof(Rotation)] = Rotation;
+            node[nameof(Alignment)] = Alignment.ToString();
             return node;
         }
         public void Deserialize(JsonNode node)
@@ -80,6 +84,7 @@ namespace Overlayer.Models
             Position = node[nameof(Position)];
             Pivot = node[nameof(Pivot)];
             Rotation = node[nameof(Rotation)];
+            Alignment = EnumHelper<TextAlignmentOptions>.Parse(node[nameof(Alignment)].IfNotExist(nameof(TextAlignmentOptions.Center)));
         }
     }
 }

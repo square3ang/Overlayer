@@ -29,6 +29,22 @@ namespace Overlayer.Tags
         [Tag(Hint = ReturnTypeHint.Double)]
         public static double CTE, CVE, CEP, CP, CLP, CVL, CTL;
         [Tag(Hint = ReturnTypeHint.Double)]
+        public static double LFast() => LTE + LVE + LEP;
+        [Tag(Hint = ReturnTypeHint.Double)]
+        public static double NFast() => NTE + NVE + NEP;
+        [Tag(Hint = ReturnTypeHint.Double)]
+        public static double SFast() => STE + SVE + SEP;
+        [Tag(Hint = ReturnTypeHint.Double)]
+        public static double CFast() => CTE + CVE + CEP;
+        [Tag(Hint = ReturnTypeHint.Double)]
+        public static double LSlow() => LTL + LVL + LLP;
+        [Tag(Hint = ReturnTypeHint.Double)]
+        public static double NSlow() => NTL + NVL + NLP;
+        [Tag(Hint = ReturnTypeHint.Double)]
+        public static double SSlow() => STL + SVL + SLP;
+        [Tag(Hint = ReturnTypeHint.Double)]
+        public static double CSlow() => CTL + CVL + CLP;
+        [Tag(Hint = ReturnTypeHint.Double)]
         public static double MissCount() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
         [Tag(Hint = ReturnTypeHint.Double)]
         public static double Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
