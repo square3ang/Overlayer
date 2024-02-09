@@ -32,7 +32,7 @@ namespace Overlayer.Scripting
         }
         public static void Release()
         {
-            registeredCustomTags.ForEach(name => TagManager.RemoveTag(name));
+            registeredCustomTags?.ForEach(TagManager.RemoveTag);
             registeredCustomTags = null;
             globalVariables = null;
             harmony?.UnpatchAll(harmony.Id);
