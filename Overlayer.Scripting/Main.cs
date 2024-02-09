@@ -1,7 +1,8 @@
 ﻿using JSNet;
 using JSNet.API;
-using Overlayer.Core.Translation;
+using Overlayer.Core;
 using Overlayer.Tags;
+using Overlayer.Unity;
 using Overlayer.Utils;
 using System;
 using System.Collections.Generic;
@@ -143,6 +144,7 @@ namespace Overlayer.Scripting
         public static async void RunScriptsNonBlocking(string folderPath)
         {
             await RunScripts(folderPath);
+            StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
         }
     }
 }
