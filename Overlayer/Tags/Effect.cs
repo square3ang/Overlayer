@@ -72,7 +72,7 @@ namespace Overlayer.Tags
         }
         [JSImplementedBy("Discord@wsbimango")]
         [Tag]
-        public static double ValueEase(string rawFunc = "TileBpm", int digits = -1, double speed = 500, Ease ease = Ease.Linear)
+        public static double EasedValue(string rawFunc = "TileBpm", int digits = -1, double speed = 500, Ease ease = Ease.Linear)
         {
             Tag tag = TagManager.GetTag(rawFunc)?.Tag;
             if (tag == null) return -1;
