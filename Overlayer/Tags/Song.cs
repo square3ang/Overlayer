@@ -4,17 +4,17 @@ namespace Overlayer.Tags
 {
     public static class Song
     {
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag()]
         public static int CurMinute;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag()]
         public static int CurSecond;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag()]
         public static int CurMilliSecond;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag()]
         public static int TotalMinute;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag()]
         public static int TotalSecond;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag()]
         public static int TotalMilliSecond;
         public static void Reset()
         {

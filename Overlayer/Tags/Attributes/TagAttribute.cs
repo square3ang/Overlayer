@@ -8,7 +8,6 @@ namespace Overlayer.Tags.Attributes
         public string Name { get; }
         public bool NotPlaying { get; set; }
         public AdvancedFlags Flags { get; set; }
-        public ReturnTypeHint Hint { get; set; }
         public TagAttribute() : this(null) { }
         public TagAttribute(string name) => Name = name;
     }

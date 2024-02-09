@@ -4,24 +4,24 @@ namespace Overlayer.Tags
 {
     public static class Tile
     {
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int LeftTile;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int CurTile;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int TotalTile;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int StartTile;
-        [Tag(Flags = AdvancedFlags.Round, Hint = ReturnTypeHint.Double)]
-        public static double StartProg;
-        [Tag(Hint = ReturnTypeHint.Boolean)]
+        [Tag(Flags = AdvancedFlags.Round)]
+        public static double StartProgress;
+        [Tag]
         public static bool IsStarted;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag]
         public static double MarginScale() => scrController.instance?.currFloor?.marginScale ?? 0;
         public static void Reset()
         {
             LeftTile = CurTile = TotalTile = StartTile = 0;
-            StartProg = 0;
+            StartProgress = 0;
             IsStarted = true;
         }
     }

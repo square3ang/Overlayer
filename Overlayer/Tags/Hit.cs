@@ -4,55 +4,55 @@ namespace Overlayer.Tags
 {
     public static class Hit
     {
-        [Tag("LHitRaw", Hint = ReturnTypeHint.Enum)]
+        [Tag("LHitRaw")]
         public static HitMargin Lenient;
-        [Tag("NHitRaw", Hint = ReturnTypeHint.Enum)]
+        [Tag("NHitRaw")]
         public static HitMargin Normal;
-        [Tag("SHitRaw", Hint = ReturnTypeHint.Enum)]
+        [Tag("SHitRaw")]
         public static HitMargin Strict;
-        [Tag("CHitRaw", Hint = ReturnTypeHint.Enum)]
+        [Tag("CHitRaw")]
         public static HitMargin Current;
-        [Tag(Hint = ReturnTypeHint.String)]
+        [Tag()]
         public static string LHit() => RDString.Get("HitMargin." + Lenient);
-        [Tag(Hint = ReturnTypeHint.String)]
+        [Tag()]
         public static string NHit() => RDString.Get("HitMargin." + Normal);
-        [Tag(Hint = ReturnTypeHint.String)]
+        [Tag()]
         public static string SHit() => RDString.Get("HitMargin." + Strict);
-        [Tag(Hint = ReturnTypeHint.String)]
+        [Tag()]
         public static string CHit() => RDString.Get("HitMargin." + Current);
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double LTE, LVE, LEP, LP, LLP, LVL, LTL;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double NTE, NVE, NEP, NP, NLP, NVL, NTL;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double STE, SVE, SEP, SP, SLP, SVL, STL;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double CTE, CVE, CEP, CP, CLP, CVL, CTL;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double LFast() => LTE + LVE + LEP;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double NFast() => NTE + NVE + NEP;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double SFast() => STE + SVE + SEP;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double CFast() => CTE + CVE + CEP;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double LSlow() => LTL + LVL + LLP;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double NSlow() => NTL + NVL + NLP;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double SSlow() => STL + SVL + SLP;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double CSlow() => CTL + CVL + CLP;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double MissCount() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag()]
         public static double Multipress;
-        [Tag(Hint = ReturnTypeHint.String)]
+        [Tag()]
         public static string Difficulty() => RDString.Get("enum.Difficulty." + GCS.difficulty);
-        [Tag(Hint = ReturnTypeHint.String)]
+        [Tag()]
         public static string DifficultyStr() => GCS.difficulty.ToString();
         public static void Reset()
         {

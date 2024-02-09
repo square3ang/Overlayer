@@ -4,9 +4,9 @@ namespace Overlayer.Tags
 {
     public static class HitTiming
     {
-        [Tag(Flags = AdvancedFlags.Round, Hint = ReturnTypeHint.Double)]
+        [Tag(Flags = AdvancedFlags.Round)]
         public static double Timing;
-        [Tag(Flags = AdvancedFlags.Round, Hint = ReturnTypeHint.Double)]
+        [Tag(Flags = AdvancedFlags.Round)]
         public static double TimingAvg;
         public static void Reset()
         {

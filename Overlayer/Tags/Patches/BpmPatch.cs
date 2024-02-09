@@ -66,7 +66,7 @@ namespace Overlayer.Tags.Patches
             public static void Postfix(scrFloor floor)
             {
                 if (floor.nextfloor == null) return;
-                double curBPM = GetRealBpm(floor, bpm) * playbackSpeed * pitch;
+                double curBPM = GetRealBpm(floor, bpm) * playbackSpeed;
                 Bpm.TileBpm = bpm * scrController.instance.speed;
                 Bpm.CurBpm = curBPM;
                 Bpm.RecKPS = curBPM / 60;

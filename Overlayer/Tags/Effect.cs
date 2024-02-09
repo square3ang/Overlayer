@@ -11,9 +11,10 @@ namespace Overlayer.Tags
 {
     public static class Effect
     {
-        static Dictionary<string, double> tagValueCache = new Dictionary<string, double>();
-        static Dictionary<string, long> tagStartTimeCache = new Dictionary<string, long>();
-        [Tag(Hint = ReturnTypeHint.String)]
+        static Dictionary<string, double> movingMan_tagValueCache = new Dictionary<string, double>();
+        static Dictionary<string, long> movingMan_tagStartTimeCache = new Dictionary<string, long>();
+        [JSImplementedBy("Discord@kkitut")]
+        [Tag]
         public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, string easeRaw = "Linear")
         {
             Tag tag = TagManager.GetTag(rawFunc)?.Tag;
@@ -21,9 +22,9 @@ namespace Overlayer.Tags
             Delegate getter = tag.GetterDelegate;
             double val = 0;
             if (getter is Func<string> fs)
-                val = StringConverter.ToFloat(fs());
+                val = StringConverter.ToDouble(fs());
             else if (getter is Func<string, string> fss)
-                val = StringConverter.ToFloat(fss("6"));
+                val = StringConverter.ToDouble(fss("6"));
             else return "Not Supported Tag!";
             if (colorMinHex.Length < 6 || colorMaxHex.Length < 6) return "Color's Length Must Be Greater Than 6!";
             if (colorMinHex[0] != '#') colorMinHex = '#' + colorMinHex;
@@ -36,37 +37,56 @@ namespace Overlayer.Tags
             Color newColor = new Color(((1 - eased) * min.r) + (eased * max.r), ((1 - eased) * min.g) + (eased * max.g), ((1 - eased) * min.b) + (eased * max.b), ((1 - eased) * min.a) + (eased * max.a));
             return ColorUtility.ToHtmlStringRGBA(newColor);
         }
-        [Tag(Hint = ReturnTypeHint.Double)]
-        public static double MovingMan(string rawFunc = "Combo", double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool reverse = false, string easeRaw = "OutExpo")
+        [JSImplementedBy("Discord@kkitut")]
+        [Tag]
+        public static double MovingMan(string rawFunc = "Combo", double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool invert = false, Ease ease = Ease.OutExpo)
         {
             Tag tag = TagManager.GetTag(rawFunc)?.Tag;
             if (tag == null) return -1;
             Delegate getter = tag.GetterDelegate;
-            float val = 0;
+            double val = 0;
             if (getter is Func<string> fs)
-                val = StringConverter.ToFloat(fs());
+                val = StringConverter.ToDouble(fs());
             else if (getter is Func<string, string> fss)
-                val = StringConverter.ToFloat(fss("6"));
+                val = StringConverter.ToDouble(fss("6"));
             else return -1;
-            tagValueCache.TryGetValue(rawFunc, out double vCache);
-            tagStartTimeCache.TryGetValue(rawFunc, out long stCache);
+            movingMan_tagValueCache.TryGetValue(rawFunc, out double vCache);
+            movingMan_tagStartTimeCache.TryGetValue(rawFunc, out long stCache);
             long mills = FastDateTime.Now.Ticks / 10000;
-            if (vCache != val)
+            if (val != vCache)
             {
-                tagStartTimeCache[rawFunc] = stCache = mills;
-                tagValueCache[rawFunc] = val;
+                movingMan_tagStartTimeCache[rawFunc] = stCache = mills;
+                movingMan_tagValueCache[rawFunc] = val;
             }
             float elapsed = mills - stCache;
             if (elapsed < speed)
             {
                 float inEase = (float)(elapsed / speed);
-                float eased = DOVirtual.EasedValue(0, 1, inEase, EnumHelper<Ease>.Parse(easeRaw));
+                float eased = DOVirtual.EasedValue(0, 1, inEase, ease);
                 float changeOut = (float)(endSize * eased);
-                if (reverse) changeOut = (float)(endSize * (1 - eased));
+                if (invert) changeOut = (float)(endSize * (1 - eased));
                 double interpolatedValue = Clamp(changeOut, 0, endSize);
                 return interpolatedValue + startSize;
             }
             return defaultSize;
+        }
+        [JSImplementedBy("Discord@wsbimango")]
+        [Tag]
+        public static double ValueEase(string rawFunc = "TileBpm", int digits = -1, double speed = 500, Ease ease = Ease.Linear)
+        {
+            Tag tag = TagManager.GetTag(rawFunc)?.Tag;
+            if (tag == null) return -1;
+            Delegate getter = tag.GetterDelegate;
+            EventEase ee = new EventEase(
+                getter is Func<string> fs ?
+                () => StringConverter.ToDouble(fs()) :
+                getter is Func<string, string> fss ?
+                () => StringConverter.ToDouble(fss("6")) :
+                null, ease, speed, false);
+            if (ee.Getter == null) return -11;
+            var easedValue = ee.Compute(rawFunc);
+            var prev = ee.GetPrevValue(rawFunc);
+            return (prev + (ee.Value - prev) * easedValue).Round(digits);
         }
         public static double Clamp(double value, double min, double max)
             => value < min ? min : value > max ? max : value;

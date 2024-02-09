@@ -7,33 +7,33 @@ namespace Overlayer.Tags
     public static class Status
     {
         public static LevelData LevelData => scnGame.instance?.levelData ?? scnEditor.instance?.levelData;
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag]
         public static double Progress(int digits = -1) => (scrController.instance?.percentComplete * 100 ?? 0).Round(digits);
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag]
         public static double Accuracy(int digits = -1) => (scrController.instance?.mistakesManager?.percentAcc * 100 ?? 0).Round(digits);
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag]
         public static double XAccuracy(int digits = -1) => (scrController.instance?.mistakesManager?.percentXAcc * 100 ?? 0).Round(digits);
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag]
         public static double Pitch(int digits = -1) => GCS.currentSpeedTrial.Round(digits);
-        [Tag(Hint = ReturnTypeHint.Double)]
+        [Tag]
         public static double EditorPitch(int digits = -1) => (LevelData.pitch / 100.0).Round(digits);
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int CheckPointUsed() => scrController.checkpointsUsed;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int CurCheckPoint;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int TotalCheckPoints;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int Combo;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int LScore;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int NScore;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int SScore;
-        [Tag(Hint = ReturnTypeHint.Int32)]
+        [Tag]
         public static int Score;
-        [Tag(Flags = AdvancedFlags.Round, Hint = ReturnTypeHint.Double)]
+        [Tag]
         public static double BestProgress;
         public static void Reset()
         {

@@ -59,7 +59,7 @@ namespace Overlayer.Scripting
             bool result = true;
             for (int i = 0; i < tags.Length; i++)
             {
-                var tag = tags[i];  
+                var tag = tags[i];
                 if (TagManager.GetTag(tag) != null)
                     LazyPatchManager.PatchAll(tag).ForEach(lp => lp.Locked = true);
                 else
