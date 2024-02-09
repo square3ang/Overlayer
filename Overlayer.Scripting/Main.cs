@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
+using Jint;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
 
@@ -37,13 +38,13 @@ namespace Overlayer.Scripting
             {
                 FieldInfo apiMethodsField = typeof(Api).GetField("ApiMethods", (BindingFlags)15420);
                 JSApi = new Api();
-                List<(ApiAttribute, MethodInfo)> apiMethods = apiMethodsField.GetValue(JSApi) as List<(ApiAttribute, MethodInfo)>;
+                Impl.apiMethods = apiMethodsField.GetValue(JSApi) as List<(ApiAttribute, MethodInfo)>;
                 JSApi.RegisterType(typeof(Impl));
                 TagManager.Load(typeof(Expression));
                 foreach (var tag in TagManager.All)
                 {
                     var attr = new ApiAttribute(tag.Name);
-                    apiMethods.Add((attr, tag.Tag.GetterOriginal));
+                    Impl.apiMethods.Add((attr, tag.Tag.GetterOriginal));
                 }
                 RunScriptsNonBlocking(ScriptPath);
             }
@@ -119,6 +120,7 @@ namespace Overlayer.Scripting
                 if (nameWithoutExt.EndsWith("_Proxy")) continue;
                 if (nameWithoutExt.EndsWith("_Compilable")) continue;
                 var name = Path.GetFileName(script);
+                if (Impl.alreadyExecutedScripts.Contains(script)) continue;
                 await RunScript(name, File.ReadAllText(script));
             }
             ScriptsRunning = false;

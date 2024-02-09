@@ -1,8 +1,11 @@
-﻿using HarmonyLib;
+﻿using DG.Tweening;
+using HarmonyLib;
 using Jint;
 using Jint.Native;
 using Jint.Native.Function;
+using Jint.Native.Object;
 using Jint.Runtime.Interop;
+using JSNet;
 using JSNet.API;
 using JSNet.Utils;
 using Overlayer.Core;
@@ -12,6 +15,7 @@ using Overlayer.Unity;
 using Overlayer.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -25,6 +29,7 @@ namespace Overlayer.Scripting
         public static void Initialize()
         {
             InitializeWrapperAssembly();
+            alreadyExecutedScripts = new HashSet<string>();
             jsTypes = new Dictionary<Engine, Dictionary<string, TypeReference>>();
             harmony = new Harmony("Overlayer.Scripting.Impl");
             globalVariables = new Dictionary<string, object>();
@@ -32,12 +37,14 @@ namespace Overlayer.Scripting
         }
         public static void Release()
         {
+            apiMethods.RemoveAll(t => registeredCustomTags?.Contains(t.Item1.Name) ?? false);
             registeredCustomTags?.ForEach(TagManager.RemoveTag);
             registeredCustomTags = null;
             globalVariables = null;
             harmony?.UnpatchAll(harmony.Id);
             harmony = null;
             jsTypes = null;
+            alreadyExecutedScripts = null;
             DisposeWrapperAssembly();
         }
         public static void Reload()
@@ -46,14 +53,39 @@ namespace Overlayer.Scripting
             Initialize();
         }
         #region Impl APIs
-        [Api("use", Comment = new string[]
+        [Api("use")]
+        public static bool Use(Engine engine, params string[] tags)
         {
-            "Send To Overlayer That These Tags Are Used (Lock Patch)"
-        })]
-        public static void Use(params string[] tags)
-        {
+            bool result = true;
             for (int i = 0; i < tags.Length; i++)
-                LazyPatchManager.PatchAll(tags[i]).ForEach(lp => lp.Locked = true);
+            {
+                var tag = tags[i];  
+                if (TagManager.GetTag(tag) != null)
+                    LazyPatchManager.PatchAll(tag).ForEach(lp => lp.Locked = true);
+                else
+                {
+                    if (!File.Exists(tag))
+                        tag = Path.Combine(Main.ScriptPath, tag);
+                    if (!File.Exists(tag))
+                    {
+                        result = false;
+                        continue;
+                    }
+
+                    var name = Path.GetFileName(tag);
+                    alreadyExecutedScripts.Add(tag);
+
+                    var time = MiscUtils.MeasureTime(() =>
+                    {
+                        var result = Script.InterpretAPI(Main.JSApi, File.ReadAllText(tag));
+                        result.Exec();
+                        Main.JSApi.CombineInterpreter(engine);
+                        result.Dispose();
+                    });
+                    Main.Logger.Log($"Force Executed \"{name}\" Script Successfully. ({time.TotalMilliseconds}ms)");
+                }
+            }
+            return result;
         }
         [Api("resolveClrType")]
         public static Type ResolveType(string clrType)
@@ -105,7 +137,10 @@ namespace Overlayer.Scripting
         public static object SetGlobalVariable(string name, object obj)
         {
             if (obj is FunctionInstance fi)
-                obj = new FIWrapper(fi);
+            {
+                FIWrapper wrapper = new FIWrapper(fi);
+                obj = (CallWrapper)wrapper.Call;
+            }
             return globalVariables[name] = obj;
         }
         [Api("registerTag")]
@@ -113,8 +148,10 @@ namespace Overlayer.Scripting
         {
             if (!(func is FunctionInstance fi)) return;
             FIWrapper wrapper = new FIWrapper(fi);
-            TagManager.SetTag(new OverlayerTag(GenerateTagWrapper(wrapper), new Tags.Attributes.TagAttribute(name) { NotPlaying = notplaying }));
+            var tagWrapper = GenerateTagWrapper(wrapper);
+            TagManager.SetTag(new OverlayerTag(tagWrapper, new Tags.Attributes.TagAttribute(name) { NotPlaying = notplaying }));
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
+            apiMethods.Add((new ApiAttribute(name), tagWrapper));
             registeredCustomTags.Add(name);
             Main.Logger.Log($"Registered Tag \"{name}\" (NotPlaying:{notplaying})");
         }
@@ -243,6 +280,22 @@ namespace Overlayer.Scripting
         public static bool IsAutoEnabled() => RDC.auto;
         [Api("isWeakAutoEnabled")]
         public static bool IsWeakAutoEnabled() => RDC.useOldAuto;
+        [Api("ease", RequireTypes = new Type[] { typeof(Ease) })]
+        public static float EasedValue(Ease ease, float lifetime) => DOVirtual.EasedValue(0, 1, lifetime, ease);
+        [Api("easeColor", RequireTypes = new Type[] { typeof(Color) })]
+        public static Color EasedColor(Color color, Ease ease, float lifetime) => color * DOVirtual.EasedValue(0, 1, lifetime, ease);
+        [Api("easeColorFromTo")]
+        public static Color EasedColor(Color from, Color to, Ease ease, float lifetime) => from + ((to - from) * DOVirtual.EasedValue(0, 1, lifetime, ease));
+        [Api("colorFromHexRGB")]
+        public static Color FromHexRGB(string rgbHex) => ColorUtility.TryParseHtmlString('#' + rgbHex, out var color) ? color : Color.clear;
+        [Api("colorFromHexRGBA")]
+        public static Color FromHexRGBA(string rgbaHex) => ColorUtility.TryParseHtmlString('#' + rgbaHex, out var color) ? color : Color.clear;
+        [Api("colorToHexRGB")]
+        public static string ToHexRGB(Color color) => ColorUtility.ToHtmlStringRGB(color);
+        [Api("colorToHexRGBA")]
+        public static string ToHexRGBA(Color color) => ColorUtility.ToHtmlStringRGBA(color);
+        [Api("getTagValueSafe")]
+        public static string GetTagValueSafe(string tagName, params string[] args) => TagManager.GetTag(tagName)?.Tag.Getter.Invoke(null, args)?.ToString() ?? "";
         [Api(RequireTypes = new[] { typeof(KeyCode) })]
         public class On
         {
@@ -364,7 +417,15 @@ namespace Overlayer.Scripting
             #endregion
         }
         #endregion
+        public static void SetValue(this ObjectInstance objInst, string key, object value)
+        {
+            var obj = value is Type t
+                    ? TypeReference.CreateTypeReference(objInst.Engine, t)
+                    : JsValue.FromObject(objInst.Engine, value);
+            objInst.Set(key, obj);
+        }
         static Harmony harmony;
+        public static HashSet<string> alreadyExecutedScripts;
         public static List<string> registeredCustomTags;
         public static Dictionary<string, object> globalVariables;
         static Dictionary<Engine, Dictionary<string, TypeReference>> jsTypes;
@@ -382,6 +443,7 @@ namespace Overlayer.Scripting
         static MethodInfo call_fi = typeof(FIWrapper).GetMethod("Call");
         static MethodInfo call_udfi = typeof(UDFWrapper).GetMethod("Call");
         static MethodInfo transpilerAdapter = typeof(JSUtils).GetMethod("TranspilerAdapter", AccessTools.all);
+        internal static List<(ApiAttribute, MethodInfo)> apiMethods;
         static AssemblyBuilder ApiAssembly;
         static System.Reflection.Emit.ModuleBuilder ApiModule;
         static MethodInfo GenerateTagWrapper(FIWrapper wrapper)
