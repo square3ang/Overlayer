@@ -44,7 +44,7 @@ namespace Overlayer.Core
                 float eased = DOVirtual.EasedValue(0, 1, (float)(elapsed / Speed), Ease);
                 return Invert ? 1 - eased : eased;
             }
-            return 1;
+            return Invert ? 0 : 1;
         }
         public double GetPrevValue(string id) => pvalueCache.TryGetValue(id, out var vCache) ? vCache : Value;
     }
