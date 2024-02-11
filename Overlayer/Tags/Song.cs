@@ -4,17 +4,17 @@ namespace Overlayer.Tags
 {
     public static class Song
     {
-        [Tag()]
+        [Tag]
         public static int CurMinute;
-        [Tag()]
+        [Tag]
         public static int CurSecond;
-        [Tag()]
+        [Tag]
         public static int CurMilliSecond;
-        [Tag()]
+        [Tag]
         public static int TotalMinute;
-        [Tag()]
+        [Tag]
         public static int TotalSecond;
-        [Tag()]
+        [Tag]
         public static int TotalMilliSecond;
         public static void Reset()
         {

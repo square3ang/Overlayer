@@ -12,47 +12,47 @@ namespace Overlayer.Tags
         public static HitMargin Strict;
         [Tag("CHitRaw")]
         public static HitMargin Current;
-        [Tag()]
+        [Tag]
         public static string LHit() => RDString.Get("HitMargin." + Lenient);
-        [Tag()]
+        [Tag]
         public static string NHit() => RDString.Get("HitMargin." + Normal);
-        [Tag()]
+        [Tag]
         public static string SHit() => RDString.Get("HitMargin." + Strict);
-        [Tag()]
+        [Tag]
         public static string CHit() => RDString.Get("HitMargin." + Current);
-        [Tag()]
+        [Tag]
         public static double LTE, LVE, LEP, LP, LLP, LVL, LTL;
-        [Tag()]
+        [Tag]
         public static double NTE, NVE, NEP, NP, NLP, NVL, NTL;
-        [Tag()]
+        [Tag]
         public static double STE, SVE, SEP, SP, SLP, SVL, STL;
-        [Tag()]
+        [Tag]
         public static double CTE, CVE, CEP, CP, CLP, CVL, CTL;
-        [Tag()]
+        [Tag]
         public static double LFast() => LTE + LVE + LEP;
-        [Tag()]
+        [Tag]
         public static double NFast() => NTE + NVE + NEP;
-        [Tag()]
+        [Tag]
         public static double SFast() => STE + SVE + SEP;
-        [Tag()]
+        [Tag]
         public static double CFast() => CTE + CVE + CEP;
-        [Tag()]
+        [Tag]
         public static double LSlow() => LTL + LVL + LLP;
-        [Tag()]
+        [Tag]
         public static double NSlow() => NTL + NVL + NLP;
-        [Tag()]
+        [Tag]
         public static double SSlow() => STL + SVL + SLP;
-        [Tag()]
+        [Tag]
         public static double CSlow() => CTL + CVL + CLP;
-        [Tag()]
+        [Tag]
         public static double MissCount() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
-        [Tag()]
+        [Tag]
         public static double Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
-        [Tag()]
+        [Tag]
         public static double Multipress;
-        [Tag()]
+        [Tag]
         public static string Difficulty() => RDString.Get("enum.Difficulty." + GCS.difficulty);
-        [Tag()]
+        [Tag]
         public static string DifficultyStr() => GCS.difficulty.ToString();
         public static void Reset()
         {
