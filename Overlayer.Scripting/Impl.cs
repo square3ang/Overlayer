@@ -53,20 +53,17 @@ namespace Overlayer.Scripting
             Initialize();
         }
         #region Impl APIs
-        [Api("verifySafety", Comment = new string[]
+        [Api("ignoreSafety", Comment = new string[]
         {
-            "Verify Safety For Pure Adofai Playing",
-            "This Function Blocks Executing When This Script Is Not Safety"
+            "Ignore Safety Check",
+            "!!Warning!! This Function Breaks Full Safety!"
         })]
-        public static bool VerifySafety()
+        public static void IgnoreSafety()
         {
             if (!IsFirstCall)
-                throw new InvalidOperationException("This Function Was Not Called At First!");
-            Impl_Verify.Verified = true;
-            Script.InterpretAPI(Main.JSVerifyApi, Main.CurrentExecutingScript).Exec();
-            if (!Impl_Verify.Verified)
-                throw new NotSafeScriptException($"This Script Is Not Safe! {Path.GetFileName(Main.CurrentExecutingScriptPath)}");
-            return Impl_Verify.Verified;
+                throw new InvalidOperationException("ignoreSafety Function Must Be Called At First!");
+            SetNotFirstCall();
+            ignoreSafety = true;
         }
         [Api("use")]
         public static bool Use(Engine engine, params string[] tags)
@@ -107,18 +104,21 @@ namespace Overlayer.Scripting
         public static Type ResolveType(string clrType)
         {
             SetNotFirstCall();
+            EnsureSafety("resolveClrType");
             return MiscUtils.TypeByName(clrType);
         }
         [Api("resolveClrMethod")]
         public static MethodInfo ResolveMethod(string clrType, string name)
         {
             SetNotFirstCall();
+            EnsureSafety("resolveClrMethod");
             return MiscUtils.TypeByName(clrType)?.GetMethod(name, (BindingFlags)15420);
         }
         [Api("resolve")]
         public static TypeReference Resolve(Engine engine, string clrType)
         {
             SetNotFirstCall();
+            EnsureSafety("resolve");
             if (jsTypes.TryGetValue(engine, out var dict))
                 if (dict.TryGetValue(clrType, out var t))
                     return t;
@@ -130,6 +130,7 @@ namespace Overlayer.Scripting
         public static string GetGenericClrTypeString(string genericType, string[] genericArgs)
         {
             SetNotFirstCall();
+            EnsureSafety("getClrGenericTypeName");
             string AggregateGenericArgs(Type[] types)
             {
                 StringBuilder sb = new StringBuilder();
@@ -189,6 +190,7 @@ namespace Overlayer.Scripting
         public static bool Prefix(string typeColonMethodName, JsValue patch)
         {
             SetNotFirstCall();
+            EnsureSafety("prefix");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
@@ -208,6 +210,7 @@ namespace Overlayer.Scripting
         public static bool Postfix(string typeColonMethodName, JsValue patch)
         {
             SetNotFirstCall();
+            EnsureSafety("postfix");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
@@ -227,6 +230,7 @@ namespace Overlayer.Scripting
         public static bool Transpiler(string typeColonMethodName, JsValue patch)
         {
             SetNotFirstCall();
+            EnsureSafety("transpiler");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
@@ -246,6 +250,7 @@ namespace Overlayer.Scripting
         public static bool PrefixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
             SetNotFirstCall();
+            EnsureSafety("prefixWithArgs");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
@@ -266,6 +271,7 @@ namespace Overlayer.Scripting
         public static bool PostfixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
             SetNotFirstCall();
+            EnsureSafety("postfixWithArgs");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
@@ -286,6 +292,7 @@ namespace Overlayer.Scripting
         public static bool TranspilerWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
             SetNotFirstCall();
+            EnsureSafety("transpilerWithArgs");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
@@ -511,16 +518,15 @@ namespace Overlayer.Scripting
             #endregion
         }
         #endregion
-        public static void SetValue(this ObjectInstance objInst, string key, object value)
+        public static void EnsureSafety(string caller)
         {
-            var obj = value is Type t
-                    ? TypeReference.CreateTypeReference(objInst.Engine, t)
-                    : JsValue.FromObject(objInst.Engine, value);
-            objInst.Set(key, obj);
+            if (!ignoreSafety)
+                throw new NotSafeScriptException($"Safety Error! Cannot Call '{caller}' Function Without Ignore Safety!");
         }
         public static void SetNotFirstCall() => IsFirstCall = false;
         static Harmony harmony;
         public static bool IsFirstCall = true;
+        public static bool ignoreSafety = false;
         public static HashSet<string> alreadyExecutedScripts;
         public static List<string> registeredCustomTags;
         public static Dictionary<string, object> globalVariables;

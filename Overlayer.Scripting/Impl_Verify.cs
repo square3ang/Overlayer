@@ -2,14 +2,11 @@
 using Jint;
 using Jint.Native;
 using Jint.Native.Function;
-using Jint.Runtime.Interop;
+using JSNet;
 using JSNet.API;
 using JSNet.Utils;
-using Overlayer.Core;
-using Overlayer.Tags;
-using Overlayer.Unity;
 using System;
-using System.Reflection;
+using System.Dynamic;
 using UnityEngine;
 
 namespace Overlayer.Scripting
@@ -17,20 +14,20 @@ namespace Overlayer.Scripting
     public static class Impl_Verify
     {
         [ThreadStatic]
-        public static bool Verified = false;
+        public static bool Verified = true;
         #region Impl APIs
-        [Api("verifySafety")]
-        public static bool VerifySafety() => false;
+        [Api("ignoreSafety")]
+        public static void IgnoreSafety() { }
         [Api("use")]
         public static bool Use(Engine engine, params string[] tags) => false;
         [Api("resolveClrType")]
-        public static Type ResolveType(string clrType) => SafetyCheckFail<Type>();
+        public static dynamic ResolveType(string clrType) => SafetyCheckFail();
         [Api("resolveClrMethod")]
-        public static MethodInfo ResolveMethod(string clrType, string name) => SafetyCheckFail<MethodInfo>();
+        public static dynamic ResolveMethod(string clrType, string name) => SafetyCheckFail();
         [Api("resolve")]
-        public static TypeReference Resolve(Engine engine, string clrType) => SafetyCheckFail<TypeReference>();
+        public static dynamic Resolve(Engine engine, string clrType) => SafetyCheckFail();
         [Api("getClrGenericTypeName")]
-        public static string GetGenericClrTypeString(string genericType, string[] genericArgs) => SafetyCheckFail(string.Empty);
+        public static dynamic GetGenericClrTypeString(string genericType, string[] genericArgs) => SafetyCheckFail();
         [Api("getGlobalVariable")]
         public static object GetGlobalVariable(string name) => 0;
         public delegate object CallWrapper(params object[] args);
@@ -46,17 +43,17 @@ namespace Overlayer.Scripting
         [Api("unregisterTag")]
         public static void UnregisterTag(string name) { }
         [Api("prefix")]
-        public static bool Prefix(string typeColonMethodName, JsValue patch) => SafetyCheckFail<bool>();
+        public static dynamic Prefix(string typeColonMethodName, JsValue patch) => SafetyCheckFail();
         [Api("postfix")]
-        public static bool Postfix(string typeColonMethodName, JsValue patch) => SafetyCheckFail<bool>();
+        public static dynamic Postfix(string typeColonMethodName, JsValue patch) => SafetyCheckFail();
         [Api("transpiler")]
-        public static bool Transpiler(string typeColonMethodName, JsValue patch) => SafetyCheckFail<bool>();
+        public static dynamic Transpiler(string typeColonMethodName, JsValue patch) => SafetyCheckFail();
         [Api("prefixWithArgs")]
-        public static bool PrefixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch) => SafetyCheckFail<bool>();
+        public static dynamic PrefixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch) => SafetyCheckFail();
         [Api("postfixWithArgs")]
-        public static bool PostfixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch) => SafetyCheckFail<bool>();
+        public static dynamic PostfixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch) => SafetyCheckFail();
         [Api("transpilerWithArgs")]
-        public static bool TranspilerWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch) => SafetyCheckFail<bool>();
+        public static dynamic TranspilerWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch) => SafetyCheckFail();
         [Api("isNoFailMode")]
         public static bool IsNoFailMode() => false;
         [Api("getLanguage", RequireTypes = new[] { typeof(SystemLanguage) })]
@@ -138,10 +135,18 @@ namespace Overlayer.Scripting
             #endregion
         }
         #endregion
-        public static T SafetyCheckFail<T>(T defaultValue = default)
+        public static bool IsSafe(string expr)
+        {
+            Verified = true;
+            try { Script.InterpretAPI(Main.JSVerifyApi, expr).Exec(); }
+            catch { return false; }
+            return Verified;
+        }
+        public static dynamic SafetyCheckFail()
         {
             Verified = false;
-            return defaultValue;
+            throw new NotSafeScriptException();
+            //return new DummyObject();
         }
         public static void CheckSafety(JsValue func)
         {
@@ -151,6 +156,65 @@ namespace Overlayer.Scripting
                     new FIWrapper(fi).CallRaw();
             }
             catch { }
+        }
+        public class DummyObject : DynamicObject
+        {
+            public override bool TryBinaryOperation(BinaryOperationBinder binder, object arg, out object result)
+            {
+                result = new DummyObject();
+                return true;
+            }
+            public override bool TryConvert(ConvertBinder binder, out object result)
+            {
+                result = new DummyObject();
+                return true;
+            }
+            public override bool TryCreateInstance(CreateInstanceBinder binder, object[] args, out object result)
+            {
+                result = new DummyObject();
+                return true;
+            }
+            public override bool TryDeleteIndex(DeleteIndexBinder binder, object[] indexes)
+            {
+                return true;
+            }
+            public override bool TryDeleteMember(DeleteMemberBinder binder)
+            {
+                return true;
+            }
+            public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
+            {
+                result = new DummyObject();
+                return true;
+            }
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                result = new DummyObject();
+                return true;
+            }
+            public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
+            {
+                result = new DummyObject();
+                return true;
+            }
+            public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
+            {
+                result = new DummyObject();
+                return true;
+            }
+            public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+            {
+                return true;
+            }
+            public override bool TrySetMember(SetMemberBinder binder, object value)
+            {
+                return true;
+            }
+            public override bool TryUnaryOperation(UnaryOperationBinder binder, out object result)
+            {
+                result = new DummyObject();
+                return true;
+            }
         }
     }
 }
