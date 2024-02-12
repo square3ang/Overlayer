@@ -164,8 +164,6 @@ namespace Overlayer.Scripting
         }
         public static void BeginScript(bool sandbox = false)
         {
-            Impl.IsFirstCall = true;
-            Impl.ignoreSafety = false;
             if (sandbox)
             {
                 CurrentExecutingScript = SandboxJSCode;
@@ -175,7 +173,7 @@ namespace Overlayer.Scripting
         }
         public static void EndScript()
         {
-            IsFullySafe &= !Impl.ignoreSafety || CurrentExecutingScriptIsSafe;
+            IsFullySafe &= CurrentExecutingScriptIsSafe;
             Logger.Log($"IsFullySafe:{IsFullySafe}");
             CurrentExecutingScript = null;
             CurrentExecutingScriptPath = null;

@@ -3,7 +3,6 @@ using HarmonyLib;
 using Jint;
 using Jint.Native;
 using Jint.Native.Function;
-using Jint.Native.Object;
 using Jint.Runtime.Interop;
 using JSNet;
 using JSNet.API;
@@ -26,6 +25,11 @@ namespace Overlayer.Scripting
 {
     public static class Impl
     {
+        public class Context
+        {
+            public bool isFirstCall = true;
+            public bool ignoreSafety = false;
+        }
         public static void Initialize()
         {
             InitializeWrapperAssembly();
@@ -58,17 +62,17 @@ namespace Overlayer.Scripting
             "Ignore Safety Check",
             "!!Warning!! This Function Breaks Full Safety!"
         })]
-        public static void IgnoreSafety()
+        public static void IgnoreSafety(Engine engine)
         {
-            if (!IsFirstCall)
+            if (!engine.GetContext<Context>().isFirstCall)
                 throw new InvalidOperationException("ignoreSafety Function Must Be Called At First!");
-            SetNotFirstCall();
-            ignoreSafety = true;
+            engine.GetContext<Context>().ignoreSafety = true;
+            SetNotFirstCall(engine);
         }
         [Api("use")]
         public static bool Use(Engine engine, params string[] tags)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             bool result = true;
             for (int i = 0; i < tags.Length; i++)
             {
@@ -101,24 +105,24 @@ namespace Overlayer.Scripting
             return result;
         }
         [Api("resolveClrType")]
-        public static Type ResolveType(string clrType)
+        public static Type ResolveType(Engine engine, string clrType)
         {
-            SetNotFirstCall();
-            EnsureSafety("resolveClrType");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "resolveClrType");
             return MiscUtils.TypeByName(clrType);
         }
         [Api("resolveClrMethod")]
-        public static MethodInfo ResolveMethod(string clrType, string name)
+        public static MethodInfo ResolveMethod(Engine engine, string clrType, string name)
         {
-            SetNotFirstCall();
-            EnsureSafety("resolveClrMethod");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "resolveClrMethod");
             return MiscUtils.TypeByName(clrType)?.GetMethod(name, (BindingFlags)15420);
         }
         [Api("resolve")]
         public static TypeReference Resolve(Engine engine, string clrType)
         {
-            SetNotFirstCall();
-            EnsureSafety("resolve");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "resolve");
             if (jsTypes.TryGetValue(engine, out var dict))
                 if (dict.TryGetValue(clrType, out var t))
                     return t;
@@ -127,10 +131,10 @@ namespace Overlayer.Scripting
             return dict[clrType] = TypeReference.CreateTypeReference(engine, MiscUtils.TypeByName(clrType));
         }
         [Api("getClrGenericTypeName")]
-        public static string GetGenericClrTypeString(string genericType, string[] genericArgs)
+        public static string GetGenericClrTypeString(Engine engine, string genericType, string[] genericArgs)
         {
-            SetNotFirstCall();
-            EnsureSafety("getClrGenericTypeName");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "getClrGenericTypeName");
             string AggregateGenericArgs(Type[] types)
             {
                 StringBuilder sb = new StringBuilder();
@@ -149,16 +153,16 @@ namespace Overlayer.Scripting
             return $"{t?.FullName}[{AggregateGenericArgs(args.ToArray())}]";
         }
         [Api("getGlobalVariable")]
-        public static object GetGlobalVariable(string name)
+        public static object GetGlobalVariable(Engine engine, string name)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return globalVariables.TryGetValue(name, out var value) ? value : null;
         }
         public delegate object CallWrapper(params object[] args);
         [Api("setGlobalVariable")]
-        public static object SetGlobalVariable(string name, object obj)
+        public static object SetGlobalVariable(Engine engine, string name, object obj)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             if (obj is FunctionInstance fi)
             {
                 FIWrapper wrapper = new FIWrapper(fi);
@@ -167,9 +171,9 @@ namespace Overlayer.Scripting
             return globalVariables[name] = obj;
         }
         [Api("registerTag")]
-        public static void RegisterTag(string name, JsValue func, bool notplaying)
+        public static void RegisterTag(Engine engine, string name, JsValue func, bool notplaying)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             if (!(func is FunctionInstance fi)) return;
             FIWrapper wrapper = new FIWrapper(fi);
             var tagWrapper = GenerateTagWrapper(wrapper);
@@ -180,17 +184,17 @@ namespace Overlayer.Scripting
             Main.Logger.Log($"Registered Tag \"{name}\" (NotPlaying:{notplaying})");
         }
         [Api("unregisterTag")]
-        public static void UnregisterTag(string name)
+        public static void UnregisterTag(Engine engine, string name)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             TagManager.RemoveTag(name);
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
         }
         [Api("prefix")]
-        public static bool Prefix(string typeColonMethodName, JsValue patch)
+        public static bool Prefix(Engine engine, string typeColonMethodName, JsValue patch)
         {
-            SetNotFirstCall();
-            EnsureSafety("prefix");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "prefix");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
@@ -207,10 +211,10 @@ namespace Overlayer.Scripting
             return true;
         }
         [Api("postfix")]
-        public static bool Postfix(string typeColonMethodName, JsValue patch)
+        public static bool Postfix(Engine engine, string typeColonMethodName, JsValue patch)
         {
-            SetNotFirstCall();
-            EnsureSafety("postfix");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "postfix");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
@@ -227,10 +231,10 @@ namespace Overlayer.Scripting
             return true;
         }
         [Api("transpiler")]
-        public static bool Transpiler(string typeColonMethodName, JsValue patch)
+        public static bool Transpiler(Engine engine, string typeColonMethodName, JsValue patch)
         {
-            SetNotFirstCall();
-            EnsureSafety("transpiler");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "transpiler");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
@@ -247,10 +251,10 @@ namespace Overlayer.Scripting
             return true;
         }
         [Api("prefixWithArgs")]
-        public static bool PrefixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
+        public static bool PrefixWithArgs(Engine engine, string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
-            SetNotFirstCall();
-            EnsureSafety("prefixWithArgs");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "prefixWithArgs");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
@@ -268,10 +272,10 @@ namespace Overlayer.Scripting
             return true;
         }
         [Api("postfixWithArgs")]
-        public static bool PostfixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
+        public static bool PostfixWithArgs(Engine engine, string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
-            SetNotFirstCall();
-            EnsureSafety("postfixWithArgs");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "postfixWithArgs");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
@@ -289,10 +293,10 @@ namespace Overlayer.Scripting
             return true;
         }
         [Api("transpilerWithArgs")]
-        public static bool TranspilerWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
+        public static bool TranspilerWithArgs(Engine engine, string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
-            SetNotFirstCall();
-            EnsureSafety("transpilerWithArgs");
+            SetNotFirstCall(engine);
+            EnsureSafety(engine, "transpilerWithArgs");
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
@@ -310,75 +314,75 @@ namespace Overlayer.Scripting
             return true;
         }
         [Api("isNoFailMode")]
-        public static bool IsNoFailMode()
+        public static bool IsNoFailMode(Engine engine)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return scrController.instance?.noFail ?? false;
         }
         [Api("getLanguage", RequireTypes = new[] { typeof(SystemLanguage) })]
-        public static SystemLanguage GetLanguage()
+        public static SystemLanguage GetLanguage(Engine engine)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return RDString.language;
         }
         [Api("isAutoEnabled")]
-        public static bool IsAutoEnabled()
+        public static bool IsAutoEnabled(Engine engine)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return RDC.auto;
         }
         [Api("isWeakAutoEnabled")]
-        public static bool IsWeakAutoEnabled()
+        public static bool IsWeakAutoEnabled(Engine engine)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return RDC.useOldAuto;
         }
         [Api("ease", RequireTypes = new Type[] { typeof(Ease) })]
-        public static float EasedValue(Ease ease, float lifetime)
+        public static float EasedValue(Engine engine, Ease ease, float lifetime)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return DOVirtual.EasedValue(0, 1, lifetime, ease);
         }
         [Api("easeColor", RequireTypes = new Type[] { typeof(Color) })]
-        public static Color EasedColor(Color color, Ease ease, float lifetime)
+        public static Color EasedColor(Engine engine, Color color, Ease ease, float lifetime)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return color * DOVirtual.EasedValue(0, 1, lifetime, ease);
         }
         [Api("easeColorFromTo")]
-        public static Color EasedColor(Color from, Color to, Ease ease, float lifetime)
+        public static Color EasedColor(Engine engine, Color from, Color to, Ease ease, float lifetime)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return from + ((to - from) * DOVirtual.EasedValue(0, 1, lifetime, ease));
         }
         [Api("colorFromHexRGB")]
-        public static Color FromHexRGB(string rgbHex)
+        public static Color FromHexRGB(Engine engine, string rgbHex)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return ColorUtility.TryParseHtmlString('#' + rgbHex, out var color) ? color : Color.clear;
         }
         [Api("colorFromHexRGBA")]
-        public static Color FromHexRGBA(string rgbaHex)
+        public static Color FromHexRGBA(Engine engine, string rgbaHex)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return ColorUtility.TryParseHtmlString('#' + rgbaHex, out var color) ? color : Color.clear;
         }
         [Api("colorToHexRGB")]
-        public static string ToHexRGB(Color color)
+        public static string ToHexRGB(Engine engine, Color color)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return ColorUtility.ToHtmlStringRGB(color);
         }
         [Api("colorToHexRGBA")]
-        public static string ToHexRGBA(Color color)
+        public static string ToHexRGBA(Engine engine, Color color)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return ColorUtility.ToHtmlStringRGBA(color);
         }
         [Api("getTagValueSafe")]
-        public static string GetTagValueSafe(string tagName, params string[] args)
+        public static string GetTagValueSafe(Engine engine, string tagName, params string[] args)
         {
-            SetNotFirstCall();
+            SetNotFirstCall(engine);
             return TagManager.GetTag(tagName)?.Tag.Getter.Invoke(null, args)?.ToString() ?? "";
         }
         [Api(RequireTypes = new[] { typeof(KeyCode) })]
@@ -388,27 +392,27 @@ namespace Overlayer.Scripting
             {
                 "On ADOFAI Rewind (Level Start, Scene Moved, etc..)"
             })]
-            public static void Rewind(JsValue func)
+            public static void Rewind(Engine engine, JsValue func)
             {
-                SetNotFirstCall();
-                Postfix("scrController:Awake_Rewind", func);
+                SetNotFirstCall(engine);
+                Postfix(engine, "scrController:Awake_Rewind", func);
             }
             [Api("hit", Comment = new[]
             {
                 "On Tile Hit"
             })]
-            public static void Hit(JsValue func)
+            public static void Hit(Engine engine, JsValue func)
             {
-                SetNotFirstCall();
-                Postfix("scrController:Hit", func);
+                SetNotFirstCall(engine);
+                Postfix(engine, "scrController:Hit", func);
             }
             [Api("dead", Comment = new[]
              {
                 "On Dead"
             })]
-            public static void Dead(JsValue func)
+            public static void Dead(Engine engine, JsValue func)
             {
-                SetNotFirstCall();
+                SetNotFirstCall(engine);
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:FailAction"), new Action<scrController>(__instance =>
@@ -420,9 +424,9 @@ namespace Overlayer.Scripting
              {
                 "On Fail"
             })]
-            public static void Fail(JsValue func)
+            public static void Fail(Engine engine, JsValue func)
             {
-                SetNotFirstCall();
+                SetNotFirstCall(engine);
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:FailAction"), new Action<scrController>(__instance =>
@@ -434,9 +438,9 @@ namespace Overlayer.Scripting
              {
                 "On Clear"
             })]
-            public static void Clear(JsValue func)
+            public static void Clear(Engine engine, JsValue func)
             {
-                SetNotFirstCall();
+                SetNotFirstCall(engine);
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:OnLandOnPortal"), new Action<scrController>(__instance =>
@@ -449,9 +453,9 @@ namespace Overlayer.Scripting
             {
                 "On Any Key Pressed"
             })]
-            public static void AnyKey(JsValue func)
+            public static void AnyKey(Engine engine, JsValue func)
             {
-                SetNotFirstCall();
+                SetNotFirstCall(engine);
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -463,9 +467,9 @@ namespace Overlayer.Scripting
             {
                 "On Any Key Down"
             })]
-            public static void AnyKeyDown(JsValue func)
+            public static void AnyKeyDown(Engine engine, JsValue func)
             {
-                SetNotFirstCall();
+                SetNotFirstCall(engine);
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -477,9 +481,9 @@ namespace Overlayer.Scripting
             {
                 "On Key Pressed"
             })]
-            public static void Key(KeyCode key, JsValue func)
+            public static void Key(Engine engine, KeyCode key, JsValue func)
             {
-                SetNotFirstCall();
+                SetNotFirstCall(engine);
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -491,9 +495,9 @@ namespace Overlayer.Scripting
             {
                 "On Key Up"
             })]
-            public static void KeyUp(KeyCode key, JsValue func)
+            public static void KeyUp(Engine engine, KeyCode key, JsValue func)
             {
-                SetNotFirstCall();
+                SetNotFirstCall(engine);
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -505,9 +509,9 @@ namespace Overlayer.Scripting
             {
                 "On Key Down"
             })]
-            public static void KeyDown(KeyCode key, JsValue func)
+            public static void KeyDown(Engine engine, KeyCode key, JsValue func)
             {
-                SetNotFirstCall();
+                SetNotFirstCall(engine);
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -518,15 +522,13 @@ namespace Overlayer.Scripting
             #endregion
         }
         #endregion
-        public static void EnsureSafety(string caller)
+        public static void EnsureSafety(Engine engine, string caller)
         {
-            if (!ignoreSafety)
+            if (!engine.GetContext<Context>().ignoreSafety)
                 throw new NotSafeScriptException($"Safety Error! Cannot Call '{caller}' Function Without Ignore Safety!");
         }
-        public static void SetNotFirstCall() => IsFirstCall = false;
+        public static void SetNotFirstCall(Engine engine) => engine.GetContext<Context>().isFirstCall = false;
         static Harmony harmony;
-        public static bool IsFirstCall = true;
-        public static bool ignoreSafety = false;
         public static HashSet<string> alreadyExecutedScripts;
         public static List<string> registeredCustomTags;
         public static Dictionary<string, object> globalVariables;
