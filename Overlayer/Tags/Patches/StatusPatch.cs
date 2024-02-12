@@ -26,15 +26,18 @@ namespace Overlayer.Tags.Patches
             {
                 var controller = scrController.instance;
                 if (controller && controller.currFloor.freeroam) return;
-                if (__result == HitMargin.Perfect) Status.Combo++;
-                else Status.Combo = 0;
-                var l = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Lenient, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
-                var n = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Normal, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
-                var s = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Strict, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
-                HitPatch.JudgementTagPatch.FixMargin(controller, ref l);
-                HitPatch.JudgementTagPatch.FixMargin(controller, ref n);
-                HitPatch.JudgementTagPatch.FixMargin(controller, ref s);
-                if (!HitPatch.JudgementTagPatch.IsSafe(controller)) SetScores(l, n, s, __result);
+                if (!HitPatch.JudgementTagPatch.IsSafe(controller))
+                {
+                    if (__result == HitMargin.Perfect) Status.Combo++;
+                    else Status.Combo = 0;
+                    var l = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Lenient, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
+                    var n = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Normal, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
+                    var s = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Strict, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
+                    HitPatch.JudgementTagPatch.FixMargin(controller, ref l);
+                    HitPatch.JudgementTagPatch.FixMargin(controller, ref n);
+                    HitPatch.JudgementTagPatch.FixMargin(controller, ref s);
+                    SetScores(l, n, s, __result);
+                }
             }
             private static void SetScores(HitMargin l, HitMargin n, HitMargin s, HitMargin cur)
             {
