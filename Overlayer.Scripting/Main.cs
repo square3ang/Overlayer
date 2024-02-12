@@ -20,9 +20,13 @@ namespace Overlayer.Scripting
         public static string ScriptPath => Path.Combine(Mod.Path, "Scripts");
         public static Assembly Assembly { get; private set; }
         public static bool ScriptsRunning { get; private set; }
+        public static string CurrentExecutingScript { get; private set; }
+        public static string CurrentExecutingScriptPath { get; private set; }
+        public static bool IsFullySafety = true;
         public static ModEntry Mod { get; private set; }
         public static ModLogger Logger { get; private set; }
         public static Api JSApi { get; private set; }
+        public static Api JSVerifyApi { get; private set; }
         public static void Load(ModEntry modEntry)
         {
             Mod = modEntry;
@@ -39,6 +43,10 @@ namespace Overlayer.Scripting
                 JSApi = new Api();
                 Impl.apiMethods = apiMethodsField.GetValue(JSApi) as List<(ApiAttribute, MethodInfo)>;
                 JSApi.RegisterType(typeof(Impl));
+
+                JSVerifyApi = new Api();
+                JSVerifyApi.RegisterType(typeof(Impl_Verify));
+
                 TagManager.Load(typeof(Expression));
                 foreach (var tag in TagManager.All)
                 {
@@ -74,9 +82,11 @@ namespace Overlayer.Scripting
                 Exception e;
                 MiscUtils.ExecuteSafe(() =>
                 {
+                    Impl_Verify.Verified = false;
                     prevScript = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(JSApi, SandboxJSCode), out e);
                     prevScript?.Exec();
                     SandboxResult = e?.ToString() ?? "Success";
+                    if (e == null) IsFullySafety &= Impl_Verify.Verified;
                 }, out e);
                 if (e != null) SandboxResult = e.ToString();
             }
@@ -85,9 +95,11 @@ namespace Overlayer.Scripting
                 Exception e;
                 MiscUtils.ExecuteSafe(() =>
                 {
+                    Impl_Verify.Verified = false;
                     prevScript = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(JSApi, SandboxJSCode), out e);
                     var result = prevScript?.Eval();
                     SandboxResult = e?.ToString() ?? result?.ToString() ?? "null";
+                    if (e == null) IsFullySafety &= Impl_Verify.Verified;
                 }, out e);
                 if (e != null) SandboxResult = e.ToString();
             }
@@ -118,24 +130,29 @@ namespace Overlayer.Scripting
                     continue;
                 if (nameWithoutExt.EndsWith("_Proxy")) continue;
                 if (nameWithoutExt.EndsWith("_Compilable")) continue;
-                var name = Path.GetFileName(script);
                 if (Impl.alreadyExecutedScripts.Contains(script)) continue;
-                await RunScript(name, File.ReadAllText(script));
+                await RunScript(script, File.ReadAllText(script));
             }
             ScriptsRunning = false;
         }
-        public static async Task<bool> RunScript(string name, string script)
+        public static async Task<bool> RunScript(string path, string script)
         {
             return await Task.Run(() =>
             {
+                string name = Path.GetFileName(path);
                 try
                 {
+                    Impl.IsFirstCall = true;
+                    CurrentExecutingScript = script;
+                    CurrentExecutingScriptPath = path;
+                    Impl_Verify.Verified = false;
                     var time = MiscUtils.MeasureTime(() =>
                     {
                         var result = Script.InterpretAPI(JSApi, script);
                         result.Exec();
                         result.Dispose();
                     });
+                    IsFullySafety &= Impl_Verify.Verified;
                     Logger.Log($"Executed \"{name}\" Script Successfully. ({time.TotalMilliseconds}ms)");
                     return true;
                 }

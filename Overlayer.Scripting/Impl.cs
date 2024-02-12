@@ -53,9 +53,25 @@ namespace Overlayer.Scripting
             Initialize();
         }
         #region Impl APIs
+        [Api("verifySafety", Comment = new string[]
+        {
+            "Verify Safety For Pure Adofai Playing",
+            "This Function Blocks Executing When This Script Is Not Safety"
+        })]
+        public static bool VerifySafety()
+        {
+            if (!IsFirstCall)
+                throw new InvalidOperationException("This Function Was Not Called At First!");
+            Impl_Verify.Verified = true;
+            Script.InterpretAPI(Main.JSVerifyApi, Main.CurrentExecutingScript).Exec();
+            if (!Impl_Verify.Verified)
+                throw new NotSafeScriptException($"This Script Is Not Safe! {Path.GetFileName(Main.CurrentExecutingScriptPath)}");
+            return Impl_Verify.Verified;
+        }
         [Api("use")]
         public static bool Use(Engine engine, params string[] tags)
         {
+            SetNotFirstCall();
             bool result = true;
             for (int i = 0; i < tags.Length; i++)
             {
@@ -90,16 +106,19 @@ namespace Overlayer.Scripting
         [Api("resolveClrType")]
         public static Type ResolveType(string clrType)
         {
+            SetNotFirstCall();
             return MiscUtils.TypeByName(clrType);
         }
         [Api("resolveClrMethod")]
         public static MethodInfo ResolveMethod(string clrType, string name)
         {
+            SetNotFirstCall();
             return MiscUtils.TypeByName(clrType)?.GetMethod(name, (BindingFlags)15420);
         }
         [Api("resolve")]
         public static TypeReference Resolve(Engine engine, string clrType)
         {
+            SetNotFirstCall();
             if (jsTypes.TryGetValue(engine, out var dict))
                 if (dict.TryGetValue(clrType, out var t))
                     return t;
@@ -110,6 +129,7 @@ namespace Overlayer.Scripting
         [Api("getClrGenericTypeName")]
         public static string GetGenericClrTypeString(string genericType, string[] genericArgs)
         {
+            SetNotFirstCall();
             string AggregateGenericArgs(Type[] types)
             {
                 StringBuilder sb = new StringBuilder();
@@ -130,12 +150,14 @@ namespace Overlayer.Scripting
         [Api("getGlobalVariable")]
         public static object GetGlobalVariable(string name)
         {
+            SetNotFirstCall();
             return globalVariables.TryGetValue(name, out var value) ? value : null;
         }
         public delegate object CallWrapper(params object[] args);
         [Api("setGlobalVariable")]
         public static object SetGlobalVariable(string name, object obj)
         {
+            SetNotFirstCall();
             if (obj is FunctionInstance fi)
             {
                 FIWrapper wrapper = new FIWrapper(fi);
@@ -146,6 +168,7 @@ namespace Overlayer.Scripting
         [Api("registerTag")]
         public static void RegisterTag(string name, JsValue func, bool notplaying)
         {
+            SetNotFirstCall();
             if (!(func is FunctionInstance fi)) return;
             FIWrapper wrapper = new FIWrapper(fi);
             var tagWrapper = GenerateTagWrapper(wrapper);
@@ -158,12 +181,14 @@ namespace Overlayer.Scripting
         [Api("unregisterTag")]
         public static void UnregisterTag(string name)
         {
+            SetNotFirstCall();
             TagManager.RemoveTag(name);
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
         }
         [Api("prefix")]
         public static bool Prefix(string typeColonMethodName, JsValue patch)
         {
+            SetNotFirstCall();
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
@@ -182,6 +207,7 @@ namespace Overlayer.Scripting
         [Api("postfix")]
         public static bool Postfix(string typeColonMethodName, JsValue patch)
         {
+            SetNotFirstCall();
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
@@ -200,6 +226,7 @@ namespace Overlayer.Scripting
         [Api("transpiler")]
         public static bool Transpiler(string typeColonMethodName, JsValue patch)
         {
+            SetNotFirstCall();
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
@@ -218,6 +245,7 @@ namespace Overlayer.Scripting
         [Api("prefixWithArgs")]
         public static bool PrefixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
+            SetNotFirstCall();
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
@@ -237,6 +265,7 @@ namespace Overlayer.Scripting
         [Api("postfixWithArgs")]
         public static bool PostfixWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
+            SetNotFirstCall();
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
@@ -256,6 +285,7 @@ namespace Overlayer.Scripting
         [Api("transpilerWithArgs")]
         public static bool TranspilerWithArgs(string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
+            SetNotFirstCall();
             if (!(patch is FunctionInstance func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
@@ -273,29 +303,77 @@ namespace Overlayer.Scripting
             return true;
         }
         [Api("isNoFailMode")]
-        public static bool IsNoFailMode() => scrController.instance?.noFail ?? false;
+        public static bool IsNoFailMode()
+        {
+            SetNotFirstCall();
+            return scrController.instance?.noFail ?? false;
+        }
         [Api("getLanguage", RequireTypes = new[] { typeof(SystemLanguage) })]
-        public static SystemLanguage GetLanguage() => RDString.language;
+        public static SystemLanguage GetLanguage()
+        {
+            SetNotFirstCall();
+            return RDString.language;
+        }
         [Api("isAutoEnabled")]
-        public static bool IsAutoEnabled() => RDC.auto;
+        public static bool IsAutoEnabled()
+        {
+            SetNotFirstCall();
+            return RDC.auto;
+        }
         [Api("isWeakAutoEnabled")]
-        public static bool IsWeakAutoEnabled() => RDC.useOldAuto;
+        public static bool IsWeakAutoEnabled()
+        {
+            SetNotFirstCall();
+            return RDC.useOldAuto;
+        }
         [Api("ease", RequireTypes = new Type[] { typeof(Ease) })]
-        public static float EasedValue(Ease ease, float lifetime) => DOVirtual.EasedValue(0, 1, lifetime, ease);
+        public static float EasedValue(Ease ease, float lifetime)
+        {
+            SetNotFirstCall();
+            return DOVirtual.EasedValue(0, 1, lifetime, ease);
+        }
         [Api("easeColor", RequireTypes = new Type[] { typeof(Color) })]
-        public static Color EasedColor(Color color, Ease ease, float lifetime) => color * DOVirtual.EasedValue(0, 1, lifetime, ease);
+        public static Color EasedColor(Color color, Ease ease, float lifetime)
+        {
+            SetNotFirstCall();
+            return color * DOVirtual.EasedValue(0, 1, lifetime, ease);
+        }
         [Api("easeColorFromTo")]
-        public static Color EasedColor(Color from, Color to, Ease ease, float lifetime) => from + ((to - from) * DOVirtual.EasedValue(0, 1, lifetime, ease));
+        public static Color EasedColor(Color from, Color to, Ease ease, float lifetime)
+        {
+            SetNotFirstCall();
+            return from + ((to - from) * DOVirtual.EasedValue(0, 1, lifetime, ease));
+        }
         [Api("colorFromHexRGB")]
-        public static Color FromHexRGB(string rgbHex) => ColorUtility.TryParseHtmlString('#' + rgbHex, out var color) ? color : Color.clear;
+        public static Color FromHexRGB(string rgbHex)
+        {
+            SetNotFirstCall();
+            return ColorUtility.TryParseHtmlString('#' + rgbHex, out var color) ? color : Color.clear;
+        }
         [Api("colorFromHexRGBA")]
-        public static Color FromHexRGBA(string rgbaHex) => ColorUtility.TryParseHtmlString('#' + rgbaHex, out var color) ? color : Color.clear;
+        public static Color FromHexRGBA(string rgbaHex)
+        {
+            SetNotFirstCall();
+            return ColorUtility.TryParseHtmlString('#' + rgbaHex, out var color) ? color : Color.clear;
+        }
         [Api("colorToHexRGB")]
-        public static string ToHexRGB(Color color) => ColorUtility.ToHtmlStringRGB(color);
+        public static string ToHexRGB(Color color)
+        {
+            SetNotFirstCall();
+            return ColorUtility.ToHtmlStringRGB(color);
+        }
         [Api("colorToHexRGBA")]
-        public static string ToHexRGBA(Color color) => ColorUtility.ToHtmlStringRGBA(color);
+        public static string ToHexRGBA(Color color)
+        {
+            SetNotFirstCall();
+            return ColorUtility.ToHtmlStringRGBA(color);
+        }
         [Api("getTagValueSafe")]
-        public static string GetTagValueSafe(string tagName, params string[] args) => TagManager.GetTag(tagName)?.Tag.Getter.Invoke(null, args)?.ToString() ?? "";
+        public static string GetTagValueSafe(string tagName, params string[] args)
+        {
+            SetNotFirstCall();
+            return TagManager.GetTag(tagName)?.Tag.Getter.Invoke(null, args)?.ToString() ?? "";
+        }
         [Api(RequireTypes = new[] { typeof(KeyCode) })]
         public class On
         {
@@ -303,18 +381,27 @@ namespace Overlayer.Scripting
             {
                 "On ADOFAI Rewind (Level Start, Scene Moved, etc..)"
             })]
-            public static void Rewind(JsValue func) => Postfix("scrController:Awake_Rewind", func);
+            public static void Rewind(JsValue func)
+            {
+                SetNotFirstCall();
+                Postfix("scrController:Awake_Rewind", func);
+            }
             [Api("hit", Comment = new[]
             {
                 "On Tile Hit"
             })]
-            public static void Hit(JsValue func) => Postfix("scrController:Hit", func);
+            public static void Hit(JsValue func)
+            {
+                SetNotFirstCall();
+                Postfix("scrController:Hit", func);
+            }
             [Api("dead", Comment = new[]
              {
                 "On Dead"
             })]
             public static void Dead(JsValue func)
             {
+                SetNotFirstCall();
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:FailAction"), new Action<scrController>(__instance =>
@@ -328,6 +415,7 @@ namespace Overlayer.Scripting
             })]
             public static void Fail(JsValue func)
             {
+                SetNotFirstCall();
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:FailAction"), new Action<scrController>(__instance =>
@@ -341,6 +429,7 @@ namespace Overlayer.Scripting
             })]
             public static void Clear(JsValue func)
             {
+                SetNotFirstCall();
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:OnLandOnPortal"), new Action<scrController>(__instance =>
@@ -355,6 +444,7 @@ namespace Overlayer.Scripting
             })]
             public static void AnyKey(JsValue func)
             {
+                SetNotFirstCall();
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -368,6 +458,7 @@ namespace Overlayer.Scripting
             })]
             public static void AnyKeyDown(JsValue func)
             {
+                SetNotFirstCall();
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -381,6 +472,7 @@ namespace Overlayer.Scripting
             })]
             public static void Key(KeyCode key, JsValue func)
             {
+                SetNotFirstCall();
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -394,6 +486,7 @@ namespace Overlayer.Scripting
             })]
             public static void KeyUp(KeyCode key, JsValue func)
             {
+                SetNotFirstCall();
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -407,6 +500,7 @@ namespace Overlayer.Scripting
             })]
             public static void KeyDown(KeyCode key, JsValue func)
             {
+                SetNotFirstCall();
                 if (!(func is FunctionInstance fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
@@ -424,7 +518,9 @@ namespace Overlayer.Scripting
                     : JsValue.FromObject(objInst.Engine, value);
             objInst.Set(key, obj);
         }
+        public static void SetNotFirstCall() => IsFirstCall = false;
         static Harmony harmony;
+        public static bool IsFirstCall = true;
         public static HashSet<string> alreadyExecutedScripts;
         public static List<string> registeredCustomTags;
         public static Dictionary<string, object> globalVariables;
