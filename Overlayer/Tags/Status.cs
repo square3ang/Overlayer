@@ -1,6 +1,9 @@
 ﻿using ADOFAI;
 using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Overlayer.Tags
 {
@@ -26,6 +29,8 @@ namespace Overlayer.Tags
         [Tag]
         public static int Combo;
         [Tag]
+        public static int MaxCombo;
+        [Tag]
         public static int LScore;
         [Tag]
         public static int NScore;
@@ -35,10 +40,37 @@ namespace Overlayer.Tags
         public static int Score;
         [Tag]
         public static double BestProgress;
+        #region MarginCombo
+        [Tag]
+        public static int LMarginCombo(HitMargin margin) => Combos[(int)Difficulty.Lenient][(int)margin];
+        [Tag]
+        public static int NMarginCombo(HitMargin margin) => Combos[(int)Difficulty.Normal][(int)margin];
+        [Tag]
+        public static int SMarginCombo(HitMargin margin) => Combos[(int)Difficulty.Strict][(int)margin];
+        [Tag]
+        public static int MarginCombo(HitMargin margin) => Combos[(int)GCS.difficulty][(int)margin];
+        #endregion
+        #region MarginMaxCombo
+        [Tag]
+        public static int LMarginMaxCombo(HitMargin margin) => MaxCombos[(int)Difficulty.Lenient][(int)margin];
+        [Tag]
+        public static int NMarginMaxCombo(HitMargin margin) => MaxCombos[(int)Difficulty.Normal][(int)margin];
+        [Tag]
+        public static int SMarginMaxCombo(HitMargin margin) => MaxCombos[(int)Difficulty.Strict][(int)margin];
+        [Tag]
+        public static int MarginMaxCombo(HitMargin margin) => MaxCombos[(int)GCS.difficulty][(int)margin];
+        #endregion
+        public static int[][] Combos = new int[EnumHelper<Difficulty>.GetValues().Length][];
+        public static int[][] MaxCombos = new int[EnumHelper<Difficulty>.GetValues().Length][];
         public static void Reset()
         {
-            CurCheckPoint = TotalCheckPoints = Combo = LScore = NScore = SScore = Score = 0;
+            CurCheckPoint = TotalCheckPoints = Combo = MaxCombo = LScore = NScore = SScore = Score = 0;
             //BestProgress = 0;
+            int margins = EnumHelper<HitMargin>.GetValues().Length;
+            for (int i = 0; i < Combos.Length; i++)
+                Combos[i] = new int[margins];
+            for (int i = 0; i < MaxCombos.Length; i++)
+                MaxCombos[i] = new int[margins];
         }
     }
 }

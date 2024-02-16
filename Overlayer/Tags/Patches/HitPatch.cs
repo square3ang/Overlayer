@@ -16,6 +16,8 @@ namespace Overlayer.Tags.Patches
             "LHitRaw", "NHitRaw", "SHitRaw", "CHitRaw",
             nameof(Hit.LFast), nameof(Hit.NFast), nameof(Hit.SFast), nameof(Hit.CFast),
             nameof(Hit.LSlow), nameof(Hit.NSlow), nameof(Hit.SSlow), nameof(Hit.CSlow),
+            nameof(Hit.LMarginCombos), nameof(Hit.NMarginCombos), nameof(Hit.SMarginCombos), nameof(Hit.MarginCombos),
+            nameof(Hit.LMarginMaxCombos), nameof(Hit.NMarginMaxCombos), nameof(Hit.SMarginMaxCombos), nameof(Hit.MarginMaxCombos),
         })]
         public static class JudgementTagPatch
         {
@@ -36,6 +38,8 @@ namespace Overlayer.Tags.Patches
                     IncreaseCount(Difficulty.Normal, Hit.Normal);
                     IncreaseCount(Difficulty.Strict, Hit.Strict);
                     IncreaseCCount(Hit.Current);
+                    Hit.SetMarginCombos();
+                    Hit.SetCountCache();
                 }
                 return false;
             }

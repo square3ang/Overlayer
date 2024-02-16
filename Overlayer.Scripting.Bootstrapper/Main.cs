@@ -11,8 +11,10 @@ namespace Overlayer.Scripting.Bootstrapper
         {
             var domain = AppDomain.CurrentDomain;
             var jsNet = File.ReadAllBytes(Path.Combine(modEntry.Path, "JSNet.dll"));
+            var vostok = File.ReadAllBytes(Path.Combine(modEntry.Path, "Vostok.dll"));
             var scripting = File.ReadAllBytes(Path.Combine(modEntry.Path, "Overlayer.Scripting.dll"));
             domain.Load(jsNet);
+            domain.Load(vostok);
             var scriptingAss = domain.Load(scripting);
             typeof(ModEntry).GetField("mAssembly", (BindingFlags)15420).SetValue(modEntry, scriptingAss);
             scriptingAss.GetType("Overlayer.Scripting.Main").GetMethod("Load").Invoke(null, new object[] { modEntry });

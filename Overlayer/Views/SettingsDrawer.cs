@@ -54,6 +54,11 @@ namespace Overlayer.Views
                         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                     }
                 }
+                if (GUILayout.Button(L(TKS.LogFontList)))
+                {
+                    foreach (var font in FontManager.OSFonts)
+                        Main.Logger.Log(font);
+                }
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
                 GUILayoutEx.EndIndent();

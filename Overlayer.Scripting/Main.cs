@@ -5,7 +5,6 @@ using Overlayer.Tags;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -26,6 +25,7 @@ namespace Overlayer.Scripting
         public static bool IsFullySafe { get; private set; } = true;
         public static ModEntry Mod { get; private set; }
         public static ModLogger Logger { get; private set; }
+        public static Settings Settings { get; private set; }
         public static Api JSApi { get; private set; }
         public static Api JSVerifyApi { get; private set; }
         public static void Load(ModEntry modEntry)
@@ -35,29 +35,36 @@ namespace Overlayer.Scripting
             Assembly = Assembly.GetExecutingAssembly();
             modEntry.OnToggle = OnToggle;
             modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
         }
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
             if (toggle)
             {
-                FieldInfo apiMethodsField = typeof(Api).GetField("ApiMethods", (BindingFlags)15420);
+                Settings = ModSettings.Load<Settings>(modEntry);
+
                 JSApi = new Api();
-                Impl.apiMethods = apiMethodsField.GetValue(JSApi) as List<(ApiAttribute, MethodInfo)>;
                 JSApi.RegisterType(typeof(Impl));
 
                 JSVerifyApi = new Api();
                 JSVerifyApi.RegisterType(typeof(Impl_Verify));
 
                 TagManager.Load(typeof(Expression));
+                TagManager.Load(typeof(PerformanceTags));
                 foreach (var tag in TagManager.All)
-                    Impl.apiMethods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
+                    JSApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
                 RunScriptsNonBlocking(ScriptPath);
+                PerformanceTags.Initialize();
             }
             else
             {
-                TagManager.RemoveTag("Expression");
+                PerformanceTags.Release();
+                TagManager.Unload(typeof(Expression));
+                TagManager.Unload(typeof(PerformanceTags));
+                Impl.Release();
                 JSApi = null;
                 JSVerifyApi = null;
+                ModSettings.Save(Settings, modEntry);
             }
             Expression.expressions.Clear();
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false);
@@ -105,6 +112,11 @@ namespace Overlayer.Scripting
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.Label($"Result:\n{SandboxResult}");
+            Drawer.DrawInt32("Performance Status Update Rate", ref Settings.PerfStatUpdateRate);
+        }
+        public static void OnSaveGUI(ModEntry modEntry)
+        {
+            ModSettings.Save(Settings, modEntry);
         }
         public static async Task RunScripts(string folderPath)
         {
@@ -121,7 +133,7 @@ namespace Overlayer.Scripting
             File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSApi.Generate());
             Logger.Log("Preparing Executing Scripts..");
             Impl.Reload();
-            foreach (string script in Directory.GetFiles(folderPath))
+            foreach (string script in Directory.GetFiles(folderPath, "*.js", SearchOption.AllDirectories))
             {
                 var nameWithoutExt = Path.GetFileNameWithoutExtension(script);
                 if (nameWithoutExt == "Impl" ||

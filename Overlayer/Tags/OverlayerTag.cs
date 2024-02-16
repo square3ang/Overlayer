@@ -15,12 +15,14 @@ namespace Overlayer.Tags
         public bool Referenced => Tag.Referenced;
         public Tag Tag { get; }
         public TagAttribute Attributes { get; }
+        public Type DeclaringType { get; }
         public OverlayerTag(MethodInfo method, TagAttribute attr, object target = null)
         {
             Tag = new Tag(Name = attr.Name ?? method.Name);
             Tag.SetGetter(method, target);
             Attributes = attr;
             NotPlaying = attr.NotPlaying;
+            DeclaringType = method.DeclaringType;
         }
         public OverlayerTag(FieldInfo field, TagAttribute attr)
         {
@@ -28,6 +30,7 @@ namespace Overlayer.Tags
             Tag.SetGetter(WrapField(field, attr.Flags));
             Attributes = attr;
             NotPlaying = attr.NotPlaying;
+            DeclaringType = field.DeclaringType;
         }
         public OverlayerTag(string name, Delegate del, bool notPlaying, AdvancedFlags flags = AdvancedFlags.None)
         {
@@ -37,6 +40,7 @@ namespace Overlayer.Tags
             Tag.SetGetter(del);
             Attributes = attr;
             NotPlaying = notPlaying;
+            DeclaringType = del.Method.DeclaringType;
         }
         private static MethodInfo WrapField(FieldInfo field, AdvancedFlags flags)
         {

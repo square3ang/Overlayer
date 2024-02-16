@@ -17,6 +17,7 @@
             internal static readonly string Edit = Prefix + "EDIT";
             internal static readonly string NewText = Prefix + "NEW_TEXT";
             internal static readonly string ImportText = Prefix + "IMPORT_TEXT";
+            internal static readonly string LogFontList = Prefix + "LOG_FONT_LIST";
         }
         public static class TextConfig
         {

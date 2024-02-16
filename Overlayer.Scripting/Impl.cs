@@ -41,7 +41,7 @@ namespace Overlayer.Scripting
         }
         public static void Release()
         {
-            apiMethods.RemoveAll(t => registeredCustomTags?.Contains(t.Item1.Name) ?? false);
+            Main.JSApi.Methods.RemoveAll(t => registeredCustomTags?.Contains(t.Item1.Name) ?? false);
             registeredCustomTags?.ForEach(TagManager.RemoveTag);
             registeredCustomTags = null;
             globalVariables = null;
@@ -179,7 +179,7 @@ namespace Overlayer.Scripting
             var tagWrapper = GenerateTagWrapper(wrapper);
             TagManager.SetTag(new OverlayerTag(tagWrapper, new Tags.Attributes.TagAttribute(name) { NotPlaying = notplaying }));
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
-            apiMethods.Add((new ApiAttribute(name), tagWrapper));
+            Main.JSApi.Methods.Add((new ApiAttribute(name), tagWrapper));
             registeredCustomTags.Add(name);
             Main.Logger.Log($"Registered Tag \"{name}\" (NotPlaying:{notplaying})");
         }
@@ -395,7 +395,9 @@ namespace Overlayer.Scripting
             public static void Rewind(Engine engine, JsValue func)
             {
                 SetNotFirstCall(engine);
-                Postfix(engine, "scrController:Awake_Rewind", func);
+                if (!(func is FunctionInstance fi)) return;
+                FIWrapper wrapper = new FIWrapper(fi);
+                harmony.Postfix(MiscUtils.MethodByName("scrController:Awake_Rewind"), new Action(() => wrapper.Call()));
             }
             [Api("hit", Comment = new[]
             {
@@ -404,7 +406,9 @@ namespace Overlayer.Scripting
             public static void Hit(Engine engine, JsValue func)
             {
                 SetNotFirstCall(engine);
-                Postfix(engine, "scrController:Hit", func);
+                if (!(func is FunctionInstance fi)) return;
+                FIWrapper wrapper = new FIWrapper(fi);
+                harmony.Postfix(MiscUtils.MethodByName("scrController:Hit"), new Action(() => wrapper.Call()));
             }
             [Api("dead", Comment = new[]
              {
@@ -547,7 +551,6 @@ namespace Overlayer.Scripting
         static MethodInfo call_fi = typeof(FIWrapper).GetMethod("Call");
         static MethodInfo call_udfi = typeof(UDFWrapper).GetMethod("Call");
         static MethodInfo transpilerAdapter = typeof(JSUtils).GetMethod("TranspilerAdapter", AccessTools.all);
-        internal static List<(ApiAttribute, MethodInfo)> apiMethods;
         static AssemblyBuilder ApiAssembly;
         static System.Reflection.Emit.ModuleBuilder ApiModule;
         static MethodInfo GenerateTagWrapper(FIWrapper wrapper)

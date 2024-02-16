@@ -22,6 +22,11 @@ namespace Overlayer.Utils
         }
         public static double Round(this double value, int digits = -1) => digits < 0 ? value : Math.Round(value, digits);
         public static double Round(this float value, int digits = -1) => digits < 0 ? value : Math.Round(value, digits);
+        public static T[] SplitParse<T>(this string str, char splitter) where T : Enum
+        {
+            string[] split = str.Split(splitter);
+            return Array.ConvertAll(split, EnumHelper<T>.Parse);
+        }
         public static bool Convert(this ILGenerator il, Type to)
         {
             switch (Type.GetTypeCode(to))

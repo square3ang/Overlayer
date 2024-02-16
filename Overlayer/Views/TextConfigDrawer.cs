@@ -1,5 +1,6 @@
 ﻿using Overlayer.Core;
 using Overlayer.Models;
+using Overlayer.Tags;
 using Overlayer.Unity;
 using SFB;
 using System.IO;
@@ -18,6 +19,7 @@ namespace Overlayer.Views
             if (Drawer.DrawBool(L(TKTC.Active), ref model.Active))
                 text.gameObject.SetActive(model.Active);
             bool changed = false;
+            Drawer.ButtonLabel($"Available Tags: {TagManager.Count}", Main.OpenDiscordLink);
             changed |= Drawer.DrawVector2(L(TKTC.Position), ref model.Position, 0, 1);
             changed |= Drawer.DrawVector2(L(TKTC.Pivot), ref model.Pivot, 0, 1);
             changed |= Drawer.DrawVector3(L(TKTC.Rotation), ref model.Rotation, -180, 180);

@@ -1,4 +1,5 @@
-﻿using UnityEngine.Events;
+﻿using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace Overlayer.Utils
 {
@@ -47,6 +48,24 @@ namespace Overlayer.Utils
         public static void HideError(ErrorCanvasContext ecc)
         {
             overlayerErrorCanvas.gameObject.SetActive(false);
+        }
+        public static int HashMargins(HitMargin[] margins)
+        {
+            int bits = 0;
+            for (int i = 0; i < margins.Length; i++)
+                bits |= 1 << (int)margins[i];
+            return bits;
+        }
+        public static HitMargin[] UnboxMarginHash(int marginHash)
+        {
+            List<HitMargin> margins = new List<HitMargin>();
+            var values = EnumHelper<HitMargin>.GetValues();
+            for (int i = 0; i < values.Length; i++)
+            {
+                if ((marginHash & (1 << (int)values[i])) == 0)
+                    margins.Add(values[i]);
+            }
+            return margins.ToArray();
         }
     }
     public class ErrorCanvasContext

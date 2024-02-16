@@ -18,7 +18,9 @@ namespace Overlayer.Tags.Patches
         }
         [LazyPatch("Tags.Status.Combo&ScoreCalculator", "scrMisc", "GetHitMargin", Triggers = new string[]
         {
-            nameof(Status.Combo), nameof(Status.LScore), nameof(Status.NScore), nameof(Status.SScore), nameof(Status.Score)
+            nameof(Status.Combo), nameof(Status.MaxCombo), nameof(Status.LScore), nameof(Status.NScore), nameof(Status.SScore), nameof(Status.Score),
+            nameof(Status.LMarginCombo), nameof(Status.NMarginCombo), nameof(Status.SMarginCombo), nameof(Status.MarginCombo),
+            nameof(Status.LMarginMaxCombo), nameof(Status.NMarginMaxCombo), nameof(Status.SMarginMaxCombo), nameof(Status.MarginMaxCombo),
         })]
         public static class ComboAndScoresPatch
         {
@@ -28,7 +30,8 @@ namespace Overlayer.Tags.Patches
                 if (controller && controller.currFloor.freeroam) return;
                 if (!HitPatch.JudgementTagPatch.IsSafe(controller))
                 {
-                    if (__result == HitMargin.Perfect) Status.Combo++;
+                    if (__result == HitMargin.Perfect)
+                        Status.MaxCombo = Math.Max(Status.MaxCombo, ++Status.Combo);
                     else Status.Combo = 0;
                     var l = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Lenient, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
                     var n = HitPatch.JudgementTagPatch.GetHitMargin(Difficulty.Normal, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
@@ -37,11 +40,14 @@ namespace Overlayer.Tags.Patches
                     HitPatch.JudgementTagPatch.FixMargin(controller, ref n);
                     HitPatch.JudgementTagPatch.FixMargin(controller, ref s);
                     SetScores(l, n, s, __result);
+                    SetCombos(Difficulty.Lenient, l);
+                    SetCombos(Difficulty.Normal, n);
+                    SetCombos(Difficulty.Strict, s);
                 }
             }
-            private static void SetScores(HitMargin l, HitMargin n, HitMargin s, HitMargin cur)
+            private static void SetScores(HitMargin l, HitMargin n, HitMargin s, HitMargin c)
             {
-                switch (cur)
+                switch (c)
                 {
                     case HitMargin.VeryEarly:
                     case HitMargin.VeryLate:
@@ -97,6 +103,17 @@ namespace Overlayer.Tags.Patches
                         Status.SScore += 300;
                         break;
                 }
+            }
+            private static void SetCombos(Difficulty diff, HitMargin hit)
+            {
+                int iHit = (int)hit;
+                int[] combos = Status.Combos[(int)diff];
+                int[] maxCombos = Status.MaxCombos[(int)diff];
+                combos[iHit]++;
+                for (int i = 0; i < combos.Length; i++)
+                    if (i != iHit) combos[i] = 0;
+                for (int i = 0; i < maxCombos.Length; i++)
+                    maxCombos[i] = Math.Max(maxCombos[i], combos[i]);
             }
         }
         [LazyPatch("Tags.Status.CurrentCheckPointPreparer_scnGame", "scnGame", "Play", Triggers = new string[]

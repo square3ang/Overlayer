@@ -34,6 +34,16 @@ namespace Overlayer.Tags
                 SetTag(new OverlayerTag(field, attr));
             }
         }
+        public static void Unload(Assembly ass)
+        {
+            foreach (var t in ass.GetExportedTypes())
+                Unload(t);
+        }
+        public static void Unload(Type type)
+        {
+            foreach (var key in tags.Where(kvp => kvp.Value.DeclaringType == type).Select(kvp => kvp.Key).ToList())
+                tags.Remove(key);
+        }
         public static OverlayerTag GetTag(string name)
         {
             return tags.TryGetValue(name, out var ot) ? ot : null;
