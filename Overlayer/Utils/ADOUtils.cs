@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine.Events;
 
 namespace Overlayer.Utils
@@ -62,7 +62,7 @@ namespace Overlayer.Utils
             var values = EnumHelper<HitMargin>.GetValues();
             for (int i = 0; i < values.Length; i++)
             {
-                if ((marginHash & (1 << (int)values[i])) == 0)
+                if ((marginHash & (1 << (int)values[i])) != 0)
                     margins.Add(values[i]);
             }
             return margins.ToArray();
