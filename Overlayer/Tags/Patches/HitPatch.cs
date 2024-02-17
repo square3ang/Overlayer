@@ -39,7 +39,6 @@ namespace Overlayer.Tags.Patches
                     IncreaseCount(Difficulty.Strict, Hit.Strict);
                     IncreaseCCount(Hit.Current);
                     Hit.SetMarginCombos();
-                    Hit.SetCountCache();
                 }
                 return false;
             }

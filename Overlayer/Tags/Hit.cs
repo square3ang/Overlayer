@@ -69,7 +69,7 @@ namespace Overlayer.Tags
         public static int MarginCombos(string margins) => MarginCombos_Internal(GCS.difficulty, margins);
         public static int MarginCombos_Internal(Difficulty diff, string margins)
         {
-            var hms = margins.SplitParse<HitMargin>(',');
+            var hms = margins.SplitParse<HitMargin>('|');
             int hash = ADOUtils.HashMargins(hms);
             if (!MMaxComboCache.TryGetValue(hash, out _))
                 MMaxComboCache[hash] = new int[EnumHelper<Difficulty>.GetValues().Length];
@@ -100,7 +100,6 @@ namespace Overlayer.Tags
         #endregion
         public static Dictionary<int, int[]> MComboCache = new Dictionary<int, int[]>();
         public static Dictionary<int, int[]> MMaxComboCache = new Dictionary<int, int[]>();
-        public static int[][] MarginCountCache = new int[EnumHelper<Difficulty>.GetValues().Length][];
         public static void Reset()
         {
             Lenient = Normal = Strict = Current = HitMargin.Perfect;
@@ -109,58 +108,25 @@ namespace Overlayer.Tags
             STE = SVE = SEP = SP = SLP = SVL = STL = 0;
             CTE = CVE = CEP = CP = CLP = CVL = CTL = 0;
             Multipress = 0;
-            int margins = EnumHelper<HitMargin>.GetValues().Length;
-            for (int i = 0; i < MarginCountCache.Length; i++)
-                MarginCountCache[i] = new int[margins];
             MComboCache.Clear();
             MMaxComboCache.Clear();
-        }
-        public static HitMargin CountCacheDiff(Difficulty diff)
-        {
-            int[] cache = MarginCountCache[(int)diff];
-            var margins = EnumHelper<HitMargin>.GetValues();
-            for (int i = 0; i < margins.Length; i++)
-                if (cache[(int)margins[i]] != GetHitCount(diff, margins[i]))
-                    return margins[i];
-            return (HitMargin)(-1);
         }
         public static void SetMarginCombos()
         {
             foreach (int hash in MComboCache.Keys.ToList())
             {
                 var hms = ADOUtils.UnboxMarginHash(hash);
+                var hmsStr = hms.Aggregate("", (c, n) => $"{c}{n}, ");
+                hmsStr = hmsStr.Remove(hmsStr.Length - 2);
                 var combos = MComboCache[hash];
                 foreach (var diff in EnumHelper<Difficulty>.GetValues())
                 {
-                    bool notFound = true;
-                    var difference = CountCacheDiff(diff);
-                    if (difference == (HitMargin)(-1)) continue;
-                    for (int i = 0; i < hms.Length; i++)
-                        if (difference == hms[i])
-                        {
-                            combos[(int)diff]++;
-                            notFound = false;
-                            break;
-                        }
-                    if (notFound) combos[(int)diff] = 0;
+                    var difference = GetCHit(diff);
+                    if (Array.IndexOf(hms, difference) >= 0)
+                        combos[(int)diff]++;
+                    else combos[(int)diff] = 0;
                 }
             }
-            foreach (int hash in MMaxComboCache.Keys.ToList())
-            {
-                var hms = ADOUtils.UnboxMarginHash(hash);
-                var combos = MComboCache[hash];
-                var maxCombos = MMaxComboCache[hash];
-                foreach (var diff in EnumHelper<Difficulty>.GetValues())
-                    maxCombos[(int)diff] = Math.Max(maxCombos[(int)diff], combos[(int)diff]);
-            }
-        }
-        public static void SetCountCache()
-        {
-            var diffs = EnumHelper<Difficulty>.GetValues();
-            var margins = EnumHelper<HitMargin>.GetValues();
-            for (int i = 0; i < diffs.Length; i++)
-                for (int j = 0; j < margins.Length; j++)
-                    MarginCountCache[(int)diffs[i]][(int)margins[j]] = (int)GetHitCount(diffs[i], margins[j]);
         }
         public static HitMargin GetCHit(Difficulty diff)
         {

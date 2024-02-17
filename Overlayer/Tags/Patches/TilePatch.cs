@@ -108,5 +108,20 @@ namespace Overlayer.Tags.Patches
                 }
             }
         }
+        [LazyPatch("Tags.Tile.StartedResetter_scnEditor", "scnEditor", "ResetScene", Triggers = new string[]
+        {
+            nameof(Tile.StartTile), nameof(Tile.StartProgress)
+        })]
+        [LazyPatch("Tags.Tile.StartedResetter_scnGame", "scnGame", "ResetScene", Triggers = new string[]
+        {
+            nameof(Tile.StartTile), nameof(Tile.StartProgress)
+        })]
+        public static class StartedResetter
+        {
+            public static void Postfix()
+            {
+                Tile.IsStarted = true;
+            }
+        }
     }
 }
