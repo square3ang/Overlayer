@@ -4,9 +4,9 @@ namespace Overlayer.Tags
 {
     public static class FrameRate
     {
-        [Tag(NotPlaying = true, Flags = AdvancedFlags.Round)]
+        [Tag(NotPlaying = true, FieldFlags = FieldValueProcessing.RoundNumber)]
         public static double Fps;
-        [Tag(NotPlaying = true, Flags = AdvancedFlags.Round)]
+        [Tag(NotPlaying = true, FieldFlags = FieldValueProcessing.RoundNumber)]
         public static double FrameTime;
         public static void Reset()
         {

@@ -4,9 +4,9 @@ namespace Overlayer.Tags
 {
     public static class HitTiming
     {
-        [Tag(Flags = AdvancedFlags.Round)]
+        [Tag(FieldFlags = FieldValueProcessing.RoundNumber)]
         public static double Timing;
-        [Tag(Flags = AdvancedFlags.Round)]
+        [Tag(FieldFlags = FieldValueProcessing.RoundNumber)]
         public static double TimingAvg;
         public static void Reset()
         {

@@ -15,7 +15,7 @@ namespace Overlayer.Tags
         static Dictionary<string, long> movingMan_tagStartTimeCache = new Dictionary<string, long>();
         [JSImplementedBy("Discord@kkitut")]
         [Tag]
-        public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, string easeRaw = "Linear")
+        public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, string easeRaw = "Linear", int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
         {
             Tag tag = TagManager.GetTag(rawFunc)?.Tag;
             if (tag == null) return "Tag Not Found!";
@@ -35,7 +35,7 @@ namespace Overlayer.Tags
             ColorUtility.TryParseHtmlString(colorMinHex, out Color min);
             ColorUtility.TryParseHtmlString(colorMaxHex, out Color max);
             Color newColor = new Color(((1 - eased) * min.r) + (eased * max.r), ((1 - eased) * min.g) + (eased * max.g), ((1 - eased) * min.b) + (eased * max.b), ((1 - eased) * min.a) + (eased * max.a));
-            return ColorUtility.ToHtmlStringRGBA(newColor);
+            return ColorUtility.ToHtmlStringRGBA(newColor).Trim(maxLength, afterTrimStr);
         }
         [JSImplementedBy("Discord@kkitut")]
         [Tag]

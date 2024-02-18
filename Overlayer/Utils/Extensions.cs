@@ -15,6 +15,7 @@ namespace Overlayer.Utils
 {
     public static class Extensions
     {
+        public const string DefaultTrimStr = "..($LeftCount)";
         public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value)
         {
             key = kvp.Key;
@@ -22,6 +23,12 @@ namespace Overlayer.Utils
         }
         public static double Round(this double value, int digits = -1) => digits < 0 ? value : Math.Round(value, digits);
         public static double Round(this float value, int digits = -1) => digits < 0 ? value : Math.Round(value, digits);
+        public static string Trim(this string str, int maxLength = -1, string afterTrimStr = DefaultTrimStr)
+        {
+            if (maxLength >= 0 && str.Length > maxLength)
+                return str.Substring(0, maxLength) + afterTrimStr?.Replace("$LeftCount", StringConverter.FromInt32(str.Length - maxLength));
+            return str;
+        }
         public static T[] SplitParse<T>(this string str, char splitter) where T : Enum
         {
             string[] split = str.Split(splitter);

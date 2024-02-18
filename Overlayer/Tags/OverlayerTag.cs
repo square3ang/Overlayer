@@ -27,28 +27,29 @@ namespace Overlayer.Tags
         public OverlayerTag(FieldInfo field, TagAttribute attr)
         {
             Tag = new Tag(Name = attr.Name ?? field.Name);
-            Tag.SetGetter(WrapField(field, attr.Flags));
+            Tag.SetGetter(WrapField(field, attr.FieldFlags));
             Attributes = attr;
             NotPlaying = attr.NotPlaying;
             DeclaringType = field.DeclaringType;
         }
-        public OverlayerTag(string name, Delegate del, bool notPlaying, AdvancedFlags flags = AdvancedFlags.None)
+        public OverlayerTag(string name, Delegate del, bool notPlaying, FieldValueProcessing flags = FieldValueProcessing.None)
         {
             var attr = new TagAttribute(Name = name);
-            attr.Flags = flags;
+            attr.FieldFlags = flags;
             Tag = new Tag(name);
             Tag.SetGetter(del);
             Attributes = attr;
             NotPlaying = notPlaying;
             DeclaringType = del.Method.DeclaringType;
         }
-        private static MethodInfo WrapField(FieldInfo field, AdvancedFlags flags)
+        private static MethodInfo WrapField(FieldInfo field, FieldValueProcessing flags)
         {
+            if (!IsValid(flags)) throw new InvalidOperationException($"Invalid FieldFlags! ({flags})");
             TypeBuilder t = mod.DefineType($"FieldTagWrapper${uniqueNum++}", TypeAttributes.Public);
             MethodBuilder m = t.DefineMethod("Getter", MethodAttributes.Public | MethodAttributes.Static);
             ILGenerator il = m.GetILGenerator();
             il.Emit(OpCodes.Ldsfld, field);
-            if ((flags & AdvancedFlags.Round) != 0)
+            if ((flags & FieldValueProcessing.RoundNumber) != 0)
             {
                 if (field.FieldType != typeof(double))
                     il.Emit(OpCodes.Conv_R8);
@@ -57,8 +58,16 @@ namespace Overlayer.Tags
                 if (field.FieldType != typeof(double))
                     il.Convert(field.FieldType);
                 m.SetParameters(typeof(int));
-                var param = m.DefineParameter(1, ParameterAttributes.None, "digits");
-                param.SetConstant(-1);
+                m.DefineParameter(1, ParameterAttributes.None, "digits").SetConstant(-1);
+            }
+            else if ((flags & FieldValueProcessing.TrimString) != 0)
+            {
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Call, trim);
+                m.SetParameters(typeof(int), typeof(string));
+                m.DefineParameter(1, ParameterAttributes.None, "maxLength").SetConstant(-1);
+                m.DefineParameter(2, ParameterAttributes.None, "afterTrimStr").SetConstant(Extensions.DefaultTrimStr);
             }
             il.Emit(OpCodes.Ret);
             m.SetReturnType(field.FieldType);
@@ -79,8 +88,16 @@ namespace Overlayer.Tags
             mod = null;
             Initialized = false;
         }
+        private static bool IsValid(FieldValueProcessing flags)
+        {
+            if (flags.HasFlag(FieldValueProcessing.RoundNumber) &&
+                flags.HasFlag(FieldValueProcessing.TrimString))
+                return false;
+            return true;
+        }
         private static int uniqueNum = 0;
         private static readonly MethodInfo round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });
+        private static readonly MethodInfo trim = typeof(Extensions).GetMethod("Trim", new[] { typeof(string), typeof(int), typeof(string) });
         private static AssemblyBuilder ass;
         private static ModuleBuilder mod;
     }

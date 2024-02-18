@@ -17,13 +17,13 @@ namespace Overlayer.Tags
         [Tag("CHitRaw")]
         public static HitMargin Current;
         [Tag]
-        public static string LHit() => RDString.Get("HitMargin." + Lenient);
+        public static string LHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Lenient).Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string NHit() => RDString.Get("HitMargin." + Normal);
+        public static string NHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Normal).Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string SHit() => RDString.Get("HitMargin." + Strict);
+        public static string SHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Strict).Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string CHit() => RDString.Get("HitMargin." + Current);
+        public static string CHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Current).Trim(maxLength, afterTrimStr);
         [Tag]
         public static double LTE, LVE, LEP, LP, LLP, LVL, LTL;
         [Tag]
@@ -55,9 +55,9 @@ namespace Overlayer.Tags
         [Tag]
         public static double Multipress;
         [Tag]
-        public static string Difficulty() => RDString.Get("enum.Difficulty." + GCS.difficulty);
+        public static string Difficulty(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("enum.Difficulty." + GCS.difficulty).Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string DifficultyStr() => GCS.difficulty.ToString();
+        public static string DifficultyStr(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => GCS.difficulty.ToString().Trim(maxLength, afterTrimStr);
         #region MarginCombos
         [Tag]
         public static int LMarginCombos(string margins) => MarginCombos_Internal(global::Difficulty.Lenient, margins);
@@ -116,14 +116,13 @@ namespace Overlayer.Tags
             foreach (int hash in MComboCache.Keys.ToList())
             {
                 var hms = ADOUtils.UnboxMarginHash(hash);
-                var hmsStr = hms.Aggregate("", (c, n) => $"{c}{n}, ");
-                hmsStr = hmsStr.Remove(hmsStr.Length - 2);
                 var combos = MComboCache[hash];
+                var maxCombos = MMaxComboCache[hash];
                 foreach (var diff in EnumHelper<Difficulty>.GetValues())
                 {
                     var difference = GetCHit(diff);
                     if (Array.IndexOf(hms, difference) >= 0)
-                        combos[(int)diff]++;
+                        maxCombos[(int)diff] = Math.Max(maxCombos[(int)diff], ++combos[(int)diff]);
                     else combos[(int)diff] = 0;
                 }
             }

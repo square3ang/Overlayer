@@ -12,7 +12,7 @@ namespace Overlayer.Tags
         public static int TotalTile;
         [Tag]
         public static int StartTile;
-        [Tag(Flags = AdvancedFlags.Round)]
+        [Tag(FieldFlags = FieldValueProcessing.RoundNumber)]
         public static double StartProgress;
         [Tag]
         public static bool IsStarted;

@@ -8,17 +8,17 @@ namespace Overlayer.Tags
     {
         public static LevelData LevelData => scnGame.instance?.levelData ?? scnEditor.instance?.levelData;
         [Tag]
-        public static string Title() => ADOBase.isOfficialLevel ? ADOBase.sceneName : TitleRaw()?.BreakRichTag();
+        public static string Title(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => (ADOBase.isOfficialLevel ? ADOBase.sceneName : TitleRaw()?.BreakRichTag()).Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string Author() => AuthorRaw()?.BreakRichTag();
+        public static string Author(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => AuthorRaw(maxLength, afterTrimStr)?.BreakRichTag();
         [Tag]
-        public static string Artist() => ArtistRaw()?.BreakRichTag();
+        public static string Artist(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => ArtistRaw(maxLength, afterTrimStr)?.BreakRichTag();
         [Tag]
-        public static string TitleRaw() => LevelData?.song;
+        public static string TitleRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => LevelData?.song?.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string AuthorRaw() => LevelData?.author;
+        public static string AuthorRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => LevelData?.author?.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string ArtistRaw() => LevelData?.artist;
+        public static string ArtistRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => LevelData?.artist?.Trim(maxLength, afterTrimStr);
         public static void Reset() { }
     }
 }

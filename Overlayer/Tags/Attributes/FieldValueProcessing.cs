@@ -3,9 +3,10 @@
 namespace Overlayer.Tags.Attributes
 {
     [Flags]
-    public enum AdvancedFlags
+    public enum FieldValueProcessing
     {
         None = 0,
-        Round = 1 << 0,
+        RoundNumber = 1 << 0,
+        TrimString = 1 << 1,
     }
 }
