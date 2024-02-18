@@ -16,7 +16,7 @@ namespace Overlayer.Core
         {
             if (formatArgs.Length == 0)
                 return Main.Lang[translationKey];
-            else return string.Format(Main.Lang[translationKey], formatArgs);
+            return string.Format(Main.Lang[translationKey], formatArgs);
         }
     }
 }

@@ -10,6 +10,7 @@ using Overlayer.Views;
 using System;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
