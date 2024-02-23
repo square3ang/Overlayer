@@ -11,7 +11,17 @@ namespace Overlayer.Core.TextReplacing
     {
         public string Name { get; }
         public bool Referenced => ReferencedCount > 0;
-        public int ReferencedCount { get; internal set; }
+        private int referencedCount;
+        public int ReferencedCount
+        {
+            get => referencedCount;
+            set
+            {
+                if (value < 0)
+                    throw new InvalidOperationException("ReferencedCount Cannot Be Less Than 0!! Reference May Be Broken!");
+                referencedCount = value;
+            }
+        }
         public bool HasArgument => ArgumentCount > 0;
         public int ArgumentCount { get; private set; }
         /// <summary>

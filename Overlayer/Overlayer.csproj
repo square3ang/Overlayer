@@ -380,6 +380,15 @@
     <Compile Include="Core\Patches\LazyPatchManager.cs" />
     <Compile Include="Core\TextConfigImporter.cs" />
     <Compile Include="Core\TextManager.cs" />
+    <Compile Include="Core\TextReplacing\Lexing\LexConfig.cs" />
+    <Compile Include="Core\TextReplacing\Parsing\IParsed.cs" />
+    <Compile Include="Core\TextReplacing\Lexing\Lexer.cs" />
+    <Compile Include="Core\TextReplacing\Parsing\ParsedString.cs" />
+    <Compile Include="Core\TextReplacing\Parsing\ParsedTag.cs" />
+    <Compile Include="Core\TextReplacing\Parsing\Parser.cs" />
+    <Compile Include="Core\TextReplacing\Lexing\Token.cs" />
+    <Compile Include="Core\TextReplacing\Lexing\TokenType.cs" />
+    <Compile Include="Core\TextReplacing\ReplaceableText.cs" />
     <Compile Include="Core\TextReplacing\Replacer.cs" />
     <Compile Include="Core\TextReplacing\Tag.cs" />
     <Compile Include="Core\Translation\Language.cs" />
