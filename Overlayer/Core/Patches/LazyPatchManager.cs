@@ -64,7 +64,7 @@ namespace Overlayer.Core.Patches
             }
             return patches;
         }
-        public static void UnpatchAll(string trigger = null)
+        public static List<LazyPatch> UnpatchAll(string trigger = null)
         {
             List<LazyPatch> patches = new List<LazyPatch>();
             if (trigger != null)
@@ -78,6 +78,7 @@ namespace Overlayer.Core.Patches
                 foreach (var patchType in Patches.Keys)
                     patches.AddRange(Unpatch(patchType));
             }
+            return patches;
         }
         public static List<LazyPatch> Patch(Type patchType, bool force = false)
         {

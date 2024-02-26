@@ -14,10 +14,11 @@ namespace Overlayer.Core.TextReplacing.Parsing
         }
         public void Emit(ILGenerator il)
         {
+            var parameters = tag.GetterOriginal.GetParameters();
             for (int i = 0; i < tag.ArgumentCount; i++)
             {
                 if (args.Count - 1 < i)
-                    il.Emit(OpCodes.Ldstr, tag.GetterOriginal.GetParameters()[i].DefaultValue?.ToString() ?? string.Empty);
+                    il.Emit(OpCodes.Ldstr, parameters[i].DefaultValue?.ToString() ?? string.Empty);
                 else il.Emit(OpCodes.Ldstr, args[i]);
             }
             il.Emit(OpCodes.Call, tag.Getter);
