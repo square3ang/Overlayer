@@ -41,7 +41,6 @@ namespace Overlayer.Scripting
         }
         public static void Release()
         {
-            Main.JSApi.Methods.RemoveAll(t => registeredCustomTags?.Contains(t.Item1.Name) ?? false);
             registeredCustomTags?.ForEach(TagManager.RemoveTag);
             registeredCustomTags = null;
             globalVariables = null;
@@ -78,7 +77,10 @@ namespace Overlayer.Scripting
             {
                 var tag = tags[i];
                 if (TagManager.GetTag(tag) != null)
+                {
                     LazyPatchManager.PatchAll(tag).ForEach(lp => lp.Locked = true);
+                    engine.SetValue(tag, TagManager.GetTag(tag).Tag.GetterOriginal);
+                }
                 else
                 {
                     if (!File.Exists(tag))
@@ -96,7 +98,6 @@ namespace Overlayer.Scripting
                     {
                         var result = Script.InterpretAPI(Main.JSApi, File.ReadAllText(tag));
                         result.Exec();
-                        Main.JSApi.CombineInterpreter(engine);
                         result.Dispose();
                     });
                     Main.Logger.Log($"Force Executed \"{name}\" Script Successfully. ({time.TotalMilliseconds}ms)");
@@ -179,7 +180,6 @@ namespace Overlayer.Scripting
             var tagWrapper = GenerateTagWrapper(wrapper);
             TagManager.SetTag(new OverlayerTag(tagWrapper, new Tags.Attributes.TagAttribute(name) { NotPlaying = notplaying }));
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
-            Main.JSApi.Methods.Add((new ApiAttribute(name), tagWrapper));
             registeredCustomTags.Add(name);
             Main.Logger.Log($"Registered Tag \"{name}\" (NotPlaying:{notplaying})");
         }

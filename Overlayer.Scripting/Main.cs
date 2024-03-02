@@ -28,6 +28,7 @@ namespace Overlayer.Scripting
         public static Settings Settings { get; private set; }
         public static Api JSApi { get; private set; }
         public static Api JSVerifyApi { get; private set; }
+        public static Api JSGenApi { get; private set; }
         public static void Load(ModEntry modEntry)
         {
             Mod = modEntry;
@@ -49,10 +50,13 @@ namespace Overlayer.Scripting
                 JSVerifyApi = new Api();
                 JSVerifyApi.RegisterType(typeof(Impl_Verify));
 
+                JSGenApi = new Api();
+                JSGenApi.RegisterType(typeof(Impl));
+                foreach (var tag in TagManager.All)
+                    JSGenApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
+
                 TagManager.Load(typeof(Expression));
                 TagManager.Load(typeof(PerformanceTags));
-                foreach (var tag in TagManager.All)
-                    JSApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
                 RunScriptsNonBlocking(ScriptPath);
                 PerformanceTags.Initialize();
             }
@@ -64,6 +68,7 @@ namespace Overlayer.Scripting
                 Impl.Release();
                 JSApi = null;
                 JSVerifyApi = null;
+                JSGenApi = null;
                 ModSettings.Save(Settings, modEntry);
             }
             Expression.expressions.Clear();
@@ -130,7 +135,7 @@ namespace Overlayer.Scripting
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
             Logger.Log("Generating Script Implementations..");
-            File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSApi.Generate());
+            File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSGenApi.Generate());
             Logger.Log("Preparing Executing Scripts..");
             Impl.Reload();
             foreach (string script in Directory.GetFiles(folderPath, "*.js", SearchOption.AllDirectories))
