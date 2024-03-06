@@ -54,9 +54,10 @@ namespace Overlayer.Tags
         }
         private static MethodInfo WrapProcessor(MemberInfo fieldPropMethod, object target, ValueProcessing flags, object flagsArg)
         {
+            if (fieldPropMethod == null) throw new NullReferenceException(nameof(fieldPropMethod));
             if (fieldPropMethod is MethodInfo meth && flags == ValueProcessing.None) return meth;
             if (!IsValid(flags)) throw new InvalidOperationException($"Invalid FieldFlags! ({flags})");
-            TypeBuilder t = mod.DefineType($"FieldTagWrapper${uniqueNum++}", TypeAttributes.Public);
+            TypeBuilder t = mod.DefineType($"ValueProcessor_{fieldPropMethod?.Name}${uniqueNum++}", TypeAttributes.Public);
             MethodBuilder m = t.DefineMethod("Getter", MethodAttributes.Public | MethodAttributes.Static);
             FieldBuilder targetField = t.DefineField("target", target?.GetType() ?? typeof(object), FieldAttributes.Public | FieldAttributes.Static);
             ILGenerator il = m.GetILGenerator();
