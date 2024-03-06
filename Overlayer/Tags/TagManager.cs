@@ -33,6 +33,12 @@ namespace Overlayer.Tags
                 if (attr == null) continue;
                 SetTag(new OverlayerTag(field, attr));
             }
+            foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Static))
+            {
+                var attr = prop.GetCustomAttribute<TagAttribute>();
+                if (attr == null) continue;
+                SetTag(new OverlayerTag(prop, attr));
+            }
         }
         public static void Unload(Assembly ass)
         {

@@ -25,7 +25,7 @@ namespace Overlayer.WebAPI.Controllers
                 JsonNode node = JsonNode.Empty;
                 foreach (var item in dict)
                     node[item.Key] = item.Value;
-                json = node.ToString();
+                sheetsJson[lang] = json = node.ToString();
             }
             return json;
         }

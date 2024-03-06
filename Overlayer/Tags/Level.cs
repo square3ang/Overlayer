@@ -6,6 +6,7 @@ namespace Overlayer.Tags
 {
     public static class Level
     {
+        [Tag(ProcessingFlags = ValueProcessing.AccessMember)]
         public static LevelData LevelData => scnGame.instance?.levelData ?? scnEditor.instance?.levelData;
         [Tag]
         public static string Title(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => ADOBase.isOfficialLevel ? ADOBase.sceneName.Trim(maxLength, afterTrimStr) : TitleRaw(maxLength, afterTrimStr)?.BreakRichTag();

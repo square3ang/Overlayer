@@ -4,17 +4,17 @@ namespace Overlayer.Tags
 {
     public static class Bpm
     {
-        [Tag(FieldFlags = FieldValueProcessing.RoundNumber)]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double TileBpm;
-        [Tag(FieldFlags = FieldValueProcessing.RoundNumber)]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double CurBpm;
-        [Tag(FieldFlags = FieldValueProcessing.RoundNumber)]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double RecKPS;
-        [Tag(FieldFlags = FieldValueProcessing.RoundNumber)]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double TileBpmWithoutPitch;
-        [Tag(FieldFlags = FieldValueProcessing.RoundNumber)]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double CurBpmWithoutPitch;
-        [Tag(FieldFlags = FieldValueProcessing.RoundNumber)]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double RecKPSWithoutPitch;
         public static void Reset()
         {

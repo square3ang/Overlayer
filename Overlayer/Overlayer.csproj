@@ -405,7 +405,7 @@
     <Compile Include="Patches\TagResetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Tags\Attributes\FieldValueProcessing.cs" />
+    <Compile Include="Tags\Attributes\ValueProcessing.cs" />
     <Compile Include="Tags\Attributes\JSImplementedByAttribute.cs" />
     <Compile Include="Tags\Attributes\TagAttribute.cs" />
     <Compile Include="Tags\Bpm.cs" />
