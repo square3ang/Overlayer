@@ -81,8 +81,10 @@ namespace Overlayer.Tags
             }
             if (fieldPropMethod is MethodInfo method)
             {
-                if (!method.IsStatic && target == null)
+                if (method.GetParameters().Length > 0)
                     throw new InvalidOperationException($"Method '{method.Name}' Cannot Call Instance Member Without Target!!");
+                if (!method.IsStatic && target == null)
+                    throw new InvalidOperationException($"Method '{method.Name}' Has Parameter!!");
                 if (!method.IsStatic && target != null)
                     il.Emit(OpCodes.Ldsfld, targetField);
                 il.Emit(OpCodes.Call, method);
