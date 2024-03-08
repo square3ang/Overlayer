@@ -22,7 +22,7 @@ namespace Overlayer.Tags
         {
             LeftTile = CurTile = TotalTile = StartTile = 0;
             StartProgress = 0;
-            IsStarted = true;
+            IsStarted = false;
         }
     }
 }

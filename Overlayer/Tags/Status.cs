@@ -1,15 +1,18 @@
-﻿using ADOFAI;
-using Overlayer.Tags.Attributes;
+﻿using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Overlayer.Tags
 {
     public static class Status
     {
-        public static LevelData LevelData => scnGame.instance?.levelData ?? scnEditor.instance?.levelData;
+        [Tag]
+        public static bool IsAutoEnabled => ADOFAI.RDConstants?.auto ?? false;
+        [Tag]
+        public static bool IsPracticeModeEnabled => ADOFAI.RDConstants?.practice ?? false;
+        [Tag]
+        public static bool IsOldAutoEnabled => ADOFAI.RDConstants?.useOldAuto ?? false;
+        [Tag]
+        public static bool IsNoFailEnabled => GCS.useNoFail;
         [Tag]
         public static double Progress(int digits = -1) => (scrController.instance?.percentComplete * 100 ?? 0).Round(digits);
         [Tag]
@@ -19,7 +22,7 @@ namespace Overlayer.Tags
         [Tag]
         public static double Pitch(int digits = -1) => GCS.currentSpeedTrial.Round(digits);
         [Tag]
-        public static double EditorPitch(int digits = -1) => (LevelData.pitch / 100.0).Round(digits);
+        public static double EditorPitch(int digits = -1) => ((ADOFAI.LevelData?.pitch ?? 0) / 100.0).Round(digits);
         [Tag]
         public static int CheckPointUsed() => scrController.checkpointsUsed;
         [Tag]

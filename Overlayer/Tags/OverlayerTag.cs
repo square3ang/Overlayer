@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 
 namespace Overlayer.Tags
 {
@@ -92,38 +93,10 @@ namespace Overlayer.Tags
             }
             if ((flags & ValueProcessing.AccessMember) != 0)
             {
-                string accessor = flagsArg as string;
-                if (string.IsNullOrWhiteSpace(accessor))
-                {
-                    il.Emit(OpCodes.Ldarg, parameters.Count);
-                    il.Emit(OpCodes.Call, runtimeAccessor);
-                    parameters.Add((typeof(string), "accessor", null));
-                    goto Process;
-                }
-                string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < accessors.Length; i++)
-                {
-                    MemberInfo member = rt?.GetMember(accessors[i], MemberTypes.Field | MemberTypes.Property, BindingFlags.Public).FirstOrDefault();
-                    rt = member is FieldInfo ff ? ff.FieldType : member is PropertyInfo pp ? pp.PropertyType : null;
-                    if (rt == null) throw new InvalidOperationException($"Accessor '{accessors[i]}' Is Not Exist Or Not Public!");
-                    if (member is FieldInfo f)
-                    {
-                        if (f.IsStatic)
-                            throw new InvalidOperationException($"Accessor '{accessors[i]}' Must Not Be Static!");
-                        il.Emit(OpCodes.Ldfld, f);
-                    }
-                    if (member is PropertyInfo p)
-                    {
-                        MethodInfo getter = p.GetGetMethod();
-                        if (getter == null)
-                            throw new InvalidOperationException($"Accessor '{accessors[i]}''s Getter Is Not Exist Or Not Public!");
-                        if (getter.IsStatic)
-                            throw new InvalidOperationException($"Accessor '{accessors[i]}''s Getter Must Not Be Static!");
-                        il.Emit(OpCodes.Call, getter);
-                    }
-                }
+                il.Emit(OpCodes.Ldarg, parameters.Count);
+                il.Emit(OpCodes.Call, runtimeAccessor);
+                parameters.Add((typeof(string), "accessor", null));
             }
-        Process:
             if ((flags & ValueProcessing.RoundNumber) != 0)
             {
                 if (rt != typeof(double))
@@ -180,18 +153,71 @@ namespace Overlayer.Tags
         [Obsolete("Internal Only!!", true)]
         public static object RuntimeAccessor(object obj, string accessor)
         {
+            if (obj == null) return null;
+            Type objType = obj.GetType();
+            accessor = accessor.TrimEnd('.');
+            if (accessorCache.TryGetValue($"{objType}_Accessor_{accessor}", out var del)) return del(obj);
             object result = obj;
             string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (accessors.Length < 1) return obj;
             for (int i = 0; i < accessors.Length; i++)
             {
-                var member = result?.GetType().GetMember(accessors[i], MemberTypes.Field | MemberTypes.Property, (BindingFlags)15420).FirstOrDefault();
+                MemberInfo[] members = result?.GetType().GetMembers((BindingFlags)15420);
+                if (accessors[i].Equals("ListMembers", StringComparison.OrdinalIgnoreCase))
+                {
+                    StringBuilder sb = new StringBuilder();
+                    for (int j = 0; j < members.Length; j++)
+                    {
+                        MemberInfo m = members[j];
+                        if (m is FieldInfo field && !field.IsStatic)
+                            sb.AppendLine($"{(field.IsPublic ? "Public" : "Private")} Field {field.FieldType} '{field.Name}'");
+                        else if (m is PropertyInfo prop && prop.GetGetMethod(true) is MethodInfo getter && !getter.IsStatic)
+                            sb.AppendLine($"{(getter.IsPublic ? "Public" : "Private")} Property {prop.PropertyType} '{prop.Name}'");
+                    }
+                    return sb.ToString();
+                }
+                var member = members.Where(m => m.Name == accessors[i]).Where(m => m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property).FirstOrDefault();
                 if (member is FieldInfo f && !f.IsStatic) result = f.GetValue(result);
-                else if (member is PropertyInfo p && !p.GetGetMethod(true).IsStatic) result = p.GetValue(result);
+                else if (member is PropertyInfo p && !(p.GetGetMethod(true)?.IsStatic ?? true)) result = p.GetValue(result);
                 else result = null;
                 if (result == null) return null;
             }
+            accessorCache[$"{objType}_Accessor_{accessor}"] = (Func<object, object>)CreateMemberAccessor(objType, accessor).CreateDelegate(typeof(Func<object, object>));
             return result;
+        }
+        public static DynamicMethod CreateMemberAccessor(Type type, string accessor)
+        {
+            if (accessorCacheDM.TryGetValue($"{type}_Accessor_{accessor}", out var dm)) return dm;
+            string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            if (accessors.Length < 1) return null;
+            Type t = type;
+            MemberInfo result;
+            List<MemberInfo> toEmitMembers = new List<MemberInfo>();
+            for (int i = 0; i < accessors.Length; i++)
+            {
+                result = t?.GetMember(accessors[i], MemberTypes.Field | MemberTypes.Property, (BindingFlags)15420).FirstOrDefault();
+                if (result is FieldInfo f && !f.IsStatic) t = f.FieldType;
+                else if (result is PropertyInfo p && !(p.GetGetMethod(true)?.IsStatic ?? true)) t = p.PropertyType;
+                else return null;
+                toEmitMembers.Add(result);
+            }
+            MemberInfo last = toEmitMembers.Last();
+            Type rt = last is FieldInfo ff ? ff.FieldType : last is PropertyInfo pp ? pp.PropertyType : typeof(object);
+            accessorCacheDM[$"{type}_Accessor_{accessor}"] = dm = new DynamicMethod($"{type}_Accessor_{accessor}", typeof(object), new[] { typeof(object) }, typeof(OverlayerTag), true);
+            ILGenerator il = dm.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            foreach (MemberInfo m in toEmitMembers)
+            {
+                if (m is FieldInfo f)
+                    il.Emit(OpCodes.Ldfld, f);
+                else if (m is PropertyInfo p)
+                    il.Emit(OpCodes.Call, p.GetGetMethod(true));
+            }
+            if (typeof(object) != rt)
+                il.Emit(OpCodes.Box, rt);
+            il.Emit(OpCodes.Ret);
+            Main.Logger.Log($"Accessor Method '{$"{type}_Accessor_{accessor}"}' Generated!");
+            return dm;
         }
         private static int uniqueNum = 0;
         private static readonly MethodInfo round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });
@@ -199,5 +225,7 @@ namespace Overlayer.Tags
         private static readonly MethodInfo runtimeAccessor = typeof(OverlayerTag).GetMethod("RuntimeAccessor", new[] { typeof(object), typeof(string) });
         private static AssemblyBuilder ass;
         private static ModuleBuilder mod;
+        private static Dictionary<string, Func<object, object>> accessorCache = new Dictionary<string, Func<object, object>>();
+        private static Dictionary<string, DynamicMethod> accessorCacheDM = new Dictionary<string, DynamicMethod>();
     }
 }

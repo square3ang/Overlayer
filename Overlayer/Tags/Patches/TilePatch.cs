@@ -21,7 +21,7 @@ namespace Overlayer.Tags.Patches
         }
         [LazyPatch("Tags.Tile.StartTile&ProgressPatch", "scrCountdown", "Update", Triggers = new string[]
         {
-            nameof(Tile.StartTile), nameof(Tile.StartProgress)
+            nameof(Tile.StartTile), nameof(Tile.StartProgress), nameof(Tile.IsStarted)
         })]
         public static class StartTileAndProgressPatch
         {
@@ -100,11 +100,11 @@ namespace Overlayer.Tags.Patches
             }
             public static void SetStartTileProg(scrController ctrl)
             {
-                if (Tile.IsStarted)
+                if (!Tile.IsStarted)
                 {
                     Tile.StartProgress = ctrl.percentComplete * 100;
                     Tile.StartTile = ctrl.currentSeqID + 1;
-                    Tile.IsStarted = false;
+                    Tile.IsStarted = true;
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace Overlayer.Tags.Patches
         {
             public static void Postfix()
             {
-                Tile.IsStarted = true;
+                Tile.IsStarted = false;
             }
         }
     }
