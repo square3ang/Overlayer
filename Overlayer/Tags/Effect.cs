@@ -61,12 +61,11 @@ namespace Overlayer.Tags
             float elapsed = mills - stCache;
             if (elapsed < speed)
             {
-                float inEase = (float)(elapsed / speed);
-                float eased = DOVirtual.EasedValue(0, 1, inEase, ease);
-                float changeOut = (float)(endSize * eased);
-                if (invert) changeOut = (float)(endSize * (1 - eased));
-                double interpolatedValue = Clamp(changeOut, 0, endSize);
-                return interpolatedValue + startSize;
+                float lifetime = (float)(elapsed / speed);
+                float eased = DOVirtual.EasedValue(0, 1, lifetime, ease);
+                if (invert) eased = 1 - eased;
+                float changed = (float)(endSize - startSize) * eased;
+                return startSize + changed;
             }
             return defaultSize;
         }
