@@ -4,6 +4,7 @@ using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
 using Overlayer.Core.Translation;
 using Overlayer.Tags;
+using Overlayer.Tags.Attributes;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using Overlayer.Views;
@@ -19,6 +20,8 @@ namespace Overlayer
 {
     public static class Main
     {
+        [Tag]
+        public static string Developer => "Super Kawaii Suckyoubus Chan~♥";
         public static Assembly Ass { get; private set; }
         public static ModEntry Mod { get; private set; }
         public static ModLogger Logger { get; private set; }
