@@ -7,7 +7,7 @@ namespace Overlayer.Tags.Patches
 {
     public class HitTimingPatch : PatchBase<HitTimingPatch>
     {
-        [LazyPatch("Tags.HitTiming.TimingUpdater", "scrPlanet", "SwitchChosen", Triggers = new string[] { nameof(HitTiming.Timing) })]
+        [LazyPatch("Tags.HitTiming.TimingUpdater", "scrPlanet", "SwitchChosen", Triggers = new string[] { nameof(HitTiming.Timing), nameof(HitTiming.TimingAvg) })]
         public static class TimingUpdater
         {
             public static List<double> Timings = new List<double>();
@@ -22,7 +22,7 @@ namespace Overlayer.Tags.Patches
                 else HitTiming.Timing = 0;
             }
         }
-        [LazyPatch("Tags.HitTiming.TimingResetter", "scrController", "Awake_Rewind", Triggers = new string[] { nameof(HitTiming.Timing) })]
+        [LazyPatch("Tags.HitTiming.TimingResetter", "scrController", "Awake_Rewind", Triggers = new string[] { nameof(HitTiming.Timing), nameof(HitTiming.TimingAvg) })]
         public static class TimingResetter
         {
             public static void Postfix()
