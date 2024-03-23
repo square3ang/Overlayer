@@ -20,8 +20,8 @@ namespace Overlayer
 {
     public static class Main
     {
-        [Tag]
-        public static string Developer => "Super Kawaii Suckyoubus Chan~♥";
+        [Tag(NotPlaying = true)]
+        public static string Developer => Lang[TranslationKeys.Misc.Developer];
         public static Assembly Ass { get; private set; }
         public static ModEntry Mod { get; private set; }
         public static ModLogger Logger { get; private set; }

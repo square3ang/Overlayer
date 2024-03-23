@@ -53,6 +53,7 @@
             internal static readonly string TopRight = Prefix + "TOP_RIGHT";
             internal static readonly string BottomLeft = Prefix + "BOTTOM_LEFT";
             internal static readonly string BottomRight = Prefix + "BOTTOM_RIGHT";
+            internal static readonly string Developer = Prefix + "DEVELOPER";
         }
     }
 }
