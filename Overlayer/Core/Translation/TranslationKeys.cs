@@ -40,6 +40,9 @@
             internal static readonly string Pivot = Prefix + "PIVOT";
             internal static readonly string Export = Prefix + "EXPORT";
             internal static readonly string SelectText = Prefix + "SELECT_TEXT";
+            internal static readonly string ShadowOffset = Prefix + "SHADOW_OFFSET";
+            internal static readonly string ShadowDilate = Prefix + "SHADOW_DILATE";
+            internal static readonly string ShadowSoftness = Prefix + "SHADOW_SOFTNESS";
         }
         public static class Misc
         {

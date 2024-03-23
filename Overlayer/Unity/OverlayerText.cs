@@ -68,10 +68,10 @@ namespace Overlayer.Unity
             mainMat.SetFloat(ShaderUtilities.ID_OutlineWidth, config.OutlineWidth);
             mainMat.EnableKeyword(ShaderUtilities.Keyword_Underlay);
             mainMat.SetColor(ShaderUtilities.ID_UnderlayColor, config.ShadowColor);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, .5f);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -.5f);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 0);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, .5f);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, config.ShadowOffset.x);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, config.ShadowOffset.y);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlayDilate, config.ShadowDilate);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, config.ShadowSoftness);
             Text.fontSharedMaterial = mainMat;
             Text.gameObject.SetActive(config.Active);
             Initialized = true;
