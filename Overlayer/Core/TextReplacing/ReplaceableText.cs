@@ -33,7 +33,7 @@ namespace Overlayer.Core.TextReplacing
         }
         public static object InvokeTag(Tag tag, params string[] args)
         {
-            return tag.Getter.Invoke(tag.GetterOriginalTarget, args);
+            return tag.Getter.Invoke(null, args);
         }
         public static ReplaceableText Create(string source, IEnumerable<Tag> tags, LexConfig config = null)
         {
