@@ -102,6 +102,10 @@ namespace Overlayer.Unity
             mainMat.SetColor(ShaderUtilities.ID_OutlineColor, Config.OutlineColor);
             mainMat.SetFloat(ShaderUtilities.ID_OutlineWidth, Config.OutlineWidth);
             mainMat.SetColor(ShaderUtilities.ID_UnderlayColor, Config.ShadowColor);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, Config.ShadowOffset.x);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, Config.ShadowOffset.y);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlayDilate, Config.ShadowDilate);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, Config.ShadowSoftness);
             Text.fontSharedMaterial = mainMat;
             if (FontManager.TryGetFont(Config.Font, out FontData font))
                 Text.font = font.fontTMP;

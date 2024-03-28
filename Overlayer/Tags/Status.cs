@@ -12,7 +12,7 @@ namespace Overlayer.Tags
         [Tag]
         public static bool IsOldAutoEnabled => ADOFAI.RDConstants?.useOldAuto ?? false;
         [Tag]
-        public static bool IsNoFailEnabled => GCS.useNoFail;
+        public static bool IsNoFailEnabled => ADOFAI.Controller?.noFail ?? GCS.useNoFail;
         [Tag]
         public static double Progress(int digits = -1) => (scrController.instance?.percentComplete * 100 ?? 0).Round(digits);
         [Tag]
