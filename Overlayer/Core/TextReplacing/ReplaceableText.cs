@@ -37,7 +37,7 @@ namespace Overlayer.Core.TextReplacing
         }
         public static ReplaceableText Create(string source, IEnumerable<Tag> tags, LexConfig config = null)
         {
-            return new ReplaceableText(Parser.Parse(Lexer.Lex(source, config), tags.ToList()));
+            return new ReplaceableText(Parser.Parse(Lexer.Lex(source, config), tags.ToList(), config));
         }
         public void Dispose()
         {

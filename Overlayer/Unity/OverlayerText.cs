@@ -70,8 +70,8 @@ namespace Overlayer.Unity
             mainMat.SetColor(ShaderUtilities.ID_UnderlayColor, config.ShadowColor);
             mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, config.ShadowOffset.x);
             mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, config.ShadowOffset.y);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayDilate, config.ShadowDilate);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, config.ShadowSoftness);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - config.ShadowDilate);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - config.ShadowSoftness);
             Text.fontSharedMaterial = mainMat;
             Text.gameObject.SetActive(config.Active);
             Initialized = true;
@@ -85,6 +85,9 @@ namespace Overlayer.Unity
         {
             PlayingReplacer.Source = Config.PlayingText;
             NotPlayingReplacer.Source = Config.NotPlayingText;
+            var lexConfig = MiscUtils.CreateLexConfigFromString(Config.LexOption);
+            PlayingReplacer.SetLexConfig(lexConfig);
+            NotPlayingReplacer.SetLexConfig(lexConfig);
             PlayingReplacer.UpdateTags(TagManager.All.Select(ot => ot.Tag));
             NotPlayingReplacer.UpdateTags(TagManager.NP.Select(ot => ot.Tag));
             PlayingReplacer.Compile();
@@ -104,8 +107,8 @@ namespace Overlayer.Unity
             mainMat.SetColor(ShaderUtilities.ID_UnderlayColor, Config.ShadowColor);
             mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, Config.ShadowOffset.x);
             mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, Config.ShadowOffset.y);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayDilate, Config.ShadowDilate);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, Config.ShadowSoftness);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - Config.ShadowDilate);
+            mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
             Text.fontSharedMaterial = mainMat;
             if (FontManager.TryGetFont(Config.Font, out FontData font))
                 Text.font = font.fontTMP;

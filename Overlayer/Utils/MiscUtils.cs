@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Overlayer.Core.TextReplacing.Lexing;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -97,6 +98,19 @@ namespace Overlayer.Utils
             var target = TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
             target ??= TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15420);
             return target;
+        }
+        public static LexConfig CreateLexConfigFromString(string lexOption)
+        {
+            if (lexOption.Length != 6) return null;
+            return new LexConfig()
+            {
+                TagStart = lexOption[0],
+                TagEnd = lexOption[1],
+                TagOptSeparator = lexOption[2],
+                TagArgStart = lexOption[3],
+                TagArgEnd = lexOption[4],
+                TagArgSeparator = lexOption[5],
+            };
         }
     }
 }

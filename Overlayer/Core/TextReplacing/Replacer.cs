@@ -17,6 +17,7 @@ namespace Overlayer.Core.TextReplacing
         private bool compiled;
         private Func<string> compiledMethod;
         private ReplaceableText interpretable;
+        private LexConfig lexConfig;
         public Replacer(List<Tag> tags = null)
         {
             source = string.Empty;
@@ -52,7 +53,7 @@ namespace Overlayer.Core.TextReplacing
                 DynamicMethod dm = new DynamicMethod(string.Empty, typeof(string), Type.EmptyTypes, typeof(Replacer), true);
                 ILGenerator il = dm.GetILGenerator();
                 interpretable?.Dispose();
-                interpretable = ReplaceableText.Create(source, Tags);
+                interpretable = ReplaceableText.Create(source, Tags, lexConfig);
                 il.Emit(OpCodes.Newobj, StrBuilder_Ctor);
                 foreach (var parsed in interpretable.Replaceables)
                 {
@@ -76,6 +77,10 @@ namespace Overlayer.Core.TextReplacing
         {
             Tags.Clear();
             Tags.AddRange(tags);
+        }
+        public void SetLexConfig(LexConfig config)
+        {
+            lexConfig = config;
         }
         public static readonly ConstructorInfo StrBuilder_Ctor = typeof(StringBuilder).GetConstructor(Type.EmptyTypes);
         public static readonly MethodInfo StrBuilder_Append = typeof(StringBuilder).GetMethod("Append", new[] { typeof(string) });
