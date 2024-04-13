@@ -8,6 +8,7 @@ namespace Overlayer.Patches
     {
         public static void Postfix()
         {
+            Adofaigg.Reset();
             Bpm.Reset();
             Tags.FrameRate.Reset();
             Hex.Reset();
