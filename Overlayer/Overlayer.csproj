@@ -407,6 +407,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Tags\ADOFAI.cs" />
     <Compile Include="Tags\Adofaigg.cs" />
+    <Compile Include="Tags\Attributes\IgnoreCaseAttribute.cs" />
     <Compile Include="Tags\Attributes\ValueProcessing.cs" />
     <Compile Include="Tags\Attributes\JSImplementedByAttribute.cs" />
     <Compile Include="Tags\Attributes\TagAttribute.cs" />
@@ -417,6 +418,7 @@
     <Compile Include="Tags\Hit.cs" />
     <Compile Include="Tags\Level.cs" />
     <Compile Include="Tags\OverlayerTag.cs" />
+    <Compile Include="Tags\Patches\AdofaiggPatch.cs" />
     <Compile Include="Tags\Patches\BpmPatch.cs" />
     <Compile Include="Tags\Patches\FrameRatePatch.cs" />
     <Compile Include="Tags\Patches\HitPatch.cs" />

@@ -67,6 +67,18 @@ namespace Overlayer.Tags
         public static int SMarginCombos(string margins) => MarginCombos_Internal(global::Difficulty.Strict, margins);
         [Tag]
         public static int MarginCombos(string margins) => MarginCombos_Internal(GCS.difficulty, margins);
+        [Tag]
+        public static string SpecialPlayMark(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
+        {
+            var seqID = scrController.instance.currentSeqID;
+            var ppCombo = MarginCombos_Internal(GCS.difficulty, "Perfect");
+            var noMiss = MarginCombos_Internal(GCS.difficulty, "VeryEarly|EarlyPerfect|Perfect|LatePerfect|VeryLate");
+            string result = "XX";
+            if (ppCombo == seqID) result = "PP";
+            else if (noMiss == seqID) result = "FC+";
+            else if (MissCount() + Overloads() <= 0) result = "FC";
+            return result.Trim(maxLength, afterTrimStr);
+        }
         public static int MarginCombos_Internal(Difficulty diff, string margins)
         {
             var hms = margins.SplitParse<HitMargin>('|');

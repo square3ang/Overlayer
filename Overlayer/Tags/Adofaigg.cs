@@ -8,11 +8,14 @@ namespace Overlayer.Tags
 {
     public static class Adofaigg
     {
+        [Tag]
+        public static bool GGRequestCompleted = false;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double GGDifficulty = -999;
         [Tag]
         public static double GGPlayPoint(int digits = -1)
         {
+            if (!GGRequestCompleted) return 0.0;
             double result;
             var edit = scnEditor.instance;
             if (edit)
@@ -20,6 +23,8 @@ namespace Overlayer.Tags
             else result = (double)CalculatePlayPoint(GGDifficulty, (int)Math.Round(Status.Pitch() * 100), Status.XAccuracy(), scrLevelMaker.instance.listFloors.Count);
             return result.Round(digits);
         }
+        [Tag(ProcessingFlags = ValueProcessing.AccessMember)]
+        public static GGRatingHolder GGRating = new GGRatingHolder();
         public static double CalculatePlayPoint(double difficulty, int speed, double accuracy, int tile)
         {
             if (difficulty < 1) return 0.0;
@@ -33,13 +38,36 @@ namespace Overlayer.Tags
         }
         public static void Reset()
         {
+            GGRequestCompleted = false;
+            GGRating = new GGRatingHolder();
             var levelData = ADOFAI.LevelData;
             if (levelData == null) return;
-            new Task(async() =>
+            new Task(async () =>
             {
                 string artist = levelData.artist.BreakRichTag(), author = levelData.author.BreakRichTag(), title = levelData.song.BreakRichTag();
                 GGDifficulty = await OverlayerWebAPI.GetGGDifficulty(artist, title, author, string.IsNullOrWhiteSpace(levelData.pathData) ? levelData.angleData.Count : levelData.pathData.Length, (int)Math.Round(levelData.bpm));
+                GGRequestCompleted = true;
             }).Start();
+        }
+        [IgnoreCase]
+        public class GGRatingHolder
+        {
+            public Rank rank = Rank.X;
+            public double rating = 0;
+            public Rank rank_Internal = Rank.SSS100;
+        }
+        public enum Rank : ushort
+        {
+            X,
+            F = 799,
+            D = 800,
+            C = 900,
+            B = 930,
+            A = 960,
+            S = 980,
+            SS = 990,
+            SSS = 995,
+            SSS100 = 1000,
         }
     }
 }

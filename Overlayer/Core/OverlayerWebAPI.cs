@@ -8,7 +8,7 @@ namespace Overlayer.Core
 {
     public static class OverlayerWebAPI
     {
-        public const string API = DEV_API;
+        public const string API = PROD_API;
         public const string PROD_API = "https://overlayer.c3nb.net";
         public const string DEV_API = "http://localhost:7777";
         public static async Task<string> Handshake() => await Main.HttpClient.GetStringAsync(API + "/handshake");

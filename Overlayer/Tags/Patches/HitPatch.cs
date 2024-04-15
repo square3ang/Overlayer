@@ -18,6 +18,7 @@ namespace Overlayer.Tags.Patches
             nameof(Hit.LSlow), nameof(Hit.NSlow), nameof(Hit.SSlow), nameof(Hit.CSlow),
             nameof(Hit.LMarginCombos), nameof(Hit.NMarginCombos), nameof(Hit.SMarginCombos), nameof(Hit.MarginCombos),
             nameof(Hit.LMarginMaxCombos), nameof(Hit.NMarginMaxCombos), nameof(Hit.SMarginMaxCombos), nameof(Hit.MarginMaxCombos),
+            nameof(Hit.SpecialPlayMark),
         })]
         public static class JudgementTagPatch
         {

@@ -162,7 +162,8 @@ namespace Overlayer.Tags
             if (accessors.Length < 1) return obj;
             for (int i = 0; i < accessors.Length; i++)
             {
-                MemberInfo[] members = result?.GetType().GetMembers((BindingFlags)15420);
+                Type type = result?.GetType();
+                MemberInfo[] members = type.GetMembers((BindingFlags)15420);
                 if (accessors[i].Equals("ListMembers", StringComparison.OrdinalIgnoreCase))
                 {
                     StringBuilder sb = new StringBuilder();
@@ -176,7 +177,9 @@ namespace Overlayer.Tags
                     }
                     return sb.ToString();
                 }
-                var member = members.Where(m => m.Name == accessors[i]).Where(m => m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property).FirstOrDefault();
+                var ignoreCase = type.GetCustomAttribute<IgnoreCaseAttribute>() != null;
+                var foundMembers = ignoreCase ? members.Where(m => m.Name.Equals(accessors[i], StringComparison.OrdinalIgnoreCase)) : members.Where(m => m.Name == accessors[i]);
+                var member = foundMembers.Where(m => m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property).FirstOrDefault();
                 if (member is FieldInfo f && !f.IsStatic) result = f.GetValue(result);
                 else if (member is PropertyInfo p && !(p.GetGetMethod(true)?.IsStatic ?? true)) result = p.GetValue(result);
                 else result = null;
@@ -195,7 +198,10 @@ namespace Overlayer.Tags
             List<MemberInfo> toEmitMembers = new List<MemberInfo>();
             for (int i = 0; i < accessors.Length; i++)
             {
-                result = t?.GetMember(accessors[i], MemberTypes.Field | MemberTypes.Property, (BindingFlags)15420).FirstOrDefault();
+                var ignoreCase = t.GetCustomAttribute<IgnoreCaseAttribute>() != null;
+                if (ignoreCase)
+                    result = t?.GetMembers((BindingFlags)15420).Where(m => m.Name.Equals(accessors[i], StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                else result = t?.GetMember(accessors[i], MemberTypes.Field | MemberTypes.Property, (BindingFlags)15420).FirstOrDefault();
                 if (result is FieldInfo f && !f.IsStatic) t = f.FieldType;
                 else if (result is PropertyInfo p && !(p.GetGetMethod(true)?.IsStatic ?? true)) t = p.PropertyType;
                 else return null;

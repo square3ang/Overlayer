@@ -10,7 +10,7 @@ namespace Overlayer.WebAPI.Controllers
     [Route("[controller]")]
     public class AdofaiggController : ControllerBase
     {
-        public const string API = "https://adofai.gg:9200/api/v1";
+        public const string API = "https://adofai.gg/api/v1";
         public const string HEADER_LEVELS = "/levels";
         public const string HEADER_PLAY_LOGS = "/playLogs";
         public const string HEADER_RANKING = "/ranking";
@@ -26,7 +26,10 @@ namespace Overlayer.WebAPI.Controllers
                 level = await GetLevel(artist, title, author, tiles, bpm);
                 EscapeParameter = false;
             }
-            return await Task.FromResult(level?.difficulty ?? -999);
+            if (level == null)
+                Console.WriteLine($"Cannot Find Level!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
+            else Console.WriteLine($"Found Level! ({level.id})");
+            return await Task.FromResult(level?.difficulty ?? -404);
         }
         private async Task<Level?> GetLevel(string artist, string title, string author, int tiles, int bpm, params Parameter[] ifFailedWith)
         {
@@ -94,6 +97,7 @@ namespace Overlayer.WebAPI.Controllers
         private async Task<Response<T>> GGRequest<T>(string header, Parameters parameters) where T : Json
         {
             string reqUrl = $"{API}{header}{parameters}";
+            Console.WriteLine($"GGRequest:{reqUrl}");
             string json = await Main.HttpClient.GetStringAsync(reqUrl);
             Response<T> r = JsonConvert.DeserializeObject<Response<T>>(json) ?? new Response<T>();
             r.json = json;

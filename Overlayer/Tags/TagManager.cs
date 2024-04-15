@@ -68,6 +68,10 @@ namespace Overlayer.Tags
                 if (!tag.Referenced) LazyPatchManager.UnpatchAll(tag.Name);
                 else LazyPatchManager.PatchAll(tag.Name);
         }
+        public static bool HasReference(Type declaringType)
+        {
+            return tags.Values.Any(tag => tag.DeclaringType == declaringType);
+        }
         public static void Initialize()
         {
             if (Initialized) return;
