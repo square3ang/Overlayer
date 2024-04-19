@@ -23,9 +23,7 @@ namespace Overlayer.WebAPI.Core.Adofaigg
         }
         public Parameter<T> SetValue(T value)
         {
-            if (AdofaiggController.EscapeParameter && str)
-                value_ = (T)(object)Uri.EscapeDataString(value.ToString());
-            else value_ = value;
+            value_ = value;
             return this;
         }
     }

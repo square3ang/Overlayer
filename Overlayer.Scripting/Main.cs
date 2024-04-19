@@ -50,13 +50,14 @@ namespace Overlayer.Scripting
                 JSVerifyApi = new Api();
                 JSVerifyApi.RegisterType(typeof(Impl_Verify));
 
+                TagManager.Load(typeof(Expression));
+                TagManager.Load(typeof(PerformanceTags));
+
                 JSGenApi = new Api();
                 JSGenApi.RegisterType(typeof(Impl));
                 foreach (var tag in TagManager.All)
                     JSGenApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
 
-                TagManager.Load(typeof(Expression));
-                TagManager.Load(typeof(PerformanceTags));
                 RunScriptsNonBlocking(ScriptPath);
                 PerformanceTags.Initialize();
             }

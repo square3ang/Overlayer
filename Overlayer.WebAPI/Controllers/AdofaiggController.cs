@@ -3,6 +3,7 @@ using Overlayer.WebAPI.Core.Adofaigg.Types;
 using Overlayer.WebAPI.Core.Adofaigg;
 using Overlayer.WebAPI.Core.Utils;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Overlayer.WebAPI.Controllers
 {
@@ -20,12 +21,6 @@ namespace Overlayer.WebAPI.Controllers
         {
             Console.WriteLine($"Received artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm}");
             var level = await GetLevel(artist, title, author, tiles, bpm);
-            if (level == null)
-            {
-                EscapeParameter = true;
-                level = await GetLevel(artist, title, author, tiles, bpm);
-                EscapeParameter = false;
-            }
             if (level == null)
                 Console.WriteLine($"Cannot Find Level!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
             else Console.WriteLine($"Found Level! ({level.id})");
@@ -78,6 +73,9 @@ namespace Overlayer.WebAPI.Controllers
                         nartist = nartist.Replace(" ", "");
                         nauthor = nauthor.Replace(" ", "");
                     }
+                    EscapeIfRequire(ref nartist);
+                    EscapeIfRequire(ref ntitle);
+                    EscapeIfRequire(ref nauthor);
                 }
                 if (!string.IsNullOrWhiteSpace(nartist) && !IsSameWithDefault("editor.artist", nartist))
                     parameters.Add(Level.QueryArtist(nartist));
@@ -102,6 +100,11 @@ namespace Overlayer.WebAPI.Controllers
             Response<T> r = JsonConvert.DeserializeObject<Response<T>>(json) ?? new Response<T>();
             r.json = json;
             return r;
+        }
+        public static void EscapeIfRequire(ref string str)
+        {
+            if (str.IndexOfAny(new char[] { '[', ']' }) != -1)
+                str = Uri.EscapeDataString(str);
         }
         private static bool IsSameWithDefault(string key, string value)
         {
