@@ -178,7 +178,6 @@ namespace Overlayer.Scripting
         public static async void RunScriptsNonBlocking(string folderPath)
         {
             await RunScripts(folderPath);
-            StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
         }
         public static void BeginScript(bool sandbox = false)
         {

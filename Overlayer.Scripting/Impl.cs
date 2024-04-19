@@ -48,6 +48,7 @@ namespace Overlayer.Scripting
             harmony = null;
             jsTypes = null;
             alreadyExecutedScripts = null;
+            StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
             DisposeWrapperAssembly();
         }
         public static void Reload()
