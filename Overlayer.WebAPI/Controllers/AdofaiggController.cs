@@ -19,11 +19,19 @@ namespace Overlayer.WebAPI.Controllers
         public async Task<double> GetDifficulty([FromQuery] string artist, [FromQuery] string title, [FromQuery] string author, [FromQuery] int tiles, [FromQuery] int bpm)
         {
             Console.WriteLine($"Received artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm}");
-            var level = await GetLevel(artist, title, author, tiles, bpm);
-            if (level == null)
-                Console.WriteLine($"Cannot Find Level!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
-            else Console.WriteLine($"Found Level! ({level.id})");
-            return await Task.FromResult(level?.difficulty ?? -404);
+            try
+            {
+                var level = await GetLevel(artist, title, author, tiles, bpm);
+                if (level == null)
+                    Console.WriteLine($"Cannot Find Level!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
+                else Console.WriteLine($"Found Level! ({level.id})");
+                return await Task.FromResult(level?.difficulty ?? -404);
+            }
+            catch
+            {
+                Console.WriteLine($"GGRequest Error!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
+                return await Task.FromResult(-500);
+            }
         }
         private async Task<Level?> GetLevel(string artist, string title, string author, int tiles, int bpm, params Parameter[] ifFailedWith)
         {
