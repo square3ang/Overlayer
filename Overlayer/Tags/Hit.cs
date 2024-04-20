@@ -57,7 +57,7 @@ namespace Overlayer.Tags
         [Tag]
         public static string Difficulty(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("enum.Difficulty." + GCS.difficulty).Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string DifficultyStr(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => GCS.difficulty.ToString().Trim(maxLength, afterTrimStr);
+        public static string DifficultyRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => GCS.difficulty.ToString().Trim(maxLength, afterTrimStr);
         #region MarginCombos
         [Tag]
         public static int LMarginCombos(string margins) => MarginCombos_Internal(global::Difficulty.Lenient, margins);
