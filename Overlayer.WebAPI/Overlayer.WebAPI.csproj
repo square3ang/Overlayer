@@ -8,7 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.ML" Version="3.0.1" />
+    <PackageReference Include="Microsoft.ML.FastTree" Version="3.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AdofaiMapConverter">
+      <HintPath>C:\Users\dongs\source\repos\c3nb\AdofaiMapConverter\AdofaiMapConverter\bin\Release\AdofaiMapConverter.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

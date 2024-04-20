@@ -417,12 +417,14 @@
     <Compile Include="Tags\Hex.cs" />
     <Compile Include="Tags\Hit.cs" />
     <Compile Include="Tags\Level.cs" />
+    <Compile Include="Tags\OverlayerAPI.cs" />
     <Compile Include="Tags\OverlayerTag.cs" />
     <Compile Include="Tags\Patches\AdofaiggPatch.cs" />
     <Compile Include="Tags\Patches\BpmPatch.cs" />
     <Compile Include="Tags\Patches\FrameRatePatch.cs" />
     <Compile Include="Tags\Patches\HitPatch.cs" />
     <Compile Include="Tags\Patches\HitTimingPatch.cs" />
+    <Compile Include="Tags\Patches\OverlayerAPIPatch.cs" />
     <Compile Include="Tags\Patches\PatchBase.cs" />
     <Compile Include="Tags\Patches\SongPatch.cs" />
     <Compile Include="Tags\Patches\StatusPatch.cs" />

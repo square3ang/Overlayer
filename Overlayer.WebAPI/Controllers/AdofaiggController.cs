@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Overlayer.WebAPI.Core.Adofaigg.Types;
-using Overlayer.WebAPI.Core.Adofaigg;
-using Overlayer.WebAPI.Core.Utils;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Overlayer.WebAPI.Core.Adofaigg;
+using Overlayer.WebAPI.Core.Adofaigg.Types;
+using Overlayer.WebAPI.Core.Utils;
 
 namespace Overlayer.WebAPI.Controllers
 {
@@ -95,7 +94,7 @@ namespace Overlayer.WebAPI.Controllers
         private async Task<Response<T>> GGRequest<T>(string header, Parameters parameters) where T : Json
         {
             string reqUrl = $"{API}{header}{parameters}";
-            Console.WriteLine($"GGRequest:{reqUrl}");
+            //Console.WriteLine($"GGRequest:{reqUrl}");
             string json = await Main.HttpClient.GetStringAsync(reqUrl);
             Response<T> r = JsonConvert.DeserializeObject<Response<T>>(json) ?? new Response<T>();
             r.json = json;

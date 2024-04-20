@@ -9,6 +9,10 @@ namespace Overlayer.WebAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddMvc(options =>
+            {
+                options.InputFormatters.Insert(0, new BinaryInputFormatter());
+            });
 
             var app = builder.Build();
 

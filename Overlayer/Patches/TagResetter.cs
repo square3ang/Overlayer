@@ -10,6 +10,7 @@ namespace Overlayer.Patches
         {
             if (TagManager.HasReference(typeof(Adofaigg)))
                 Adofaigg.Reset();
+            OverlayerAPI.Reset();
             Bpm.Reset();
             Tags.FrameRate.Reset();
             Hex.Reset();
