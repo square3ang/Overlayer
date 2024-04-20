@@ -46,6 +46,7 @@ namespace Overlayer.Tags
             {
                 string artist = levelData.artist.BreakRichTag(), author = levelData.author.BreakRichTag(), title = levelData.song.BreakRichTag();
                 GGDifficulty = await OverlayerWebAPI.GetGGDifficulty(artist, title, author, string.IsNullOrWhiteSpace(levelData.pathData) ? levelData.angleData.Count : levelData.pathData.Length, (int)Math.Round(levelData.bpm));
+                if (GGDifficulty == -404 && TagManager.HasReference(typeof(OverlayerAPI))) GGDifficulty = OverlayerAPI.PredictedDifficulty;
                 GGRequestCompleted = true;
             }).Start();
         }
