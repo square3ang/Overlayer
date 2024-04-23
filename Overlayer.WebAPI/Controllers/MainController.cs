@@ -76,50 +76,58 @@ namespace Overlayer.WebAPI.Controllers
         [HttpPost("predictRaw")]
         public async Task PredictRaw([FromBody] byte[] adofai)
         {
-            var adofaiJson = Encoding.UTF8.GetString(adofai);
-            var level = CustomLevel.Read(JsonNode.Parse(adofaiJson));
-            var meta = LevelMeta.GetMeta(level);
             var difficulty = -500.0;
-            if (meta.IsValid)
+            try
             {
-                var input = new DP_V2.ModelInput()
+                var adofaiJson = Encoding.UTF8.GetString(adofai);
+                var level = CustomLevel.Read(JsonNode.Parse(adofaiJson));
+                var setting = level.Setting;
+                Console.WriteLine($"[PredictRaw] Received artist:{setting.artist},title:{setting.song},author:{setting.author},tiles:{level.Tiles.Count},bpm:{setting.bpm}");
+                var meta = LevelMeta.GetMeta(level);
+                if (meta.IsValid)
                 {
-                    TileCount = meta.tileCount,
-                    TwirlRatio = (float)meta.twirlRatio,
-                    SetSpeedRatio = (float)meta.setSpeedRatio,
+                    var input = new DP_V2.ModelInput()
+                    {
+                        TileCount = meta.tileCount,
+                        TwirlRatio = (float)meta.twirlRatio,
+                        SetSpeedRatio = (float)meta.setSpeedRatio,
 
-                    MinTA = (float)meta.minTA,
-                    MaxTA = (float)meta.maxTA,
-                    TaAverage = (float)meta.taAverage,
-                    TaVariance = (float)meta.taVariance,
-                    TaStdDeviation = (float)meta.taStdDeviation,
+                        MinTA = (float)meta.minTA,
+                        MaxTA = (float)meta.maxTA,
+                        TaAverage = (float)meta.taAverage,
+                        TaVariance = (float)meta.taVariance,
+                        TaStdDeviation = (float)meta.taStdDeviation,
 
-                    MinSA = (float)meta.minSA,
-                    MaxSA = (float)meta.maxSA,
-                    SaAverage = (float)meta.saAverage,
-                    SaVariance = (float)meta.saVariance,
-                    SaStdDeviation = (float)meta.saStdDeviation,
+                        MinSA = (float)meta.minSA,
+                        MaxSA = (float)meta.maxSA,
+                        SaAverage = (float)meta.saAverage,
+                        SaVariance = (float)meta.saVariance,
+                        SaStdDeviation = (float)meta.saStdDeviation,
 
-                    MinMs = (float)meta.minMs,
-                    MaxMS = (float)meta.maxMs,
-                    MsAverage = (float)meta.msAverage,
-                    MsVariance = (float)meta.msVariance,
-                    MsStdDeviation = (float)meta.msStdDeviation,
+                        MinMs = (float)meta.minMs,
+                        MaxMS = (float)meta.maxMs,
+                        MsAverage = (float)meta.msAverage,
+                        MsVariance = (float)meta.msVariance,
+                        MsStdDeviation = (float)meta.msStdDeviation,
 
-                    MinBpm = (float)meta.minBpm,
-                    MaxBpm = (float)meta.maxBpm,
-                    BpmAverage = (float)meta.bpmAverage,
-                    BpmVariance = (float)meta.bpmVariance,
-                    BpmStdDeviation = (float)meta.bpmStdDeviation,
-                };
-                var predicted = DP_V2.Predict(input).Score;
-                if (predicted > 25) difficulty = 21;
-                if (predicted <= 20)
-                    if (predicted > 18)
-                        difficulty = Math.Round(predicted / .5) * .5;
-                    else difficulty = Math.Round(predicted);
-                else difficulty = Math.Round(20d + (predicted % 20 / 5), 1);
+                        MinBpm = (float)meta.minBpm,
+                        MaxBpm = (float)meta.maxBpm,
+                        BpmAverage = (float)meta.bpmAverage,
+                        BpmVariance = (float)meta.bpmVariance,
+                        BpmStdDeviation = (float)meta.bpmStdDeviation,
+                    };
+                    var predicted = DP_V2.Predict(input).Score;
+                    if (predicted > 25) difficulty = 21;
+                    if (predicted <= 20)
+                        if (predicted > 18)
+                            difficulty = Math.Round(predicted / .5) * .5;
+                        else difficulty = Math.Round(predicted);
+                    else difficulty = Math.Round(20d + (predicted % 20 / 5), 1);
+                    Console.WriteLine($"[PredictRaw] Predicted Difficulty! (artist:{setting.artist},title:{setting.song},author:{setting.author},tiles:{level.Tiles.Count},bpm:{setting.bpm})");
+                }
+                else Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (artist:{setting.artist},title:{setting.song},author:{setting.author},tiles:{level.Tiles.Count},bpm:{setting.bpm})");
             }
+            catch { Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (Exception Occured!!)"); }
             await Response.Body.WriteAsync(Encoding.UTF8.GetBytes(difficulty.ToString()));
         }
     }
