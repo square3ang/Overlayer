@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Overlayer.WebAPI.Core.Adofaigg
+namespace Overlayer.WebAPI.Core
 {
     public class Parameters : IEnumerable<Parameter>
     {

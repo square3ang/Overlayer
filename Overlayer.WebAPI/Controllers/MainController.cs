@@ -125,7 +125,7 @@ namespace Overlayer.WebAPI.Controllers
                     else difficulty = Math.Round(20d + (predicted % 20 / 5), 1);
                     Console.WriteLine($"[PredictRaw] Predicted Difficulty! (artist:{setting.artist},title:{setting.song},author:{setting.author},tiles:{level.Tiles.Count},bpm:{setting.bpm})");
                 }
-                else Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (artist:{setting.artist},title:{setting.song},author:{setting.author},tiles:{level.Tiles.Count},bpm:{setting.bpm})");
+                else Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (Meta Invalid!!)");
             }
             catch { Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (Exception Occured!!)"); }
             await Response.Body.WriteAsync(Encoding.UTF8.GetBytes(difficulty.ToString()));

@@ -435,6 +435,7 @@
     <Compile Include="Tags\Tile.cs" />
     <Compile Include="Tags\Time.cs" />
     <Compile Include="Tags\HitTiming.cs" />
+    <Compile Include="Tags\TUF.cs" />
     <Compile Include="Unity\OverlayerText.cs" />
     <Compile Include="Unity\StaticCoroutine.cs" />
     <Compile Include="Utils\ADOUtils.cs" />

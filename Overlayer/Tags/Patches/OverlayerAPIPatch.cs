@@ -2,6 +2,7 @@
 using Overlayer.Core.Patches;
 using System.IO;
 using System.Threading.Tasks;
+using static Newgrounds.Medal;
 
 namespace Overlayer.Tags.Patches
 {
@@ -9,7 +10,7 @@ namespace Overlayer.Tags.Patches
     {
         [LazyPatch("Tags.OverlayerAPI.PredictedDifficultyUpdater", "ADOFAI.LevelData", "LoadLevel", Triggers = new string[]
         {
-            nameof(OverlayerAPI.PredictedDifficulty)
+            nameof(OverlayerAPI.PredictedGGDifficulty)
         })]
         public static class PredictedDifficultyUpdater
         {
@@ -17,18 +18,19 @@ namespace Overlayer.Tags.Patches
             {
                 if (!File.Exists(levelPath))
                 {
-                    OverlayerAPI.PredictedDifficulty = -404;
+                    OverlayerAPI.PredictedGGDifficulty = -404;
                     return;
                 }
                 new Task(async () =>
                 {
                     try
                     {
-                        OverlayerAPI.PredictedDifficulty = await OverlayerWebAPI.GetPredDifficulty(File.ReadAllBytes(levelPath));
+                        OverlayerAPI.PredictedGGDifficulty = await OverlayerWebAPI.GetPredDifficulty(File.ReadAllBytes(levelPath));
+                        if (Adofaigg.GGDifficulty == -404) Adofaigg.GGDifficulty = OverlayerAPI.PredictedGGDifficulty;
                     }
                     catch
                     {
-                        OverlayerAPI.PredictedDifficulty = -500;
+                        OverlayerAPI.PredictedGGDifficulty = -500;
                     }
                 }).Start();
             }

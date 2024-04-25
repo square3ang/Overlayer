@@ -8,9 +8,11 @@ namespace Overlayer.Patches
     {
         public static void Postfix()
         {
+            OverlayerAPI.Reset();
             if (TagManager.HasReference(typeof(Adofaigg)))
                 Adofaigg.Reset();
-            OverlayerAPI.Reset();
+            if (TagManager.HasReference(typeof(TUF)))
+                TUF.Reset();
             Bpm.Reset();
             Tags.FrameRate.Reset();
             Hex.Reset();

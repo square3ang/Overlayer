@@ -5,10 +5,10 @@ namespace Overlayer.Tags
     public static class OverlayerAPI
     {
         [Tag(NotPlaying = false, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double PredictedDifficulty = -999;
+        public static double PredictedGGDifficulty = -999;
         public static void Reset()
         {
-            //PredictedDifficulty = -999;
+            //PredictedGGDifficulty = -999;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Overlayer.WebAPI.Controllers;
 using System;
 
-namespace Overlayer.WebAPI.Core.Adofaigg
+namespace Overlayer.WebAPI.Core
 {
     public class Parameter<T> : Parameter
     {

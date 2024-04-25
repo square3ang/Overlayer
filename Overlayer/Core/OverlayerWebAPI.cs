@@ -23,6 +23,10 @@ namespace Overlayer.Core
             StringConverter.ToDouble(
                 await Main.HttpClient.GetStringAsync( 
                     API + $"/adofaigg/difficulty/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}"));
+        public static async Task<double> GetTUFDifficulty(string artist, string title, string author, int tiles, int bpm) =>
+            StringConverter.ToDouble(
+                await Main.HttpClient.GetStringAsync(
+                    API + $"/tuf/difficulty/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}"));
         public static async Task<double> GetPredDifficulty(byte[] adofai)
         {
             Main.Logger.Log($"Requesting Predict Level..");

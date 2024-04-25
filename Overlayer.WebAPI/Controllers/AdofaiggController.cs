@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Overlayer.WebAPI.Core;
 using Overlayer.WebAPI.Core.Adofaigg;
 using Overlayer.WebAPI.Core.Adofaigg.Types;
 using Overlayer.WebAPI.Core.Utils;
@@ -14,17 +15,16 @@ namespace Overlayer.WebAPI.Controllers
         public const string HEADER_LEVELS = "/levels";
         public const string HEADER_PLAY_LOGS = "/playLogs";
         public const string HEADER_RANKING = "/ranking";
-        public static bool EscapeParameter { get; set; } = false;
         [HttpGet("difficulty")]
         public async Task<double> GetDifficulty([FromQuery] string artist, [FromQuery] string title, [FromQuery] string author, [FromQuery] int tiles, [FromQuery] int bpm)
         {
-            Console.WriteLine($"Received artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm}");
+            Console.WriteLine($"[GGController] Received artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm}");
             try
             {
                 var level = await GetLevel(artist, title, author, tiles, bpm);
                 if (level == null)
-                    Console.WriteLine($"Cannot Find Level!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
-                else Console.WriteLine($"Found Level! ({level.id})");
+                    Console.WriteLine($"[GGController] Cannot Find Level!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
+                else Console.WriteLine($"[GGController] Found Level! ({level.id})");
                 return await Task.FromResult(level?.difficulty ?? -404);
             }
             catch
@@ -35,33 +35,21 @@ namespace Overlayer.WebAPI.Controllers
         }
         private async Task<Level?> GetLevel(string artist, string title, string author, int tiles, int bpm, params Parameter[] ifFailedWith)
         {
-            var result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(-1));
-            if (result.count <= 0)
-            {
-                result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(0));
-                if (result.count <= 0)
-                {
-                    result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(1));
-                    if (result.count <= 0)
-                    {
-                        result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(2));
-                        if (result.count <= 0)
-                            return await Fail();
-                        return result.results[0];
-                    }
-                    return result.results[0];
-                }
-                return result.results[0];
-            }
+            Response<Level> result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(-1));
+            for (int i = 0; result.count <= 0 && i <= 2; i++)
+                result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(i));
+            if (result.count <= 0) return null;
             if (result.count > 1)
                 result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(-1, Level.MinBpm(bpm - 1), Level.MaxBpm(bpm + 1)));
-            if (result.count <= 0) return await Fail();
+            if (result.count <= 0) return null;
             if (result.count > 1)
                 result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(-1, Level.MinTiles(tiles - 1), Level.MaxTiles(tiles + 1)));
-            if (result.count <= 0) return await Fail();
+            if (result.count <= 0) return null;
             if (result.count > 1)
                 result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(-1, Level.MinBpm(bpm - 1), Level.MaxBpm(bpm + 1), Level.MinTiles(tiles - 1), Level.MaxTiles(tiles + 1)));
-            if (result.count <= 0) return await Fail();
+            if (result.count <= 0) return null;
+            if (result.count > 1)
+                Console.WriteLine($"[GGController] Found {result.count}'s Levels!! Use First Level..");
             return result.results[0];
             Parameters ActualParams(int level = -1, params Parameter[] with)
             {
@@ -92,12 +80,6 @@ namespace Overlayer.WebAPI.Controllers
                     parameters.Add(Level.QueryCreator(nauthor));
                 return new Parameters(parameters);
             }
-            async Task<Level?> Fail()
-            {
-                if (ifFailedWith.Length < 1)
-                    return await GetLevel(artist, title, author, tiles, bpm, Level.ShowCensored(true));
-                return null;
-            }
         }
         private async Task<Response<T>> GGRequest<T>(string header, Parameters parameters) where T : Json
         {
@@ -113,7 +95,7 @@ namespace Overlayer.WebAPI.Controllers
             if (str.IndexOfAny(new char[] { '[', ']' }) != -1)
                 str = Uri.EscapeDataString(str);
         }
-        private static bool IsSameWithDefault(string key, string value)
+        public static bool IsSameWithDefault(string key, string value)
         {
             return DefaultStrings[key].Contains(value);
         }
