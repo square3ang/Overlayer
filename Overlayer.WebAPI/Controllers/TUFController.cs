@@ -13,7 +13,7 @@ namespace Overlayer.WebAPI.Controllers
     [Route("[controller]")]
     public class TUFController : ControllerBase
     {
-        public const string API = "https://be.t21c.kro.kr";
+        public const string API = "https://be.tuforums.com";
         public const string HEADER_LEVELS = "/levels";
         [HttpGet("difficulty")]
         public async Task<double> GetDifficulty([FromQuery] string artist, [FromQuery] string title, [FromQuery] string author, [FromQuery] int tiles, [FromQuery] int bpm)
@@ -31,6 +31,35 @@ namespace Overlayer.WebAPI.Controllers
             {
                 Console.WriteLine($"TUFRequest Error!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
                 return await Task.FromResult(-500);
+            }
+        }
+        [HttpGet("difficulties")]
+        public async Task<string> GetDifficulties([FromQuery] string artist, [FromQuery] string title, [FromQuery] string author, [FromQuery] int tiles, [FromQuery] int bpm)
+        {
+            Console.WriteLine($"[TUFController] Received artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm}");
+            var node = JsonNode.Empty;
+            try
+            {
+                var level = await GetLevel(artist, title, author, tiles, bpm);
+                if (level == null)
+                    Console.WriteLine($"[TUFController] Cannot Find Level!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
+                else Console.WriteLine($"[TUFController] Found Level! ({level.id})");
+                if (level != null)
+                {
+                    node["status"] = (int)HttpStatusCode.OK;
+                    node[nameof(level.diff)] = level.diff;
+                    node[nameof(level.pdnDiff)] = level.pdnDiff;
+                    node[nameof(level.pguDiff)] = level.pguDiff;
+                    node[nameof(level.pguDiffNum)] = level.pguDiffNum;
+                }
+                else node["status"] = (int)HttpStatusCode.NotFound;
+                return await Task.FromResult(node.ToString());
+            }
+            catch
+            {
+                node["status"] = (int)HttpStatusCode.InternalServerError;
+                Console.WriteLine($"TUFRequest Error!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
+                return await Task.FromResult(node.ToString());
             }
         }
         public static async Task<Level?> GetLevel(string artist, string title, string author, int tiles, int bpm, params Parameter[] ifFailedWith)

@@ -1,11 +1,13 @@
 ﻿using JSON;
 using Overlayer.Models;
-using System;
-using System.Threading.Tasks;
+using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
-using System.Net.Http.Headers;
+using System;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Overlayer.Core
 {
@@ -27,6 +29,20 @@ namespace Overlayer.Core
             StringConverter.ToDouble(
                 await Main.HttpClient.GetStringAsync(
                     API + $"/tuf/difficulty/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}"));
+        public static async Task<TUFDifficulties> GetTUFDifficulties(string artist, string title, string author, int tiles, int bpm)
+        {
+            var json = await Main.HttpClient.GetStringAsync(
+                    API + $"/tuf/difficulties/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}");
+            var node = JsonNode.Parse(json);
+            return new TUFDifficulties()
+            {
+                status = EnumHelper<HttpStatusCode>.Parse(node["status"]),
+                diff = node["diff"].IfNotExist(-999),
+                pdnDiff = node["pdnDiff"].IfNotExist(-999),
+                pguDiff = node["pguDiff"].IfNotExist(-999),
+                pguDiffNum = node["pguDiffNum"].IfNotExist(-999)
+            };
+        }
         public static async Task<double> GetPredDifficulty(byte[] adofai)
         {
             Main.Logger.Log($"Requesting Predict Level..");
@@ -39,6 +55,15 @@ namespace Overlayer.Core
             var result = StringConverter.ToDouble(predictedDifficulty);
             Main.Logger.Log($"Response: {result}");
             return result;
+        }
+        [IgnoreCase]
+        public class TUFDifficulties
+        {
+            public HttpStatusCode status = (HttpStatusCode)(-1);
+            public double diff;
+            public double pdnDiff;
+            public string pguDiff;
+            public double pguDiffNum = -999;
         }
     }
 }
