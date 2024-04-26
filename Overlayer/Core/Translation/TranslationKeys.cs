@@ -22,6 +22,7 @@
         public static class TextConfig
         {
             public const string Prefix = "TEXT_CONFIG_";
+            internal static readonly string Name = Prefix + "NAME";
             internal static readonly string Active = Prefix + "ACTIVE";
             internal static readonly string Position = Prefix + "POSITION";
             internal static readonly string Rotation = Prefix + "ROTATION";
