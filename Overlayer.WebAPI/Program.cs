@@ -1,3 +1,5 @@
+using Overlayer.WebAPI.Controllers;
+
 namespace Overlayer.WebAPI
 {
     public class Program
@@ -22,6 +24,20 @@ namespace Overlayer.WebAPI
 
 
             app.MapControllers();
+
+            MainController.HandshakeCount = File.ReadAllLines("handshakes.txt").LongLength;
+            AdofaiggController.RequestCount = long.Parse(File.ReadAllText("ggreqcnt.txt"));
+            TUFController.RequestCount = long.Parse(File.ReadAllText("tufreqcnt.txt"));
+
+            new Task(async () =>
+            {
+                while (true)
+                {
+                    await File.WriteAllTextAsync("ggreqcnt.txt", AdofaiggController.RequestCount.ToString());
+                    await File.WriteAllTextAsync("tufreqcnt.txt", TUFController.RequestCount.ToString());
+                    await Task.Delay(10000);
+                }
+            }).Start();
 
             app.Run("http://127.0.0.1:7777");
         }

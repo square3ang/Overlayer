@@ -20,6 +20,9 @@ namespace Overlayer.Core
         public static async Task<Version> GetVersion() => Version.Parse(JsonNode.Parse(await Main.HttpClient.GetStringAsync(API + "/version")).Value);
         public static async Task<string> GetDiscordLink() => await Main.HttpClient.GetStringAsync(API + "/discord");
         public static async Task<string> GetDownloadLink() => await Main.HttpClient.GetStringAsync(API + "/download");
+        public static async Task<long> GetHandshakeCount() => StringConverter.ToInt64(await Main.HttpClient.GetStringAsync(API + "/handshakeCount"));
+        public static async Task<long> GetGGRequestCount() => StringConverter.ToInt64(await Main.HttpClient.GetStringAsync(API + "/adofaigg/requestCount"));
+        public static async Task<long> GetTUFRequestCount() => StringConverter.ToInt64(await Main.HttpClient.GetStringAsync(API + "/tuf/requestCount"));
         public static async Task<string> GetLanguageJson(OverlayerLanguage lang) => await Main.HttpClient.GetStringAsync(API + "/language/" + lang);
         public static async Task<double> GetGGDifficulty(string artist, string title, string author, int tiles, int bpm) => 
             StringConverter.ToDouble(

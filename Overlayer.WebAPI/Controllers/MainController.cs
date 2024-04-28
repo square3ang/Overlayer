@@ -13,6 +13,7 @@ namespace Overlayer.WebAPI.Controllers
     [ApiController]
     public class MainController : ControllerBase
     {
+        public static long HandshakeCount = 0;
         public static readonly JsonNode Info = JsonNode.Parse(System.IO.File.ReadAllText("Info.json"));
         [HttpGet("version")]
         public Version GetVersion() => Version.Parse(Info["version"].Value);
@@ -26,6 +27,7 @@ namespace Overlayer.WebAPI.Controllers
             var ip = HttpContext.GetIpAddress() ?? "Anonymous";
             System.IO.File.AppendAllText("handshakes.txt", ip + "\n");
             Console.WriteLine(ip);
+            HandshakeCount++;
             return ip;
         }
         [HttpGet("predict")]
@@ -130,5 +132,7 @@ namespace Overlayer.WebAPI.Controllers
             catch { Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (Exception Occured!!)"); }
             await Response.Body.WriteAsync(Encoding.UTF8.GetBytes(difficulty.ToString()));
         }
+        [HttpGet("handshakeCount")]
+        public async Task<long> GetHandshakeCount() => await Task.FromResult(HandshakeCount);
     }
 }

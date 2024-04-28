@@ -1,7 +1,9 @@
-﻿using Overlayer.Core.Interfaces;
+﻿using Overlayer.Core;
+using Overlayer.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TM = Overlayer.Core.Translation.TranslationKeys.Misc;
 
 namespace Overlayer.Controllers
 {
@@ -54,6 +56,9 @@ namespace Overlayer.Controllers
                     onSkipCallbacks.Pop()?.Invoke();
                 return;
             }
+            Drawer.ButtonLabel($"{Main.Lang[TM.GGReqCnt]} {Main.GGReqCnt}", Main.OpenDiscordLink);
+            Drawer.ButtonLabel($"{Main.Lang[TM.TUFReqCnt]} {Main.TUFReqCnt}", Main.OpenDiscordLink);
+            Drawer.ButtonLabel($"{Main.Lang[TM.HandshakeCnt]} {Main.HandshakeCnt}", Main.OpenDiscordLink);
             GUILayout.BeginHorizontal();
             {
                 if (isUndoAvailable)

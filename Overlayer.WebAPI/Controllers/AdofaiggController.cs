@@ -11,6 +11,7 @@ namespace Overlayer.WebAPI.Controllers
     [Route("[controller]")]
     public class AdofaiggController : ControllerBase
     {
+        public static long RequestCount = 0;
         public const string API = "https://adofai.gg/api/v1";
         public const string HEADER_LEVELS = "/levels";
         public const string HEADER_PLAY_LOGS = "/playLogs";
@@ -33,6 +34,8 @@ namespace Overlayer.WebAPI.Controllers
                 return await Task.FromResult(-500);
             }
         }
+        [HttpGet("requestCount")]
+        public async Task<long> GetGGRequestCount() => await Task.FromResult(RequestCount);
         private async Task<Level?> GetLevel(string artist, string title, string author, int tiles, int bpm, params Parameter[] ifFailedWith)
         {
             Response<Level> result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(-1));
@@ -86,6 +89,7 @@ namespace Overlayer.WebAPI.Controllers
             string reqUrl = $"{API}{header}{parameters}";
             //Console.WriteLine($"GGRequest:{reqUrl}");
             string json = await Main.HttpClient.GetStringAsync(reqUrl);
+            RequestCount++;
             Response<T> r = JsonConvert.DeserializeObject<Response<T>>(json) ?? new Response<T>();
             r.json = json;
             return r;

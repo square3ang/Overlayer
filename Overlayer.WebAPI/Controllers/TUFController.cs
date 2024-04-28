@@ -13,6 +13,7 @@ namespace Overlayer.WebAPI.Controllers
     [Route("[controller]")]
     public class TUFController : ControllerBase
     {
+        public static long RequestCount = 0;
         public const string API = "https://be.tuforums.com";
         public const string HEADER_LEVELS = "/levels";
         [HttpGet("difficulty")]
@@ -33,6 +34,8 @@ namespace Overlayer.WebAPI.Controllers
                 return await Task.FromResult(-500);
             }
         }
+        [HttpGet("requestCount")]
+        public async Task<long> GetTUFRequestCount() => await Task.FromResult(RequestCount);
         [HttpGet("difficulties")]
         public async Task<string> GetDifficulties([FromQuery] string artist, [FromQuery] string title, [FromQuery] string author, [FromQuery] int tiles, [FromQuery] int bpm)
         {
@@ -105,6 +108,7 @@ namespace Overlayer.WebAPI.Controllers
         {
             string reqUrl = $"{API}{header}{parameters}";
             string json = await Main.HttpClient.GetStringAsync(reqUrl);
+            RequestCount++;
             Response<T> r = JsonConvert.DeserializeObject<Response<T>>(json) ?? new Response<T>();
             r.json = json;
             return r;

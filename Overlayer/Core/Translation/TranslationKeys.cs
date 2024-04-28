@@ -56,6 +56,9 @@
             internal static readonly string BottomLeft = Prefix + "BOTTOM_LEFT";
             internal static readonly string BottomRight = Prefix + "BOTTOM_RIGHT";
             internal static readonly string Developer = Prefix + "DEVELOPER";
+            internal static readonly string GGReqCnt = Prefix + "TOTAL_GGAPI_REQUEST_COUNT";
+            internal static readonly string TUFReqCnt = Prefix + "TOTAL_TUFAPI_REQUEST_COUNT";
+            internal static readonly string HandshakeCnt = Prefix + "TOTAL_SERVER_CONNECTION_COUNT";
         }
     }
 }

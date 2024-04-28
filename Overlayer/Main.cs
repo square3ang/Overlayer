@@ -11,6 +11,7 @@ using Overlayer.Views;
 using System;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
@@ -34,6 +35,7 @@ namespace Overlayer
         public static Version LastestVersion { get; private set; }
         public static string DiscordLink { get; private set; }
         public static string DownloadLink { get; private set; }
+        public static long GGReqCnt, TUFReqCnt, HandshakeCnt;
         public static void Load(ModEntry modEntry)
         {
             Ass = Assembly.GetExecutingAssembly();
@@ -83,6 +85,12 @@ namespace Overlayer
         public static void OnShowGUI(ModEntry modEntry)
         {
             GUI.Flush();
+            new Task(async () =>
+            {
+                GGReqCnt = await OverlayerWebAPI.GetGGRequestCount();
+                TUFReqCnt = await OverlayerWebAPI.GetTUFRequestCount();
+                HandshakeCnt = await OverlayerWebAPI.GetHandshakeCount();
+            }).Start();
         }
         public static void OnGUI(ModEntry modEntry)
         {
