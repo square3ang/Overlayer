@@ -62,14 +62,9 @@ namespace Overlayer.Tags.Patches
         })]
         public static class GGDifficultyUpdater
         {
-            public static void Postfix(LevelData __instance, bool __result)
+            public static void Postfix(LevelData __instance)
             {
-                if (!__result)
-                {
-                    Adofaigg.GGDifficulty = -999;
-                    Adofaigg.GGRequestCompleted = true;
-                    return;
-                }
+                Adofaigg.GGRequestCompleted = false;
                 new Task(async () =>
                 {
                     string artist = __instance.artist.BreakRichTag(), author = __instance.author.BreakRichTag(), title = __instance.song.BreakRichTag();

@@ -16,14 +16,9 @@ namespace Overlayer.Tags.Patches
         })]
         public static class TUFDifficultiesUpdater
         {
-            public static void Postfix(LevelData __instance, bool __result)
+            public static void Postfix(LevelData __instance)
             {
-                if (!__result)
-                {
-                    TUF.TUFDifficulties.pguDiffNum = -999;
-                    TUF.TUFRequestCompleted = true;
-                    return;
-                }
+                TUF.TUFRequestCompleted = false;
                 new Task(async () =>
                 {
                     string artist = __instance.artist.BreakRichTag(), author = __instance.author.BreakRichTag(), title = __instance.song.BreakRichTag();

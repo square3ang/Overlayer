@@ -42,9 +42,10 @@ namespace Overlayer.Core
             var json = await Main.HttpClient.GetStringAsync(
                     API + $"/tuf/difficulties_/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}");
             var node = JsonNode.Parse(json);
+            Main.Logger.Log(json);
             return new TUFDifficulties()
             {
-                status = EnumHelper<HttpStatusCode>.Parse(node["status"]),
+                status = (HttpStatusCode)node["status"].AsInt,
                 diff = node["diff"].IfNotExist(-999),
                 pdnDiff = node["pdnDiff"].IfNotExist(-999),
                 pguDiff = node["pguDiff"].IfNotExist(-999),

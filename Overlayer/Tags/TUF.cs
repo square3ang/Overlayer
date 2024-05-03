@@ -13,7 +13,6 @@ namespace Overlayer.Tags
         public static OverlayerWebAPI.TUFDifficulties TUFDifficulties = new OverlayerWebAPI.TUFDifficulties();
         public static void Reset()
         {
-            TUFRequestCompleted = false;
         }
     }
 }

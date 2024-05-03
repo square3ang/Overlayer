@@ -36,7 +36,6 @@ namespace Overlayer.Tags
         }
         public static void Reset()
         {
-            GGRequestCompleted = false;
             GGRating = new GGRatingHolder();
         }
         [IgnoreCase]
