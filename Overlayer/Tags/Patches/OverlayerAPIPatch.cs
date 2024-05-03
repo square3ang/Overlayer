@@ -2,7 +2,6 @@
 using Overlayer.Core.Patches;
 using System.IO;
 using System.Threading.Tasks;
-using static Newgrounds.Medal;
 
 namespace Overlayer.Tags.Patches
 {

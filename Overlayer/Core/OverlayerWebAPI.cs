@@ -13,29 +13,34 @@ namespace Overlayer.Core
 {
     public static class OverlayerWebAPI
     {
-        public const string API = PROD_API;
+        public const string API =
+#if DEBUG
+            DEV_API;
+#else
+            PROD_API;
+#endif
         public const string PROD_API = "https://overlayer.c3nb.net";
         public const string DEV_API = "http://localhost:7777";
+        public static async Task Play() => await Main.HttpClient.GetStringAsync(API + "/play");
         public static async Task<string> Handshake() => await Main.HttpClient.GetStringAsync(API + "/handshake");
         public static async Task<Version> GetVersion() => Version.Parse(JsonNode.Parse(await Main.HttpClient.GetStringAsync(API + "/version")).Value);
         public static async Task<string> GetDiscordLink() => await Main.HttpClient.GetStringAsync(API + "/discord");
         public static async Task<string> GetDownloadLink() => await Main.HttpClient.GetStringAsync(API + "/download");
         public static async Task<long> GetHandshakeCount() => StringConverter.ToInt64(await Main.HttpClient.GetStringAsync(API + "/handshakeCount"));
+        public static async Task<long> GetPlayCount() => StringConverter.ToInt64(await Main.HttpClient.GetStringAsync(API + "/playCount"));
         public static async Task<long> GetGGRequestCount() => StringConverter.ToInt64(await Main.HttpClient.GetStringAsync(API + "/adofaigg/requestCount"));
         public static async Task<long> GetTUFRequestCount() => StringConverter.ToInt64(await Main.HttpClient.GetStringAsync(API + "/tuf/requestCount"));
+        public static async Task<long> GetGetGGRequestCount() => StringConverter.ToInt64(await Main.HttpClient.GetStringAsync(API + "/adofaigg/getRequestCount"));
+        public static async Task<long> GetGetTUFRequestCount() => StringConverter.ToInt64(await Main.HttpClient.GetStringAsync(API + "/tuf/getRequestCount"));
         public static async Task<string> GetLanguageJson(OverlayerLanguage lang) => await Main.HttpClient.GetStringAsync(API + "/language/" + lang);
-        public static async Task<double> GetGGDifficulty(string artist, string title, string author, int tiles, int bpm) => 
-            StringConverter.ToDouble(
-                await Main.HttpClient.GetStringAsync( 
-                    API + $"/adofaigg/difficulty/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}"));
-        public static async Task<double> GetTUFDifficulty(string artist, string title, string author, int tiles, int bpm) =>
+        public static async Task<double> GetGGDifficulty(string artist, string title, string author, int tiles, int bpm) =>
             StringConverter.ToDouble(
                 await Main.HttpClient.GetStringAsync(
-                    API + $"/tuf/difficulty/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}"));
+                    API + $"/adofaigg/difficulty_/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}"));
         public static async Task<TUFDifficulties> GetTUFDifficulties(string artist, string title, string author, int tiles, int bpm)
         {
             var json = await Main.HttpClient.GetStringAsync(
-                    API + $"/tuf/difficulties/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}");
+                    API + $"/tuf/difficulties_/?{nameof(artist)}={artist}&{nameof(title)}={title}&{nameof(author)}={author}&{nameof(tiles)}={tiles}&{nameof(bpm)}={bpm}");
             var node = JsonNode.Parse(json);
             return new TUFDifficulties()
             {

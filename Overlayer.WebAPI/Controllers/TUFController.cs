@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JSON;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Overlayer.WebAPI.Core.TUF;
-using JSON;
 using Overlayer.WebAPI.Core;
+using Overlayer.WebAPI.Core.TUF;
 using Overlayer.WebAPI.Core.TUF.Types;
 using Overlayer.WebAPI.Core.Utils;
 using System.Net;
@@ -14,29 +14,14 @@ namespace Overlayer.WebAPI.Controllers
     public class TUFController : ControllerBase
     {
         public static long RequestCount = 0;
+        public static long GetRequestCount = 0;
         public const string API = "https://be.tuforums.com";
         public const string HEADER_LEVELS = "/levels";
-        [HttpGet("difficulty")]
-        public async Task<double> GetDifficulty([FromQuery] string artist, [FromQuery] string title, [FromQuery] string author, [FromQuery] int tiles, [FromQuery] int bpm)
-        {
-            Console.WriteLine($"[TUFController] Received artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm}");
-            try
-            {
-                var level = await GetLevel(artist, title, author, tiles, bpm);
-                if (level == null)
-                    Console.WriteLine($"[TUFController] Cannot Find Level!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
-                else Console.WriteLine($"[TUFController] Found Level! ({level.id})");
-                return await Task.FromResult(level?.pguDiffNum ?? -404);
-            }
-            catch
-            {
-                Console.WriteLine($"TUFRequest Error!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
-                return await Task.FromResult(-500);
-            }
-        }
         [HttpGet("requestCount")]
         public async Task<long> GetTUFRequestCount() => await Task.FromResult(RequestCount);
-        [HttpGet("difficulties")]
+        [HttpGet("getRequestCount")]
+        public async Task<long> GetGetRequestCount() => await Task.FromResult(GetRequestCount);
+        [HttpGet("difficulties_")]
         public async Task<string> GetDifficulties([FromQuery] string artist, [FromQuery] string title, [FromQuery] string author, [FromQuery] int tiles, [FromQuery] int bpm)
         {
             Console.WriteLine($"[TUFController] Received artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm}");
@@ -56,6 +41,7 @@ namespace Overlayer.WebAPI.Controllers
                     node[nameof(level.pguDiffNum)] = level.pguDiffNum;
                 }
                 else node["status"] = (int)HttpStatusCode.NotFound;
+                GetRequestCount++;
                 return await Task.FromResult(node.ToString());
             }
             catch

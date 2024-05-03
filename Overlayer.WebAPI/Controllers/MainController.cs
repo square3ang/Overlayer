@@ -3,9 +3,7 @@ using DifficultyPredictor;
 using JSON;
 using Microsoft.AspNetCore.Mvc;
 using Overlayer.WebAPI.Core.Utils;
-using System;
 using System.Text;
-using static AdofaiMapConverter.Helpers.AngleHelper;
 
 namespace Overlayer.WebAPI.Controllers
 {
@@ -14,6 +12,7 @@ namespace Overlayer.WebAPI.Controllers
     public class MainController : ControllerBase
     {
         public static long HandshakeCount = 0;
+        public static long PlayCount = 0;
         public static readonly JsonNode Info = JsonNode.Parse(System.IO.File.ReadAllText("Info.json"));
         [HttpGet("version")]
         public Version GetVersion() => Version.Parse(Info["version"].Value);
@@ -127,12 +126,30 @@ namespace Overlayer.WebAPI.Controllers
                     else difficulty = Math.Round(20d + (predicted % 20 / 5), 1);
                     Console.WriteLine($"[PredictRaw] Predicted Difficulty! (artist:{setting.artist},title:{setting.song},author:{setting.author},tiles:{level.Tiles.Count},bpm:{setting.bpm})");
                 }
-                else Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (Meta Invalid!!)");
+                else
+                {
+                    Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (Meta Invalid!!)");
+#if DEBUG
+                    Console.WriteLine($"[PredictRaw] {meta}");
+#endif
+                }
             }
+#if DEBUG
+            catch (Exception e) { Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (Exception Occured!!)\n{e}"); }
+#else
             catch { Console.WriteLine($"[PredictRaw] Cannot Predict Difficulty! (Exception Occured!!)"); }
+#endif
             await Response.Body.WriteAsync(Encoding.UTF8.GetBytes(difficulty.ToString()));
         }
         [HttpGet("handshakeCount")]
         public async Task<long> GetHandshakeCount() => await Task.FromResult(HandshakeCount);
+        [HttpGet("playCount")]
+        public async Task<long> GetPlayCount() => await Task.FromResult(PlayCount);
+        [HttpGet("play")]
+        public void Play()
+        {
+            Console.WriteLine($"[{HttpContext.GetIpAddress()}] Play");
+            PlayCount++;
+        }
     }
 }

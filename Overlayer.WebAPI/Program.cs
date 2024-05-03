@@ -1,3 +1,4 @@
+using JSON;
 using Overlayer.WebAPI.Controllers;
 
 namespace Overlayer.WebAPI
@@ -26,15 +27,24 @@ namespace Overlayer.WebAPI
             app.MapControllers();
 
             MainController.HandshakeCount = File.ReadAllLines("handshakes.txt").LongLength;
-            AdofaiggController.RequestCount = long.Parse(File.ReadAllText("ggreqcnt.txt"));
-            TUFController.RequestCount = long.Parse(File.ReadAllText("tufreqcnt.txt"));
+            JsonNode node = JsonNode.Parse(File.ReadAllText("counts.json"));
+            MainController.PlayCount = node["PlayCount"].AsLong;
+            AdofaiggController.RequestCount = node["GGRequestCount"].AsLong;
+            AdofaiggController.GetRequestCount = node["GetGGRequestCount"].AsLong;
+            TUFController.RequestCount = node["TUFRequestCount"].AsLong;
+            TUFController.GetRequestCount = node["GetTUFRequestCount"].AsLong;
 
             new Task(async () =>
             {
                 while (true)
                 {
-                    await File.WriteAllTextAsync("ggreqcnt.txt", AdofaiggController.RequestCount.ToString());
-                    await File.WriteAllTextAsync("tufreqcnt.txt", TUFController.RequestCount.ToString());
+                    JsonNode node = JsonNode.Empty;
+                    node["PlayCount"] = MainController.PlayCount;
+                    node["GGRequestCount"] = AdofaiggController.RequestCount;
+                    node["GetGGRequestCount"] = AdofaiggController.GetRequestCount;
+                    node["TUFRequestCount"] = TUFController.RequestCount;
+                    node["GetTUFRequestCount"] = TUFController.GetRequestCount;
+                    await File.WriteAllTextAsync("counts.json", node.ToString(4));
                     await Task.Delay(10000);
                 }
             }).Start();

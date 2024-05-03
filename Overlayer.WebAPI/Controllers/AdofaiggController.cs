@@ -12,11 +12,12 @@ namespace Overlayer.WebAPI.Controllers
     public class AdofaiggController : ControllerBase
     {
         public static long RequestCount = 0;
+        public static long GetRequestCount = 0;
         public const string API = "https://adofai.gg/api/v1";
         public const string HEADER_LEVELS = "/levels";
         public const string HEADER_PLAY_LOGS = "/playLogs";
         public const string HEADER_RANKING = "/ranking";
-        [HttpGet("difficulty")]
+        [HttpGet("difficulty_")]
         public async Task<double> GetDifficulty([FromQuery] string artist, [FromQuery] string title, [FromQuery] string author, [FromQuery] int tiles, [FromQuery] int bpm)
         {
             Console.WriteLine($"[GGController] Received artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm}");
@@ -26,16 +27,26 @@ namespace Overlayer.WebAPI.Controllers
                 if (level == null)
                     Console.WriteLine($"[GGController] Cannot Find Level!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
                 else Console.WriteLine($"[GGController] Found Level! ({level.id})");
+                GetRequestCount++;
                 return await Task.FromResult(level?.difficulty ?? -404);
             }
             catch
+#if DEBUG
+            (Exception e)
+#endif
             {
+#if DEBUG
+                Console.WriteLine($"GGRequest Error!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})\n{e}");
+#else
                 Console.WriteLine($"GGRequest Error!! (artist:{artist},title:{title},author:{author},tiles:{tiles},bpm:{bpm})");
+#endif
                 return await Task.FromResult(-500);
             }
         }
         [HttpGet("requestCount")]
         public async Task<long> GetGGRequestCount() => await Task.FromResult(RequestCount);
+        [HttpGet("getRequestCount")]
+        public async Task<long> GetGetRequestCount() => await Task.FromResult(GetRequestCount);
         private async Task<Level?> GetLevel(string artist, string title, string author, int tiles, int bpm, params Parameter[] ifFailedWith)
         {
             Response<Level> result = await GGRequest<Level>(HEADER_LEVELS, ActualParams(-1));

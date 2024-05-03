@@ -2,7 +2,6 @@
 using JSNet.API;
 using Overlayer.Core;
 using Overlayer.Tags;
-using Overlayer.Unity;
 using Overlayer.Utils;
 using System;
 using System.IO;

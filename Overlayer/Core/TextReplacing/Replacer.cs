@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Overlayer.Core.TextReplacing.Lexing;
+using Overlayer.Core.TextReplacing.Parsing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
-using Overlayer.Core.TextReplacing.Lexing;
-using Overlayer.Core.TextReplacing.Parsing;
 
 namespace Overlayer.Core.TextReplacing
 {

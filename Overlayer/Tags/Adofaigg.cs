@@ -1,8 +1,6 @@
-﻿using Overlayer.Core;
-using Overlayer.Tags.Attributes;
+﻿using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
 using System;
-using System.Threading.Tasks;
 
 namespace Overlayer.Tags
 {
@@ -40,14 +38,6 @@ namespace Overlayer.Tags
         {
             GGRequestCompleted = false;
             GGRating = new GGRatingHolder();
-            var levelData = ADOFAI.LevelData;
-            if (levelData == null) return;
-            new Task(async () =>
-            {
-                string artist = levelData.artist.BreakRichTag(), author = levelData.author.BreakRichTag(), title = levelData.song.BreakRichTag();
-                GGDifficulty = await OverlayerWebAPI.GetGGDifficulty(artist, title, author, string.IsNullOrWhiteSpace(levelData.pathData) ? levelData.angleData.Count : levelData.pathData.Length, (int)Math.Round(levelData.bpm));
-                GGRequestCompleted = true;
-            }).Start();
         }
         [IgnoreCase]
         public class GGRatingHolder

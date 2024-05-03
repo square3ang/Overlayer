@@ -27,15 +27,15 @@ namespace Overlayer.Core.Translation
         {
             if (Initialized) return;
             string json;
-            try 
-            { 
+            try
+            {
                 json = await OverlayerWebAPI.GetLanguageJson(Lang);
                 Main.Logger.Log($"Received Language Json From Server ({Lang})");
             }
-            catch 
+            catch
             {
-                try 
-                { 
+                try
+                {
                     json = File.ReadAllText(Path.Combine(Main.Mod.Path, $"{Lang}.json"));
                     Main.Logger.Log($"Resolved Language Json From Local File ({Lang})");
                 }

@@ -59,6 +59,9 @@
             internal static readonly string GGReqCnt = Prefix + "TOTAL_GGAPI_REQUEST_COUNT";
             internal static readonly string TUFReqCnt = Prefix + "TOTAL_TUFAPI_REQUEST_COUNT";
             internal static readonly string HandshakeCnt = Prefix + "TOTAL_SERVER_CONNECTION_COUNT";
+            internal static readonly string GetGGReqCnt = Prefix + "TOTAL_GGAPI_GET_COUNT";
+            internal static readonly string GetTUFReqCnt = Prefix + "TOTAL_TUFAPI_GET_COUNT";
+            internal static readonly string PlayCnt = Prefix + "TOTAL_PLAY_WITH_OVERLAYER_COUNT";
         }
     }
 }

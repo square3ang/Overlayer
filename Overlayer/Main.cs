@@ -35,7 +35,7 @@ namespace Overlayer
         public static Version LastestVersion { get; private set; }
         public static string DiscordLink { get; private set; }
         public static string DownloadLink { get; private set; }
-        public static long GGReqCnt, TUFReqCnt, HandshakeCnt;
+        public static long GGReqCnt, GetGGReqCnt, TUFReqCnt, GetTUFReqCnt, PlayCnt, HandshakeCnt;
         public static void Load(ModEntry modEntry)
         {
             Ass = Assembly.GetExecutingAssembly();
@@ -88,8 +88,11 @@ namespace Overlayer
             new Task(async () =>
             {
                 GGReqCnt = await OverlayerWebAPI.GetGGRequestCount();
+                GetGGReqCnt = await OverlayerWebAPI.GetGetGGRequestCount();
                 TUFReqCnt = await OverlayerWebAPI.GetTUFRequestCount();
+                GetTUFReqCnt = await OverlayerWebAPI.GetGetTUFRequestCount();
                 HandshakeCnt = await OverlayerWebAPI.GetHandshakeCount();
+                PlayCnt = await OverlayerWebAPI.GetPlayCount();
             }).Start();
         }
         public static void OnGUI(ModEntry modEntry)

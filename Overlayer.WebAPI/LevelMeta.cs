@@ -1,5 +1,5 @@
-﻿using AdofaiMapConverter.Types;
-using AdofaiMapConverter;
+﻿using AdofaiMapConverter;
+using AdofaiMapConverter.Types;
 
 namespace Overlayer.WebAPI
 {
@@ -24,6 +24,18 @@ namespace Overlayer.WebAPI
             var tiles = level.Tiles;
             var twirlRatio = GetRatio(tiles, t => t.GetActions(LevelEventType.Twirl).Any());
             var setSpeedRatio = GetRatio(tiles, t => t.GetActions(LevelEventType.SetSpeed).Any());
+
+#if DEBUG
+            int tileNumber = 0;
+            foreach (var t in tiles)
+            {
+                if (double.IsNaN(t.tileMeta.travelAngle))
+                    Console.WriteLine($"[LevelMeta.GetMeta] [{tileNumber}] Index Tile Has Invalid Travel Angle!!\n{t.rawActions.FirstOrDefault()?.ToNode().ToString(4)}");
+                if (double.IsNaN(t.tileMeta.staticAngle))
+                    Console.WriteLine($"[LevelMeta.GetMeta] [{tileNumber}] Index Tile Has Invalid Travel Angle!!\n{t.rawActions.FirstOrDefault()?.ToNode().ToString(4)}");
+                tileNumber++;
+            }
+#endif
 
             var allTA = tiles.Select(t => t.tileMeta.travelAngle);
             var minTA = allTA.Min();

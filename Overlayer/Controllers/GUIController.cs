@@ -57,8 +57,11 @@ namespace Overlayer.Controllers
                 return;
             }
             Drawer.ButtonLabel($"{Main.Lang[TM.GGReqCnt]} {Main.GGReqCnt}", Main.OpenDiscordLink);
+            Drawer.ButtonLabel($"{Main.Lang[TM.GetGGReqCnt]} {Main.GetGGReqCnt}", Main.OpenDiscordLink);
             Drawer.ButtonLabel($"{Main.Lang[TM.TUFReqCnt]} {Main.TUFReqCnt}", Main.OpenDiscordLink);
+            Drawer.ButtonLabel($"{Main.Lang[TM.GetTUFReqCnt]} {Main.GetTUFReqCnt}", Main.OpenDiscordLink);
             Drawer.ButtonLabel($"{Main.Lang[TM.HandshakeCnt]} {Main.HandshakeCnt}", Main.OpenDiscordLink);
+            Drawer.ButtonLabel($"{Main.Lang[TM.PlayCnt]} {Main.PlayCnt}", Main.OpenDiscordLink);
             GUILayout.BeginHorizontal();
             {
                 if (isUndoAvailable)

@@ -1,5 +1,9 @@
-﻿using Overlayer.Core.Patches;
+﻿using ADOFAI;
+using Overlayer.Core;
+using Overlayer.Core.Patches;
+using Overlayer.Utils;
 using System;
+using System.Threading.Tasks;
 
 namespace Overlayer.Tags.Patches
 {
@@ -50,6 +54,28 @@ namespace Overlayer.Tags.Patches
                 double unitSub = Math.Round(sub / unit) * unit;
                 double factor = unitSub / unit;
                 return add * factor;
+            }
+        }
+        [LazyPatch("Tags.Adofaigg.GGDifficultyUpdater", "ADOFAI.LevelData", "LoadLevel", Triggers = new string[]
+        {
+            nameof(Adofaigg.GGDifficulty)
+        })]
+        public static class GGDifficultyUpdater
+        {
+            public static void Postfix(LevelData __instance, bool __result)
+            {
+                if (!__result)
+                {
+                    Adofaigg.GGDifficulty = -999;
+                    Adofaigg.GGRequestCompleted = true;
+                    return;
+                }
+                new Task(async () =>
+                {
+                    string artist = __instance.artist.BreakRichTag(), author = __instance.author.BreakRichTag(), title = __instance.song.BreakRichTag();
+                    Adofaigg.GGDifficulty = await OverlayerWebAPI.GetGGDifficulty(artist, title, author, string.IsNullOrWhiteSpace(__instance.pathData) ? __instance.angleData.Count : __instance.pathData.Length, (int)Math.Round(__instance.bpm));
+                    Adofaigg.GGRequestCompleted = true;
+                }).Start();
             }
         }
     }

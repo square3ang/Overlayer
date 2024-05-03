@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Overlayer.WebAPI.Core.Adofaigg
+﻿namespace Overlayer.WebAPI.Core.Adofaigg
 {
     public class Play
     {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Overlayer.WebAPI.Core.Adofaigg.Types
+﻿namespace Overlayer.WebAPI.Core.Adofaigg.Types
 {
     public class PlayLog : Json
     {

@@ -402,6 +402,7 @@
     <Compile Include="Models\OverlayerLanguage.cs" />
     <Compile Include="Models\TextConfig.cs" />
     <Compile Include="Patches\FontPatch.cs" />
+    <Compile Include="Patches\PlayPatch.cs" />
     <Compile Include="Patches\TagResetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
@@ -424,6 +425,7 @@
     <Compile Include="Tags\Patches\FrameRatePatch.cs" />
     <Compile Include="Tags\Patches\HitPatch.cs" />
     <Compile Include="Tags\Patches\HitTimingPatch.cs" />
+    <Compile Include="Tags\Patches\TUFPatch.cs" />
     <Compile Include="Tags\Patches\OverlayerAPIPatch.cs" />
     <Compile Include="Tags\Patches\PatchBase.cs" />
     <Compile Include="Tags\Patches\SongPatch.cs" />
