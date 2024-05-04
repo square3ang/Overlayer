@@ -153,15 +153,16 @@ namespace Overlayer.Tags
         public static object RuntimeAccess(object obj, string accessor = "")
         {
             if (obj == null) return null;
-            Type objType = obj.GetType();
+            bool staticAccess = obj is Type;
+            Type objType = obj is Type t ? t : obj.GetType();
             accessor = accessor.TrimEnd('.');
             if (accessorCache.TryGetValue($"{objType}_Accessor_{accessor}", out var del)) return del(obj);
             object result = obj;
             string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (accessors.Length < 1) return obj;
+            Type type = objType;
             for (int i = 0; i < accessors.Length; i++)
             {
-                Type type = result?.GetType();
                 MemberInfo[] members = type.GetMembers((BindingFlags)15420);
                 if (accessors[i].Equals("ListMembers", StringComparison.OrdinalIgnoreCase))
                 {
@@ -169,27 +170,29 @@ namespace Overlayer.Tags
                     for (int j = 0; j < members.Length; j++)
                     {
                         MemberInfo m = members[j];
-                        if (m is FieldInfo field && !field.IsStatic)
-                            sb.AppendLine($"{(field.IsPublic ? "Public" : "Private")} Field {field.FieldType} '{field.Name}'");
-                        else if (m is PropertyInfo prop && prop.GetGetMethod(true) is MethodInfo getter && !getter.IsStatic)
-                            sb.AppendLine($"{(getter.IsPublic ? "Public" : "Private")} Property {prop.PropertyType} '{prop.Name}'");
+                        if (m is FieldInfo field)
+                            sb.AppendLine($"{(field.IsPublic ? "Public" : "Private")}{(field.IsStatic ? " Static" : "")} Field {field.FieldType} '{field.Name}'");
+                        else if (m is PropertyInfo prop && prop.GetGetMethod(true) is MethodInfo getter)
+                            sb.AppendLine($"{(getter.IsPublic ? "Public" : "Private")}{(getter.IsStatic ? " Static" : "")} Property {prop.PropertyType} '{prop.Name}'");
                     }
                     return sb.ToString();
                 }
                 var ignoreCase = type.GetCustomAttribute<IgnoreCaseAttribute>() != null;
                 var foundMembers = ignoreCase ? members.Where(m => m.Name.Equals(accessors[i], StringComparison.OrdinalIgnoreCase)) : members.Where(m => m.Name == accessors[i]);
                 var member = foundMembers.Where(m => m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property).FirstOrDefault();
-                if (member is FieldInfo f && !f.IsStatic) result = f.GetValue(result);
-                else if (member is PropertyInfo p && !(p.GetGetMethod(true)?.IsStatic ?? true)) result = p.GetValue(result);
+                if (member is FieldInfo f) result = f.GetValue(result);
+                else if (member is PropertyInfo p && p.GetGetMethod(true) != null) result = p.GetValue(result);
                 else result = null;
                 if (result == null) return null;
+                type = result.GetType();
             }
-            accessorCache[$"{objType}_Accessor_{accessor}"] = (Func<object, object>)CreateMemberAccessor(objType, accessor).CreateDelegate(typeof(Func<object, object>));
+            accessorCache[$"{objType}_Accessor_{accessor}"] = (Func<object, object>)CreateMemberAccessor(objType, accessor, staticAccess).CreateDelegate(typeof(Func<object, object>));
             return result;
         }
-        public static DynamicMethod CreateMemberAccessor(Type type, string accessor)
+        public static DynamicMethod CreateMemberAccessor(Type type, string accessor, bool staticAccess)
         {
-            if (accessorCacheDM.TryGetValue($"{type}_Accessor_{accessor}", out var dm)) return dm;
+            string name = $"{type}_Accessor_{accessor}" + (staticAccess ? "_Static" : "");
+            if (accessorCacheDM.TryGetValue(name, out var dm)) return dm;
             string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (accessors.Length < 1) return null;
             Type t = type;
@@ -201,27 +204,30 @@ namespace Overlayer.Tags
                 if (ignoreCase)
                     result = t?.GetMembers((BindingFlags)15420).Where(m => m.Name.Equals(accessors[i], StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 else result = t?.GetMember(accessors[i], MemberTypes.Field | MemberTypes.Property, (BindingFlags)15420).FirstOrDefault();
-                if (result is FieldInfo f && !f.IsStatic) t = f.FieldType;
-                else if (result is PropertyInfo p && !(p.GetGetMethod(true)?.IsStatic ?? true)) t = p.PropertyType;
+                if (result is FieldInfo f) t = f.FieldType;
+                else if (result is PropertyInfo p && p.GetGetMethod(true) != null) t = p.PropertyType;
                 else return null;
                 toEmitMembers.Add(result);
             }
             MemberInfo last = toEmitMembers.Last();
             Type rt = last is FieldInfo ff ? ff.FieldType : last is PropertyInfo pp ? pp.PropertyType : typeof(object);
-            accessorCacheDM[$"{type}_Accessor_{accessor}"] = dm = new DynamicMethod($"{type}_Accessor_{accessor}", typeof(object), new[] { typeof(object) }, typeof(OverlayerTag), true);
+            accessorCacheDM[name] = dm = new DynamicMethod(name, typeof(object), new[] { typeof(object) }, typeof(OverlayerTag), true);
             ILGenerator il = dm.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
+            if (!staticAccess)
+                il.Emit(OpCodes.Ldarg_0);
             foreach (MemberInfo m in toEmitMembers)
             {
                 if (m is FieldInfo f)
-                    il.Emit(OpCodes.Ldfld, f);
+                    if (f.IsStatic)
+                        il.Emit(OpCodes.Ldsfld, f);
+                    else il.Emit(OpCodes.Ldfld, f);
                 else if (m is PropertyInfo p)
                     il.Emit(OpCodes.Call, p.GetGetMethod(true));
             }
             if (typeof(object) != rt)
                 il.Emit(OpCodes.Box, rt);
             il.Emit(OpCodes.Ret);
-            Main.Logger.Log($"Accessor Method '{$"{type}_Accessor_{accessor}"}' Generated!");
+            Main.Logger.Log($"Accessor Method '{name}' Generated!");
             return dm;
         }
         private static int uniqueNum = 0;
