@@ -17,13 +17,14 @@ namespace Overlayer.Tags
             double result;
             var edit = scnEditor.instance;
             if (edit)
-                result = (double)CalculatePlayPoint(GGDifficulty, edit.levelData.pitch, Status.XAccuracy(), scrLevelMaker.instance.listFloors.Count);
-            else result = (double)CalculatePlayPoint(GGDifficulty, (int)Math.Round(Status.Pitch() * 100), Status.XAccuracy(), scrLevelMaker.instance.listFloors.Count);
-            return result.Round(digits);
+                result = (double)CalculatePlayPoint(GGDifficulty, edit.levelData.pitch, Status.XAccuracy(), scrLevelMaker.instance.listFloors.Count, digits);
+            else result = (double)CalculatePlayPoint(GGDifficulty, (int)Math.Round(Status.Pitch() * 100), Status.XAccuracy(), scrLevelMaker.instance.listFloors.Count, digits);
+            return result;
         }
         [Tag(ProcessingFlags = ValueProcessing.AccessMember)]
         public static GGRatingHolder GGRating = new GGRatingHolder();
-        public static double CalculatePlayPoint(double difficulty, int speed, double accuracy, int tile)
+        [Tag]
+        public static double CalculatePlayPoint(double difficulty = 0, int speed = 100, double accuracy = 100, int tile = 0, int digits = -1)
         {
             if (difficulty < 1) return 0.0;
             double difficultyRating = 1600.0 / (1.0 + Math.Exp(-0.3 * difficulty + 5.5));
@@ -32,7 +33,7 @@ namespace Overlayer.Tags
             double pitch = speed / 100.0;
             double pitchRating = pitch >= 1 ? Math.Pow((2 + pitch) / 3.0, Math.Pow(0.1 + Math.Pow(tile, 0.5) / Math.Pow(2000, 0.5), 1.1)) : Math.Pow(pitch, 1.8);
             double tilesRating = tile < 2000 ? 0.9 + tile / 10000.0 : Math.Pow(tile / 2000.0, 0.05);
-            return Math.Pow(difficultyRating * accuracyRating * pitchRating * tilesRating, 1.01);
+            return Math.Pow(difficultyRating * accuracyRating * pitchRating * tilesRating, 1.01).Round(digits);
         }
         public static void Reset()
         {
