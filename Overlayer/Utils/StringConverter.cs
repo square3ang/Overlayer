@@ -264,6 +264,7 @@ namespace Overlayer.Utils
             else return FObject;
         }
         public static string FromObject(object s) => s?.ToString();
+        public static string ToObject(string s) => s;
         public static readonly MethodInfo TInt8 = typeof(StringConverter).GetMethod("ToInt8");
         public static readonly MethodInfo TInt16 = typeof(StringConverter).GetMethod("ToInt16");
         public static readonly MethodInfo TInt32 = typeof(StringConverter).GetMethod("ToInt32");
@@ -275,6 +276,7 @@ namespace Overlayer.Utils
         public static readonly MethodInfo TFloat = typeof(StringConverter).GetMethod("ToFloat");
         public static readonly MethodInfo TDouble = typeof(StringConverter).GetMethod("ToDouble");
         public static readonly MethodInfo TEnum = typeof(StringConverter).GetMethod("ToEnum");
+        public static readonly MethodInfo TObject = typeof(StringConverter).GetMethod("ToObject");
         public static readonly MethodInfo TBool = typeof(StringConverter).GetMethod("ToBoolean");
         public static readonly MethodInfo FInt8 = typeof(StringConverter).GetMethod("FromInt8");
         public static readonly MethodInfo FInt16 = typeof(StringConverter).GetMethod("FromInt16");

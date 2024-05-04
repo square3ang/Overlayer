@@ -150,8 +150,6 @@ namespace Overlayer.Tags
                 return false;
             return true;
         }
-        [Tag]
-        [Obsolete("Internal Only!!", true)]
         public static object RuntimeAccess(object obj, string accessor = "")
         {
             if (obj == null) return null;

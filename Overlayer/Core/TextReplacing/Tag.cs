@@ -23,6 +23,7 @@ namespace Overlayer.Core.TextReplacing
             }
         }
         public bool HasArgument => ArgumentCount > 0;
+        public bool HasObjectArgument { get; private set; }
         public int ArgumentCount { get; private set; }
         /// <summary>
         /// Original Getter's Return Type
@@ -85,6 +86,11 @@ namespace Overlayer.Core.TextReplacing
             {
                 var param = parameters[i];
                 if (param.ParameterType == typeof(string)) continue;
+                if (param.ParameterType == typeof(object))
+                {
+                    HasObjectArgument = true;
+                    continue;
+                }
                 if ((argConverter[i] = StringConverter.GetToConverter(param.ParameterType)) == null)
                     throw new NotSupportedException($"{param.ParameterType} Is Not Supported Parameter Type!");
             }
@@ -116,6 +122,11 @@ namespace Overlayer.Core.TextReplacing
             {
                 var param = parameters[i];
                 if (param.ParameterType == typeof(string)) continue;
+                if (param.ParameterType == typeof(object))
+                {
+                    HasObjectArgument = true;
+                    continue;
+                }
                 if ((argConverter[i] = StringConverter.GetToConverter(param.ParameterType)) == null)
                     throw new NotSupportedException($"{param.ParameterType} Is Not Supported Parameter Type!");
             }
@@ -151,8 +162,9 @@ namespace Overlayer.Core.TextReplacing
                 var converter = ArgumentConverter[i];
                 m.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
                 il.Emit(OpCodes.Ldarg, i);
-                if (converter == null) continue;
-                il.Emit(OpCodes.Call, converter);
+                if (converter == null)
+                    il.Emit(OpCodes.Box, parameters[i].ParameterType);
+                else il.Emit(OpCodes.Call, converter);
             }
             il.Emit(OpCodes.Call, GetterOriginal);
             if (ReturnConverter != null)
