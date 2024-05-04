@@ -533,7 +533,7 @@ namespace Overlayer.Scripting
         static MethodInfo satoa = typeof(Impl).GetMethod(nameof(StrArrayToObjArray), (BindingFlags)15420);
         static MethodInfo call_fi = typeof(FIWrapper).GetMethod("Call");
         static MethodInfo call_udfi = typeof(UDFWrapper).GetMethod("Call");
-        static MethodInfo transpilerAdapter = typeof(JSUtils).GetMethod("TranspilerAdapter", AccessTools.all);
+        static MethodInfo transpilerAdapter = typeof(Impl).GetMethod("TranspilerAdapter", AccessTools.all);
         static AssemblyBuilder ApiAssembly;
         static System.Reflection.Emit.ModuleBuilder ApiModule;
         static MethodInfo GenerateTagWrapper(FIWrapper wrapper)
