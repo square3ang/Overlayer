@@ -20,13 +20,10 @@ namespace Overlayer.Scripting
         public static bool ScriptsRunning { get; private set; }
         public static string CurrentExecutingScript { get; private set; }
         public static string CurrentExecutingScriptPath { get; private set; }
-        public static bool CurrentExecutingScriptIsSafe { get; private set; }
-        public static bool IsFullySafe { get; private set; } = true;
         public static ModEntry Mod { get; private set; }
         public static ModLogger Logger { get; private set; }
         public static Settings Settings { get; private set; }
         public static Api JSApi { get; private set; }
-        public static Api JSVerifyApi { get; private set; }
         public static Api JSGenApi { get; private set; }
         public static void Load(ModEntry modEntry)
         {
@@ -46,9 +43,6 @@ namespace Overlayer.Scripting
                 JSApi = new Api();
                 JSApi.RegisterType(typeof(Impl));
 
-                JSVerifyApi = new Api();
-                JSVerifyApi.RegisterType(typeof(Impl_Verify));
-
                 TagManager.Load(typeof(Expression));
                 TagManager.Load(typeof(PerformanceTags));
 
@@ -67,7 +61,6 @@ namespace Overlayer.Scripting
                 TagManager.Unload(typeof(PerformanceTags));
                 Impl.Release();
                 JSApi = null;
-                JSVerifyApi = null;
                 JSGenApi = null;
                 ModSettings.Save(Settings, modEntry);
             }
@@ -185,12 +178,9 @@ namespace Overlayer.Scripting
                 CurrentExecutingScript = SandboxJSCode;
                 CurrentExecutingScriptPath = "Sandbox.js";
             }
-            CurrentExecutingScriptIsSafe = Impl_Verify.IsSafe(CurrentExecutingScript);
         }
         public static void EndScript()
         {
-            IsFullySafe &= CurrentExecutingScriptIsSafe;
-            Logger.Log($"IsFullySafe:{IsFullySafe}");
             CurrentExecutingScript = null;
             CurrentExecutingScriptPath = null;
         }

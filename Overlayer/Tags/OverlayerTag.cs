@@ -95,7 +95,7 @@ namespace Overlayer.Tags
             {
                 il.Emit(OpCodes.Ldarg, parameters.Count);
                 il.Emit(OpCodes.Call, runtimeAccessor);
-                parameters.Add((typeof(string), "accessor", null));
+                parameters.Add((typeof(string), "accessor", ""));
             }
             if ((flags & ValueProcessing.RoundNumber) != 0)
             {
@@ -150,8 +150,9 @@ namespace Overlayer.Tags
                 return false;
             return true;
         }
+        [Tag]
         [Obsolete("Internal Only!!", true)]
-        public static object RuntimeAccessor(object obj, string accessor)
+        public static object RuntimeAccess(object obj, string accessor = "")
         {
             if (obj == null) return null;
             Type objType = obj.GetType();
@@ -228,7 +229,7 @@ namespace Overlayer.Tags
         private static int uniqueNum = 0;
         private static readonly MethodInfo round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });
         private static readonly MethodInfo trim = typeof(Extensions).GetMethod("Trim", new[] { typeof(string), typeof(int), typeof(string) });
-        private static readonly MethodInfo runtimeAccessor = typeof(OverlayerTag).GetMethod("RuntimeAccessor", new[] { typeof(object), typeof(string) });
+        private static readonly MethodInfo runtimeAccessor = typeof(OverlayerTag).GetMethod(nameof(RuntimeAccess), new[] { typeof(object), typeof(string) });
         private static AssemblyBuilder ass;
         private static ModuleBuilder mod;
         private static Dictionary<string, Func<object, object>> accessorCache = new Dictionary<string, Func<object, object>>();
