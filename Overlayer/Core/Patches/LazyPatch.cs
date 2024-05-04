@@ -20,6 +20,8 @@ namespace Overlayer.Core.Patches
         public LazyPatchAttribute attr;
         public bool Patched { get; private set; }
         public bool Locked { get; set; }
+        public int IgnorePatchCount { get; set; }
+        public int IgnoreUnpatchCount { get; set; }
         public LazyPatch(Harmony harmony, Type patchType, LazyPatchAttribute attr)
         {
             this.patchType = patchType!;
@@ -36,7 +38,7 @@ namespace Overlayer.Core.Patches
         }
         public void Patch(bool force = false)
         {
-            if (Patched || target == null || patch != null) return;
+            if (Patched || IgnorePatchCount-- > 0 || target == null || patch != null) return;
             if (!force && Locked)
             {
                 Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Patched!");
@@ -53,7 +55,7 @@ namespace Overlayer.Core.Patches
         }
         public void Unpatch(bool force = false)
         {
-            if (!Patched || target == null || patch == null) return;
+            if (!Patched || IgnoreUnpatchCount-- > 0 || target == null || patch == null) return;
             if (!force && Locked)
             {
                 Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Unpatched!");

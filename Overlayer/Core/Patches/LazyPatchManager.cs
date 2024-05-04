@@ -98,6 +98,10 @@ namespace Overlayer.Core.Patches
             }
             return null;
         }
+        public static List<LazyPatch> GetLockedPatches() => Patches.Values.SelectMany(l => l).Where(lp => lp.Locked).ToList();
+        public static List<LazyPatch> GetUnlockedPatches() => Patches.Values.SelectMany(l => l).Where(lp => !lp.Locked).ToList();
+        public static List<LazyPatch> GetPatchedPatches() => Patches.Values.SelectMany(l => l).Where(lp => lp.Patched).ToList();
+        public static List<LazyPatch> GetUnpatchedPatches() => Patches.Values.SelectMany(l => l).Where(lp => !lp.Patched).ToList();
         internal static void PatchNested(Type patchType, bool force = false, bool lockPatch = true)
         {
             foreach (var nType in patchType.GetNestedTypes((BindingFlags)15420))

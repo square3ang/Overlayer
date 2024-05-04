@@ -1,10 +1,14 @@
 ﻿using JSNet;
 using JSNet.API;
 using Overlayer.Core;
+using Overlayer.Core.Patches;
 using Overlayer.Tags;
+using Overlayer.Unity;
 using Overlayer.Utils;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -25,6 +29,7 @@ namespace Overlayer.Scripting
         public static Settings Settings { get; private set; }
         public static Api JSApi { get; private set; }
         public static Api JSGenApi { get; private set; }
+        public static bool PatchesLocked { get; private set; }
         public static void Load(ModEntry modEntry)
         {
             Mod = modEntry;
@@ -50,6 +55,22 @@ namespace Overlayer.Scripting
                 JSGenApi.RegisterType(typeof(Impl));
                 foreach (var tag in TagManager.All)
                     JSGenApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
+
+                foreach (var att in GetADOFAITagTypes())
+                {
+                    var tuple = (new ApiAttribute(att.Name), att);
+                    JSApi.Types.Add(tuple);
+                    JSGenApi.Types.Add(tuple);
+                }
+
+                OverlayerText.OnApplyConfig += text =>
+                {
+                    if (!PatchesLocked && TagManager.HasReference(typeof(Expression)))
+                    {
+                        LazyPatchManager.PatchAll().ForEach(lp => lp.Locked = true);
+                        PatchesLocked = true;
+                    }
+                };
 
                 RunScriptsNonBlocking(ScriptPath);
                 PerformanceTags.Initialize();
@@ -183,6 +204,11 @@ namespace Overlayer.Scripting
         {
             CurrentExecutingScript = null;
             CurrentExecutingScriptPath = null;
+        }
+        public static IEnumerable<Type> GetADOFAITagTypes()
+        {
+            var adofaiTags = TagManager.All.Where(t => t.DeclaringType == typeof(Tags.ADOFAI));
+            return adofaiTags.Select(t => t.Tag.GetterOriginal.ReturnType).Distinct();
         }
     }
 }

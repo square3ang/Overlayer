@@ -3,6 +3,7 @@ using Overlayer.Core.TextReplacing;
 using Overlayer.Models;
 using Overlayer.Tags;
 using Overlayer.Utils;
+using System;
 using System.Linq;
 using System.Reflection;
 using TMPro;
@@ -13,6 +14,7 @@ namespace Overlayer.Unity
 {
     public class OverlayerText : MonoBehaviour
     {
+        public static event Action<OverlayerText> OnApplyConfig = delegate { };
         public bool Initialized { get; private set; }
         public TextConfig Config;
         public Replacer PlayingReplacer;
@@ -112,6 +114,7 @@ namespace Overlayer.Unity
             Text.fontSharedMaterial = mainMat;
             if (FontManager.TryGetFont(Config.Font, out FontData font))
                 Text.font = font.fontTMP;
+            OnApplyConfig(this);
         }
     }
 }
