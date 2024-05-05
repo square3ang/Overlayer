@@ -26,6 +26,8 @@ namespace Overlayer.WebAPI
 
             app.MapControllers();
 
+            app.MapFallback("{*path}", Fallback);
+
             MainController.HandshakeCount = File.ReadAllLines("handshakes.txt").LongLength;
             JsonNode node = JsonNode.Parse(File.ReadAllText("counts.json"));
             MainController.PlayCount = node["PlayCount"].AsLong;
@@ -50,6 +52,19 @@ namespace Overlayer.WebAPI
             }).Start();
 
             app.Run("http://127.0.0.1:7777");
+        }
+        public static void Fallback(HttpContext context)
+        {
+            //var isBot = IsBot(context.Request.Headers["User-Agent"]);
+            context.Response.Redirect("https://5hanayome.adofai.dev", false, true);
+        }
+        public static bool IsBot(string? userAgent)
+        {
+            if (userAgent == null) return false;
+            return userAgent.Contains("kakaotalk", StringComparison.OrdinalIgnoreCase) ||
+                userAgent.Contains("scrap", StringComparison.OrdinalIgnoreCase) ||
+                userAgent.Contains("bot", StringComparison.OrdinalIgnoreCase) ||
+                userAgent.Contains("discord", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
