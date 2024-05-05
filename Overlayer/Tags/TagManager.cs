@@ -70,7 +70,7 @@ namespace Overlayer.Tags
         }
         public static bool HasReference(Type declaringType)
         {
-            return tags.Values.Any(tag => tag.DeclaringType == declaringType);
+            return tags.Values.Any(tag => tag.Referenced && tag.DeclaringType == declaringType);
         }
         public static void Initialize()
         {
