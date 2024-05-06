@@ -27,8 +27,8 @@ namespace Overlayer.Scripting
         public static ModEntry Mod { get; private set; }
         public static ModLogger Logger { get; private set; }
         public static Settings Settings { get; private set; }
-        public static Api JSApi { get; private set; }
-        public static Api JSGenApi { get; private set; }
+        public static Api JSExecutionApi { get; private set; }
+        public static Api JSExpressionApi { get; private set; }
         public static bool PatchesLocked { get; private set; }
         public static void Load(ModEntry modEntry)
         {
@@ -45,22 +45,22 @@ namespace Overlayer.Scripting
             {
                 Settings = ModSettings.Load<Settings>(modEntry);
 
-                JSApi = new Api();
-                JSApi.RegisterType(typeof(Impl));
+                JSExecutionApi = new Api();
+                JSExecutionApi.RegisterType(typeof(Impl));
 
                 TagManager.Load(typeof(Expression));
                 TagManager.Load(typeof(PerformanceTags));
 
-                JSGenApi = new Api();
-                JSGenApi.RegisterType(typeof(Impl));
+                JSExpressionApi = new Api();
+                JSExpressionApi.RegisterType(typeof(Impl));
                 foreach (var tag in TagManager.All)
-                    JSGenApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
+                    JSExpressionApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
 
                 foreach (var att in GetADOFAITagTypes())
                 {
                     var tuple = (new ApiAttribute(att.Name), att);
-                    JSApi.Types.Add(tuple);
-                    JSGenApi.Types.Add(tuple);
+                    JSExecutionApi.Types.Add(tuple);
+                    JSExpressionApi.Types.Add(tuple);
                 }
 
                 OverlayerText.OnApplyConfig += text =>
@@ -81,8 +81,8 @@ namespace Overlayer.Scripting
                 TagManager.Unload(typeof(Expression));
                 TagManager.Unload(typeof(PerformanceTags));
                 Impl.Release();
-                JSApi = null;
-                JSGenApi = null;
+                JSExecutionApi = null;
+                JSExpressionApi = null;
                 ModSettings.Save(Settings, modEntry);
             }
             Expression.expressions.Clear();
@@ -108,7 +108,7 @@ namespace Overlayer.Scripting
                 MiscUtils.ExecuteSafe(() =>
                 {
                     BeginScript(true);
-                    prevScript = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(JSApi, SandboxJSCode), out e);
+                    prevScript = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(JSExecutionApi, SandboxJSCode), out e);
                     prevScript?.Exec();
                     SandboxResult = e?.ToString() ?? "Success";
                 }, out e);
@@ -121,7 +121,7 @@ namespace Overlayer.Scripting
                 MiscUtils.ExecuteSafe(() =>
                 {
                     BeginScript(true);
-                    prevScript = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(JSApi, SandboxJSCode), out e);
+                    prevScript = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(JSExecutionApi, SandboxJSCode), out e);
                     var result = prevScript?.Eval();
                     SandboxResult = e?.ToString() ?? result?.ToString() ?? "null";
                 }, out e);
@@ -149,7 +149,7 @@ namespace Overlayer.Scripting
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
             Logger.Log("Generating Script Implementations..");
-            File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSGenApi.Generate());
+            File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSExpressionApi.Generate());
             Logger.Log("Preparing Executing Scripts..");
             Impl.Reload();
             foreach (string script in Directory.GetFiles(folderPath, "*.js", SearchOption.AllDirectories))
@@ -177,7 +177,7 @@ namespace Overlayer.Scripting
                     BeginScript();
                     var time = MiscUtils.MeasureTime(() =>
                     {
-                        var result = Script.InterpretAPI(JSApi, script);
+                        var result = Script.InterpretAPI(JSExecutionApi, script);
                         result.Exec();
                         result.Dispose();
                     });

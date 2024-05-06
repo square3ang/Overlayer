@@ -80,7 +80,7 @@ namespace Overlayer.Scripting
 
                     var time = MiscUtils.MeasureTime(() =>
                     {
-                        var result = Script.InterpretAPI(Main.JSApi, File.ReadAllText(tag));
+                        var result = Script.InterpretAPI(Main.JSExecutionApi, File.ReadAllText(tag));
                         result.Exec();
                         result.Dispose();
                     });
@@ -202,7 +202,11 @@ namespace Overlayer.Scripting
             if (!(func is FunctionInstance fi)) return;
             FIWrapper wrapper = new FIWrapper(fi);
             var tagWrapper = GenerateTagWrapper(wrapper);
-            TagManager.SetTag(new OverlayerTag(tagWrapper, new Tags.Attributes.TagAttribute(name) { NotPlaying = notplaying }));
+            var tuple = (new ApiAttribute(name), tagWrapper);
+            Main.JSExecutionApi.Methods.Add(tuple);
+            Main.JSExpressionApi.Methods.Add(tuple);
+            Expression.expressions.Clear();
+            TagManager.SetTag(new OverlayerTag(tagWrapper, new TagAttribute(name) { NotPlaying = notplaying }));
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
             registeredCustomTags.Add(name);
             Main.Logger.Log($"Registered Tag \"{name}\" (NotPlaying:{notplaying})");
@@ -210,6 +214,9 @@ namespace Overlayer.Scripting
         [Api("unregisterTag")]
         public static void UnregisterTag(Engine engine, string name)
         {
+            Main.JSExecutionApi.Methods.RemoveAll(t => t.Item1.Name == name);
+            Main.JSExpressionApi.Methods.RemoveAll(t => t.Item1.Name == name);
+            Expression.expressions.Clear();
             TagManager.RemoveTag(name);
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
         }

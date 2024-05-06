@@ -13,7 +13,7 @@ namespace Overlayer.Scripting
         {
             if (expressions.TryGetValue(expr, out var res))
                 return res.Eval();
-            res = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(Main.JSGenApi, expr), out _);
+            res = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(Main.JSExpressionApi, expr), out _);
             if (res == null) return null;
             return (expressions[expr] = res).Eval();
         }
