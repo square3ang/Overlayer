@@ -25,35 +25,35 @@ namespace Overlayer.Tags
         [Tag]
         public static string CHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Current).Trim(maxLength, afterTrimStr);
         [Tag]
-        public static double LTE, LVE, LEP, LP, LLP, LVL, LTL;
+        public static int LTE, LVE, LEP, LP, LLP, LVL, LTL;
         [Tag]
-        public static double NTE, NVE, NEP, NP, NLP, NVL, NTL;
+        public static int NTE, NVE, NEP, NP, NLP, NVL, NTL;
         [Tag]
-        public static double STE, SVE, SEP, SP, SLP, SVL, STL;
+        public static int STE, SVE, SEP, SP, SLP, SVL, STL;
         [Tag]
-        public static double CTE, CVE, CEP, CP, CLP, CVL, CTL;
+        public static int CTE, CVE, CEP, CP, CLP, CVL, CTL;
         [Tag]
-        public static double LFast() => LTE + LVE + LEP;
+        public static int LFast() => LTE + LVE + LEP;
         [Tag]
-        public static double NFast() => NTE + NVE + NEP;
+        public static int NFast() => NTE + NVE + NEP;
         [Tag]
-        public static double SFast() => STE + SVE + SEP;
+        public static int SFast() => STE + SVE + SEP;
         [Tag]
-        public static double CFast() => CTE + CVE + CEP;
+        public static int CFast() => CTE + CVE + CEP;
         [Tag]
-        public static double LSlow() => LTL + LVL + LLP;
+        public static int LSlow() => LTL + LVL + LLP;
         [Tag]
-        public static double NSlow() => NTL + NVL + NLP;
+        public static int NSlow() => NTL + NVL + NLP;
         [Tag]
-        public static double SSlow() => STL + SVL + SLP;
+        public static int SSlow() => STL + SVL + SLP;
         [Tag]
-        public static double CSlow() => CTL + CVL + CLP;
+        public static int CSlow() => CTL + CVL + CLP;
         [Tag]
-        public static double MissCount() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
+        public static int MissCount() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
         [Tag]
-        public static double Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
+        public static int Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
         [Tag]
-        public static double Multipress;
+        public static int Multipress;
         [Tag]
         public static string Difficulty(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("enum.Difficulty." + GCS.difficulty).Trim(maxLength, afterTrimStr);
         [Tag]
@@ -149,7 +149,7 @@ namespace Overlayer.Tags
                 default: return Strict;
             }
         }
-        public static double GetHitCount(Difficulty diff, HitMargin margin)
+        public static int GetHitCount(Difficulty diff, HitMargin margin)
         {
             switch (diff)
             {

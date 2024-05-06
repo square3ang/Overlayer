@@ -57,6 +57,7 @@ namespace Overlayer.Scripting
         public static bool Use(Engine engine, params string[] tags)
         {
             bool result = true;
+            string currentScript = Path.GetFileName(Main.CurrentExecutingScriptPath);
             for (int i = 0; i < tags.Length; i++)
             {
                 var tag = tags[i];
@@ -64,6 +65,7 @@ namespace Overlayer.Scripting
                 {
                     LazyPatchManager.PatchAll(tag).ForEach(lp => lp.Locked = true);
                     engine.SetValue(tag, TagManager.GetTag(tag).Tag.GetterOriginal);
+                    Main.Logger.Log($"[{currentScript}] Using '{tag}' Tag.");
                 }
                 else
                 {
@@ -200,6 +202,7 @@ namespace Overlayer.Scripting
         public static void RegisterTag(Engine engine, string name, JsValue func, bool notplaying)
         {
             if (!(func is FunctionInstance fi)) return;
+            Main.Logger.Log(engine.GetValue("Math").ToString());
             FIWrapper wrapper = new FIWrapper(fi);
             var tagWrapper = GenerateTagWrapper(wrapper);
             var tuple = (new ApiAttribute(name), tagWrapper);
