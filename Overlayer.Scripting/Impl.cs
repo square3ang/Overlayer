@@ -91,6 +91,25 @@ namespace Overlayer.Scripting
             }
             return result;
         }
+        [Api("importProxy")]
+        public static void ImportProxy(Engine engine, params string[] files)
+        {
+            for (int i = 0; i < files.Length; i++)
+            {
+                Main.Logger.Log($"Proxy Requested {files[i]}");
+                if (!files[i].EndsWith(".js"))
+                    files[i] += ".js";
+                string file = files[i];
+                if (!File.Exists(file)) 
+                    file = Path.Combine(Main.ScriptProxyPath, Path.GetFileName(file));
+                if (!File.Exists(file)) throw new FileNotFoundException(files[i]);
+                foreach (Type proxy in Main.ImportJSProxy(File.ReadAllText(file)))
+                {
+                    Main.Logger.Log($"Proxy Imported {proxy}");
+                    engine.SetValue(proxy.Name, TypeReference.CreateTypeReference(engine, proxy));
+                }
+            }
+        }
         [Api("resolveClrType")]
         public static Type ResolveType(Engine engine, string clrType)
         {

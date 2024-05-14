@@ -1,4 +1,5 @@
-﻿using JSNet;
+﻿using HarmonyLib;
+using JSNet;
 using JSNet.API;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
@@ -6,11 +7,13 @@ using Overlayer.Tags;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
@@ -21,6 +24,7 @@ namespace Overlayer.Scripting
     public static class Main
     {
         public static string ScriptPath => Path.Combine(Mod.Path, "Scripts");
+        public static string ScriptProxyPath => Path.Combine(ScriptPath, "Proxies");
         public static Assembly Assembly { get; private set; }
         public static bool ScriptsRunning { get; private set; }
         public static string CurrentExecutingScript { get; private set; }
@@ -30,8 +34,6 @@ namespace Overlayer.Scripting
         public static Settings Settings { get; private set; }
         public static Api JSExecutionApi { get; private set; }
         public static Api JSExpressionApi { get; private set; }
-        public static Api JSUnityApi { get; private set; }
-        public static Api JSSystemApi { get; private set; }
         public static bool PatchesLocked { get; private set; }
         public static void Load(ModEntry modEntry)
         {
@@ -66,59 +68,6 @@ namespace Overlayer.Scripting
                     JSExpressionApi.Types.Add(tuple);
                 }
 
-                JSUnityApi = new Api();
-                Type[] unityTypes = new Type[]
-                {
-                    typeof(Sprite),
-                    typeof(SpriteRenderer),
-                    typeof(UnityEngine.UI.Image),
-                    typeof(Vector2),
-                    typeof(Vector2Int),
-                    typeof(Vector3),
-                    typeof(Vector3Int),
-                    typeof(Vector4),
-                    typeof(Rect),
-                    typeof(Quaternion),
-                    typeof(Transform),
-                    typeof(RectTransform),
-                    typeof(GUI),
-                    typeof(GUILayout),
-                    typeof(GUISkin),
-                    typeof(GUIStyle),
-                    typeof(Texture),
-                    typeof(Texture2D),
-                    typeof(GameObject),
-                    typeof(Component),
-                    typeof(Shader),
-                    typeof(Matrix4x4)
-                };
-                for (int i = 0; i < unityTypes.Length; i++)
-                    JSUnityApi.Types.Add((new ApiAttribute(unityTypes[i].Name), unityTypes[i]));
-
-                JSSystemApi = new Api();
-                Type[] systemTypes = new Type[]
-                {
-                    // Real System
-                    typeof(Array),
-
-                    // IO
-                    typeof(File),
-                    typeof(Path),
-                    typeof(Directory),
-
-                    // Reflection
-                    typeof(Type),
-                    typeof(MethodInfo),
-                    typeof(FieldInfo),
-                    typeof(PropertyInfo),
-                    typeof(EventInfo),
-                    typeof(Assembly),
-                    typeof(MemberInfo),
-                    typeof(ParameterInfo),
-                };
-                for (int i = 0; i < systemTypes.Length; i++)
-                    JSSystemApi.Types.Add((new ApiAttribute(systemTypes[i].Name), systemTypes[i]));
-
                 OverlayerText.OnApplyConfig += text =>
                 {
                     if (!PatchesLocked && TagManager.HasReference(typeof(Expression)))
@@ -128,7 +77,7 @@ namespace Overlayer.Scripting
                     }
                 };
 
-                RunScriptsNonBlocking(ScriptPath);
+                RunScriptsNonBlocking();
                 PerformanceTags.Initialize();
             }
             else
@@ -139,8 +88,6 @@ namespace Overlayer.Scripting
                 Impl.Release();
                 JSExecutionApi = null;
                 JSExpressionApi = null;
-                JSSystemApi = null;
-                JSUnityApi = null;
                 ModSettings.Save(Settings, modEntry);
             }
             Expression.expressions.Clear();
@@ -154,7 +101,7 @@ namespace Overlayer.Scripting
         {
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Reload Scripts"))
-                RunScriptsNonBlocking(ScriptPath);
+                RunScriptsNonBlocking();
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.Label("Test Code:");
@@ -195,7 +142,7 @@ namespace Overlayer.Scripting
         {
             ModSettings.Save(Settings, modEntry);
         }
-        public static async Task RunScripts(string folderPath)
+        public static async Task RunScripts()
         {
             if (ScriptsRunning)
             {
@@ -204,15 +151,21 @@ namespace Overlayer.Scripting
             }
             ScriptsRunning = true;
             Logger.Log("Start Running Scripts..");
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(ScriptPath);
+            Directory.CreateDirectory(ScriptProxyPath);
             Logger.Log("Generating Script Implementations..");
             File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSExpressionApi.Generate());
+            Logger.Log("Generating Script System Implementations..");
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "System.js"), GenerateJSProxy("c3nb", systemTypes, new Version(1, 0, 0)));
+            Logger.Log("Generating Script System Implementations..");
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "Reflection.js"), GenerateJSProxy("c3nb", reflectionTypes, new Version(1, 0, 0)));
+            Logger.Log("Generating Script Harmony Implementations..");
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "Harmony.js"), GenerateJSProxy("c3nb", harmonyTypes, new Version(1, 0, 0)));
             Logger.Log("Generating Script Unity Implementations..");
-            File.WriteAllText(Path.Combine(ScriptPath, "Unity.js"), JSUnityApi.Generate());
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "Unity.js"), GenerateJSProxy("c3nb", unityTypes, new Version(1, 0, 0)));
             Logger.Log("Preparing Executing Scripts..");
             Impl.Reload();
-            foreach (string script in Directory.GetFiles(folderPath, "*.js", SearchOption.AllDirectories))
+            foreach (string script in Directory.GetFiles(ScriptPath, "*.js"))
             {
                 var nameWithoutExt = Path.GetFileNameWithoutExtension(script);
                 if (nameWithoutExt == "Impl" ||
@@ -248,9 +201,9 @@ namespace Overlayer.Scripting
                 catch (Exception e) { Logger.Log($"Exception At Executing Script \"{name}\":\n{e}"); return false; }
             });
         }
-        public static async void RunScriptsNonBlocking(string folderPath)
+        public static async void RunScriptsNonBlocking()
         {
-            await RunScripts(folderPath);
+            await RunScripts();
         }
         public static void BeginScript(bool sandbox = false)
         {
@@ -270,5 +223,117 @@ namespace Overlayer.Scripting
             var adofaiTags = TagManager.All.Where(t => t.DeclaringType == typeof(Tags.ADOFAI));
             return adofaiTags.Select(t => t.Tag.GetterOriginal.ReturnType).Distinct();
         }
+        public static string GenerateJSProxy(string author, IEnumerable<Type> proxyTypes, Version version = null)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"// [Overlayer.Scripting JS Wrapper]");
+            sb.AppendLine($"// Author: {author}");
+            sb.AppendLine($"// ProxyTypes: {string.Join("*", proxyTypes.Select(t => t.FullName))}");
+            if (version != null)
+                sb.AppendLine($"// Version: {version}");
+            Api api = new Api();
+            api.Types.AddRange(proxyTypes.Select(t => (new ApiAttribute(t.Name), t)));
+            sb.AppendLine(api.Generate());
+            return sb.ToString();
+        }
+        public static IEnumerable<Type> ImportJSProxy(string jsWrapper)
+        {
+            using (StringReader sr = new StringReader(jsWrapper))
+            {
+                List<string> comments = new List<string>();
+                string line = null;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (!line.StartsWith("//")) break;
+                    comments.Add(line.Substring(2).TrimStart());
+                }
+                var proxyTypes = comments.Find(s => s.StartsWith("ProxyTypes:"));
+                if (proxyTypes != null) throw new InvalidOperationException($"Invalid Proxy!");
+                var types = proxyTypes.Split(':')[1].TrimStart();
+                var clrTypes = types.Split('*').Select(fullName => MiscUtils.TypeByName(fullName));
+                return clrTypes;
+            }
+        }
+
+        public static Type[] unityTypes = new Type[]
+        {
+            typeof(Sprite),
+            typeof(SpriteRenderer),
+            typeof(UnityEngine.UI.Image),
+            typeof(Vector2),
+            typeof(Vector2Int),
+            typeof(Vector3),
+            typeof(Vector3Int),
+            typeof(Vector4),
+            typeof(Rect),
+            typeof(Quaternion),
+            typeof(Transform),
+            typeof(RectTransform),
+            typeof(GUI),
+            typeof(GUILayout),
+            typeof(GUISkin),
+            typeof(GUIStyle),
+            typeof(Texture),
+            typeof(Texture2D),
+            typeof(GameObject),
+            typeof(Component),
+            typeof(Shader),
+            typeof(Matrix4x4)
+        };
+        public static Type[] systemTypes = new Type[]
+        {
+            // Real System
+            typeof(Type),
+            typeof(Array),
+            typeof(Enum),
+
+            // IO
+            typeof(File),
+            typeof(Path),
+            typeof(Directory),
+
+            // Collection
+            typeof(IEnumerable),
+            typeof(IEnumerator),
+        };
+        public static Type[] reflectionTypes = new Type[]
+        {
+            // Reflection
+            typeof(MemberInfo),
+            typeof(MethodBase),
+            typeof(ConstructorInfo),
+            typeof(Assembly),
+            typeof(FieldInfo),
+            typeof(MethodInfo),
+            typeof(PropertyInfo),
+            typeof(EventInfo),
+            typeof(ParameterInfo),
+            typeof(BindingFlags),
+
+            // Emit
+            typeof(DynamicMethod),
+            typeof(AssemblyBuilder),
+            typeof(EnumBuilder),
+            typeof(TypeBuilder),
+            typeof(MethodBuilder),
+            typeof(PropertyBuilder),
+            typeof(FieldBuilder),
+            typeof(EventBuilder),
+            typeof(ParameterBuilder),
+            typeof(ParameterAttributes),
+            typeof(MethodAttributes),
+            typeof(FieldAttributes),
+            typeof(TypeAttributes),
+            typeof(PropertyAttributes),
+            typeof(EventAttributes),
+            typeof(ILGenerator),
+            typeof(OpCode),
+            typeof(OpCodes),
+        };
+        public static Type[] harmonyTypes = new Type[]
+        {
+            typeof(CodeInstruction),
+            typeof(AccessTools),
+        };
     }
 }
