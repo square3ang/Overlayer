@@ -27,5 +27,7 @@ namespace Overlayer.Tags
         public static scnEditor Editor => scnEditor.instance;
         [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
         public static scnGame CustomLevel => scnGame.instance;
+        [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
+        public static scrFloor CurrentFloor => Controller?.currFloor;
     }
 }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 using UnityEngine;
 using static UnityModManagerNet.UnityModManager;
@@ -29,6 +30,8 @@ namespace Overlayer.Scripting
         public static Settings Settings { get; private set; }
         public static Api JSExecutionApi { get; private set; }
         public static Api JSExpressionApi { get; private set; }
+        public static Api JSUnityApi { get; private set; }
+        public static Api JSSystemApi { get; private set; }
         public static bool PatchesLocked { get; private set; }
         public static void Load(ModEntry modEntry)
         {
@@ -63,6 +66,59 @@ namespace Overlayer.Scripting
                     JSExpressionApi.Types.Add(tuple);
                 }
 
+                JSUnityApi = new Api();
+                Type[] unityTypes = new Type[]
+                {
+                    typeof(Sprite),
+                    typeof(SpriteRenderer),
+                    typeof(UnityEngine.UI.Image),
+                    typeof(Vector2),
+                    typeof(Vector2Int),
+                    typeof(Vector3),
+                    typeof(Vector3Int),
+                    typeof(Vector4),
+                    typeof(Rect),
+                    typeof(Quaternion),
+                    typeof(Transform),
+                    typeof(RectTransform),
+                    typeof(GUI),
+                    typeof(GUILayout),
+                    typeof(GUISkin),
+                    typeof(GUIStyle),
+                    typeof(Texture),
+                    typeof(Texture2D),
+                    typeof(GameObject),
+                    typeof(Component),
+                    typeof(Shader),
+                    typeof(Matrix4x4)
+                };
+                for (int i = 0; i < unityTypes.Length; i++)
+                    JSUnityApi.Types.Add((new ApiAttribute(unityTypes[i].Name), unityTypes[i]));
+
+                JSSystemApi = new Api();
+                Type[] systemTypes = new Type[]
+                {
+                    // Real System
+                    typeof(Array),
+
+                    // IO
+                    typeof(File),
+                    typeof(Path),
+                    typeof(Directory),
+
+                    // Reflection
+                    typeof(Type),
+                    typeof(MethodInfo),
+                    typeof(FieldInfo),
+                    typeof(PropertyInfo),
+                    typeof(EventInfo),
+                    typeof(Assembly),
+                    typeof(MemberInfo),
+                    typeof(ParameterInfo),
+                };
+                for (int i = 0; i < systemTypes.Length; i++)
+                    JSSystemApi.Types.Add((new ApiAttribute(systemTypes[i].Name), systemTypes[i]));
+
                 OverlayerText.OnApplyConfig += text =>
                 {
                     if (!PatchesLocked && TagManager.HasReference(typeof(Expression)))
@@ -83,6 +139,8 @@ namespace Overlayer.Scripting
                 Impl.Release();
                 JSExecutionApi = null;
                 JSExpressionApi = null;
+                JSSystemApi = null;
+                JSUnityApi = null;
                 ModSettings.Save(Settings, modEntry);
             }
             Expression.expressions.Clear();
@@ -150,6 +208,8 @@ namespace Overlayer.Scripting
                 Directory.CreateDirectory(folderPath);
             Logger.Log("Generating Script Implementations..");
             File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSExpressionApi.Generate());
+            Logger.Log("Generating Script Unity Implementations..");
+            File.WriteAllText(Path.Combine(ScriptPath, "Unity.js"), JSUnityApi.Generate());
             Logger.Log("Preparing Executing Scripts..");
             Impl.Reload();
             foreach (string script in Directory.GetFiles(folderPath, "*.js", SearchOption.AllDirectories))
