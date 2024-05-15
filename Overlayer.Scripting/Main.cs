@@ -156,13 +156,13 @@ namespace Overlayer.Scripting
             Logger.Log("Generating Script Implementations..");
             File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSExpressionApi.Generate());
             Logger.Log("Generating Script System Implementations..");
-            File.WriteAllText(Path.Combine(ScriptProxyPath, "System.js"), GenerateJSProxy("c3nb", systemTypes, new Version(1, 0, 0)));
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "System.js"), GenerateJSProxy("c3nb", systemTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Generating Script System Implementations..");
-            File.WriteAllText(Path.Combine(ScriptProxyPath, "Reflection.js"), GenerateJSProxy("c3nb", reflectionTypes, new Version(1, 0, 0)));
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "Reflection.js"), GenerateJSProxy("c3nb", reflectionTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Generating Script Harmony Implementations..");
-            File.WriteAllText(Path.Combine(ScriptProxyPath, "Harmony.js"), GenerateJSProxy("c3nb", harmonyTypes, new Version(1, 0, 0)));
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "Harmony.js"), GenerateJSProxy("c3nb", harmonyTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Generating Script Unity Implementations..");
-            File.WriteAllText(Path.Combine(ScriptProxyPath, "Unity.js"), GenerateJSProxy("c3nb", unityTypes, new Version(1, 0, 0)));
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "Unity.js"), GenerateJSProxy("c3nb", unityTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Preparing Executing Scripts..");
             Impl.Reload();
             foreach (string script in Directory.GetFiles(ScriptPath, "*.js"))
@@ -223,20 +223,27 @@ namespace Overlayer.Scripting
             var adofaiTags = TagManager.All.Where(t => t.DeclaringType == typeof(Tags.ADOFAI));
             return adofaiTags.Select(t => t.Tag.GetterOriginal.ReturnType).Distinct();
         }
-        public static string GenerateJSProxy(string author, IEnumerable<Type> proxyTypes, Version version = null)
+        public static string GenerateJSProxy(string author = null, IEnumerable<(string, Type)> proxyTypes = null, IEnumerable<(string, MethodInfo)> proxyStaticMethods = null, Version version = null)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"// [Overlayer.Scripting JS Wrapper]");
-            sb.AppendLine($"// Author: {author}");
-            sb.AppendLine($"// ProxyTypes: {string.Join("*", proxyTypes.Select(t => t.FullName))}");
+            if (author != null)
+                sb.AppendLine($"// Author: {author}");
+            if (proxyTypes != null)
+                sb.AppendLine($"// ProxyTypes: {string.Join("*", proxyTypes.Select(t => $"{t.Item2.FullName}&{t.Item1}"))}");
+            if (proxyStaticMethods != null)
+                sb.AppendLine($"// ProxyMethods: {string.Join("*", proxyStaticMethods.Select(t => $"{t.Item2.DeclaringType}^{t.Item2.Name}#{string.Join(",", t.Item2.GetParameters().Select(p => p.ParameterType.FullName))}&{t.Item1}"))}");
             if (version != null)
                 sb.AppendLine($"// Version: {version}");
             Api api = new Api();
-            api.Types.AddRange(proxyTypes.Select(t => (new ApiAttribute(t.Name), t)));
+            if (proxyTypes != null)
+                api.Types.AddRange(proxyTypes.Select(t => (new ApiAttribute(t.Item1), t.Item2)));
+            if (proxyStaticMethods != null)
+                api.Methods.AddRange(proxyStaticMethods.Select(t => (new ApiAttribute(t.Item1), t.Item2)));
             sb.AppendLine(api.Generate());
             return sb.ToString();
         }
-        public static IEnumerable<Type> ImportJSProxy(string jsWrapper)
+        public static IEnumerable<(string, MemberInfo)> ImportJSProxy(string jsWrapper)
         {
             using (StringReader sr = new StringReader(jsWrapper))
             {
@@ -247,11 +254,37 @@ namespace Overlayer.Scripting
                     if (!line.StartsWith("//")) break;
                     comments.Add(line.Substring(2).TrimStart());
                 }
+
                 var proxyTypes = comments.Find(s => s.StartsWith("ProxyTypes:"));
-                if (proxyTypes != null) throw new InvalidOperationException($"Invalid Proxy!");
-                var types = proxyTypes.Split(':')[1].TrimStart();
-                var clrTypes = types.Split('*').Select(fullName => MiscUtils.TypeByName(fullName));
-                return clrTypes;
+                if (proxyTypes != null)
+                {
+                    var types = proxyTypes.Split(':')[1].TrimStart();
+                    foreach (var clrType in types.Split('*').Select(typeString =>
+                    {
+                        var typeNameSplit = typeString.Split('&');
+                        return (typeNameSplit[1], (MemberInfo)MiscUtils.TypeByName(typeNameSplit[0]));
+                    }))
+                        yield return clrType;
+                }
+                
+
+                var proxyMethods = comments.Find(s => s.StartsWith("ProxyMethods:"));
+                if (proxyMethods != null)
+                {
+                    var methods = proxyMethods.Split(':')[1].TrimStart();
+                    foreach (var staticMethod in methods.Split('*').Select(methodString =>
+                    {
+                        var decTypeSplit = methodString.Split('^');
+                        var decType = MiscUtils.TypeByName(decTypeSplit[0]);
+                        var nameSplit = decTypeSplit[1].Split('#');
+                        var name = nameSplit[0];
+                        var parametersSplit = nameSplit[1].Split('&');
+                        var parameters = parametersSplit[0].Split(',').Select(pType => MiscUtils.TypeByName(pType));
+                        var alias = parametersSplit[1];
+                        return (alias, (MemberInfo)decType?.GetMethod(name, (BindingFlags)15420, null, parameters.ToArray(), null));
+                    }))
+                        yield return staticMethod;
+                }
             }
         }
 

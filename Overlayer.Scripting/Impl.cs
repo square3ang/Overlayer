@@ -9,6 +9,7 @@ using JSNet.API;
 using JSNet.Utils;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
+using Overlayer.Core.TextReplacing;
 using Overlayer.Tags;
 using Overlayer.Tags.Attributes;
 using Overlayer.Unity;
@@ -54,61 +55,77 @@ namespace Overlayer.Scripting
         }
         #region Impl APIs
         [Api("use")]
-        public static bool Use(Engine engine, params string[] tags)
+        public static void Use(Engine engine, params string[] tagsOrProxies)
         {
-            bool result = true;
             string currentScript = Path.GetFileName(Main.CurrentExecutingScriptPath);
-            for (int i = 0; i < tags.Length; i++)
+            for (int i = 0; i < tagsOrProxies.Length; i++)
             {
-                var tag = tags[i];
-                if (TagManager.GetTag(tag) != null)
+                var tagOrProxy = tagsOrProxies[i];
+                if (TagManager.GetTag(tagOrProxy) != null)
                 {
-                    LazyPatchManager.PatchAll(tag).ForEach(lp => lp.Locked = true);
-                    engine.SetValue(tag, TagManager.GetTag(tag).Tag.GetterOriginal);
-                    Main.Logger.Log($"[{currentScript}] Using '{tag}' Tag.");
+                    LazyPatchManager.PatchAll(tagOrProxy).ForEach(lp => lp.Locked = true);
+                    engine.SetValue(tagOrProxy, TagManager.GetTag(tagOrProxy).Tag.GetterOriginal);
+                    Main.Logger.Log($"[{currentScript}] Using '{tagOrProxy}' Tag.");
                 }
                 else
                 {
-                    if (!File.Exists(tag))
-                        tag = Path.Combine(Main.ScriptPath, tag);
-                    if (!File.Exists(tag))
-                    {
-                        result = false;
-                        continue;
-                    }
+                    if (!tagOrProxy.EndsWith(".js"))
+                        tagOrProxy += ".js";
+                    if (!File.Exists(tagOrProxy))
+                        tagOrProxy = Path.Combine(Main.ScriptPath, tagOrProxy);
+                    if (!File.Exists(tagOrProxy)) 
+                        throw new FileNotFoundException(tagsOrProxies[i]);
 
-                    var name = Path.GetFileName(tag);
-                    alreadyExecutedScripts.Add(tag);
-
+                    var name = Path.GetFileName(tagOrProxy);
+                    var isProxy = false;
                     var time = MiscUtils.MeasureTime(() =>
                     {
-                        var result = Script.InterpretAPI(Main.JSExecutionApi, File.ReadAllText(tag));
-                        result.Exec();
-                        result.Dispose();
+                        var code = File.ReadAllText(tagOrProxy);
+                        if (isProxy = code.StartsWith("// [Overlayer.Scripting JS Wrapper]"))
+                        {
+                            foreach (var (alias, member) in Main.ImportJSProxy(code))
+                            {
+                                if (member is Type t)
+                                    engine.SetValue(alias, TypeReference.CreateTypeReference(engine, t));
+                                else if (member is MethodInfo m)
+                                    engine.SetValue(alias, m);
+                            }
+                        }
+                        else
+                        {
+                            var result = Script.InterpretAPI(Main.JSExecutionApi, code);
+                            alreadyExecutedScripts.Add(tagOrProxy);
+                            result.Exec();
+                            result.Dispose();
+                        }
                     });
-                    Main.Logger.Log($"Force Executed \"{name}\" Script Successfully. ({time.TotalMilliseconds}ms)");
+                    if (isProxy)
+                        Main.Logger.Log($"[{currentScript}] Using '{Path.GetFileName(tagOrProxy)}' Proxy. ({time.TotalMilliseconds}ms)");
+                    else Main.Logger.Log($"Force Executed \"{name}\" Script Successfully. ({time.TotalMilliseconds}ms)");
                 }
             }
-            return result;
         }
-        [Api("importProxy")]
-        public static void ImportProxy(Engine engine, params string[] files)
+        [Api("generateProxy")]
+        public static void GenerateProxy(string fileName, Type[] types, MethodInfo[] methods)
         {
-            for (int i = 0; i < files.Length; i++)
-            {
-                Main.Logger.Log($"Proxy Requested {files[i]}");
-                if (!files[i].EndsWith(".js"))
-                    files[i] += ".js";
-                string file = files[i];
-                if (!File.Exists(file)) 
-                    file = Path.Combine(Main.ScriptProxyPath, Path.GetFileName(file));
-                if (!File.Exists(file)) throw new FileNotFoundException(files[i]);
-                foreach (Type proxy in Main.ImportJSProxy(File.ReadAllText(file)))
-                {
-                    Main.Logger.Log($"Proxy Imported {proxy}");
-                    engine.SetValue(proxy.Name, TypeReference.CreateTypeReference(engine, proxy));
-                }
-            }
+            var generated = Main.GenerateJSProxy(
+                proxyTypes: types?.Select(t => (t.Name, t)),
+                proxyStaticMethods: methods?.Select(m => (m.Name, m)));
+            File.WriteAllText(fileName, generated);
+        }
+        [Api("generateProxyWithAlias")]
+        public static void GenerateProxyWithAlias(string fileName, Type[] types, string[] typeAliases, MethodInfo[] methods, string[] methodAliases)
+        {
+            List<(string, Type)> tt = new List<(string, Type)>();
+            List<(string, MethodInfo)> mm = new List<(string, MethodInfo)>();
+            for (int i = 0; i < types.Length; i++)
+                tt.Add((typeAliases[i], types[i]));
+            for (int i = 0; i < methods.Length; i++)
+                mm.Add((methodAliases[i], methods[i]));
+            var generated = Main.GenerateJSProxy(
+                proxyTypes: tt,
+                proxyStaticMethods: mm);
+            File.WriteAllText(fileName, generated);
         }
         [Api("resolveClrType")]
         public static Type ResolveType(Engine engine, string clrType)
