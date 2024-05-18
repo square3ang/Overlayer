@@ -15,7 +15,10 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
 
@@ -290,9 +293,11 @@ namespace Overlayer.Scripting
 
         public static Type[] unityTypes = new Type[]
         {
+            typeof(Scene),
+            typeof(SceneManager),
             typeof(Sprite),
             typeof(SpriteRenderer),
-            typeof(UnityEngine.UI.Image),
+            typeof(Image),
             typeof(Vector2),
             typeof(Vector2Int),
             typeof(Vector3),
@@ -311,7 +316,12 @@ namespace Overlayer.Scripting
             typeof(GameObject),
             typeof(Component),
             typeof(Shader),
-            typeof(Matrix4x4)
+            typeof(Matrix4x4),
+            typeof(Text),
+            typeof(TextMesh),
+            typeof(TextMeshPro),
+            typeof(TextMeshProUGUI),
+            typeof(Material)
         };
         public static Type[] systemTypes = new Type[]
         {

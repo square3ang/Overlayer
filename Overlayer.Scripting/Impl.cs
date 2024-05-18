@@ -4,12 +4,14 @@ using Jint;
 using Jint.Native;
 using Jint.Native.Function;
 using Jint.Runtime.Interop;
+using Jint.Runtime.Interop.Attributes;
 using JSNet;
 using JSNet.API;
 using JSNet.Utils;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
+using Overlayer.Models;
 using Overlayer.Tags;
 using Overlayer.Tags.Attributes;
 using Overlayer.Unity;
@@ -127,11 +129,13 @@ namespace Overlayer.Scripting
                 proxyStaticMethods: mm);
             File.WriteAllText(fileName, generated);
         }
+        [RawReturn]
         [Api("resolveClrType")]
         public static Type ResolveType(Engine engine, string clrType)
         {
             return MiscUtils.TypeByName(clrType);
         }
+        [RawReturn]
         [Api("resolveClrMethod")]
         public static MethodInfo ResolveMethod(Engine engine, string clrType, string name)
         {
@@ -198,6 +202,12 @@ namespace Overlayer.Scripting
             }
             return false;
         }
+        [Api("wrapToJSObject")]
+        public static JsValue WrapToJSObject(Engine engine, object obj) => JsValue.FromObject(engine, obj);
+        [Api("unwrapFromJSObject")]
+        public static object UnwrapFromJSObject(JsValue value) => value.ToObject();
+        [Api("getScriptPath")]
+        public static string GetScriptPath(string extra = "") => Path.Combine(Main.ScriptPath, extra);
         [Api("getClrGenericTypeName")]
         public static string GetGenericClrTypeString(Engine engine, string genericType, string[] genericArgs)
         {
@@ -428,6 +438,20 @@ namespace Overlayer.Scripting
         public static string GetTagValueSafe(Engine engine, string tagName, params string[] args)
         {
             return TagManager.GetTag(tagName)?.Tag.Getter.Invoke(null, args)?.ToString() ?? "";
+        }
+        [Api("getText", RequireTypes = new Type[]
+        {
+            typeof(OverlayerText),
+            typeof(Replacer),
+            typeof(TextConfig),
+            typeof(GColor),
+            typeof(TMPro.TextAlignmentOptions),
+        })]
+        public static OverlayerText GetText(int index)
+        {
+            if (index < 0 || index >= TextManager.Count) 
+                return null;
+            return TextManager.Get(index);
         }
         [Api(RequireTypes = new[] { typeof(KeyCode) })]
         public class On
