@@ -21,6 +21,8 @@ namespace Overlayer.Tags
         public static scrPlanet RedPlanet => Controller?.redPlanet;
         [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
         public static scrPlanet BluePlanet => Controller?.bluePlanet;
+        [Tag(NotPlaying = true)]
+        public static scrPlanet OtherPlanet(int index) => Controller?.allPlanets[index];
         [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
         public static scnCLS CLS => scnCLS.instance;
         [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
@@ -29,5 +31,7 @@ namespace Overlayer.Tags
         public static scnGame CustomLevel => scnGame.instance;
         [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
         public static scrFloor CurrentFloor => Controller?.currFloor;
+        [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
+        public static scrMistakesManager JudgementManager => Controller?.mistakesManager;
     }
 }

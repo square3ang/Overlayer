@@ -23,6 +23,7 @@ namespace Overlayer.Models
         public GColor TextColor = Color.white;
         public GColor OutlineColor = Color.clear;
         public GColor ShadowColor = Color.black with { a = 0.5f };
+        public Vector2 Scale = new Vector2(1, 1);
         public Vector2 Position = new Vector2(0.5f, 0.0175f);
         public Vector2 Pivot = new Vector2(0.5f, 0.5f);
         public Vector2 ShadowOffset = new Vector2(0.5f, -0.5f);
@@ -46,6 +47,7 @@ namespace Overlayer.Models
             newConfig.TextColor = TextColor;
             newConfig.OutlineColor = OutlineColor;
             newConfig.ShadowColor = ShadowColor;
+            newConfig.Scale = Scale;
             newConfig.Position = Position;
             newConfig.Pivot = Pivot;
             newConfig.ShadowOffset = ShadowOffset;
@@ -71,6 +73,7 @@ namespace Overlayer.Models
             node[nameof(TextColor)] = TextColor.Serialize();
             node[nameof(OutlineColor)] = OutlineColor.Serialize();
             node[nameof(ShadowColor)] = ShadowColor.Serialize();
+            node[nameof(Scale)] = Scale;
             node[nameof(Position)] = Position;
             node[nameof(Pivot)] = Pivot;
             node[nameof(ShadowOffset)] = ShadowOffset;
@@ -96,6 +99,7 @@ namespace Overlayer.Models
             TextColor.gradientEnabled = node["GradientText"].IfNotExist(TextColor.gradientEnabled);
             OutlineColor = ModelUtils.Unbox<GColor>(node[nameof(OutlineColor)]);
             ShadowColor = ModelUtils.Unbox<GColor>(node[nameof(ShadowColor)]);
+            Scale = node[nameof(Scale)].IfNotExist(new Vector2(1, 1));
             Position = node[nameof(Position)];
             Pivot = node[nameof(Pivot)];
             ShadowOffset = node[nameof(ShadowOffset)].IfNotExist(new Vector2(0.5f, -0.5f));

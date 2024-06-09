@@ -25,15 +25,22 @@ namespace Overlayer
         public static string Developer => Lang[TranslationKeys.Misc.Developer];
         public static Assembly Ass { get; private set; }
         public static ModEntry Mod { get; private set; }
+        [Tag(NotPlaying = true)]
         public static ModLogger Logger { get; private set; }
+        [Tag(NotPlaying = true)]
         public static Settings Settings { get; private set; }
         public static GUIController GUI { get; private set; }
+        [Tag(NotPlaying = true)]
         public static Scene ActiveScene { get; private set; }
         public static HttpClient HttpClient { get; private set; }
         public static Language Lang { get; internal set; }
+        [Tag(NotPlaying = true)]
         public static Version ModVersion { get; private set; }
+        [Tag(NotPlaying = true)]
         public static Version LastestVersion { get; private set; }
+        [Tag(NotPlaying = true)]
         public static string DiscordLink { get; private set; }
+        [Tag(NotPlaying = true)]
         public static string DownloadLink { get; private set; }
         public static long GGReqCnt, GetGGReqCnt, TUFReqCnt, GetTUFReqCnt, PlayCnt, HandshakeCnt;
         public static void Load(ModEntry modEntry)

@@ -45,6 +45,7 @@
             internal static readonly string ShadowDilate = Prefix + "SHADOW_DILATE";
             internal static readonly string ShadowSoftness = Prefix + "SHADOW_SOFTNESS";
             internal static readonly string LexOption = Prefix + "LEX_OPTION";
+            internal static readonly string Scale = Prefix + "SCALE";
         }
         public static class Misc
         {

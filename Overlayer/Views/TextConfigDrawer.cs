@@ -22,6 +22,7 @@ namespace Overlayer.Views
             Drawer.ButtonLabel($"Available Tags: {TagManager.Count}", Main.OpenDiscordLink);
             Drawer.DrawString(L(TKTC.Name), ref model.Name);
             changed |= Drawer.DrawVector2(L(TKTC.Position), ref model.Position, 0, 1);
+            changed |= Drawer.DrawVector2(L(TKTC.Scale), ref model.Scale, 0, 2);
             changed |= Drawer.DrawVector2(L(TKTC.Pivot), ref model.Pivot, 0, 1);
             changed |= Drawer.DrawVector3(L(TKTC.Rotation), ref model.Rotation, -180, 180);
             changed |= Drawer.DrawVector2(L(TKTC.ShadowOffset), ref model.ShadowOffset, -1, 1);

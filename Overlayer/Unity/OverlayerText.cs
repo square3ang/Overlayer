@@ -58,7 +58,8 @@ namespace Overlayer.Unity
             var rt = Text.rectTransform;
             rt.anchorMin = Vector2.zero;
             rt.anchorMax = new Vector2(1, 1);
-            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.pivot = config.Pivot;
+            rt.localScale = config.Scale;
             Text.enableAutoSizing = false;
             Text.lineSpacing = config.LineSpacing;
             Text.lineSpacingAdjustment = config.LineSpacingAdj;
@@ -99,6 +100,7 @@ namespace Overlayer.Unity
             Text.lineSpacingAdjustment = Config.LineSpacingAdj;
             Text.colorGradient = Config.TextColor;
             Text.rectTransform.pivot = Config.Pivot;
+            Text.rectTransform.localScale = Config.Scale;
             Text.rectTransform.anchoredPosition = (Config.Position - new Vector2(0.5f, 0.5f)) * new Vector2(Screen.width, Screen.height);
             Text.rectTransform.eulerAngles = Config.Rotation;
             Text.fontSize = Config.FontSize;

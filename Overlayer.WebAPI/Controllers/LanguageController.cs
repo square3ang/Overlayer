@@ -11,7 +11,8 @@ namespace Overlayer.WebAPI.Controllers
         public enum Lang
         {
             Korean = 0,
-            English = 920194841
+            English = 920194841,
+            Chinese = 1678018293,
         }
         public static SpreadSheet OTS = new SpreadSheet("1vg9U2jje6tdJvuyCuH18-LOBbfTeyIoJB9PIge2AeLQ");
         public static Dictionary<Lang, Dictionary<string, string>> sheets = new Dictionary<Lang, Dictionary<string, string>>();

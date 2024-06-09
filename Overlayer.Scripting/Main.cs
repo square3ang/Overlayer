@@ -321,7 +321,8 @@ namespace Overlayer.Scripting
             typeof(TextMesh),
             typeof(TextMeshPro),
             typeof(TextMeshProUGUI),
-            typeof(Material)
+            typeof(Material),
+            typeof(Canvas)
         };
         public static Type[] systemTypes = new Type[]
         {

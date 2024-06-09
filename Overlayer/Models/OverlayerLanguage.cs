@@ -3,6 +3,7 @@
     public enum OverlayerLanguage
     {
         Korean,
-        English
+        English,
+        Chinese
     }
 }

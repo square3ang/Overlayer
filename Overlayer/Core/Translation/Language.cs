@@ -13,6 +13,7 @@ namespace Overlayer.Core.Translation
         const string update = "Update!Update!Update!";
         private static Language Korean;
         private static Language English;
+        private static Language Chinese;
         public bool Initialized = false;
         public OverlayerLanguage Lang;
         private bool updateMode = false;
@@ -71,6 +72,8 @@ namespace Overlayer.Core.Translation
                     return Korean ??= new Language(OverlayerLanguage.Korean);
                 case OverlayerLanguage.English:
                     return English ??= new Language(OverlayerLanguage.English);
+                case OverlayerLanguage.Chinese:
+                    return Chinese ??= new Language(OverlayerLanguage.Chinese);
                 default: return null;
             }
         }
