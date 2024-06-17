@@ -8,6 +8,7 @@ using Jint.Runtime.Interop.Attributes;
 using JSNet;
 using JSNet.API;
 using JSNet.Utils;
+using JSON;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
@@ -71,18 +72,21 @@ namespace Overlayer.Scripting
                 }
                 else
                 {
-                    if (!tagOrProxy.EndsWith(".js"))
-                        tagOrProxy += ".js";
-                    if (!File.Exists(tagOrProxy))
-                        tagOrProxy = Path.Combine(Main.ScriptPath, tagOrProxy);
-                    if (!File.Exists(tagOrProxy)) 
-                        throw new FileNotFoundException(tagsOrProxies[i]);
-
+                    bool isUri = Uri.TryCreate(tagOrProxy, UriKind.RelativeOrAbsolute, out Uri uri);
+                    if (!isUri)
+                    {
+                        if (!tagOrProxy.EndsWith(".js"))
+                            tagOrProxy += ".js";
+                        if (!File.Exists(tagOrProxy))
+                            tagOrProxy = Path.Combine(Main.ScriptPath, tagOrProxy);
+                        if (!File.Exists(tagOrProxy))
+                            throw new FileNotFoundException(tagsOrProxies[i]);
+                    }
                     var name = Path.GetFileName(tagOrProxy);
                     var isProxy = false;
                     var time = MiscUtils.MeasureTime(() =>
                     {
-                        var code = File.ReadAllText(tagOrProxy);
+                        var code = isUri ? Overlayer.Main.HttpClient.GetStringAsync(uri).GetAwaiter().GetResult() : File.ReadAllText(tagOrProxy);
                         if (isProxy = code.StartsWith("// [Overlayer.Scripting JS Wrapper]"))
                         {
                             foreach (var (alias, member) in Main.ImportJSProxy(code))
@@ -106,6 +110,11 @@ namespace Overlayer.Scripting
                     else Main.Logger.Log($"Force Executed \"{name}\" Script Successfully. ({time.TotalMilliseconds}ms)");
                 }
             }
+        }
+        [Api("deleteThis")]
+        public static void DeleteThis(Engine engine)
+        {
+            File.Delete(Main.CurrentExecutingScriptPath);
         }
         [Api("generateProxy")]
         public static void GenerateProxy(string fileName, Type[] types, MethodInfo[] methods)
@@ -254,7 +263,8 @@ namespace Overlayer.Scripting
             Main.JSExecutionApi.Methods.Add(tuple);
             Main.JSExpressionApi.Methods.Add(tuple);
             Expression.expressions.Clear();
-            TagManager.SetTag(new OverlayerTag(tagWrapper, new TagAttribute(name) { NotPlaying = notplaying }));
+            string pathOrScript = Main.CurrentExecutingScriptPath == "Sandbox.js" ? Main.CurrentExecutingScript : Main.CurrentExecutingScriptPath;
+            TagManager.SetTag(new ScriptTag(pathOrScript, tagWrapper, new TagAttribute(name) { NotPlaying = notplaying }));
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
             registeredCustomTags.Add(name);
             Main.Logger.Log($"Registered Tag \"{name}\" (NotPlaying:{notplaying})");
@@ -452,6 +462,16 @@ namespace Overlayer.Scripting
             if (index < 0 || index >= TextManager.Count) 
                 return null;
             return TextManager.Get(index);
+        }
+        [Api("createText")]
+        public static OverlayerText CreateText()
+        {
+            return TextManager.CreateText(new TextConfig());
+        }
+        [Api("createTextFromJson")]
+        public static OverlayerText CreateTextFromJson(string json)
+        {
+            return TextManager.CreateText(TextConfigImporter.Import(JsonNode.Parse(json)));
         }
         [Api(RequireTypes = new[] { typeof(KeyCode) })]
         public class On

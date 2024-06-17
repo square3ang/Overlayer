@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
 using JSNet;
 using JSNet.API;
+using JSON;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
+using Overlayer.Core.TextReplacing;
 using Overlayer.Tags;
 using Overlayer.Unity;
 using Overlayer.Utils;
@@ -290,7 +292,35 @@ namespace Overlayer.Scripting
                 }
             }
         }
-
+        public static byte[] ExportTexts(IEnumerable<OverlayerText> texts)
+        {
+            JsonNode node = JsonNode.Empty;
+            node["Texts"] = ModelUtils.WrapList(texts.Select(ot => ot.Config).ToList());
+            var scripts = node["Scripts"].AsArray;
+            foreach (var script in texts.SelectMany(t => t.PlayingReplacer.References.Union(t.NotPlayingReplacer.References).Select(ResolveScriptTag).Where(t => t is not null))
+                .Select(st =>
+                {
+                    var node = JsonNode.Empty;
+                    node["Name"] = st.Path != null ? Path.GetFileName(st.Path) : $"{Guid.NewGuid()}.js";
+                    node["Script"] = st.Path != null ? File.ReadAllText(st.Path) : st.Script;
+                    return node;
+                }))
+                scripts.Add(script);
+            return Encoding.UTF8.GetBytes(node.ToString()).Compress();
+        }
+        public static List<OverlayerText> ImportTexts(byte[] raw)
+        {
+            JsonNode node = JsonNode.Parse(Encoding.UTF8.GetString(raw.Decompress()));
+            List<OverlayerText> texts = new List<OverlayerText>(node["Texts"].Values.Select(TextConfigImporter.Import).Select(TextManager.CreateText));
+            foreach (var script in node["Scripts"].Values)
+                File.WriteAllText(Path.Combine(ScriptPath, script["Name"]), script["Script"]);
+            RunScriptsNonBlocking();
+            return texts;
+        }
+        private static ScriptTag ResolveScriptTag(Tag tag)
+        {
+            return TagManager.All.Where(ot => ot.Name == tag.Name).FirstOrDefault() as ScriptTag;
+        }
         public static Type[] unityTypes = new Type[]
         {
             typeof(Scene),

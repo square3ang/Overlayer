@@ -366,6 +366,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ScriptTag.cs" />
     <Compile Include="Impl.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="PerformanceTags.cs" />
