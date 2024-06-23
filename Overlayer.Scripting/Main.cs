@@ -261,7 +261,7 @@ namespace Overlayer.Scripting
                 }
 
                 var proxyTypes = comments.Find(s => s.StartsWith("ProxyTypes:"));
-                if (proxyTypes != null)
+                if (proxyTypes != null && proxyTypes.Any())
                 {
                     var types = proxyTypes.Split(':')[1].TrimStart();
                     foreach (var clrType in types.Split('*').Select(typeString =>
@@ -274,7 +274,7 @@ namespace Overlayer.Scripting
                 
 
                 var proxyMethods = comments.Find(s => s.StartsWith("ProxyMethods:"));
-                if (proxyMethods != null)
+                if (proxyMethods != null && proxyMethods.Any())
                 {
                     var methods = proxyMethods.Split(':')[1].TrimStart();
                     foreach (var staticMethod in methods.Split('*').Select(methodString =>

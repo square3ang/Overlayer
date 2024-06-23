@@ -72,7 +72,7 @@ namespace Overlayer.Scripting
                 }
                 else
                 {
-                    bool isUri = Uri.TryCreate(tagOrProxy, UriKind.RelativeOrAbsolute, out Uri uri);
+                    bool isUri = false;//Uri.TryCreate(tagOrProxy, UriKind.RelativeOrAbsolute, out Uri uri);
                     if (!isUri)
                     {
                         if (!tagOrProxy.EndsWith(".js"))
@@ -86,7 +86,7 @@ namespace Overlayer.Scripting
                     var isProxy = false;
                     var time = MiscUtils.MeasureTime(() =>
                     {
-                        var code = isUri ? Overlayer.Main.HttpClient.GetStringAsync(uri).GetAwaiter().GetResult() : File.ReadAllText(tagOrProxy);
+                        var code = File.ReadAllText(tagOrProxy);//isUri ? Overlayer.Main.HttpClient.GetStringAsync(uri).GetAwaiter().GetResult() : File.ReadAllText(tagOrProxy);
                         if (isProxy = code.StartsWith("// [Overlayer.Scripting JS Wrapper]"))
                         {
                             foreach (var (alias, member) in Main.ImportJSProxy(code))
