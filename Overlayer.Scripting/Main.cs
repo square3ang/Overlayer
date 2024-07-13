@@ -261,34 +261,42 @@ namespace Overlayer.Scripting
                 }
 
                 var proxyTypes = comments.Find(s => s.StartsWith("ProxyTypes:"));
-                if (proxyTypes != null && proxyTypes.Any())
+                if (proxyTypes != null)
                 {
-                    var types = proxyTypes.Split(':')[1].TrimStart();
-                    foreach (var clrType in types.Split('*').Select(typeString =>
+                    var split = proxyTypes.Split(':');
+                    if (split.Length > 1)
                     {
-                        var typeNameSplit = typeString.Split('&');
-                        return (typeNameSplit[1], (MemberInfo)MiscUtils.TypeByName(typeNameSplit[0]));
-                    }))
-                        yield return clrType;
+                        var types = split[1].TrimStart();
+                        foreach (var clrType in types.Split('*').Select(typeString =>
+                        {
+                            var typeNameSplit = typeString.Split('&');
+                            return (typeNameSplit[1], (MemberInfo)MiscUtils.TypeByName(typeNameSplit[0]));
+                        }))
+                            yield return clrType;
+                    }
                 }
                 
 
                 var proxyMethods = comments.Find(s => s.StartsWith("ProxyMethods:"));
-                if (proxyMethods != null && proxyMethods.Any())
+                if (proxyMethods != null)
                 {
-                    var methods = proxyMethods.Split(':')[1].TrimStart();
-                    foreach (var staticMethod in methods.Split('*').Select(methodString =>
+                    var split = proxyMethods.Split(':');
+                    if (split.Length > 1) 
                     {
-                        var decTypeSplit = methodString.Split('^');
-                        var decType = MiscUtils.TypeByName(decTypeSplit[0]);
-                        var nameSplit = decTypeSplit[1].Split('#');
-                        var name = nameSplit[0];
-                        var parametersSplit = nameSplit[1].Split('&');
-                        var parameters = parametersSplit[0].Split(',').Select(pType => MiscUtils.TypeByName(pType));
-                        var alias = parametersSplit[1];
-                        return (alias, (MemberInfo)decType?.GetMethod(name, (BindingFlags)15420, null, parameters.ToArray(), null));
-                    }))
-                        yield return staticMethod;
+                        var methods = split[1].TrimStart();
+                        foreach (var staticMethod in methods.Split('*').Where(s => s.Any()).Select(methodString =>
+                        {
+                            var decTypeSplit = methodString.Split('^');
+                            var decType = MiscUtils.TypeByName(decTypeSplit[0]);
+                            var nameSplit = decTypeSplit[1].Split('#');
+                            var name = nameSplit[0];
+                            var parametersSplit = nameSplit[1].Split('&');
+                            var parameters = parametersSplit[0].Split(',').Select(pType => MiscUtils.TypeByName(pType));
+                            var alias = parametersSplit[1];
+                            return (alias, (MemberInfo)decType?.GetMethod(name, (BindingFlags)15420, null, parameters.ToArray(), null));
+                        }))
+                            yield return staticMethod;
+                    }
                 }
             }
         }

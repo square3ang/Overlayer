@@ -473,6 +473,28 @@ namespace Overlayer.Scripting
         {
             return TextManager.CreateText(TextConfigImporter.Import(JsonNode.Parse(json)));
         }
+        [Api("createTexture", RequireTypes = new[] { typeof(Texture2D) })]
+        public static Texture2D CreateTexture(string imagePath)
+        {
+            if (!File.Exists(imagePath)) return null;
+            Texture2D texture = new Texture2D(1, 1);
+            texture.LoadImage(File.ReadAllBytes(imagePath));
+            return texture;
+        }
+        [Api("createTextureRaw")]
+        public static Texture2D CreateTextureRaw(byte[] raw)
+        {
+            Texture2D texture = new Texture2D(1, 1);
+            texture.LoadImage(raw);
+            return texture;
+        }
+        [Api("createSprite")]
+        public static Sprite CreateSprite(Texture2D texture)
+        {
+            if (!spriteCache.TryGetValue(texture, out Sprite sprite))
+                sprite = spriteCache[texture] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+            return sprite;
+        }
         [Api(RequireTypes = new[] { typeof(KeyCode) })]
         public class On
         {
@@ -603,11 +625,21 @@ namespace Overlayer.Scripting
             }
             #endregion
         }
+        [Api]
+        public class Adofai
+        {
+            [Api("getPlanetRenderer", RequireTypes = new[] { typeof(SpriteRenderer) })]
+            public static SpriteRenderer GetPlanetSpriteRenderer(scrPlanet planet)
+            {
+                return planet.GetOrAddRenderer();
+            }
+        }
         #endregion
         static Harmony harmony;
         public static HashSet<string> alreadyExecutedScripts;
         public static List<string> registeredCustomTags;
         public static Dictionary<string, object> globalVariables;
+        public static Dictionary<Texture2D, Sprite> spriteCache = new Dictionary<Texture2D, Sprite>();
         static Dictionary<Engine, Dictionary<string, TypeReference>> jsTypes;
         [Obsolete("Internal Only!", true)]
         public static object[] StrArrayToObjArray(string[] arr)
@@ -625,6 +657,24 @@ namespace Overlayer.Scripting
         static MethodInfo transpilerAdapter = typeof(Impl).GetMethod("TranspilerAdapter", AccessTools.all);
         static AssemblyBuilder ApiAssembly;
         static System.Reflection.Emit.ModuleBuilder ApiModule;
+        // From PlanetTweaks By tjwogud
+        public static SpriteRenderer GetOrAddRenderer(this scrPlanet planet)
+        {
+            if (!planet) return null;
+            SpriteRenderer renderer = planet.transform.Find("PlanetTweaksRenderer")?.GetComponent<SpriteRenderer>();
+            if (!renderer)
+            {
+                GameObject obj = new GameObject("PlanetTweaksRenderer");
+                obj.AddComponent<RendererController>();
+                renderer = obj.AddComponent<SpriteRenderer>();
+                renderer.sortingOrder = (typeof(PlanetRenderer).GetField("meshRenderer", (BindingFlags)15420).GetValue(planet.sprite) as SpriteRenderer).sortingOrder + 1;
+                renderer.sortingLayerID = planet.faceDetails.sortingLayerID;
+                renderer.sortingLayerName = planet.faceDetails.sortingLayerName;
+                renderer.transform.SetParent(planet.transform);
+                renderer.transform.position = planet.transform.position;
+            }
+            return renderer;
+        }
         static MethodInfo GenerateTagWrapper(FIWrapper wrapper)
         {
             Type[] paramTypes = wrapper.args.Select(t => typeof(string)).ToArray();
@@ -723,5 +773,34 @@ namespace Overlayer.Scripting
            => harmony.Patch(target, postfix: new HarmonyMethod(del.Wrap()));
         private static MethodInfo Prefix<T>(this Harmony harmony, MethodBase target, T del) where T : Delegate
             => harmony.Patch(target, new HarmonyMethod(del.Wrap()));
+        // From PlanetTweaks By tjwogud
+        public class RendererController : MonoBehaviour
+        {
+            private scrPlanet planet;
+            private SpriteRenderer renderer;
+
+            private void Awake()
+            {
+                planet = GetComponentInParent<scrPlanet>();
+                renderer = planet.GetOrAddRenderer();
+            }
+
+            private void Update()
+            {
+                if (!planet)
+                    planet = GetComponentInParent<scrPlanet>();
+                if (!renderer)
+                    renderer = planet.GetOrAddRenderer();
+                if (planet && renderer)
+                {
+                    if (planet.dummyPlanets)
+                    {
+                        Destroy(gameObject);
+                        return;
+                    }
+                    renderer.enabled = planet.sprite.visible;
+                }
+            }
+        }
     }
 }
