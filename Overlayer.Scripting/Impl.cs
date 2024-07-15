@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Discord;
 using HarmonyLib;
 using Jint;
 using Jint.Native;
@@ -24,7 +25,9 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Overlayer.Scripting
 {
@@ -47,6 +50,7 @@ namespace Overlayer.Scripting
             harmony?.UnpatchAll(harmony.Id);
             harmony = null;
             jsTypes = null;
+            Adofai.injected = false;
             alreadyExecutedScripts = null;
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
             DisposeWrapperAssembly();
@@ -99,10 +103,8 @@ namespace Overlayer.Scripting
                         }
                         else
                         {
-                            var result = Script.InterpretAPI(Main.JSExecutionApi, code);
+                            engine.Execute(code);
                             alreadyExecutedScripts.Add(tagOrProxy);
-                            result.Exec();
-                            result.Dispose();
                         }
                     });
                     if (isProxy)
@@ -244,9 +246,9 @@ namespace Overlayer.Scripting
         }
         public delegate object CallWrapper(params object[] args);
         [Api("setGlobalVariable")]
-        public static object SetGlobalVariable(Engine engine, string name, object obj)
+        public static object SetGlobalVariable(Engine engine, string name, object obj)  
         {
-            if (obj is FunctionInstance fi)
+            if (obj is Function fi)
             {
                 FIWrapper wrapper = new FIWrapper(fi);
                 obj = (CallWrapper)wrapper.Call;
@@ -256,7 +258,7 @@ namespace Overlayer.Scripting
         [Api("registerTag")]
         public static void RegisterTag(Engine engine, string name, JsValue func, bool notplaying)
         {
-            if (!(func is FunctionInstance fi)) return;
+            if (!(func is Function fi)) return;
             FIWrapper wrapper = new FIWrapper(fi);
             var tagWrapper = GenerateTagWrapper(wrapper);
             var tuple = (new ApiAttribute(name), tagWrapper);
@@ -264,7 +266,7 @@ namespace Overlayer.Scripting
             Main.JSExpressionApi.Methods.Add(tuple);
             Expression.expressions.Clear();
             string pathOrScript = Main.CurrentExecutingScriptPath == "Sandbox.js" ? Main.CurrentExecutingScript : Main.CurrentExecutingScriptPath;
-            TagManager.SetTag(new ScriptTag(pathOrScript, tagWrapper, new TagAttribute(name) { NotPlaying = notplaying }));
+            TagManager.SetTag(new ScriptTag(pathOrScript, tagWrapper, new Tags.Attributes.TagAttribute(name) { NotPlaying = notplaying }));
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
             registeredCustomTags.Add(name);
             Main.Logger.Log($"Registered Tag \"{name}\" (NotPlaying:{notplaying})");
@@ -281,7 +283,7 @@ namespace Overlayer.Scripting
         [Api("prefix")]
         public static bool Prefix(Engine engine, string typeColonMethodName, JsValue patch)
         {
-            if (!(patch is FunctionInstance func)) return false;
+            if (!(patch is Function func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
             target ??= MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15420);
@@ -299,7 +301,7 @@ namespace Overlayer.Scripting
         [Api("postfix")]
         public static bool Postfix(Engine engine, string typeColonMethodName, JsValue patch)
         {
-            if (!(patch is FunctionInstance func)) return false;
+            if (!(patch is Function func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
             target ??= MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15420);
@@ -317,7 +319,7 @@ namespace Overlayer.Scripting
         [Api("transpiler")]
         public static bool Transpiler(Engine engine, string typeColonMethodName, JsValue patch)
         {
-            if (!(patch is FunctionInstance func)) return false;
+            if (!(patch is Function func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422);
             target ??= MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15420);
@@ -335,7 +337,7 @@ namespace Overlayer.Scripting
         [Api("prefixWithArgs")]
         public static bool PrefixWithArgs(Engine engine, string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
-            if (!(patch is FunctionInstance func)) return false;
+            if (!(patch is Function func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422, null, argTypes, null);
@@ -354,7 +356,7 @@ namespace Overlayer.Scripting
         [Api("postfixWithArgs")]
         public static bool PostfixWithArgs(Engine engine, string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
-            if (!(patch is FunctionInstance func)) return false;
+            if (!(patch is Function func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422, null, argTypes, null);
@@ -373,7 +375,7 @@ namespace Overlayer.Scripting
         [Api("transpilerWithArgs")]
         public static bool TranspilerWithArgs(Engine engine, string typeColonMethodName, string[] argumentClrTypes, JsValue patch)
         {
-            if (!(patch is FunctionInstance func)) return false;
+            if (!(patch is Function func)) return false;
             var typemethod = typeColonMethodName.Split2(':');
             var argTypes = argumentClrTypes.Select(MiscUtils.TypeByName).ToArray();
             var target = MiscUtils.TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15422, null, argTypes, null);
@@ -504,7 +506,7 @@ namespace Overlayer.Scripting
             })]
             public static void Rewind(Engine engine, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Awake_Rewind"), new Action(() => wrapper.Call()));
             }
@@ -514,7 +516,7 @@ namespace Overlayer.Scripting
             })]
             public static void Hit(Engine engine, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Hit"), new Action(() => wrapper.Call()));
             }
@@ -524,7 +526,7 @@ namespace Overlayer.Scripting
             })]
             public static void Dead(Engine engine, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:FailAction"), new Action<scrController>(__instance =>
                 {
@@ -537,7 +539,7 @@ namespace Overlayer.Scripting
             })]
             public static void Fail(Engine engine, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:FailAction"), new Action<scrController>(__instance =>
                 {
@@ -550,7 +552,7 @@ namespace Overlayer.Scripting
             })]
             public static void Clear(Engine engine, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:OnLandOnPortal"), new Action<scrController>(__instance =>
                 {
@@ -564,7 +566,7 @@ namespace Overlayer.Scripting
             })]
             public static void AnyKey(Engine engine, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
                 {
@@ -577,7 +579,7 @@ namespace Overlayer.Scripting
             })]
             public static void AnyKeyDown(Engine engine, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
                 {
@@ -590,7 +592,7 @@ namespace Overlayer.Scripting
             })]
             public static void Key(Engine engine, KeyCode key, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
                 {
@@ -603,7 +605,7 @@ namespace Overlayer.Scripting
             })]
             public static void KeyUp(Engine engine, KeyCode key, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
                 {
@@ -616,7 +618,7 @@ namespace Overlayer.Scripting
             })]
             public static void KeyDown(Engine engine, KeyCode key, JsValue func)
             {
-                if (!(func is FunctionInstance fi)) return;
+                if (!(func is Function fi)) return;
                 FIWrapper wrapper = new FIWrapper(fi);
                 harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() =>
                 {
@@ -629,9 +631,53 @@ namespace Overlayer.Scripting
         public class Adofai
         {
             [Api("getPlanetRenderer", RequireTypes = new[] { typeof(SpriteRenderer) })]
-            public static SpriteRenderer GetPlanetSpriteRenderer(scrPlanet planet)
+            public static SpriteRenderer GetPlanetRenderer(scrPlanet planet)
             {
                 return planet.GetOrAddRenderer();
+            }
+            [Api("setDiscordRp")]
+            public static void SetDiscordRp(string title, string state, string details)
+            {
+                string Validate(string s) => s.Length <= 60 ? s : s.Substring(0, 57) + "...";
+                Discord.Discord discord = typeof(DiscordController).GetField("discord", (BindingFlags)15420).GetValue(DiscordController.instance) as Discord.Discord;
+                Activity activity = default;
+                activity.State = Validate(state);
+                activity.Details = Validate(details);
+                activity.Assets.LargeImage = "planets_icon_stars";
+                activity.Assets.LargeText = title;
+                discord.GetActivityManager().UpdateActivity(activity, delegate { });
+            }
+            [Api("setBuildText")]
+            public static void SetBuildText(string text)
+            {
+                var betaText = UnityEngine.Object.FindObjectOfType<scrEnableIfBeta>();
+                betaText.gameObject.SetActive(true);
+                betaText.GetComponent<TMP_Text>().text = text;
+            }
+            [Api("setAutoText")]
+            public static void SetAutoText(string text)
+            {
+                InjectAutoTextUpdate();
+                var betaText = UnityEngine.Object.FindObjectOfType<scrShowIfDebug>();
+                betaText.gameObject.SetActive(true);
+                betaText.GetComponent<UnityEngine.UI.Text>().text = text;
+            }
+            [Api("setTileSprite")]
+            public static void SetTileSprite(Sprite sprite, float scale)
+            {
+                foreach (var floor in UnityEngine.Object.FindObjectsOfType<scrFloor>())
+                {
+                    floor.floorRenderer.sprite = sprite;
+                    floor.floorRenderer.transform.localScale = new Vector2(scale, scale);
+                }
+            }
+
+            internal static bool injected = false;
+            private static void InjectAutoTextUpdate()
+            {
+                if (injected) return;
+                harmony.Patch(typeof(scrShowIfDebug).GetMethod("Update", (BindingFlags)15420), new HarmonyMethod(EmitUtils.Wrap(new Func<bool>(() => false))));
+                injected = true;
             }
         }
         #endregion
@@ -653,7 +699,6 @@ namespace Overlayer.Scripting
         static bool wrapperInitialized = false;
         static MethodInfo satoa = typeof(Impl).GetMethod(nameof(StrArrayToObjArray), (BindingFlags)15420);
         static MethodInfo call_fi = typeof(FIWrapper).GetMethod("Call");
-        static MethodInfo call_udfi = typeof(UDFWrapper).GetMethod("Call");
         static MethodInfo transpilerAdapter = typeof(Impl).GetMethod("TranspilerAdapter", AccessTools.all);
         static AssemblyBuilder ApiAssembly;
         static System.Reflection.Emit.ModuleBuilder ApiModule;
@@ -712,7 +757,7 @@ namespace Overlayer.Scripting
             resultT.GetField("wrapper").SetValue(null, wrapper);
             return resultT.GetMethod($"{name}_WrapperMethod");
         }
-        public static MethodInfo WrapTranspiler(this FunctionInstance func)
+        public static MethodInfo WrapTranspiler(this Function func)
         {
             if (func == null) return null;
             FIWrapper holder = new FIWrapper(func);

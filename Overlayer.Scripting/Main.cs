@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using JSNet;
 using JSNet.API;
+using JSNet.Utils;
 using JSON;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
@@ -99,7 +100,6 @@ namespace Overlayer.Scripting
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false);
             return true;
         }
-        static Script prevScript;
         static string SandboxJSCode = string.Empty;
         static string SandboxResult = "Not Executed.";
         public static void OnGUI(ModEntry modEntry)
@@ -118,8 +118,7 @@ namespace Overlayer.Scripting
                 MiscUtils.ExecuteSafe(() =>
                 {
                     BeginScript(true);
-                    prevScript = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(JSExecutionApi, SandboxJSCode), out e);
-                    prevScript?.Exec();
+                    MiscUtils.ExecuteSafe(() => JSExecutionApi.PrepareInterpreter().Evaluate(JSUtils.RemoveImports(SandboxJSCode)), out e);
                     SandboxResult = e?.ToString() ?? "Success";
                 }, out e);
                 if (e != null) SandboxResult = e.ToString();
@@ -131,8 +130,7 @@ namespace Overlayer.Scripting
                 MiscUtils.ExecuteSafe(() =>
                 {
                     BeginScript(true);
-                    prevScript = MiscUtils.ExecuteSafe(() => Script.InterpretAPI(JSExecutionApi, SandboxJSCode), out e);
-                    var result = prevScript?.Eval();
+                    var result = MiscUtils.ExecuteSafe(() => JSExecutionApi.PrepareInterpreter().Evaluate(JSUtils.RemoveImports(SandboxJSCode)), out e);
                     SandboxResult = e?.ToString() ?? result?.ToString() ?? "null";
                 }, out e);
                 if (e != null) SandboxResult = e.ToString();
@@ -193,12 +191,7 @@ namespace Overlayer.Scripting
                     CurrentExecutingScript = script;
                     CurrentExecutingScriptPath = path;
                     BeginScript();
-                    var time = MiscUtils.MeasureTime(() =>
-                    {
-                        var result = Script.InterpretAPI(JSExecutionApi, script);
-                        result.Exec();
-                        result.Dispose();
-                    });
+                    var time = MiscUtils.MeasureTime(() => JSExecutionApi.PrepareInterpreter().Execute(JSUtils.RemoveImports(script)));
                     EndScript();
                     Logger.Log($"Executed \"{name}\" Script Successfully. ({time.TotalMilliseconds}ms)");
                     return true;
