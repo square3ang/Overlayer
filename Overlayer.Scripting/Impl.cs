@@ -6,7 +6,6 @@ using Jint.Native;
 using Jint.Native.Function;
 using Jint.Runtime.Interop;
 using Jint.Runtime.Interop.Attributes;
-using JSNet;
 using JSNet.API;
 using JSNet.Utils;
 using JSON;
@@ -19,6 +18,7 @@ using Overlayer.Tags.Attributes;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,7 +27,8 @@ using System.Reflection.Emit;
 using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using static Overlayer.Scripting.Impl.Adofai.AudioPlayer;
 
 namespace Overlayer.Scripting
 {
@@ -50,7 +51,8 @@ namespace Overlayer.Scripting
             harmony?.UnpatchAll(harmony.Id);
             harmony = null;
             jsTypes = null;
-            Adofai.injected = false;
+            Adofai.autoTextInjected = false;
+            Adofai.startRadiusInjected = false;
             alreadyExecutedScripts = null;
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
             DisposeWrapperAssembly();
@@ -76,7 +78,7 @@ namespace Overlayer.Scripting
                 }
                 else
                 {
-                    bool isUri = false;//Uri.TryCreate(tagOrProxy, UriKind.RelativeOrAbsolute, out Uri uri);
+                    bool isUri = false;
                     if (!isUri)
                     {
                         if (!tagOrProxy.EndsWith(".js"))
@@ -90,7 +92,7 @@ namespace Overlayer.Scripting
                     var isProxy = false;
                     var time = MiscUtils.MeasureTime(() =>
                     {
-                        var code = File.ReadAllText(tagOrProxy);//isUri ? Overlayer.Main.HttpClient.GetStringAsync(uri).GetAwaiter().GetResult() : File.ReadAllText(tagOrProxy);
+                        var code = File.ReadAllText(tagOrProxy);
                         if (isProxy = code.StartsWith("// [Overlayer.Scripting JS Wrapper]"))
                         {
                             foreach (var (alias, member) in Main.ImportJSProxy(code))
@@ -627,10 +629,21 @@ namespace Overlayer.Scripting
             }
             #endregion
         }
-        [Api]
+        [Api(Comment = new string[]
+        {
+            "These Methods Are Recommended To Use In 'On.rewind' Callback."
+        },
+        RequireTypes = new Type[]
+        {
+            typeof(SpriteRenderer),
+            typeof(scrHitTextMesh),
+            typeof(HitMargin),
+            typeof(SfxSound),
+            typeof(HitSound)
+        })]
         public class Adofai
         {
-            [Api("getPlanetRenderer", RequireTypes = new[] { typeof(SpriteRenderer) })]
+            [Api("getPlanetRenderer", ReturnComment = "UnityEngine.SpriteRenderer (Planet SpriteRenderer)")]
             public static SpriteRenderer GetPlanetRenderer(scrPlanet planet)
             {
                 return planet.GetOrAddRenderer();
@@ -662,6 +675,19 @@ namespace Overlayer.Scripting
                 betaText.gameObject.SetActive(true);
                 betaText.GetComponent<UnityEngine.UI.Text>().text = text;
             }
+            [Api("configAutoText", ParamComment = new string[]
+            {
+                "UnityEngine.UI.Text Callback"
+            })]
+            public static void ConfigAutoText(Engine engine, JsValue configFunc)
+            {
+                if (configFunc is not Function func) return;
+                FIWrapper wrapper = new FIWrapper(func);
+                InjectAutoTextUpdate();
+                var betaText = UnityEngine.Object.FindObjectOfType<scrShowIfDebug>();
+                betaText.gameObject.SetActive(true);
+                wrapper.Call(betaText.GetComponent<UnityEngine.UI.Text>());
+            }
             [Api("setTileSprite")]
             public static void SetTileSprite(Sprite sprite, float scale)
             {
@@ -671,13 +697,198 @@ namespace Overlayer.Scripting
                     floor.floorRenderer.transform.localScale = new Vector2(scale, scale);
                 }
             }
-
-            internal static bool injected = false;
+            [Api("setTileIcon")]
+            public static void SetTileIcon(Sprite sprite, float scale)
+            {
+                foreach (var floor in UnityEngine.Object.FindObjectsOfType<scrFloor>())
+                {
+                    floor.SetIconSprite(sprite);
+                    floor.SetIconScale(scale);
+                }
+            }
+            [Api("setJudgeText")]
+            public static void SetJudgeText(HitMargin hitMargin, string text)
+            {
+                StaticCoroutine.Run(StaticCoroutine.SyncRunner(() =>
+                {
+                    if (cachedHitTexts(Tags.ADOFAI.Controller) == null) return;
+                    foreach (var t in cachedHitTexts(Tags.ADOFAI.Controller)[hitMargin])
+                        sHTM_text(t).text = text;
+                }));
+            }
+            [Api("configJudgeText", ParamComment = new string[]
+            {
+                "scrHitTextMesh Callback"
+            })]
+            public static void ConfigJudgeText(Engine engine, HitMargin hitMargin, JsValue configFunc)
+            {
+                if (configFunc is not Function func) return;
+                FIWrapper wrapper = new FIWrapper(func);
+                StaticCoroutine.Run(StaticCoroutine.SyncRunner(() =>
+                {
+                    if (cachedHitTexts(Tags.ADOFAI.Controller) == null) return;
+                    foreach (var t in cachedHitTexts(Tags.ADOFAI.Controller)[hitMargin])
+                        wrapper.Call(t);
+                }));
+            }
+            [Api("setSfxSound")]
+            public static void SetSfxSound(SfxSound sfx, string audio) => LoadAudio(audio, clip => Tags.ADOFAI.RDConstants.soundEffects[(int)sfx] = clip);
+            [Api("setHitSound")]
+            public static void SetHitSound(HitSound hit, string audio) => LoadAudio(audio, clip => AudioManager.Instance.audioLib[$"snd{hit}"] = clip);
+            [Api("setLobbyBgm")]
+            public static void SetLobbyBgm(string audio) => LoadAudio(audio, clip =>
+            {
+                var lobbySource = scrConductor.instance.GetComponentsInChildren<AudioSource>()?.FirstOrDefault(a => a.clip?.name == "1-X-wav");
+                if (lobbySource != null) lobbySource.clip = clip;
+            });
+            [Api("setStartRadius")]
+            public static void SetStartRadius(float radius)
+            {
+                InjectStartRadius();
+                startRadius = radius;
+            }
+            [Api("setOldAuto")]
+            public static void SetWeakAuto(bool enabled)
+            {
+                RDC.useOldAuto = enabled;
+            }
+            internal static AccessTools.FieldRef<scrController, Dictionary<HitMargin, scrHitTextMesh[]>> cachedHitTexts = AccessTools.FieldRefAccess<scrController, Dictionary<HitMargin, scrHitTextMesh[]>>("cachedHitTexts");
+            internal static AccessTools.FieldRef<scrHitTextMesh, TextMesh> sHTM_text = AccessTools.FieldRefAccess<scrHitTextMesh, TextMesh>("text");
+            private static float startRadius = 1;
+            internal static bool autoTextInjected = false;
+            internal static bool startRadiusInjected = false;
             private static void InjectAutoTextUpdate()
             {
-                if (injected) return;
+                if (autoTextInjected) return;
                 harmony.Patch(typeof(scrShowIfDebug).GetMethod("Update", (BindingFlags)15420), new HarmonyMethod(EmitUtils.Wrap(new Func<bool>(() => false))));
-                injected = true;
+                autoTextInjected = true;
+            }
+            private static void InjectStartRadius()
+            {
+                if (startRadiusInjected) return;
+                harmony.Patch(typeof(scrController).GetMethod("get_startRadius", (BindingFlags)15420), new HarmonyMethod(EmitUtils.Wrap(new RefFunc<float, bool>((ref float __result) =>
+                {
+                    __result = startRadius;
+                    return false;
+                }))));
+                startRadiusInjected = true;
+            }
+            public delegate R RefFunc<T, R>(ref T val);
+            public static class AudioPlayer
+            {
+                static List<AudioSource> sources = new List<AudioSource>();
+                static Dictionary<string, AudioClip> clips = new Dictionary<string, AudioClip>();
+                public static void Play(Sound sound)
+                {
+                    if (sound?.sound == null) return;
+                    if (clips.TryGetValue(sound.sound, out var clip))
+                    {
+                        if (sound.offset > 0)
+                            StaticCoroutine.Run(PlayCo(sound.SetClip(clip)));
+                        else
+                        {
+                            AudioSource source = EnsureSource();
+                            sound.SetClip(clip);
+                            source.clip = sound.clip;
+                            source.volume = sound.volume;
+                            source.pitch = sound.pitch;
+                            source.Play();
+                        }
+                    }
+                    else StaticCoroutine.Run(LoadClip(sound.sound, clip => StaticCoroutine.Run(PlayCo(sound.SetClip(clip)))));
+                }
+                public static void Stop(Sound sound)
+                {
+                    sources.Find(a => a.clip == sound.clip)?.Stop();
+                }
+                public static void StopAll()
+                {
+                    sources.ForEach(a => a.Stop());
+                }
+                public static void LoadAudio(string path, Action<AudioClip> callback)
+                {
+                    StaticCoroutine.Run(LoadClip(path, callback));
+                }
+                static IEnumerator PlayCo(Sound sound)
+                {
+                    float counted = 0f;
+                    while (counted < sound.offset)
+                    {
+                        counted += UnityEngine.Time.deltaTime * 1000f;
+                        yield return null;
+                    }
+                    AudioSource source = EnsureSource();
+                    source.clip = sound.clip;
+                    source.volume = sound.volume;
+                    source.pitch = sound.pitch;
+                    source.Play();
+                }
+                static IEnumerator LoadClip(string sound, Action<AudioClip> callback)
+                {
+                    if (callback == null) yield break;
+                    if (clips.TryGetValue(sound, out var c))
+                    {
+                        callback(c);
+                        yield break;
+                    }
+                    if (!File.Exists(sound))
+                    {
+                        Main.Logger.Log($"{sound} Is Not Exist!!");
+                        yield break;
+                    }
+                    Uri.TryCreate(sound, UriKind.RelativeOrAbsolute, out Uri uri);
+                    if (uri == null) yield break;
+                    var at = Path.GetExtension(sound) switch
+                    {
+                        ".ogg" => AudioType.OGGVORBIS,
+                        ".mp3" => AudioType.MPEG,
+                        ".aiff" => AudioType.AIFF,
+                        ".wav" => AudioType.WAV,
+                        _ => AudioType.UNKNOWN
+                    };
+                    if (at == AudioType.UNKNOWN) yield break;
+                    var clipReq = UnityWebRequestMultimedia.GetAudioClip(uri, at);
+                    yield return clipReq.SendWebRequest();
+                    var clip = DownloadHandlerAudioClip.GetContent(clipReq);
+                    UnityEngine.Object.DontDestroyOnLoad(clip);
+                    callback(clips[sound] = clip);
+                }
+                static AudioSource EnsureSource()
+                {
+                    var source = sources.FirstOrDefault(a => !a.isPlaying);
+                    if (source != null) return source;
+                    GameObject sourceObject = new GameObject();
+                    source = sourceObject.AddComponent<AudioSource>();
+                    source.playOnAwake = false;
+                    source.ignoreListenerPause = true;
+                    source.ignoreListenerVolume = true;
+                    UnityEngine.Object.DontDestroyOnLoad(sourceObject);
+                    sources.Add(source);
+                    return source;
+                }
+                public class Sound
+                {
+                    public Sound() { }
+                    public string sound;
+                    public float offset = 0;
+                    public float volume = 1;
+                    public float pitch = 1;
+                    internal AudioClip clip;
+                    internal Sound SetClip(AudioClip clip)
+                    {
+                        this.clip = clip;
+                        return this;
+                    }
+                    public Sound Copy()
+                    {
+                        Sound newSound = new Sound();
+                        newSound.sound = sound;
+                        newSound.offset = offset;
+                        newSound.volume = volume;
+                        newSound.pitch = pitch;
+                        return newSound;
+                    }
+                }
             }
         }
         #endregion
