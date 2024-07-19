@@ -105,7 +105,7 @@ namespace Overlayer.Scripting
                         }
                         else
                         {
-                            engine.Execute(code);
+                            engine.Execute(JSUtils.RemoveImports(code));
                             alreadyExecutedScripts.Add(tagOrProxy);
                         }
                     });
