@@ -16,7 +16,7 @@ namespace Overlayer.Scripting
         {
             if (expressions.TryGetValue(expr, out var res))
                 return res.Run();
-            res = MiscUtils.ExecuteSafe(() => new ExprContext(Main.JSExpressionApi.PrepareInterpreter(), Engine.PrepareScript(JSUtils.RemoveImports(expr))), out _);
+            res = MiscUtils.ExecuteSafe(() => new ExprContext(Main.JSApi.PrepareInterpreter(), Engine.PrepareScript(JSUtils.RemoveImports(expr))), out _);
             if (!res.prepared.IsValid) return null;
             return (expressions[expr] = res).Run();
         }
