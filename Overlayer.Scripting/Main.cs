@@ -151,7 +151,7 @@ namespace Overlayer.Scripting
             Logger.Log("Generating Script Implementations..");
             File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSApi.Generate());
             Logger.Log("Generating Script System Implementations..");
-            File.WriteAllText(Path.Combine(ScriptProxyPath, "System.js"), GenerateJSProxy("c3nb", systemTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "System.js"), GenerateJSProxy("c3nb", systemTypes.Select(t => (t.Name == "File" ? "IOFile" : t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Generating Script System Implementations..");
             File.WriteAllText(Path.Combine(ScriptProxyPath, "Reflection.js"), GenerateJSProxy("c3nb", reflectionTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Generating Script Harmony Implementations..");
@@ -306,8 +306,11 @@ namespace Overlayer.Scripting
             JsonNode node = JsonNode.Parse(Encoding.UTF8.GetString(raw.Decompress()));
             List<OverlayerText> texts = new List<OverlayerText>(node["Texts"].Values.Select(TextConfigImporter.Import).Select(TextManager.CreateText));
             foreach (var script in node["Scripts"].Values)
+            {
+                JSApi.PrepareInterpreter().Execute(script["Script"], script["Name"]);
                 File.WriteAllText(Path.Combine(ScriptPath, script["Name"]), script["Script"]);
-            RunScriptsNonBlocking();
+            }
+            TextManager.Refresh();
             return texts;
         }
         private static ScriptTag ResolveScriptTag(Tag tag)

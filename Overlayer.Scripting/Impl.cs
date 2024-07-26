@@ -112,6 +112,16 @@ namespace Overlayer.Scripting
                 }
             }
         }
+        [Api("exportTexts")]
+        public static void ExportTexts(string path, OverlayerText[] texts)
+        {
+            File.WriteAllBytes(path, Main.ExportTexts(texts));
+        }
+        [Api("importTexts")]
+        public static OverlayerText[] ImportTexts(byte[] rawTexts)
+        {
+            return Main.ImportTexts(rawTexts).ToArray();
+        }
         [Api("deleteThis")]
         public static void DeleteThis(Engine engine)
         {
@@ -433,6 +443,13 @@ namespace Overlayer.Scripting
         {
             return ColorUtility.TryParseHtmlString('#' + rgbaHex, out var color) ? color : Color.clear;
         }
+        [Api("rgbToHSV")]
+        public static float[] RgbToHSV(Color color)
+        {
+            float[] values = new float[3];
+            Color.RGBToHSV(color, out values[0], out values[1], out values[2]);
+            return values;
+        }
         [Api("colorToHexRGB")]
         public static string ToHexRGB(Engine engine, Color color)
         {
@@ -448,6 +465,10 @@ namespace Overlayer.Scripting
         {
             return TagManager.GetTag(tagName)?.Tag.Getter.Invoke(null, args)?.ToString() ?? "";
         }
+        [Api("parseFastInt")]
+        public static int ParseFaseInt(string str) => StringConverter.ToInt32(str);
+        [Api("parseFastFloat")]
+        public static double ParseFastFloat(string str) => StringConverter.ToDouble(str);
         [Api("getText", RequireTypes = new Type[]
         {
             typeof(OverlayerText),
@@ -660,6 +681,24 @@ namespace Overlayer.Scripting
             {
                 return planet.GetOrAddRenderer();
             }
+            [Api("scalePlanet")]
+            public static void ScalePlanet(scrPlanet planet, Vector2 vec)
+            {
+                ScaleAll(new[]
+                {
+                    (mr.GetValue(planet.sprite) as SpriteRenderer)?.transform,
+                    planet.coreParticles?.transform,
+                    planet.tailParticles?.transform,
+                    planet.sparks?.transform,
+                    planet.ring?.transform,
+                    planet.glow?.transform,
+                    planet.deathExplosion?.transform,
+                    planet.faceSprite?.transform,
+                    planet.faceDetails?.transform,
+                    planet.faceHolder?.transform,
+                    planet.samuraiSprite?.transform,
+                }, vec);
+            }
             [Api("setDiscordRp")]
             public static void SetDiscordRp(string title, string state, string details)
             {
@@ -718,6 +757,15 @@ namespace Overlayer.Scripting
                     floor.SetIconScale(scale);
                 }
             }
+            [Api("configTiles")]
+            public static void ConfigTiles(Engine engine, JsValue configFunc)
+            {
+                if (configFunc is not Function func) return;
+                FIWrapper wrapper = new FIWrapper(func);
+                var list = scrLevelMaker.instance.listFloors;
+                for (int i = 0; i < list.Count; i++)
+                    wrapper.Call(wrapper.args.Length == 1 ? new object[] { list[i] } : new object[] { i, list[i] });
+            }
             [Api("setJudgeText")]
             public static void SetJudgeText(HitMargin hitMargin, string text)
             {
@@ -740,7 +788,7 @@ namespace Overlayer.Scripting
                 {
                     if (cachedHitTexts(Tags.ADOFAI.Controller) == null) return;
                     foreach (var t in cachedHitTexts(Tags.ADOFAI.Controller)[hitMargin])
-                        wrapper.Call(t);
+                        wrapper.Call(func);
                 }));
             }
             [Api("setSfxSound")]
@@ -764,6 +812,8 @@ namespace Overlayer.Scripting
             {
                 RDC.useOldAuto = enabled;
             }
+            [Api("getAngleFromFloor")]
+            public static double GetAngleFromFloor(scrFloor floor) => Math.Abs(floor.entryangle - floor.exitangle) * Mathf.Rad2Deg;
             internal static AccessTools.FieldRef<scrController, Dictionary<HitMargin, scrHitTextMesh[]>> cachedHitTexts = AccessTools.FieldRefAccess<scrController, Dictionary<HitMargin, scrHitTextMesh[]>>("cachedHitTexts");
             internal static AccessTools.FieldRef<scrHitTextMesh, TextMesh> sHTM_text = AccessTools.FieldRefAccess<scrHitTextMesh, TextMesh>("text");
             private static float startRadius = 1;
@@ -784,6 +834,12 @@ namespace Overlayer.Scripting
                     return false;
                 }))));
                 startRadiusInjected = true;
+            }
+            private static void ScaleAll(Transform[] t, Vector2 vec)
+            {
+                for (int i = 0; i < t.Length; i++)
+                    if (t[i] != null)
+                        t[i].localScale = vec;
             }
             public delegate R RefFunc<T, R>(ref T val);
         }
@@ -808,7 +864,8 @@ namespace Overlayer.Scripting
         static MethodInfo call_fi = typeof(FIWrapper).GetMethod("Call");
         static MethodInfo transpilerAdapter = typeof(Impl).GetMethod("TranspilerAdapter", AccessTools.all);
         static AssemblyBuilder ApiAssembly;
-        static System.Reflection.Emit.ModuleBuilder ApiModule;
+        static ModuleBuilder ApiModule;
+        static FieldInfo mr = typeof(PlanetRenderer).GetField("meshRenderer", (BindingFlags)15420);
         // From PlanetTweaks By tjwogud
         public static SpriteRenderer GetOrAddRenderer(this scrPlanet planet)
         {
@@ -819,7 +876,7 @@ namespace Overlayer.Scripting
                 GameObject obj = new GameObject("PlanetTweaksRenderer");
                 obj.AddComponent<RendererController>();
                 renderer = obj.AddComponent<SpriteRenderer>();
-                renderer.sortingOrder = (typeof(PlanetRenderer).GetField("meshRenderer", (BindingFlags)15420).GetValue(planet.sprite) as SpriteRenderer).sortingOrder + 1;
+                renderer.sortingOrder = (mr.GetValue(planet.sprite) as SpriteRenderer).sortingOrder + 1;
                 renderer.sortingLayerID = planet.faceDetails.sortingLayerID;
                 renderer.sortingLayerName = planet.faceDetails.sortingLayerName;
                 renderer.transform.SetParent(planet.transform);
