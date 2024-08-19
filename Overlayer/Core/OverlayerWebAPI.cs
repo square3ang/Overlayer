@@ -19,7 +19,7 @@ namespace Overlayer.Core
 #else
             PROD_API;
 #endif
-        public const string PROD_API = "https://overlayer.c3nb.net";
+        public const string PROD_API = "https://overlayer.i-v.cc";
         public const string DEV_API = "http://localhost:7777";
         public static async Task Play() => await Main.HttpClient.GetStringAsync(API + "/play");
         public static async Task<string> Handshake() => await Main.HttpClient.GetStringAsync(API + "/handshake");

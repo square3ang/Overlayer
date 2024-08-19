@@ -8,6 +8,7 @@ using Overlayer.Core.TextReplacing;
 using Overlayer.Tags;
 using Overlayer.Unity;
 using Overlayer.Utils;
+using SA.GoogleDoc;
 using System;
 using System.Collections;
 using System.Collections.Generic;
