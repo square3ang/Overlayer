@@ -20,6 +20,8 @@ namespace Overlayer.Models
         public float LineSpacingAdj = 25f;
         public float ShadowDilate = 0;
         public float ShadowSoftness = 0.5f;
+        public bool EnableFallbackFonts = false;
+        public string[] FallbackFonts = null;
         public GColor TextColor = Color.white;
         public GColor OutlineColor = Color.clear;
         public GColor ShadowColor = Color.black with { a = 0.5f };
@@ -53,6 +55,8 @@ namespace Overlayer.Models
             newConfig.ShadowOffset = ShadowOffset;
             newConfig.Rotation = Rotation;
             newConfig.Alignment = Alignment;
+            newConfig.EnableFallbackFonts = EnableFallbackFonts;
+            newConfig.FallbackFonts = FallbackFonts;
             return newConfig;
         }
         public JsonNode Serialize()
@@ -79,6 +83,8 @@ namespace Overlayer.Models
             node[nameof(ShadowOffset)] = ShadowOffset;
             node[nameof(Rotation)] = Rotation;
             node[nameof(Alignment)] = Alignment.ToString();
+            node[nameof(EnableFallbackFonts)] = EnableFallbackFonts;
+            node[nameof(FallbackFonts)] = FallbackFonts;
             return node;
         }
         public void Deserialize(JsonNode node)
@@ -105,6 +111,8 @@ namespace Overlayer.Models
             ShadowOffset = node[nameof(ShadowOffset)].IfNotExist(new Vector2(0.5f, -0.5f));
             Rotation = node[nameof(Rotation)];
             Alignment = EnumHelper<TextAlignmentOptions>.Parse(node[nameof(Alignment)].IfNotExist(nameof(TextAlignmentOptions.Center)));
+            EnableFallbackFonts = node[nameof(EnableFallbackFonts)];
+            FallbackFonts = node[nameof(FallbackFonts)];
         }
     }
 }

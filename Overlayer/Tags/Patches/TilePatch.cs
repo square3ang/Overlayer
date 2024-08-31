@@ -1,4 +1,5 @@
 ﻿using Overlayer.Core.Patches;
+using SA.GoogleDoc;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,7 +28,7 @@ namespace Overlayer.Tags.Patches
         {
             public static bool Prefix(scrCountdown __instance, ref Text ___text, ref float ___timeGoTween)
             {
-                if ((ADOBase.isLevelEditor || __instance.controller.currentState == States.PlayerControl) && (__instance.controller.goShown || __instance.conductor.fastTakeoff))
+                if ((ADOBase.customLevel || __instance.controller.currentState == States.PlayerControl) && (__instance.controller.goShown || __instance.conductor.fastTakeoff))
                 {
                     double num = AudioSettings.dspTime - (double)scrConductor.calibration_i;
                     if (__instance.controller.curCountdown < __instance.conductor.extraTicksCountdown.Count && num > __instance.conductor.extraTicksCountdown[__instance.controller.curCountdown].time)
@@ -40,26 +41,28 @@ namespace Overlayer.Tags.Patches
                             }
                             else
                             {
-                                ___text.text = RDString.Get("status.go", null);
                                 SetStartTileProg(__instance.controller);
-                                ___timeGoTween = (float)(__instance.conductor.crotchet / __instance.conductor.extraTicksCountdown[__instance.controller.curCountdown].speed) / __instance.conductor.song.pitch;
+                                ___text.text = RDString.Get("status.go", null, LangSection.Translations);
+                                ___timeGoTween = (float)(__instance.conductor.crotchetAtStart / (double)__instance.conductor.extraTicksCountdown[__instance.controller.curCountdown].speed) / __instance.conductor.song.pitch;
                             }
                         }
                         __instance.controller.curCountdown++;
                     }
                 }
-                scnEditor editor = ADOBase.editor;
-                if (editor != null && editor.inStrictlyEditingMode) return false;
+                if (ADOBase.isLevelEditor && ADOBase.editor.inStrictlyEditingMode)
+                {
+                    return false;
+                }
                 if (!__instance.controller.goShown && !__instance.conductor.fastTakeoff && (__instance.controller.state == States.PlayerControl || __instance.controller.state == States.Countdown || __instance.controller.state == States.Checkpoint))
                 {
                     double num2 = AudioSettings.dspTime - (double)scrConductor.calibration_i;
                     int countdownTicks = __instance.conductor.countdownTicks;
                     if (num2 > __instance.conductor.GetCountdownTime(countdownTicks - 1) && !__instance.controller.goShown)
                     {
-                        ___text.text = RDString.Get("status.go", null);
                         SetStartTileProg(__instance.controller);
+                        ___text.text = RDString.Get("status.go", null, LangSection.Translations);
                         __instance.controller.goShown = true;
-                        ___timeGoTween = (float)__instance.conductor.crotchet;
+                        ___timeGoTween = (float)__instance.conductor.crotchetAtStart;
                     }
                     else if (num2 > __instance.conductor.GetCountdownTime(0))
                     {
@@ -75,18 +78,17 @@ namespace Overlayer.Tags.Patches
                     }
                     else
                     {
+                        SetStartTileProg(__instance.controller);
                         string text = (GCS.speedTrialMode ? "levelSelect.SpeedTrial" : "status.getReady");
                         text = (GCS.practiceMode ? "status.practiceMode" : text);
-                        ___text.text = RDString.Get(text, null);
-                        SetStartTileProg(__instance.controller);
+                        ___text.text = RDString.Get(text, null, LangSection.Translations);
                     }
                 }
                 if (!__instance.controller.goShown && __instance.conductor.fastTakeoff && (__instance.controller.state == States.PlayerControl || __instance.controller.state == States.Countdown || __instance.controller.state == States.Checkpoint))
                 {
-                    ___text.text = RDString.Get("status.go", null);
-                    SetStartTileProg(__instance.controller);
+                    ___text.text = RDString.Get("status.go", null, LangSection.Translations);
                     __instance.controller.goShown = true;
-                    ___timeGoTween = (float)__instance.conductor.crotchet;
+                    ___timeGoTween = (float)__instance.conductor.crotchetAtStart;
                 }
                 if (___timeGoTween > 0f)
                 {

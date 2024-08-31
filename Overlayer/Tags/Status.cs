@@ -6,11 +6,11 @@ namespace Overlayer.Tags
     public static class Status
     {
         [Tag]
-        public static bool IsAutoEnabled => ADOFAI.RDConstants?.auto ?? false;
+        public static bool IsAutoEnabled => ADOFAI.RDC?.auto ?? false;
         [Tag]
-        public static bool IsPracticeModeEnabled => ADOFAI.RDConstants?.practice ?? false;
+        public static bool IsPracticeModeEnabled => ADOFAI.RDC?.practice ?? false;
         [Tag]
-        public static bool IsOldAutoEnabled => ADOFAI.RDConstants?.useOldAuto ?? false;
+        public static bool IsOldAutoEnabled => ADOFAI.RDC?.useOldAuto ?? false;
         [Tag]
         public static bool IsNoFailEnabled => ADOFAI.Controller?.noFail ?? GCS.useNoFail;
         [Tag]

@@ -131,6 +131,7 @@ namespace Overlayer.Core
                 {
                     array[i] = cache;
                     onElementChange?.Invoke(i, cache);
+                    result = true;
                 }
             }
             return result;
@@ -151,6 +152,24 @@ namespace Overlayer.Core
 
             for (int i = 0; i < array.Length; i++)
                 result |= DrawObject($"{i}: ", ref array[i]);
+            GUILayout.EndVertical();
+            return result;
+        }
+        public static bool DrawArray(ref string[] array)
+        {
+            bool result = false;
+            GUILayout.BeginVertical();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("+"))
+                Array.Resize(ref array, array.Length + 1);
+            if (array.Length > 0 && GUILayout.Button("-"))
+                Array.Resize(ref array, array.Length - 1);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            for (int i = 0; i < array.Length; i++)
+                result |= DrawString($"{i}: ", ref array[i]);
             GUILayout.EndVertical();
             return result;
         }

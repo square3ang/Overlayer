@@ -532,6 +532,8 @@ namespace Overlayer.Scripting
             sound.sound = path;
             AudioPlayer.Play(sound);
         }
+        [Api("httpGet")]
+        public static string HttpGet(string url) => Overlayer.Main.HttpClient.GetStringAsync(url).GetAwaiter().GetResult();
         [Api(RequireTypes = new[] { typeof(KeyCode) })]
         public class On
         {
@@ -792,7 +794,7 @@ namespace Overlayer.Scripting
                 }));
             }
             [Api("setSfxSound")]
-            public static void SetSfxSound(SfxSound sfx, string audio) => AudioPlayer.LoadAudio(audio, clip => Tags.ADOFAI.RDConstants.soundEffects[(int)sfx] = clip);
+            public static void SetSfxSound(SfxSound sfx, string audio) => AudioPlayer.LoadAudio(audio, clip => Tags.ADOFAI.RDC.soundEffects[(int)sfx] = clip);
             [Api("setHitSound")]
             public static void SetHitSound(HitSound hit, string audio) => AudioPlayer.LoadAudio(audio, clip => AudioManager.Instance.audioLib[$"snd{hit}"] = clip);
             [Api("setLobbyBgm")]

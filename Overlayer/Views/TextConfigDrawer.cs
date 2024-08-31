@@ -3,6 +3,7 @@ using Overlayer.Models;
 using Overlayer.Tags;
 using Overlayer.Unity;
 using SFB;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using TKTC = Overlayer.Core.Translation.TranslationKeys.TextConfig;
@@ -27,6 +28,12 @@ namespace Overlayer.Views
             changed |= Drawer.DrawVector3(L(TKTC.Rotation), ref model.Rotation, -180, 180);
             changed |= Drawer.DrawVector2(L(TKTC.ShadowOffset), ref model.ShadowOffset, -1, 1);
             changed |= Drawer.DrawString(L(TKTC.Font), ref model.Font);
+            changed |= Drawer.DrawBool(L(TKTC.EnableFallbackFonts), ref model.EnableFallbackFonts);
+            if (model.EnableFallbackFonts)
+            {
+                if (model.FallbackFonts == null) model.FallbackFonts = new string[0];
+                changed |= Drawer.DrawStringArray(ref model.FallbackFonts);
+            }
             changed |= Drawer.DrawString(L(TKTC.LexOption), ref model.LexOption);
             changed |= Drawer.DrawSingleWithSlider(L(TKTC.FontSize), ref model.FontSize, 0, 100, 300f);
             changed |= Drawer.DrawSingleWithSlider(L(TKTC.ShadowDilate), ref model.ShadowDilate, 0, 1, 300f);

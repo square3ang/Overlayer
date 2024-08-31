@@ -8,7 +8,7 @@ namespace Overlayer.Tags
         [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
         public static LevelData LevelData => scnGame.instance?.levelData ?? scnEditor.instance?.levelData;
         [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
-        public static RDConstants RDConstants => RDConstants.data;
+        public static RDConstants RDC => RDConstants.data;
         [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
         public static scrController Controller => scrController.instance;
         [Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]

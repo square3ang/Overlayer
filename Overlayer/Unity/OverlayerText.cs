@@ -115,7 +115,16 @@ namespace Overlayer.Unity
             mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
             Text.fontSharedMaterial = mainMat;
             if (FontManager.TryGetFont(Config.Font, out FontData font))
-                Text.font = font.fontTMP;
+            {
+                if (!Config.EnableFallbackFonts)
+                    Text.font = font.fontTMP;
+                else
+                {
+                    var fallbacks = Config.FallbackFonts?.Select(f => FontManager.GetFont(f));
+                    TMP_FontAsset newTMPFont = TMP_FontAsset.CreateFontAsset(font.font);
+                    newTMPFont.fallbackFontAssetTable = fallbacks.Select(fd => fd.fontTMP).ToList();
+                }
+            }
             OnApplyConfig(this);
         }
     }

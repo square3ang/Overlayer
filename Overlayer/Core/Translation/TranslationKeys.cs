@@ -46,6 +46,7 @@
             internal static readonly string ShadowSoftness = Prefix + "SHADOW_SOFTNESS";
             internal static readonly string LexOption = Prefix + "LEX_OPTION";
             internal static readonly string Scale = Prefix + "SCALE";
+            internal static readonly string EnableFallbackFonts = Prefix + "FALLBACK_FONTS";
         }
         public static class Misc
         {
