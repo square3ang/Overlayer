@@ -532,6 +532,21 @@ namespace Overlayer.Scripting
             sound.sound = path;
             AudioPlayer.Play(sound);
         }
+        [Api("loadAudio", Comment = new string[]
+        {
+            "Load Audio(UnityEngine.AudioClip) With Callback (.mp3, .ogg, .aiff, .wav)"
+        }, RequireTypes = new Type[] { typeof(AudioClip) })]
+        public static void LoadAudio(string path, JsValue callback)
+        {
+            if (!(callback is Function func)) return;
+            FIWrapper fi = new FIWrapper(func);
+            AudioPlayer.LoadAudio(path, ac => fi.Call(ac));
+        }
+        [Api("setAudio", Comment = new string[]
+        {
+            "Set Audio(UnityEngine.AudioClip) With Callback (.mp3, .ogg, .aiff, .wav)"
+        }, RequireTypes = new Type[] { typeof(AudioSource) })]
+        public static void SetAudio(string path, AudioSource source) => AudioPlayer.LoadAudio(path, clip => source.clip = clip);
         [Api("httpGet")]
         public static string HttpGet(string url) => Overlayer.Main.HttpClient.GetStringAsync(url).GetAwaiter().GetResult();
         [Api(RequireTypes = new[] { typeof(KeyCode) })]
