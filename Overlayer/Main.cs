@@ -60,6 +60,7 @@ namespace Overlayer
             InitializeWebAPI();
             Language.OnInitialize += OnLanguageInitialize;
             SceneManager.activeSceneChanged += (f, t) => ActiveScene = t;
+            MiscUtils.SetAttr(TMPro.TMP_Settings.instance, "m_warningsDisabled", true);
         }
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {

@@ -1,4 +1,5 @@
 ﻿using Overlayer.Core.TextReplacing.Lexing;
+using Overlayer.Tags.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -111,6 +112,51 @@ namespace Overlayer.Utils
                 TagArgEnd = lexOption[4],
                 TagArgSeparator = lexOption[5],
             };
+        }
+        public static bool SetAttr(object obj, string accessor = "", object value = null)
+        {
+            if (obj == null) return false;
+            Type objType = obj is Type t ? t : obj.GetType();
+            accessor = accessor.TrimEnd('.');
+            object result = obj;
+            string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            if (accessors.Length < 1) return false;
+            MemberInfo lastMember = null;
+            Type type = objType;
+            for (int i = 0; i < accessors.Length; i++)
+            {
+                MemberInfo[] members = type.GetMembers((BindingFlags)15420);
+                var ignoreCase = type.GetCustomAttribute<IgnoreCaseAttribute>() != null;
+                var foundMembers = ignoreCase ? members.Where(m => m.Name.Equals(accessors[i], StringComparison.OrdinalIgnoreCase)) : members.Where(m => m.Name == accessors[i]);
+                lastMember = foundMembers.Where(m => m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property).FirstOrDefault();
+                if (i != accessors.Length - 1)
+                {
+                    if (lastMember is FieldInfo f) result = f.GetValue(result);
+                    else if (lastMember is PropertyInfo p) result = p.GetValue(result);
+                    else result = null;
+                }
+                else
+                {
+                    if (lastMember is FieldInfo f)
+                    {
+                        if (value != null && value.GetType() != f.FieldType)
+                            value = Convert.ChangeType(value, f.FieldType);
+                        f.SetValue(result, value);
+                        return true;
+                    }
+                    else if (lastMember is PropertyInfo p && p.GetSetMethod(true) != null)
+                    {
+                        if (value != null && value.GetType() != p.PropertyType)
+                            value = Convert.ChangeType(value, p.PropertyType);
+                        p.SetValue(result, value);
+                        return true;
+                    }
+                    return false;
+                }
+                if (result == null) return false;
+                type = result.GetType();
+            }
+            return false;
         }
     }
 }
