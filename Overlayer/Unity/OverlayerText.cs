@@ -46,12 +46,10 @@ namespace Overlayer.Unity
                 scaler.referenceResolution = new Vector2(currentRes.width, currentRes.height);
                 DontDestroyOnLoad(PublicCanvas);
             }
-            var font = FontManager.GetFont(config.Font);
             GameObject mainObject = gameObject;
             mainObject.transform.SetParent(PublicCanvas.transform);
             mainObject.MakeFlexible();
             Text = mainObject.AddComponent<TextMeshProUGUI>();
-            Text.font = font.fontTMP;
             Text.enableVertexGradient = true;
             Text.color = Color.white;
             Text.colorGradient = config.TextColor;
@@ -64,18 +62,16 @@ namespace Overlayer.Unity
             Text.lineSpacing = config.LineSpacing;
             Text.lineSpacingAdjustment = config.LineSpacingAdj;
             rt.eulerAngles = config.Rotation;
-            var mainMat = new Material(Text.fontSharedMaterial);
-            if (sr_msdf) mainMat.shader = sr_msdf;
-            mainMat.EnableKeyword(ShaderUtilities.Keyword_Outline);
-            mainMat.SetColor(ShaderUtilities.ID_OutlineColor, config.OutlineColor);
-            mainMat.SetFloat(ShaderUtilities.ID_OutlineWidth, config.OutlineWidth);
-            mainMat.EnableKeyword(ShaderUtilities.Keyword_Underlay);
-            mainMat.SetColor(ShaderUtilities.ID_UnderlayColor, config.ShadowColor);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, config.ShadowOffset.x);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, config.ShadowOffset.y);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - config.ShadowDilate);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - config.ShadowSoftness);
-            Text.fontSharedMaterial = mainMat;
+            SetFont();
+            Material[] sharedMaterials = Text.fontSharedMaterials;
+            for (int i = 0; i < sharedMaterials.Length; i++)
+            {
+                var mat = new Material(sharedMaterials[i]);
+                InitMaterial(mat);
+                ApplyMaterial(mat);
+                sharedMaterials[i] = mat;
+            }
+            Text.fontSharedMaterials = sharedMaterials;
             Text.gameObject.SetActive(config.Active);
             Initialized = true;
         }
@@ -105,27 +101,47 @@ namespace Overlayer.Unity
             Text.rectTransform.eulerAngles = Config.Rotation;
             Text.fontSize = Config.FontSize;
             Text.alignment = Config.Alignment;
-            var mainMat = new Material(Text.fontSharedMaterial);
-            mainMat.SetColor(ShaderUtilities.ID_OutlineColor, Config.OutlineColor);
-            mainMat.SetFloat(ShaderUtilities.ID_OutlineWidth, Config.OutlineWidth);
-            mainMat.SetColor(ShaderUtilities.ID_UnderlayColor, Config.ShadowColor);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, Config.ShadowOffset.x);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, Config.ShadowOffset.y);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - Config.ShadowDilate);
-            mainMat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
-            Text.fontSharedMaterial = mainMat;
+            SetFont();
+            Material[] sharedMaterials = Text.fontSharedMaterials;
+            for (int i = 0; i < sharedMaterials.Length; i++)
+            {
+                var mat = new Material(sharedMaterials[i]);
+                ApplyMaterial(mat);
+                sharedMaterials[i] = mat;
+            }
+            Text.fontSharedMaterials = sharedMaterials;
+            OnApplyConfig(this);
+        }
+        private static void InitMaterial(Material mat)
+        {
+            if (sr_msdf) mat.shader = sr_msdf;
+            mat.EnableKeyword(ShaderUtilities.Keyword_Outline);
+            mat.EnableKeyword(ShaderUtilities.Keyword_Underlay);
+        }
+        private void ApplyMaterial(Material mat)
+        {
+            mat.SetColor(ShaderUtilities.ID_OutlineColor, Config.OutlineColor);
+            mat.SetFloat(ShaderUtilities.ID_OutlineWidth, Config.OutlineWidth);
+            mat.SetColor(ShaderUtilities.ID_UnderlayColor, Config.ShadowColor);
+            mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, Config.ShadowOffset.x);
+            mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, Config.ShadowOffset.y);
+            mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - Config.ShadowDilate);
+            mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
+        }
+        private void SetFont()
+        {
             if (FontManager.TryGetFont(Config.Font, out FontData font))
             {
-                if (!Config.EnableFallbackFonts)
-                    Text.font = font.fontTMP;
-                else
+                TMP_FontAsset targetFont = font.fontTMP;
+                if (Config.EnableFallbackFonts)
                 {
-                    var fallbacks = Config.FallbackFonts?.Select(f => FontManager.GetFont(f));
-                    TMP_FontAsset newTMPFont = TMP_FontAsset.CreateFontAsset(font.font);
-                    newTMPFont.fallbackFontAssetTable = fallbacks.Select(fd => fd.fontTMP).ToList();
+                    targetFont = TMP_FontAsset.CreateFontAsset(font.font);
+                    var fallbacks = Config.FallbackFonts?.Select(f => FontManager.GetFont(f)).Where(d => d != null);
+                    targetFont.fallbackFontAssetTable = fallbacks.Select(fd => fd.Value.fontTMP).ToList();
                 }
+                InitMaterial(targetFont.material);
+                Text.font = targetFont;
             }
-            OnApplyConfig(this);
         }
     }
 }

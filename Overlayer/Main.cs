@@ -3,6 +3,7 @@ using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
 using Overlayer.Core.Translation;
+using Overlayer.Patches;
 using Overlayer.Tags;
 using Overlayer.Tags.Attributes;
 using Overlayer.Unity;
@@ -75,6 +76,7 @@ namespace Overlayer
                 TagManager.Load(Ass);
                 FontManager.Initialize();
                 TextManager.Initialize();
+                TagResetter.Postfix();
             }
             else
             {
