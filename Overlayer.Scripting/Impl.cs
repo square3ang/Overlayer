@@ -466,7 +466,7 @@ namespace Overlayer.Scripting
             return TagManager.GetTag(tagName)?.Tag.Getter.Invoke(null, args)?.ToString() ?? "";
         }
         [Api("parseFastInt")]
-        public static int ParseFaseInt(string str) => StringConverter.ToInt32(str);
+        public static int ParseFastInt(string str) => StringConverter.ToInt32(str);
         [Api("parseFastFloat")]
         public static double ParseFastFloat(string str) => StringConverter.ToDouble(str);
         [Api("getText", RequireTypes = new Type[]
