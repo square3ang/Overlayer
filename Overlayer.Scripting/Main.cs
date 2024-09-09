@@ -5,6 +5,7 @@ using JSON;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
+using Overlayer.Patches;
 using Overlayer.Tags;
 using Overlayer.Unity;
 using Overlayer.Utils;
@@ -51,46 +52,50 @@ namespace Overlayer.Scripting
         }
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
-            if (toggle)
+            PatchGuard.Ignore(() =>
             {
-                Settings = ModSettings.Load<Settings>(modEntry);
-                TagManager.Load(typeof(Expression));
-                TagManager.Load(typeof(PerformanceTags));
-
-                JSApi = new Api();
-                JSApi.RegisterType(typeof(Impl));
-                foreach (var tag in TagManager.All)
-                    JSApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
-
-                foreach (var att in GetADOFAITagTypes())
+                if (toggle)
                 {
-                    var tuple = (new ApiAttribute(att.Name), att);
-                    JSApi.Types.Add(tuple);
-                }
+                    Settings = ModSettings.Load<Settings>(modEntry);
+                    TagManager.Load(typeof(Expression));
+                    TagManager.Load(typeof(PerformanceTags));
 
-                OverlayerText.OnApplyConfig += text =>
-                {
-                    if (!PatchesLocked && TagManager.HasReference(typeof(Expression)))
+                    PatchGuard.ForceIgnore();
+                    JSApi = new Api();
+                    JSApi.RegisterType(typeof(Impl));
+                    foreach (var tag in TagManager.All)
+                        JSApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
+
+                    foreach (var att in GetADOFAITagTypes())
                     {
-                        LazyPatchManager.PatchAll().ForEach(lp => lp.Locked = true);
-                        PatchesLocked = true;
+                        var tuple = (new ApiAttribute(att.Name), att);
+                        JSApi.Types.Add(tuple);
                     }
-                };
 
-                RunScriptsNonBlocking();
-                PerformanceTags.Initialize();
-            }
-            else
-            {
-                PerformanceTags.Release();
-                TagManager.Unload(typeof(Expression));
-                TagManager.Unload(typeof(PerformanceTags));
-                Impl.Release();
-                JSApi = null;
-                ModSettings.Save(Settings, modEntry);
-            }
-            Expression.expressions.Clear();
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false);
+                    OverlayerText.OnApplyConfig += text =>
+                    {
+                        if (!PatchesLocked && TagManager.HasReference(typeof(Expression)))
+                        {
+                            LazyPatchManager.PatchAll().ForEach(lp => lp.Locked = true);
+                            PatchesLocked = true;
+                        }
+                    };
+
+                    RunScriptsNonBlocking();
+                    PerformanceTags.Initialize();
+                }
+                else
+                {
+                    PerformanceTags.Release();
+                    TagManager.Unload(typeof(Expression));
+                    TagManager.Unload(typeof(PerformanceTags));
+                    Impl.Release();
+                    JSApi = null;
+                    ModSettings.Save(Settings, modEntry);
+                }
+                Expression.expressions.Clear();
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false);
+            });
             return true;
         }
         static string SandboxJSCode = string.Empty;

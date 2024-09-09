@@ -1,4 +1,5 @@
 ﻿using Overlayer.Core.TextReplacing;
+using Overlayer.Patches;
 using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
 using System;
@@ -22,7 +23,7 @@ namespace Overlayer.Tags
         public OverlayerTag(MethodInfo method, TagAttribute attr, object target = null)
         {
             Tag = new Tag(Name = attr.Name ?? method.Name);
-            Tag.SetGetter(WrapProcessor(method, target, attr.ProcessingFlags, attr.ProcessingFlagsArg), target);
+            PatchGuard.Ignore(() => Tag.SetGetter(WrapProcessor(method, target, attr.ProcessingFlags, attr.ProcessingFlagsArg), target));
             Attributes = attr;
             NotPlaying = attr.NotPlaying;
             DeclaringType = method.DeclaringType;
@@ -30,7 +31,7 @@ namespace Overlayer.Tags
         public OverlayerTag(FieldInfo field, TagAttribute attr, object target = null)
         {
             Tag = new Tag(Name = attr.Name ?? field.Name);
-            Tag.SetGetter(WrapProcessor(field, target, attr.ProcessingFlags, attr.ProcessingFlagsArg));
+            PatchGuard.Ignore(() => Tag.SetGetter(WrapProcessor(field, target, attr.ProcessingFlags, attr.ProcessingFlagsArg)));
             Attributes = attr;
             NotPlaying = attr.NotPlaying;
             DeclaringType = field.DeclaringType;
@@ -38,7 +39,7 @@ namespace Overlayer.Tags
         public OverlayerTag(PropertyInfo prop, TagAttribute attr, object target = null)
         {
             Tag = new Tag(Name = attr.Name ?? prop.Name);
-            Tag.SetGetter(WrapProcessor(prop, target, attr.ProcessingFlags, attr.ProcessingFlagsArg));
+            PatchGuard.Ignore(() => Tag.SetGetter(WrapProcessor(prop, target, attr.ProcessingFlags, attr.ProcessingFlagsArg)));
             Attributes = attr;
             NotPlaying = attr.NotPlaying;
             DeclaringType = prop.DeclaringType;
@@ -48,7 +49,7 @@ namespace Overlayer.Tags
             var attr = new TagAttribute(Name = name);
             attr.ProcessingFlags = flags;
             Tag = new Tag(name);
-            Tag.SetGetter(del);
+            PatchGuard.Ignore(() => Tag.SetGetter(del));
             Attributes = attr;
             NotPlaying = notPlaying;
             DeclaringType = del.Method.DeclaringType;
@@ -159,7 +160,11 @@ namespace Overlayer.Tags
             if (accessorCache.TryGetValue($"{objType}_Accessor_{accessor}", out var del)) return del(obj);
             object result = obj;
             string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-            if (accessors.Length < 1) return obj;
+            if (accessors.Length < 1)
+            {
+                result = obj;
+                return result;
+            }
             Type type = objType;
             for (int i = 0; i < accessors.Length; i++)
             {
@@ -175,7 +180,8 @@ namespace Overlayer.Tags
                         else if (m is PropertyInfo prop && prop.GetGetMethod(true) is MethodInfo getter)
                             sb.AppendLine($"{(getter.IsPublic ? "Public" : "Private")}{(getter.IsStatic ? " Static" : "")} Property {prop.PropertyType} '{prop.Name}'");
                     }
-                    return sb.ToString();
+                    result = sb.ToString();
+                    return result;
                 }
                 var ignoreCase = type.GetCustomAttribute<IgnoreCaseAttribute>() != null;
                 var foundMembers = ignoreCase ? members.Where(m => m.Name.Equals(accessors[i], StringComparison.OrdinalIgnoreCase)) : members.Where(m => m.Name == accessors[i]);
@@ -183,7 +189,11 @@ namespace Overlayer.Tags
                 if (member is FieldInfo f) result = f.GetValue(result);
                 else if (member is PropertyInfo p && p.GetGetMethod(true) != null) result = p.GetValue(result);
                 else result = null;
-                if (result == null) return null;
+                if (result == null)
+                {
+                    result = null;
+                    return result;
+                }
                 type = result.GetType();
             }
             accessorCache[$"{objType}_Accessor_{accessor}"] = (Func<object, object>)CreateMemberAccessor(objType, accessor, staticAccess).CreateDelegate(typeof(Func<object, object>));
@@ -231,12 +241,21 @@ namespace Overlayer.Tags
             return dm;
         }
         private static int uniqueNum = 0;
-        private static readonly MethodInfo round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });
-        private static readonly MethodInfo trim = typeof(Extensions).GetMethod("Trim", new[] { typeof(string), typeof(int), typeof(string) });
-        private static readonly MethodInfo runtimeAccessor = typeof(OverlayerTag).GetMethod(nameof(RuntimeAccess), new[] { typeof(object), typeof(string) });
+        private static MethodInfo round;
+        private static MethodInfo trim;
+        private static MethodInfo runtimeAccessor;
         private static AssemblyBuilder ass;
         private static ModuleBuilder mod;
         private static Dictionary<string, Func<object, object>> accessorCache = new Dictionary<string, Func<object, object>>();
         private static Dictionary<string, DynamicMethod> accessorCacheDM = new Dictionary<string, DynamicMethod>();
+        static OverlayerTag()
+        {
+            PatchGuard.Ignore(() =>
+            {
+                runtimeAccessor = typeof(OverlayerTag).GetMethod(nameof(RuntimeAccess), (BindingFlags)15420, null, new[] { typeof(object), typeof(string) }, null);
+                round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });
+                trim = typeof(Extensions).GetMethod("Trim", new[] { typeof(string), typeof(int), typeof(string) });
+            });
+        }
     }
 }

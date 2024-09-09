@@ -1,4 +1,5 @@
-﻿using Overlayer.Controllers;
+﻿using HarmonyLib;
+using Overlayer.Controllers;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
@@ -66,29 +67,35 @@ namespace Overlayer
         {
             if (toggle)
             {
-                StaticCoroutine.Run(null);
-                Settings = ModSettings.Load<Settings>(modEntry);
-                Lang = Language.GetLangauge(Settings.Lang);
-                LazyPatchManager.Load(Ass);
-                LazyPatchManager.PatchInternal();
-                Tag.InitializeWrapperAssembly();
-                OverlayerTag.Initialize();
-                TagManager.Initialize();
-                TagManager.Load(Ass);
-                FontManager.Initialize();
-                TextManager.Initialize();
-                TagResetter.Postfix();
+                PatchGuard.Ignore(() =>
+                {
+                    StaticCoroutine.Run(null);
+                    Settings = ModSettings.Load<Settings>(modEntry);
+                    Lang = Language.GetLangauge(Settings.Lang);
+                    LazyPatchManager.Load(Ass);
+                    LazyPatchManager.PatchInternal();
+                    Tag.InitializeWrapperAssembly();
+                    OverlayerTag.Initialize();
+                    TagManager.Initialize();
+                    TagManager.Load(Ass);
+                    FontManager.Initialize();
+                    TextManager.Initialize();
+                    TagResetter.Postfix();
+                });
             }
             else
             {
-                TextManager.Release();
-                FontManager.Release();
-                TagManager.Release();
-                OverlayerTag.Release();
-                Tag.ReleaseWrapperAssembly();
-                LazyPatchManager.UnloadAll();
-                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
-                ModSettings.Save(Settings, modEntry);
+                PatchGuard.Ignore(() =>
+                {
+                    TextManager.Release();
+                    FontManager.Release();
+                    TagManager.Release();
+                    OverlayerTag.Release();
+                    Tag.ReleaseWrapperAssembly();
+                    LazyPatchManager.UnloadAll();
+                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+                    ModSettings.Save(Settings, modEntry);
+                });
             }
             return true;
         }
@@ -117,8 +124,11 @@ namespace Overlayer
         }
         public static void OnSaveGUI(ModEntry modEntry)
         {
-            TextManager.Save();
-            ModSettings.Save(Settings, modEntry);
+            PatchGuard.Ignore(() =>
+            {
+                TextManager.Save();
+                ModSettings.Save(Settings, modEntry);
+            });
         }
         public static bool IsPlaying
         {

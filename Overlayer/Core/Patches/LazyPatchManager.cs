@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Overlayer.Patches;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,9 @@ using System.Reflection;
 
 namespace Overlayer.Core.Patches
 {
-    public static class LazyPatchManager
+    internal static class LazyPatchManager
     {
-        private static readonly Harmony Harmony = new Harmony("Overlayer.Core.Patches.LazyPatchManager");
+        internal static readonly Harmony Harmony = new Harmony("Overlayer.Core.Patches.LazyPatchManager");
         private static readonly Dictionary<Type, List<LazyPatch>> Patches = new Dictionary<Type, List<LazyPatch>>();
         private static readonly HashSet<string> PatchedTriggers = new HashSet<string>();
         public static int PatchedTriggersCount => PatchedTriggers.Count;
@@ -67,17 +68,20 @@ namespace Overlayer.Core.Patches
         public static List<LazyPatch> UnpatchAll(string trigger = null)
         {
             List<LazyPatch> patches = new List<LazyPatch>();
-            if (trigger != null)
+            PatchGuard.Ignore(() =>
             {
-                if (PatchedTriggers.Remove(trigger))
-                    foreach (var patch in patches = Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)).ToList())
-                        patch.Unpatch();
-            }
-            else
-            {
-                foreach (var patchType in Patches.Keys)
-                    patches.AddRange(Unpatch(patchType));
-            }
+                if (trigger != null)
+                {
+                    if (PatchedTriggers.Remove(trigger))
+                        foreach (var patch in patches = Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)).ToList())
+                            patch.Unpatch();
+                }
+                else
+                {
+                    foreach (var patchType in Patches.Keys)
+                        patches.AddRange(Unpatch(patchType));
+                }
+            });
             return patches;
         }
         public static List<LazyPatch> Patch(Type patchType, bool force = false)

@@ -1,6 +1,7 @@
 ﻿using Overlayer.Core;
 using Overlayer.Core.TextReplacing;
 using Overlayer.Models;
+using Overlayer.Patches;
 using Overlayer.Tags;
 using Overlayer.Utils;
 using System;
@@ -23,7 +24,14 @@ namespace Overlayer.Unity
         #region Statics
         public static GameObject PCanvasObj;
         public static Canvas PublicCanvas;
-        public static readonly Shader sr_msdf = (Shader)typeof(ShaderUtilities).GetProperty("ShaderRef_MobileSDF", (BindingFlags)15420).GetValue(null);
+        public static Shader sr_msdf;
+        static OverlayerText()
+        {
+            PatchGuard.Ignore(() =>
+            {
+                sr_msdf = (Shader)typeof(ShaderUtilities).GetProperty("ShaderRef_MobileSDF", (BindingFlags)15420).GetValue(null);
+            });
+        }
         #endregion
         public void Init(TextConfig config)
         {

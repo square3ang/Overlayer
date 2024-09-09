@@ -1,11 +1,12 @@
 ﻿using HarmonyLib;
+using Overlayer.Patches;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace Overlayer.Core.Patches
 {
-    public class LazyPatch
+    internal class LazyPatch
     {
         public const string InternalTrigger = "INTERNAL";
         public static readonly Dictionary<string, LazyPatch> Patches = new Dictionary<string, LazyPatch>();
@@ -45,13 +46,16 @@ namespace Overlayer.Core.Patches
                 return;
             }
             if (force) Locked = false;
-            var pre_hm = prefix != null ? new HarmonyMethod(prefix) : null;
-            var post_hm = postfix != null ? new HarmonyMethod(postfix) : null;
-            var trans_hm = transpiler != null ? new HarmonyMethod(transpiler) : null;
-            var final_hm = finalizer != null ? new HarmonyMethod(finalizer) : null;
-            patch = harmony.Patch(target, pre_hm, post_hm, trans_hm, final_hm);
-            Main.Logger.Log($"ID:{attr.Id} Patched!");
-            Patched = true;
+            PatchGuard.Ignore(() =>
+            {
+                var pre_hm = prefix != null ? new HarmonyMethod(prefix) : null;
+                var post_hm = postfix != null ? new HarmonyMethod(postfix) : null;
+                var trans_hm = transpiler != null ? new HarmonyMethod(transpiler) : null;
+                var final_hm = finalizer != null ? new HarmonyMethod(finalizer) : null;
+                patch = harmony.Patch(target, pre_hm, post_hm, trans_hm, final_hm);
+                Main.Logger.Log($"ID:{attr.Id} Patched!");
+                Patched = true;
+            });
         }
         public void Unpatch(bool force = false)
         {
@@ -62,10 +66,13 @@ namespace Overlayer.Core.Patches
                 return;
             }
             if (force) Locked = false;
-            harmony.Unpatch(target, patch);
-            Main.Logger.Log($"ID:{attr.Id} Unpatched!");
-            patch = null;
-            Patched = false;
+            PatchGuard.Ignore(() =>
+            {
+                harmony.Unpatch(target, patch);
+                Main.Logger.Log($"ID:{attr.Id} Unpatched!");
+                patch = null;
+                Patched = false;
+            });
         }
     }
 }
