@@ -13,7 +13,7 @@ namespace Overlayer.Core
         public static bool DrawVector2(string label, ref Vector2 vec2, float lValue, float rValue)
         {
             bool changed = false;
-            ButtonLabel($"<b>{label}</b>", Main.OpenDiscordLink);
+            ButtonLabel($"<b>{label}</b>", () => Application.OpenURL(Main.DiscordLink));
             changed |= DrawSingleWithSlider("X", ref vec2.x, lValue, rValue, 300f);
             changed |= DrawSingleWithSlider("Y", ref vec2.y, lValue, rValue, 300f);
             return changed;
@@ -21,7 +21,7 @@ namespace Overlayer.Core
         public static bool DrawVector3(string label, ref Vector3 vec3, float lValue, float rValue)
         {
             bool changed = false;
-            ButtonLabel($"<b>{label}</b>", Main.OpenDiscordLink);
+            ButtonLabel($"<b>{label}</b>", () => Application.OpenURL(Main.DiscordLink));
             changed |= DrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f);
             changed |= DrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f);
             changed |= DrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f);
@@ -29,7 +29,7 @@ namespace Overlayer.Core
         }
         public static void DrawGColor(string label, ref GColor color, bool canEnableGradient, Action onChange)
         {
-            ButtonLabel(label, Main.OpenDiscordLink);
+            ButtonLabel(label, () => Application.OpenURL(Main.DiscordLink));
             DrawGColor(ref color, canEnableGradient).IfTrue(onChange);
         }
         public static bool DrawGColor(ref GColor color, bool canEnableGradient)
@@ -84,7 +84,7 @@ namespace Overlayer.Core
         public static void TitleButton(string label, string btnLabel, Action pressed, Action horizontal = null)
         {
             GUILayout.BeginHorizontal();
-            ButtonLabel(label, Main.OpenDiscordLink);
+            ButtonLabel(label, () => Application.OpenURL(Main.DiscordLink));
             if (GUILayout.Button(btnLabel))
                 pressed?.Invoke();
             horizontal?.Invoke();
@@ -122,7 +122,7 @@ namespace Overlayer.Core
             {
                 string cache = array[i];
                 GUILayout.BeginHorizontal();
-                Drawer.ButtonLabel($"{i}: ", Main.OpenDiscordLink);
+                Drawer.ButtonLabel($"{i}: ", () => Application.OpenURL(Main.DiscordLink));
                 cache = GUILayout.TextField(cache);
                 elementRightGUI?.Invoke(i);
                 GUILayout.FlexibleSpace();
@@ -139,7 +139,7 @@ namespace Overlayer.Core
         public static bool DrawArray(string label, ref object[] array)
         {
             bool result = false;
-            Drawer.ButtonLabel(label, Main.OpenDiscordLink);
+            Drawer.ButtonLabel(label, () => Application.OpenURL(Main.DiscordLink));
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
@@ -177,7 +177,7 @@ namespace Overlayer.Core
         {
             bool prev = value;
             GUILayout.BeginHorizontal();
-            Drawer.ButtonLabel(label, Main.OpenDiscordLink);
+            Drawer.ButtonLabel(label, () => Application.OpenURL(Main.DiscordLink));
             value = GUILayout.Toggle(value, string.Empty);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -305,7 +305,7 @@ namespace Overlayer.Core
                     obj = str;
                     break;
                 default:
-                    Drawer.ButtonLabel($"{label}{obj}", Main.OpenDiscordLink);
+                    Drawer.ButtonLabel($"{label}{obj}", () => Application.OpenURL(Main.DiscordLink));
                     break;
             }
             return result;
@@ -328,7 +328,7 @@ namespace Overlayer.Core
         {
             string prev = value;
             GUILayout.BeginHorizontal();
-            ButtonLabel(label, Main.OpenDiscordLink);
+            ButtonLabel(label, () => Application.OpenURL(Main.DiscordLink));
             if (!textArea)
                 value = GUILayout.TextField(value);
             else value = GUILayout.TextArea(value);

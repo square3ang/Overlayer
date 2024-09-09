@@ -108,7 +108,7 @@ namespace Overlayer
         public static void OnGUI(ModEntry modEntry)
         {
             if (!Lang.Initialized)
-                Drawer.ButtonLabel("Preparing...", OpenDiscordLink);
+                Drawer.ButtonLabel("Preparing...", () => Application.OpenURL(DiscordLink));
             else GUI.Draw();
         }
         public static void OnHideGUI(ModEntry modEntry)
@@ -137,34 +137,29 @@ namespace Overlayer
             LastestVersion = await OverlayerWebAPI.GetVersion();
             DiscordLink = await OverlayerWebAPI.GetDiscordLink();
             DownloadLink = await OverlayerWebAPI.GetDownloadLink();
-            StaticCoroutine.Queue(StaticCoroutine.SyncRunner(EnsureOverlayerVersion));
-        }
-        public static void OpenDiscordLink()
-        {
-            Application.OpenURL(DiscordLink);
+            StaticCoroutine.Queue(StaticCoroutine.SyncRunner(() =>
+            {
+                if (LastestVersion > ModVersion)
+                {
+                    Lang.ActivateUpdateMode();
+                    ErrorCanvasContext ecc = new ErrorCanvasContext();
+                    ecc.titleText = "WOW YOUR OVERLAYER VERSION IS BEAUTIFUL!";
+                    ecc.errorMessage =
+                        $"Current Overlayer Version v{ModVersion}.\n" +
+                        $"But Latest Overlayer Is v{LastestVersion}.\n" +
+                        $"PlEaSe UpDaTe YoUr OvErLaYeR!";
+                    ecc.ignoreBtnCallback = () =>
+                    {
+                        ADOUtils.HideError(ecc);
+                        OpenDownloadLink();
+                    };
+                    ADOUtils.ShowError(ecc);
+                }
+            }));
         }
         public static void OpenDownloadLink()
         {
             Application.OpenURL(DownloadLink);
-        }
-        public static void EnsureOverlayerVersion()
-        {
-            if (LastestVersion > ModVersion)
-            {
-                Lang.ActivateUpdateMode();
-                ErrorCanvasContext ecc = new ErrorCanvasContext();
-                ecc.titleText = "WOW YOUR OVERLAYER VERSION IS BEAUTIFUL!";
-                ecc.errorMessage =
-                    $"Current Overlayer Version v{ModVersion}.\n" +
-                    $"But Latest Overlayer Is v{LastestVersion}.\n" +
-                    $"PlEaSe UpDaTe YoUr OvErLaYeR!";
-                ecc.ignoreBtnCallback = () =>
-                {
-                    ADOUtils.HideError(ecc);
-                    OpenDownloadLink();
-                };
-                ADOUtils.ShowError(ecc);
-            }
         }
         public static void OnLanguageInitialize()
         {

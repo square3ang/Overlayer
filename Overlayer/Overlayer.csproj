@@ -402,6 +402,7 @@
     <Compile Include="Models\OverlayerLanguage.cs" />
     <Compile Include="Models\TextConfig.cs" />
     <Compile Include="Patches\FontPatch.cs" />
+    <Compile Include="Patches\PatchGuard.cs" />
     <Compile Include="Patches\PlayPatch.cs" />
     <Compile Include="Patches\TagResetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

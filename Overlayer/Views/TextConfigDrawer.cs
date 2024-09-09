@@ -20,7 +20,7 @@ namespace Overlayer.Views
             if (Drawer.DrawBool(L(TKTC.Active), ref model.Active))
                 text.gameObject.SetActive(model.Active);
             bool changed = false;
-            Drawer.ButtonLabel($"Available Tags: {TagManager.Count}", Main.OpenDiscordLink);
+            Drawer.ButtonLabel($"Available Tags: {TagManager.Count}", () => Application.OpenURL(Main.DiscordLink));
             Drawer.DrawString(L(TKTC.Name), ref model.Name);
             changed |= Drawer.DrawVector2(L(TKTC.Position), ref model.Position, 0, 1);
             changed |= Drawer.DrawVector2(L(TKTC.Scale), ref model.Scale, 0, 2);
@@ -62,7 +62,7 @@ namespace Overlayer.Views
             changed |= Drawer.DrawSingleWithSlider(L(TKTC.OutlineWidth), ref model.OutlineWidth, 0, 1, 300f);
 
             GUILayout.BeginHorizontal();
-            Drawer.ButtonLabel(L(TKTC.Alignment), Main.OpenDiscordLink);
+            Drawer.ButtonLabel(L(TKTC.Alignment), () => Application.OpenURL(Main.DiscordLink));
             changed |= Drawer.DrawEnum(L(TKTC.Alignment), ref model.Alignment);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();

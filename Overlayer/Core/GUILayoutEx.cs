@@ -52,7 +52,7 @@ namespace Overlayer.Core
                 });
             if (!string.IsNullOrEmpty(desc))
             {
-                Drawer.ButtonLabel("-", Main.OpenDiscordLink);
+                Drawer.ButtonLabel("-", () => Application.OpenURL(Main.DiscordLink));
                 GUILayout.Label(
                     desc,
                     new GUIStyle(GUI.skin.label) { fontStyle = FontStyle.Bold });
@@ -349,12 +349,12 @@ namespace Overlayer.Core
         {
             if (labelWidth == 0)
             {
-                Drawer.ButtonLabel(name, Main.OpenDiscordLink);
+                Drawer.ButtonLabel(name, () => Application.OpenURL(Main.DiscordLink));
                 GUILayout.Space(4f);
             }
             else
             {
-                Drawer.ButtonLabel(name, Main.OpenDiscordLink, GUILayout.Width(labelWidth));
+                Drawer.ButtonLabel(name, () => Application.OpenURL(Main.DiscordLink), GUILayout.Width(labelWidth));
             }
             float newValue =
                 GUILayout.HorizontalSlider(
@@ -365,7 +365,7 @@ namespace Overlayer.Core
             }
             GUILayout.Space(8f);
             if (valueFormat != "{0}")
-                Drawer.ButtonLabel(string.Format(valueFormat, newValue), Main.OpenDiscordLink);
+                Drawer.ButtonLabel(string.Format(valueFormat, newValue), () => Application.OpenURL(Main.DiscordLink));
             else newValue = StringConverter.ToFloat(GUILayout.TextField(newValue.ToString("F4")));
             GUILayout.FlexibleSpace();
             return newValue;
@@ -439,12 +439,12 @@ namespace Overlayer.Core
         {
             if (labelWidth == 0)
             {
-                Drawer.ButtonLabel(name, Main.OpenDiscordLink);
+                Drawer.ButtonLabel(name, () => Application.OpenURL(Main.DiscordLink));
                 GUILayout.Space(4f);
             }
             else
             {
-                Drawer.ButtonLabel(name, Main.OpenDiscordLink, GUILayout.Width(labelWidth));
+                Drawer.ButtonLabel(name, () => Application.OpenURL(Main.DiscordLink), GUILayout.Width(labelWidth));
             }
             string newValue = fieldWidth <= 0 ? GUILayout.TextField(value) : GUILayout.TextField(value, GUILayout.Width(fieldWidth));
             GUILayout.FlexibleSpace();
@@ -465,23 +465,23 @@ namespace Overlayer.Core
             GUILayout.BeginHorizontal();
             if (textWidth == 0)
             {
-                Drawer.ButtonLabel(text1, Main.OpenDiscordLink);
+                Drawer.ButtonLabel(text1, () => Application.OpenURL(Main.DiscordLink));
                 GUILayout.Space(4f);
             }
             else
             {
-                Drawer.ButtonLabel(text1, Main.OpenDiscordLink, GUILayout.Width(textWidth));
+                Drawer.ButtonLabel(text1, () => Application.OpenURL(Main.DiscordLink), GUILayout.Width(textWidth));
             }
             GUILayout.FlexibleSpace();
             GUILayout.Space(8f);
             if (textWidth == 0)
             {
-                Drawer.ButtonLabel(text2, Main.OpenDiscordLink);
+                Drawer.ButtonLabel(text2, () => Application.OpenURL(Main.DiscordLink));
                 GUILayout.Space(4f);
             }
             else
             {
-                Drawer.ButtonLabel(text2, Main.OpenDiscordLink, GUILayout.Width(textWidth));
+                Drawer.ButtonLabel(text2, () => Application.OpenURL(Main.DiscordLink), GUILayout.Width(textWidth));
             }
             GUILayout.FlexibleSpace();
             GUILayout.Space(20f);
