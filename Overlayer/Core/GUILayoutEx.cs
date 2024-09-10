@@ -516,11 +516,11 @@ namespace Overlayer.Core
 
                 // Move up/down
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("▲") && i > 0)
+                if (Drawer.Button("▲") && i > 0)
                 {
                     moveUp = i;
                 }
-                if (GUILayout.Button("▼") && i < list.Count - 1)
+                if (Drawer.Button("▼") && i < list.Count - 1)
                 {
                     moveDown = i;
                 }

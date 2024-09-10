@@ -86,7 +86,7 @@ namespace Overlayer.Patches
                 //    throw new InvalidOperationException("Cannot Access To HarmonyLib!");
             }
         }
-        [LazyPatch("Patches.PatchGuard_Type5", "System.RuntimeType", "GetMethodImpl", new string[] { "System.String", "System.Reflection.BindingFlags", "System.Reflection.Binder", "System.Reflection.CallingConventions", "System.Type[]", "System.Reflection.ParameterModifier[]" }, ORFlags = BindingFlags.Default)]
+        //[LazyPatch("Patches.PatchGuard_Type5", "System.RuntimeType", "GetMethodImpl", new string[] { "System.String", "System.Reflection.BindingFlags", "System.Reflection.Binder", "System.Reflection.CallingConventions", "System.Type[]", "System.Reflection.ParameterModifier[]" }, ORFlags = BindingFlags.Default)]
         public static class PatchGuard_Type5
         {
             public static void Postfix(ref MethodBase __result)

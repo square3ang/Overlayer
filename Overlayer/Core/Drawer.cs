@@ -85,7 +85,7 @@ namespace Overlayer.Core
         {
             GUILayout.BeginHorizontal();
             ButtonLabel(label, () => Application.OpenURL(Main.DiscordLink));
-            if (GUILayout.Button(btnLabel))
+            if (Drawer.Button(btnLabel))
                 pressed?.Invoke();
             horizontal?.Invoke();
             GUILayout.FlexibleSpace();
@@ -104,13 +104,13 @@ namespace Overlayer.Core
         {
             bool result = false;
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("+"))
+            if (Drawer.Button("+"))
             {
                 Array.Resize(ref array, array.Length + 1);
                 arrayResized?.Invoke(array.Length);
                 result = true;
             }
-            if (array.Length > 0 && GUILayout.Button("-"))
+            if (array.Length > 0 && Drawer.Button("-"))
             {
                 Array.Resize(ref array, array.Length - 1);
                 arrayResized?.Invoke(array.Length);
@@ -143,9 +143,9 @@ namespace Overlayer.Core
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("+"))
+            if (Drawer.Button("+"))
                 Array.Resize(ref array, array.Length + 1);
-            if (array.Length > 0 && GUILayout.Button("-"))
+            if (array.Length > 0 && Drawer.Button("-"))
                 Array.Resize(ref array, array.Length - 1);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -161,9 +161,9 @@ namespace Overlayer.Core
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("+"))
+            if (Drawer.Button("+"))
                 Array.Resize(ref array, array.Length + 1);
-            if (array.Length > 0 && GUILayout.Button("-"))
+            if (array.Length > 0 && Drawer.Button("-"))
                 Array.Resize(ref array, array.Length - 1);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -371,10 +371,41 @@ namespace Overlayer.Core
             value = StringConverter.ToUInt64(str);
             return result;
         }
+        static readonly string[] ilovesuckyoubus =
+        {
+            "<color=#FF8800>나</color><color=#E9922A>는</color> <color=#BEA77F>석</color><color=#A8B2AA>큐</color><color=#92BCD4>버</color><color=#7DC7FF>스</color><color=#6AD0DE>를</color> <color=#45E39D>좋</color><color=#32EC7D>아</color><color=#1FF55D>해</color><color=#0DFF3C>요</color>",
+            "<color=#1251FF>나</color><color=#0F6ED8>는</color> <color=#09A88C>석</color><color=#06C566>큐</color><color=#03E240>버</color><color=#00FF1A>스</color><color=#03E240>를</color> <color=#09A88C>사</color><color=#0C8BB2>랑</color><color=#0F6ED8>해</color><color=#1251FF>요</color>",
+            "<color=#FF14C0>나</color><color=#EF26B2>는</color> <color=#D04A96>석</color><color=#C05C88>큐</color><color=#B16E7B>버</color><color=#A1806D>스</color><color=#92925F>를</color> <color=#73B644>연</color><color=#63C836>모</color><color=#54DA28>해</color><color=#44EC1A>요</color>",
+            "<color=#FF94F4>나</color><color=#ED96F4>는</color> <color=#CB9AF6>석</color><color=#BA9CF7>큐</color><color=#A99EF8>버</color><color=#98A0F9>스</color><color=#87A2F9>를</color> <color=#65A6FB>사</color><color=#54A8FC>모</color><color=#43AAFD>해</color><color=#32ACFE>요</color>",
+            "<color=#FF0000>나</color><color=#FF6D00>는</color> <color=#B6FF00>석</color><color=#48FF00>큐</color><color=#00FF24>버</color><color=#00FF91>스</color><color=#00FEFF>를</color> <color=#0024FF>귀</color><color=#4800FF>여</color><color=#B600FF>워</color><color=#FF00DA>해</color><color=#FF006D>요</color>",
+            "<color=#FF73F6>나</color><color=#DC86F7>는</color> <color=#97AEFA>석</color><color=#75C2FC>큐</color><color=#52D6FD>버</color><color=#30EAFF>스</color><color=#52D6FD>를</color> <color=#97AEFA>존</color><color=#BA9AF9>경</color><color=#DC86F7>해</color><color=#FF73F6>요</color>",
+            "<color=#30EAFF>나</color><color=#35EDE0>는</color> <color=#40F4A4>석</color><color=#45F886>큐</color><color=#4AFB68>버</color><color=#4FFF4A>스</color><color=#6DEF62>를</color> <color=#A7D093>예</color><color=#C4C1AC>뻐</color><color=#E1B2C4>해</color><color=#FEA2DD>요</color>",
+            "<color=#47FFE0>나</color><color=#64E5E5>는</color> <color=#9EB1EF>석</color><color=#BB97F4>큐</color><color=#D87DF9>버</color><color=#F563FE>스</color><color=#D87DF9>를</color> <color=#9EB1EF>동</color><color=#81CBEA>경</color><color=#64E5E5>해</color><color=#47FFE0>요</color>",
+        };
+        static int index = 0;
+        static float targetTime = 0;
         public static void ButtonLabel(string label, Action onPressed, params GUILayoutOption[] options)
         {
+            if (targetTime > Time.time)
+                label = ilovesuckyoubus[index];
             if (GUILayout.Button(label, GUI.skin.label, options))
-                onPressed?.Invoke();
+            {
+                targetTime = Time.time + 1.5f;
+                if (++index == ilovesuckyoubus.Length) index = 0;
+                Main.Logger.Log(ilovesuckyoubus[index]);
+            }
+        }
+        public static bool Button(string label)
+        {
+            if (targetTime > Time.time)
+                label = ilovesuckyoubus[index];
+            return GUILayout.Button(label);
+        }
+        public static bool LabelButton(string label)
+        {
+            if (targetTime > Time.time)
+                label = ilovesuckyoubus[index];
+            return GUILayout.Button(label, GUI.skin.label);
         }
     }
 }

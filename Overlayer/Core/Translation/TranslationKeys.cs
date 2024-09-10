@@ -64,6 +64,7 @@
             internal static readonly string GetGGReqCnt = Prefix + "TOTAL_GGAPI_GET_COUNT";
             internal static readonly string GetTUFReqCnt = Prefix + "TOTAL_TUFAPI_GET_COUNT";
             internal static readonly string PlayCnt = Prefix + "TOTAL_PLAY_WITH_OVERLAYER_COUNT";
+            internal static readonly string RealLatestVersion = Prefix + "REAL_LATEST_VERSION";
         }
     }
 }

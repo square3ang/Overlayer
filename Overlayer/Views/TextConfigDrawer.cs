@@ -70,7 +70,7 @@ namespace Overlayer.Views
             changed |= Drawer.DrawString(L(TKTC.PlayingText), ref model.PlayingText, true);
             changed |= Drawer.DrawString(L(TKTC.NotPlayingText), ref model.NotPlayingText, true);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(L(TKTC.Export)))
+            if (Drawer.Button(L(TKTC.Export)))
             {
                 string target = StandaloneFileBrowser.SaveFilePanel(L(TKTC.SelectText), Persistence.GetLastUsedFolder(), $"{model.Name}.json", "json");
                 if (!string.IsNullOrWhiteSpace(target))
@@ -80,12 +80,12 @@ namespace Overlayer.Views
                     File.WriteAllText(target, node.ToString(4));
                 }
             }
-            if (GUILayout.Button(L(TKTC.Reset)))
+            if (Drawer.Button(L(TKTC.Reset)))
             {
                 changed = true;
                 text.Config = model = new TextConfig();
             }
-            if (GUILayout.Button(L(TKTC.Destroy)))
+            if (Drawer.Button(L(TKTC.Destroy)))
             {
                 TextManager.DestroyText(text);
                 Main.GUI.Skip(frames: 2);
