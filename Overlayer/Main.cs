@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using Overlayer.Controllers;
+﻿using Overlayer.Controllers;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
@@ -13,7 +12,6 @@ using Overlayer.Views;
 using System;
 using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
@@ -102,15 +100,15 @@ namespace Overlayer
         public static void OnShowGUI(ModEntry modEntry)
         {
             GUI.Flush();
-            new Task(async () =>
-            {
-                GGReqCnt = await OverlayerWebAPI.GetGGRequestCount();
-                GetGGReqCnt = await OverlayerWebAPI.GetGetGGRequestCount();
-                TUFReqCnt = await OverlayerWebAPI.GetTUFRequestCount();
-                GetTUFReqCnt = await OverlayerWebAPI.GetGetTUFRequestCount();
-                HandshakeCnt = await OverlayerWebAPI.GetHandshakeCount();
-                PlayCnt = await OverlayerWebAPI.GetPlayCount();
-            }).Start();
+            //new Task(async () =>
+            //{
+            //    GGReqCnt = await OverlayerWebAPI.GetGGRequestCount();
+            //    GetGGReqCnt = await OverlayerWebAPI.GetGetGGRequestCount();
+            //    TUFReqCnt = await OverlayerWebAPI.GetTUFRequestCount();
+            //    GetTUFReqCnt = await OverlayerWebAPI.GetGetTUFRequestCount();
+            //    HandshakeCnt = await OverlayerWebAPI.GetHandshakeCount();
+            //    PlayCnt = await OverlayerWebAPI.GetPlayCount();
+            //}).Start();
         }
         public static void OnGUI(ModEntry modEntry)
         {

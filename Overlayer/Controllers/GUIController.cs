@@ -57,12 +57,12 @@ namespace Overlayer.Controllers
                     onSkipCallbacks.Pop()?.Invoke();
                 return;
             }
-            Drawer.ButtonLabel($"{Main.Lang[TM.GGReqCnt]} {Main.GGReqCnt}", () => Application.OpenURL(Main.DiscordLink));
-            Drawer.ButtonLabel($"{Main.Lang[TM.GetGGReqCnt]} {Main.GetGGReqCnt}", () => Application.OpenURL(Main.DiscordLink));
-            Drawer.ButtonLabel($"{Main.Lang[TM.TUFReqCnt]} {Main.TUFReqCnt}", () => Application.OpenURL(Main.DiscordLink));
-            Drawer.ButtonLabel($"{Main.Lang[TM.GetTUFReqCnt]} {Main.GetTUFReqCnt}", () => Application.OpenURL(Main.DiscordLink));
-            Drawer.ButtonLabel($"{Main.Lang[TM.HandshakeCnt]} {Main.HandshakeCnt}", () => Application.OpenURL(Main.DiscordLink));
-            Drawer.ButtonLabel($"{Main.Lang[TM.PlayCnt]} {Main.PlayCnt}", () => Application.OpenURL(Main.DiscordLink));
+            //Drawer.ButtonLabel($"{Main.Lang[TM.GGReqCnt]} {Main.GGReqCnt}", () => Application.OpenURL(Main.DiscordLink));
+            //Drawer.ButtonLabel($"{Main.Lang[TM.GetGGReqCnt]} {Main.GetGGReqCnt}", () => Application.OpenURL(Main.DiscordLink));
+            //Drawer.ButtonLabel($"{Main.Lang[TM.TUFReqCnt]} {Main.TUFReqCnt}", () => Application.OpenURL(Main.DiscordLink));
+            //Drawer.ButtonLabel($"{Main.Lang[TM.GetTUFReqCnt]} {Main.GetTUFReqCnt}", () => Application.OpenURL(Main.DiscordLink));
+            //Drawer.ButtonLabel($"{Main.Lang[TM.HandshakeCnt]} {Main.HandshakeCnt}", () => Application.OpenURL(Main.DiscordLink));
+            //Drawer.ButtonLabel($"{Main.Lang[TM.PlayCnt]} {Main.PlayCnt}", () => Application.OpenURL(Main.DiscordLink));
             GUILayout.BeginHorizontal();
             {
                 if (isUndoAvailable)
