@@ -10,12 +10,19 @@ namespace Overlayer.Utils
         private static readonly Font defFont = new Font(FontFamily.GenericSerif, 8);
         private Font font = defFont;
 
+        /// <summary>
+        /// If CustomBrush Is Not Null, This Will Be Ignored
+        /// </summary>
         public Color Color = Color.White;
         public StringFormat Format = new StringFormat()
         {
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center,
         };
+        /// <summary>
+        /// If Null, Using Solid Brush With Color
+        /// </summary>
+        public Brush CustomBrush = null;
 
         public bool TrySetFont(string fileName, int emSize)
         {
@@ -36,7 +43,7 @@ namespace Overlayer.Utils
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-                g.DrawString(text, font, new SolidBrush(Color), rectf, Format);
+                g.DrawString(text, font, CustomBrush ?? new SolidBrush(Color), rectf, Format);
                 g.Flush();
             }
         }
