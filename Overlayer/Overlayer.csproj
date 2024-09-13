@@ -57,6 +57,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -449,6 +451,7 @@
     <Compile Include="Utils\ModelUtils.cs" />
     <Compile Include="Utils\StringConverter.cs" />
     <Compile Include="Utils\StringUtils.cs" />
+    <Compile Include="Utils\TextWriter.cs" />
     <Compile Include="Views\SettingsDrawer.cs" />
     <Compile Include="Views\TextConfigDrawer.cs" />
   </ItemGroup>
