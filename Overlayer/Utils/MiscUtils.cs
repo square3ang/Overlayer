@@ -158,5 +158,15 @@ namespace Overlayer.Utils
             }
             return false;
         }
+        public static byte[] ExportPNG(RenderTexture rt)
+        {
+            Texture2D tex = new Texture2D(rt.width, rt.height, TextureFormat.RGBAFloat, false, true);
+            var oldRt = RenderTexture.active;
+            RenderTexture.active = rt;
+            tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+            tex.Apply();
+            RenderTexture.active = oldRt;
+            return tex.EncodeToPNG();
+        }
     }
 }
