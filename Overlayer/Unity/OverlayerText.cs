@@ -9,11 +9,12 @@ using System.Linq;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Overlayer.Unity
 {
-    public class OverlayerText : MonoBehaviour
+    public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
         public static event Action<OverlayerText> OnApplyConfig = delegate { };
         public bool Initialized { get; private set; }
@@ -21,6 +22,11 @@ namespace Overlayer.Unity
         public Replacer PlayingReplacer;
         public Replacer NotPlayingReplacer;
         public TextMeshProUGUI Text;
+
+        private bool isDragging = false; // 드래그 중인지 여부를 저장할 변수
+        private Vector2 initialPointerPosition; // 마우스 클릭 시점의 포인터 위치
+        private Vector2 initialObjectPosition;  // 마우스 클릭 시점의 객체 위치
+
         #region Statics
         public static GameObject PCanvasObj;
         public static Canvas PublicCanvas;
@@ -52,7 +58,9 @@ namespace Overlayer.Unity
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
                 var currentRes = Screen.currentResolution;
                 scaler.referenceResolution = new Vector2(currentRes.width, currentRes.height);
+                pCanvasObj.AddComponent<GraphicRaycaster>();
                 DontDestroyOnLoad(PublicCanvas);
+
             }
             GameObject mainObject = gameObject;
             mainObject.transform.SetParent(PublicCanvas.transform);
@@ -136,6 +144,32 @@ namespace Overlayer.Unity
             mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - Config.ShadowDilate);
             mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
         }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            // 마우스 클릭 시 초기 위치 저장
+            isDragging = true;
+            initialPointerPosition = eventData.position;
+            initialObjectPosition = Text.rectTransform.anchoredPosition;
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            // 마우스 버튼에서 손을 뗄 때 드래그 해제
+            isDragging = false;
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            // 드래그 중인 경우 객체 위치를 갱신
+            if(isDragging)
+            {
+                Vector2 currentPointerPosition = eventData.position;
+                Vector2 offset = currentPointerPosition - initialPointerPosition;
+                Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
+            }
+        }
+
         private void SetFont()
         {
             if (FontManager.TryGetFont(Config.Font, out FontData font))
