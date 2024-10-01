@@ -204,6 +204,17 @@ namespace Overlayer.Core
             @enum = EnumHelper<T>.GetValues()[current];
             return result;
         }
+        public static bool DrawEnumPlus<T>(string label,ref T @enum,Func<string,string> translator,int unique = 0) where T : Enum
+        {
+            int current = EnumHelper<T>.IndexOf(@enum);
+            string[] names = EnumHelper<T>.GetNames();
+            string[] translatedNames = names.Select(name => translator(name)).ToArray();
+
+            bool result = UnityModManagerNet.UnityModManager.UI.PopupToggleGroup(ref current,translatedNames,label,unique);
+
+            @enum = EnumHelper<T>.GetValues()[current];
+            return result;
+        }
         public static bool DrawInt16(string label, ref short value)
         {
             string str = value.ToString();

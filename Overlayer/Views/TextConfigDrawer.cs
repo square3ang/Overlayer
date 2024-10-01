@@ -62,7 +62,7 @@ namespace Overlayer.Views
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("ALIGNMENT","Alignment"));
-            changed |= Drawer.DrawEnum(Main.Lang.Get("ALIGNMENT","Alignment"), ref model.Alignment);
+            changed |= Drawer.DrawEnumPlus("Text Alignment",ref model.Alignment,TranslateTextAlignment);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -94,6 +94,51 @@ namespace Overlayer.Views
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             if (changed) text.ApplyConfig();
+        }
+
+        private string TranslateTextAlignment(string alignmentName)
+        {
+            return alignmentName switch
+            {
+                "TopLeft" => Main.Lang.Get("TOP_LEFT","Top Left"),
+                "Top" => Main.Lang.Get("TOP","Top"),
+                "TopRight" => Main.Lang.Get("TOP_RIGHT","Top Right"),
+                "TopJustified" => Main.Lang.Get("TOP_JUSTIFIED","Top Justified"),
+                "TopFlush" => Main.Lang.Get("TOP_FLUSH","Top Flush"),
+                "TopGeoAligned" => Main.Lang.Get("TOP_GEO_ALIGNED","Top Geo Aligned"),
+                "Left" => Main.Lang.Get("LEFT","Left"),
+                "Center" => Main.Lang.Get("CENTER","Center"),
+                "Right" => Main.Lang.Get("RIGHT","Right"),
+                "Justified" => Main.Lang.Get("JUSTIFIED","Justified"),
+                "Flush" => Main.Lang.Get("FLUSH","Flush"),
+                "CenterGeoAligned" => Main.Lang.Get("CENTER_GEO_ALIGNED","Center Geo Aligned"),
+                "BottomLeft" => Main.Lang.Get("BOTTOM_LEFT","Bottom Left"),
+                "Bottom" => Main.Lang.Get("BOTTOM","Bottom"),
+                "BottomRight" => Main.Lang.Get("BOTTOM_RIGHT","Bottom Right"),
+                "BottomJustified" => Main.Lang.Get("BOTTOM_JUSTIFIED","Bottom Justified"),
+                "BottomFlush" => Main.Lang.Get("BOTTOM_FLUSH","Bottom Flush"),
+                "BottomGeoAligned" => Main.Lang.Get("BOTTOM_GEO_ALIGNED","Bottom Geo Aligned"),
+                "BaselineLeft" => Main.Lang.Get("BASELINE_LEFT","Baseline Left"),
+                "Baseline" => Main.Lang.Get("BASELINE","Baseline"),
+                "BaselineRight" => Main.Lang.Get("BASELINE_RIGHT","Baseline Right"),
+                "BaselineJustified" => Main.Lang.Get("BASELINE_JUSTIFIED","Baseline Justified"),
+                "BaselineFlush" => Main.Lang.Get("BASELINE_FLUSH","Baseline Flush"),
+                "BaselineGeoAligned" => Main.Lang.Get("BASELINE_GEO_ALIGNED","Baseline Geo Aligned"),
+                "MidlineLeft" => Main.Lang.Get("MIDLINE_LEFT","Midline Left"),
+                "Midline" => Main.Lang.Get("MIDLINE","Midline"),
+                "MidlineRight" => Main.Lang.Get("MIDLINE_RIGHT","Midline Right"),
+                "MidlineJustified" => Main.Lang.Get("MIDLINE_JUSTIFIED","Midline Justified"),
+                "MidlineFlush" => Main.Lang.Get("MIDLINE_FLUSH","Midline Flush"),
+                "MidlineGeoAligned" => Main.Lang.Get("MIDLINE_GEO_ALIGNED","Midline Geo Aligned"),
+                "CaplineLeft" => Main.Lang.Get("CAPLINE_LEFT","Capline Left"),
+                "Capline" => Main.Lang.Get("CAPLINE","Capline"),
+                "CaplineRight" => Main.Lang.Get("CAPLINE_RIGHT","Capline Right"),
+                "CaplineJustified" => Main.Lang.Get("CAPLINE_JUSTIFIED","Capline Justified"),
+                "CaplineFlush" => Main.Lang.Get("CAPLINE_FLUSH","Capline Flush"),
+                "CaplineGeoAligned" => Main.Lang.Get("CAPLINE_GEO_ALIGNED","Capline Geo Aligned"),
+                "Converted" => Main.Lang.Get("CONVERTED","Converted"),
+                _ => alignmentName
+            };
         }
     }
 }
