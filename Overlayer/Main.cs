@@ -40,8 +40,6 @@ namespace Overlayer
         [Tag(NotPlaying = true)]
         public static Version LastestVersion { get; private set; }
         [Tag(NotPlaying = true)]
-        //public static string DiscordLink { get; private set; }
-        //[Tag(NotPlaying = true)]
         public static string DownloadLink { get; private set; }
         public static long GGReqCnt, GetGGReqCnt, TUFReqCnt, GetTUFReqCnt, PlayCnt, HandshakeCnt;
         public static void Load(ModEntry modEntry)
