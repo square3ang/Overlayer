@@ -1,0 +1,10 @@
+{
+    "Id": "Overlayer.Scripting",
+    "DisplayName": "Overlayer.Scripting",
+    "Author": "Square & kkitut",
+    "Version": "1.7.1",
+    "AssemblyName": "Overlayer.Scripting.Bootstrapper.dll",
+    "EntryMethod": "Overlayer.Scripting.Bootstrapper.Main.Load",
+    "Requirements": ["Overlayer"],
+    "LoadAfter": ["Overlayer"]
+  }
