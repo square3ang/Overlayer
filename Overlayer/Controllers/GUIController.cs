@@ -80,9 +80,11 @@ namespace Overlayer.Controllers
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             current.Draw();
+            /*
             string[] ver = Main.Lang[TranslationKeys.Misc.RealLatestVersion].Split('.');
             if (GUILayout.Button($"<color=#08BDFF>C</color><color=#0BBFF7>#</color><color=#0FC2F0>#</color><color=#13C4E9>'</color><color=#17C7E2>s</color> <color=#1FCCD4>M</color><color=#23CFCD>O</color><color=#27D2C6>D</color> <color=#2FD7B7>S</color><color=#33DAB0>e</color><color=#37DCA9>r</color><color=#3ADFA2>v</color><color=#3EE19B>e</color><color=#42E494>r</color><color=#46E78D>!</color> <color=#4EEC7E>(</color><color=#52EF77>O</color><color=#56F170>v</color><color=#5AF469>e</color><color=#5EF762>r</color><color=#62F95B>l</color><color=#66FC54>a</color><color=#6AFE4C>y</color><color=#6BFE53>e</color><color=#6CFE5A>r</color> <color=#6FFE68>L</color><color=#70FE6F>a</color><color=#72FE76>t</color><color=#73FE7D>e</color><color=#74FE84>s</color><color=#76FE8B>t</color> <color=#78FE99>V</color><color=#7AFEA0>e</color><color=#7BFEA7>r</color><color=#7DFEAE>s</color><color=#7EFEB5>i</color><color=#7FFEBC>o</color><color=#81FEC3>n</color><color=#82FECA>:</color><color=#83FED1>{ver[0]}</color><color=#85FED8>.</color><color=#86FEDF>{ver[1]}</color><color=#87FEE6>.</color><color=#89FEED>{ver[2]}</color><color=#8AFEF4>)</color>", GUI.skin.label))
                 Application.OpenURL(Main.DiscordLink);
+            */
         }
         public void Skip(Action onSkip = null, int frames = 1)
         {

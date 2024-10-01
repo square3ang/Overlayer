@@ -56,7 +56,7 @@ namespace Overlayer
             modEntry.OnGUI = OnGUI;
             modEntry.OnHideGUI = OnHideGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
-            InitializeWebAPI();
+            //InitializeWebAPI();
             Language.OnInitialize += OnLanguageInitialize;
             SceneManager.activeSceneChanged += (f, t) => ActiveScene = t;
             MiscUtils.SetAttr(TMPro.TMP_Settings.instance, "m_warningsDisabled", true);
@@ -113,7 +113,7 @@ namespace Overlayer
         public static void OnGUI(ModEntry modEntry)
         {
             if (!Lang.Initialized)
-                Drawer.ButtonLabel("Preparing...", () => Application.OpenURL(DiscordLink));
+                GUILayout.Label("Preparing...");
             else GUI.Draw();
         }
         public static void OnHideGUI(ModEntry modEntry)
@@ -139,6 +139,7 @@ namespace Overlayer
                 return false;
             }
         }
+        /*
         public static async void InitializeWebAPI()
         {
             Logger.Log($"Handshake Response:{await OverlayerWebAPI.Handshake()}");
@@ -165,10 +166,13 @@ namespace Overlayer
                 }
             }));
         }
+        */
+        /*
         public static void OpenDownloadLink()
         {
             Application.OpenURL(DownloadLink);
         }
+        */
         public static void OnLanguageInitialize()
         {
             GUI.Flush();

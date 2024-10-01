@@ -18,7 +18,7 @@ namespace Overlayer.Views
         public override void Draw()
         {
             GUILayout.BeginHorizontal();
-            Drawer.ButtonLabel(L(TKS.Langauge), () => Application.OpenURL(Main.DiscordLink));
+            GUILayout.Label(L(TKS.Langauge));
             if (Drawer.DrawEnum(L(TKS.Langauge), ref model.Lang, model.GetHashCode()))
                 Main.Lang = Language.GetLangauge(model.Lang);
             GUILayout.FlexibleSpace();
