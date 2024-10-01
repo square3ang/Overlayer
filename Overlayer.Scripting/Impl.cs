@@ -149,7 +149,7 @@ namespace Overlayer.Scripting
                 proxyStaticMethods: mm);
             File.WriteAllText(fileName, generated);
         }
-        [RawReturn]
+        /*[RawReturn]
         [Api("resolveClrType")]
         public static Type ResolveType(Engine engine, string clrType)
         {
@@ -170,13 +170,13 @@ namespace Overlayer.Scripting
                 else return dict[clrType] = TypeReference.CreateTypeReference(engine, MiscUtils.TypeByName(clrType));
             dict = jsTypes[engine] = new Dictionary<string, TypeReference>();
             return dict[clrType] = TypeReference.CreateTypeReference(engine, MiscUtils.TypeByName(clrType));
-        }
+        }*/
         [Api("getAttr")]
         public static object GetAttr(object obj, string accessor = "")
         {
             return OverlayerTag.RuntimeAccess(obj, accessor);
         }
-        [Api("setAttr")]
+        /*[Api("setAttr")]
         public static bool SetAttr(object obj, string accessor = "",  object value = null)
         {
             if (obj == null) return false;
@@ -221,7 +221,7 @@ namespace Overlayer.Scripting
                 type = result.GetType();
             }
             return false;
-        }
+        }*/
         [Api("wrapToJSObject")]
         public static JsValue WrapToJSObject(Engine engine, object obj) => JsValue.FromObject(engine, obj);
         [Api("unwrapFromJSObject")]
@@ -287,7 +287,7 @@ namespace Overlayer.Scripting
             TagManager.RemoveTag(name);
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
         }
-        [Api("prefix")]
+        /*[Api("prefix")]
         public static bool Prefix(Engine engine, string typeColonMethodName, JsValue patch)
         {
             if (!(patch is Function func)) return false;
@@ -397,7 +397,7 @@ namespace Overlayer.Scripting
                 return false;
             harmony.Patch(target, transpiler: new HarmonyMethod(wrap));
             return true;
-        }
+        }*/
         [Api("isNoFailMode")]
         public static bool IsNoFailMode(Engine engine)
         {
