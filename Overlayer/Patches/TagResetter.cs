@@ -9,8 +9,6 @@ namespace Overlayer.Patches
         public static void Postfix()
         {
             OverlayerAPI.Reset();
-            Adofaigg.Reset();
-            TUF.Reset();
             Bpm.Reset();
             Tags.FrameRate.Reset();
             Hex.Reset();

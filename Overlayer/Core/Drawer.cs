@@ -4,7 +4,6 @@ using Overlayer.Utils;
 using System;
 using System.Linq;
 using UnityEngine;
-using TKM = Overlayer.Core.Translation.TranslationKeys.Misc;
 
 namespace Overlayer.Core
 {
@@ -35,18 +34,18 @@ namespace Overlayer.Core
         public static bool DrawGColor(ref GColor color, bool canEnableGradient)
         {
             bool ge = color.gradientEnabled, prevGe = color.gradientEnabled;
-            if (canEnableGradient && DrawBool(Main.Lang[TKM.EnableGradient], ref ge))
-                color = color with { gradientEnabled = ge };
+            if (canEnableGradient && DrawBool(Main.Lang.Get("MISC_ENABLE_GRADIENT","Enable Gradient"), ref ge))
+                color = color with { gradientEnabled = ge };    
             color.gradientEnabled &= canEnableGradient;
             bool result = ge != prevGe;
             if (color.gradientEnabled)
             {
                 Color tl = color.topLeft, tr = color.topRight,
                 bl = color.bottomLeft, br = color.bottomRight;
-                ExpandableGUI(color.topLeftStatus, Main.Lang[TKM.TopLeft], () => result |= DrawColor(ref tl));
-                ExpandableGUI(color.topRightStatus, Main.Lang[TKM.TopRight], () => result |= DrawColor(ref tr));
-                ExpandableGUI(color.bottomLeftStatus, Main.Lang[TKM.BottomLeft], () => result |= DrawColor(ref bl));
-                ExpandableGUI(color.bottomRightStatus, Main.Lang[TKM.BottomRight], () => result |= DrawColor(ref br));
+                ExpandableGUI(color.topLeftStatus, Main.Lang.Get("MISC_TOP_LEFT","Top Left"), () => result |= DrawColor(ref tl));
+                ExpandableGUI(color.topRightStatus, Main.Lang.Get("MISC_TOP_RIGHT","Top Right"), () => result |= DrawColor(ref tr));
+                ExpandableGUI(color.bottomLeftStatus, Main.Lang.Get("MISC_BOTTOM_LEFT","Bottom Left"), () => result |= DrawColor(ref bl));
+                ExpandableGUI(color.bottomRightStatus, Main.Lang.Get("MISC_BOTTOM_RIGHT","Bottom Right"), () => result |= DrawColor(ref br));
                 if (result)
                 {
                     color.topLeft = tl;

@@ -52,6 +52,9 @@
     <Reference Include="DOTweenPro">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\DOTweenPro.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="RDTools">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\RDTools.dll</HintPath>
     </Reference>
@@ -376,7 +379,6 @@
     <Compile Include="Core\Interfaces\IModel.cs" />
     <Compile Include="Core\MethodDrawable.cs" />
     <Compile Include="Core\ModelDrawable.cs" />
-    <Compile Include="Core\OverlayerWebAPI.cs" />
     <Compile Include="Core\Patches\LazyPatch.cs" />
     <Compile Include="Core\Patches\LazyPatchAttribute.cs" />
     <Compile Include="Core\Patches\LazyPatchManager.cs" />
@@ -393,24 +395,20 @@
     <Compile Include="Core\TextReplacing\ReplaceableText.cs" />
     <Compile Include="Core\TextReplacing\Replacer.cs" />
     <Compile Include="Core\TextReplacing\Tag.cs" />
-    <Compile Include="Core\Translation\Language.cs" />
-    <Compile Include="Core\Translation\TranslationKeys.cs" />
+    <Compile Include="Core\Translation\Translator.cs" />
     <Compile Include="Lib\JSON.cs" />
     <Compile Include="Lib\JSON.Unity.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Models\FontMeta.cs" />
     <Compile Include="Models\GColor.cs" />
     <Compile Include="Models\GUIStatus.cs" />
-    <Compile Include="Models\OverlayerLanguage.cs" />
     <Compile Include="Models\TextConfig.cs" />
     <Compile Include="Patches\FontPatch.cs" />
     <Compile Include="Patches\PatchGuard.cs" />
-    <Compile Include="Patches\PlayPatch.cs" />
     <Compile Include="Patches\TagResetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Tags\ADOFAI.cs" />
-    <Compile Include="Tags\Adofaigg.cs" />
     <Compile Include="Tags\Attributes\IgnoreCaseAttribute.cs" />
     <Compile Include="Tags\Attributes\ValueProcessing.cs" />
     <Compile Include="Tags\Attributes\JSImplementedByAttribute.cs" />
@@ -423,13 +421,10 @@
     <Compile Include="Tags\Level.cs" />
     <Compile Include="Tags\OverlayerAPI.cs" />
     <Compile Include="Tags\OverlayerTag.cs" />
-    <Compile Include="Tags\Patches\AdofaiggPatch.cs" />
     <Compile Include="Tags\Patches\BpmPatch.cs" />
     <Compile Include="Tags\Patches\FrameRatePatch.cs" />
     <Compile Include="Tags\Patches\HitPatch.cs" />
     <Compile Include="Tags\Patches\HitTimingPatch.cs" />
-    <Compile Include="Tags\Patches\TUFPatch.cs" />
-    <Compile Include="Tags\Patches\OverlayerAPIPatch.cs" />
     <Compile Include="Tags\Patches\PatchBase.cs" />
     <Compile Include="Tags\Patches\SongPatch.cs" />
     <Compile Include="Tags\Patches\StatusPatch.cs" />
@@ -440,7 +435,6 @@
     <Compile Include="Tags\Tile.cs" />
     <Compile Include="Tags\Time.cs" />
     <Compile Include="Tags\HitTiming.cs" />
-    <Compile Include="Tags\TUF.cs" />
     <Compile Include="Unity\Capturer.cs" />
     <Compile Include="Unity\OverlayerText.cs" />
     <Compile Include="Unity\StaticCoroutine.cs" />
@@ -456,7 +450,12 @@
     <Compile Include="Views\SettingsDrawer.cs" />
     <Compile Include="Views\TextConfigDrawer.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="MiscFiles\English.json" />
+    <None Include="MiscFiles\info.json" />
+    <None Include="MiscFiles\Korean.json" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\Overlayer.dll"</PostBuildEvent>

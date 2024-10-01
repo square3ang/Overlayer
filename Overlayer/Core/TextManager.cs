@@ -1,5 +1,4 @@
 ﻿using JSON;
-using Overlayer.Core.Translation;
 using Overlayer.Models;
 using Overlayer.Unity;
 using Overlayer.Utils;
@@ -30,7 +29,7 @@ namespace Overlayer.Core
         public static OverlayerText CreateText(TextConfig config)
         {
             if (string.IsNullOrEmpty(config.Name))
-                config.Name = string.Format(Main.Lang[TranslationKeys.Misc.Text], Count + 1);
+                config.Name = (Count + 1).ToString();
             GameObject go = new GameObject($"OverlayerText_{config.Name}");
             var text = go.AddComponent<OverlayerText>();
             text.Init(config);

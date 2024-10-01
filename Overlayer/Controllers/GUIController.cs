@@ -1,10 +1,8 @@
 ﻿using Overlayer.Core;
 using Overlayer.Core.Interfaces;
-using Overlayer.Core.Translation;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using TM = Overlayer.Core.Translation.TranslationKeys.Misc;
 
 namespace Overlayer.Controllers
 {
@@ -67,13 +65,13 @@ namespace Overlayer.Controllers
             {
                 if (isUndoAvailable)
                 {
-                    if (GUILayout.Button("◀ " + drawables[depth - 1].Name))
+                    if(GUILayout.Button("◀ " + Main.Lang.Get("BACK","Back") + drawables[depth - 1].Name))
                         Pop();
                 }
                 if (isRedoAvailable)
                 {
                     var draw = drawables[depth];
-                    if (GUILayout.Button(draw.Name + " ▶"))
+                    if (GUILayout.Button(draw.Name + "▶ " + Main.Lang.Get("FORWARD","Forward")))
                         Push(draw);
                 }
             }

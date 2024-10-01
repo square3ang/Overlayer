@@ -1,29 +1,76 @@
 ﻿using JSON;
 using Overlayer.Core;
-using Overlayer.Core.Translation;
+using Overlayer.Core.Translatior;
 using Overlayer.Models;
 using Overlayer.Utils;
+using SA.GoogleDoc;
 using SFB;
+using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TKS = Overlayer.Core.Translation.TranslationKeys.Settings;
-using TKTC = Overlayer.Core.Translation.TranslationKeys.TextConfig;
+using static UnityModManagerNet.UnityModManager;
 
 namespace Overlayer.Views
 {
     public class SettingsDrawer : ModelDrawable<Settings>
     {
-        public SettingsDrawer(Settings settings) : base(settings, L(TKS.Prefix)) { }
+        public SettingsDrawer(Settings settings) : base(settings) { }
+
+        private static string FailString()
+        {
+            switch(Main.Lang.GetFailAdvence())
+            {
+                case 0:
+                    return "Load Language Pack";
+                case -1:
+                    return "Fail to Load json: Unknown Cause";
+                case 1:
+                    return "Fail to Load json: Translations Count is 0";
+                case 2:
+                    return "Fail to Load json: Error Reading Directory";
+                case 3:
+                    return "Fail to Load json: Error loading file";
+                default:
+                    return "Load Language Pack";
+            }
+        }
+
         public override void Draw()
         {
+            Main.Lang.CurrentLanguage = model.Lang;
             GUILayout.BeginHorizontal();
-            GUILayout.Label(L(TKS.Langauge));
-            if (Drawer.DrawEnum(L(TKS.Langauge), ref model.Lang, model.GetHashCode()))
-                Main.Lang = Language.GetLangauge(model.Lang);
-            GUILayout.FlexibleSpace();
+            string[] languageNames = Main.Lang.GetLanguages();
+            int selectedIndex = Array.IndexOf(languageNames,Main.Lang.CurrentLanguage);
+
+            if(GUILayout.Button("◀",GUILayout.Width(40)))
+            {
+                selectedIndex = (selectedIndex - 1 + languageNames.Length) % languageNames.Length;
+                UpdateLanguageSetting(selectedIndex);
+            }
+            if(UI.PopupToggleGroup(ref selectedIndex,languageNames,Main.Lang.Get("SELECTLANGUAGE","Select Language"),GUI.skin.button,GUILayout.Width(400)))
+            {
+                UpdateLanguageSetting(selectedIndex);
+            }
+            if(GUILayout.Button("▶",GUILayout.Width(40)))
+            {
+                selectedIndex = (selectedIndex + 1) % languageNames.Length;
+                UpdateLanguageSetting(selectedIndex);
+            }
+
+            void UpdateLanguageSetting(int index)
+            {
+                Main.Lang.CurrentLanguage = languageNames[index];
+                model.Lang = Main.Lang.CurrentLanguage;
+            }
+
+            if(GUILayout.Button(Main.Lang.GetFail() ? FailString() : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
+            {
+                Main.Lang = new Translator(Path.Combine(Main.Mod.Path,"lang"));
+                Main.Lang.CurrentLanguage = model.Lang;
+            }
             GUILayout.EndHorizontal();
-            if (Drawer.DrawBool(L(TKS.ChangeFont), ref model.ChangeFont))
+            if (Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT","Change Font"), ref model.ChangeFont))
             {
                 if (!model.ChangeFont)
                 {
@@ -40,11 +87,11 @@ namespace Overlayer.Views
             if (model.ChangeFont)
             {
                 GUILayoutEx.BeginIndent();
-                Drawer.DrawString(L(TKS.AdofaiFont_Font), ref model.AdofaiFont.name);
-                Drawer.DrawSingle(L(TKS.AdofaiFont_FontScale), ref model.AdofaiFont.fontScale);
-                Drawer.DrawSingle(L(TKS.AdofaiFont_LineSpacing), ref model.AdofaiFont.lineSpacing);
+                Drawer.DrawString(Main.Lang.Get("FONT","Font"), ref model.AdofaiFont.name);
+                Drawer.DrawSingle(Main.Lang.Get("FONT_SCALE","Font Scale"), ref model.AdofaiFont.fontScale);
+                Drawer.DrawSingle(Main.Lang.Get("LINE_SPACING","Font Line Spacing"), ref model.AdofaiFont.lineSpacing);
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button(L(TKS.AdofaiFont_Apply)))
+                if (GUILayout.Button(Main.Lang.Get("APPLY","Apply")))
                 {
                     if (model.AdofaiFont.Apply(out var font))
                     {
@@ -54,7 +101,7 @@ namespace Overlayer.Views
                         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                     }
                 }
-                if (GUILayout.Button(L(TKS.LogFontList)))
+                if (GUILayout.Button(Main.Lang.Get("LOG_FONT_LIST","Log Font List")))
                 {
                     foreach (var font in FontManager.OSFonts)
                         Main.Logger.Log(font);
@@ -63,17 +110,17 @@ namespace Overlayer.Views
                 GUILayout.EndHorizontal();
                 GUILayoutEx.EndIndent();
             }
-            Drawer.DrawSingle(L(TKS.FpsUpdateRate), ref model.FPSUpdateRate);
-            Drawer.DrawSingle(L(TKS.FrameTimeUpdateRate), ref model.FrameTimeUpdateRate);
+            Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
+            Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE","FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(L(TKS.NewText)))
+            if (GUILayout.Button(Main.Lang.Get("NEW_TEXT","Create New Text")))
             {
                 TextManager.CreateText(new TextConfig());
                 TextManager.Refresh();
             }
-            if (GUILayout.Button(L(TKS.ImportText)))
+            if (GUILayout.Button(Main.Lang.Get("IMPORT_TEXT","Import Text")))
             {
-                var texts = StandaloneFileBrowser.OpenFilePanel(L(TKTC.SelectText), Main.Mod.Path, new[] { new ExtensionFilter("Text", "json") }, true);
+                var texts = StandaloneFileBrowser.OpenFilePanel(Main.Lang.Get("SELECT_TEXT","Select Text"), Main.Mod.Path, new[] { new ExtensionFilter("Text", "json") }, true);
                 foreach (var text in texts)
                 {
                     var json = JsonNode.Parse(File.ReadAllText(text));
@@ -89,9 +136,13 @@ namespace Overlayer.Views
             for (int i = 0; i < TextManager.Count; i++)
             {
                 var text = TextManager.Get(i);
-                Drawer.TitleButton(L(TKS.EditThisText, text.Config.Name), L(TKS.Edit), () => Main.GUI.Push(new TextConfigDrawer(text.Config)), () =>
-                {
-                    if (GUILayout.Button(L(TKTC.Destroy)))
+                Drawer.TitleButton(
+                    string.Format(Main.Lang.Get("EDIT_THIS_TEXT","Edit {0} Text"),text.Config.Name),
+                    Main.Lang.Get("EDIT","Edit"),
+                    () => Main.GUI.Push(new TextConfigDrawer(text.Config)),
+                    () =>
+                    {
+                    if (GUILayout.Button(Main.Lang.Get("DESTROY","Destroy")))
                     {
                         TextManager.DestroyText(text);
                         Main.GUI.Skip(frames: 2);

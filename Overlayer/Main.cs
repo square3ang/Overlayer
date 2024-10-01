@@ -2,7 +2,7 @@
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
-using Overlayer.Core.Translation;
+using Overlayer.Core.Translatior;
 using Overlayer.Patches;
 using Overlayer.Tags;
 using Overlayer.Tags.Attributes;
@@ -10,6 +10,7 @@ using Overlayer.Unity;
 using Overlayer.Utils;
 using Overlayer.Views;
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Overlayer
     public static class Main
     {
         [Tag(NotPlaying = true)]
-        public static string Developer => Lang[TranslationKeys.Misc.Developer];
+        public static string Developer => Lang.Get("MISC_DEVELOPER","Super Kawaii Suckyoubus Chan~♥");
         public static Assembly Ass { get; private set; }
         public static ModEntry Mod { get; private set; }
         [Tag(NotPlaying = true)]
@@ -33,7 +34,7 @@ namespace Overlayer
         [Tag(NotPlaying = true)]
         public static Scene ActiveScene { get; private set; }
         public static HttpClient HttpClient { get; private set; }
-        public static Language Lang { get; internal set; }
+        public static Translator Lang { get; internal set; }
         [Tag(NotPlaying = true)]
         public static Version ModVersion { get; private set; }
         [Tag(NotPlaying = true)]
@@ -45,21 +46,22 @@ namespace Overlayer
         public static long GGReqCnt, GetGGReqCnt, TUFReqCnt, GetTUFReqCnt, PlayCnt, HandshakeCnt;
         public static void Load(ModEntry modEntry)
         {
+            Logger = modEntry.Logger;
             Ass = Assembly.GetExecutingAssembly();
             Mod = modEntry;
-            Logger = modEntry.Logger;
             GUI = new GUIController();
             HttpClient = new HttpClient();
             ModVersion = modEntry.Version;
+            Lang = new Translator(Path.Combine(Mod.Path,"lang"));
             modEntry.OnToggle = OnToggle;
             modEntry.OnShowGUI = OnShowGUI;
             modEntry.OnGUI = OnGUI;
             modEntry.OnHideGUI = OnHideGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
-            //InitializeWebAPI();
-            Language.OnInitialize += OnLanguageInitialize;
+            Lang.OnInitialize += OnLanguageInitialize;
             SceneManager.activeSceneChanged += (f, t) => ActiveScene = t;
             MiscUtils.SetAttr(TMPro.TMP_Settings.instance, "m_warningsDisabled", true);
+            
         }
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
@@ -69,7 +71,6 @@ namespace Overlayer
                 {
                     StaticCoroutine.Run(null);
                     Settings = ModSettings.Load<Settings>(modEntry);
-                    Lang = Language.GetLangauge(Settings.Lang);
                     LazyPatchManager.Load(Ass);
                     LazyPatchManager.PatchInternal();
                     Tag.InitializeWrapperAssembly();
@@ -100,19 +101,10 @@ namespace Overlayer
         public static void OnShowGUI(ModEntry modEntry)
         {
             GUI.Flush();
-            //new Task(async () =>
-            //{
-            //    GGReqCnt = await OverlayerWebAPI.GetGGRequestCount();
-            //    GetGGReqCnt = await OverlayerWebAPI.GetGetGGRequestCount();
-            //    TUFReqCnt = await OverlayerWebAPI.GetTUFRequestCount();
-            //    GetTUFReqCnt = await OverlayerWebAPI.GetGetTUFRequestCount();
-            //    HandshakeCnt = await OverlayerWebAPI.GetHandshakeCount();
-            //    PlayCnt = await OverlayerWebAPI.GetPlayCount();
-            //}).Start();
         }
         public static void OnGUI(ModEntry modEntry)
         {
-            if (!Lang.Initialized)
+            if (Lang.GetLoading())
                 GUILayout.Label("Preparing...");
             else GUI.Draw();
         }
@@ -122,6 +114,7 @@ namespace Overlayer
         }
         public static void OnSaveGUI(ModEntry modEntry)
         {
+
             PatchGuard.Ignore(() =>
             {
                 TextManager.Save();
@@ -139,40 +132,6 @@ namespace Overlayer
                 return false;
             }
         }
-        /*
-        public static async void InitializeWebAPI()
-        {
-            Logger.Log($"Handshake Response:{await OverlayerWebAPI.Handshake()}");
-            LastestVersion = await OverlayerWebAPI.GetVersion();
-            DiscordLink = await OverlayerWebAPI.GetDiscordLink();
-            DownloadLink = await OverlayerWebAPI.GetDownloadLink();
-            StaticCoroutine.Queue(StaticCoroutine.SyncRunner(() =>
-            {
-                if (LastestVersion > ModVersion)
-                {
-                    Lang.ActivateUpdateMode();
-                    ErrorCanvasContext ecc = new ErrorCanvasContext();
-                    ecc.titleText = "WOW YOUR OVERLAYER VERSION IS BEAUTIFUL!";
-                    ecc.errorMessage =
-                        $"Current Overlayer Version v{ModVersion}.\n" +
-                        $"But Latest Overlayer Is v{LastestVersion}.\n" +
-                        $"PlEaSe UpDaTe YoUr OvErLaYeR!";
-                    ecc.ignoreBtnCallback = () =>
-                    {
-                        ADOUtils.HideError(ecc);
-                        OpenDownloadLink();
-                    };
-                    ADOUtils.ShowError(ecc);
-                }
-            }));
-        }
-        */
-        /*
-        public static void OpenDownloadLink()
-        {
-            Application.OpenURL(DownloadLink);
-        }
-        */
         public static void OnLanguageInitialize()
         {
             GUI.Flush();
