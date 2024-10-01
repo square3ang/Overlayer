@@ -51,7 +51,7 @@
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\DOTweenPro.dll</HintPath>
     </Reference>
     <Reference Include="JSNet">
-      <HintPath>D:\JSNet\JSNet\bin\Release\JSNet.dll</HintPath>
+      <HintPath>..\Lib\JSNet.dll</HintPath>
     </Reference>
     <Reference Include="RDTools">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\RDTools.dll</HintPath>
@@ -362,7 +362,7 @@
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
     </Reference>
     <Reference Include="Vostok">
-      <HintPath>D:\Vostok\Vostok\bin\Release\Vostok.dll</HintPath>
+      <HintPath>..\Lib\Vostok.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
