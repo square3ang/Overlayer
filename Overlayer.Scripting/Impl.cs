@@ -170,10 +170,7 @@ namespace Overlayer.Scripting
                     return t;
                 else return dict[clrType] = TypeReference.CreateTypeReference(engine, MiscUtils.TypeByName(clrType));
             dict = jsTypes[engine] = new Dictionary<string, TypeReference>();
-
-            var resolved = dict[clrType] = TypeReference.CreateTypeReference(engine, MiscUtils.TypeByName(clrType));
-            resolved.
-            return ;
+            return dict[clrType] = TypeReference.CreateTypeReference(engine, MiscUtils.TypeByName(clrType));
         }
         [Api("getAttr")]
         public static object GetAttr(object obj, string accessor = "")
