@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Overlayer.Core.Translatior
 {
@@ -14,15 +15,16 @@ namespace Overlayer.Core.Translatior
         private readonly string ExpectedKTLValue;
 
         private Dictionary<string,Dictionary<string,string>> translations = new Dictionary<string,Dictionary<string,string>>();
-        public string CurrentLanguage { get; set; } = "Default";
+        public string CurrentLanguage = "Default";
         private int Fail = 0;
-        
+
         // Failure states:
         // 0: No failure occurred; language pack can be loaded successfully.
         // -1: Fail to load JSON: Unknown cause.
-        // 1: Fail to load JSON: Translations count is 0.
+        // 1: Fail to load JSON: The file exists, but no valid translation was found.
         // 2: Fail to load JSON: Error reading directory.
         // 3: Fail to load JSON: Error loading file.
+        // 4: Fail to load JSON: The file does not exist.
         private bool IsLoading = true;
 
         // Static event to signal when the language initialization is complete.
@@ -34,11 +36,10 @@ namespace Overlayer.Core.Translatior
         /// <param name="jsonFilePath">The path to the directory containing the JSON translation files.</param>
         /// <param name="ktlKey">The key for the KTL value (default: "KTL").</param>
         /// <param name="expectedKtlValue">The expected value for the KTL key (default: "For translation file verification").</param>
-        public Translator(string jsonFilePath,string ktlKey = "KTL",string expectedKtlValue = "For translation file verification")
+        public Translator(string ktlKey = "KTL",string expectedKtlValue = "For translation file verification")
         {
             KTLKey = ktlKey; // Assign the KTL key.
             ExpectedKTLValue = expectedKtlValue; // Assign the expected KTL value.
-            Task.Run(async () => await LoadTranslationsAsync(jsonFilePath)); // Start loading translations asynchronously.
         }
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace Overlayer.Core.Translatior
         /// </summary>
         /// <param name="baseLangFolderPath">The path to the folder containing the language JSON files.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
-        private async Task LoadTranslationsAsync(string baseLangFolderPath)
+        internal async Task LoadTranslationsAsync(string baseLangFolderPath)
         {
             try
             {
@@ -64,42 +65,42 @@ namespace Overlayer.Core.Translatior
                     Fail = 2;
                     return;
                 }
-
+                if(files.Count() == 0)
+                {
+                    Fail = 4;
+                    return;
+                }
                 foreach(var file in files)
                 {
                     try
                     {
-                        using(var reader = new StreamReader(file))
+                        using var reader = new StreamReader(file);
+                        // Read the JSON content asynchronously.
+                        var jsonString = await reader.ReadToEndAsync();
+                        var jsonObject = JObject.Parse(jsonString);
+                        var validTranslations = new Dictionary<string,Dictionary<string,string>>();
+                        // Iterate through each property in the JSON object.
+                        foreach(var property in jsonObject.Properties())
                         {
-                            // Read the JSON content asynchronously.
-                            var jsonString = await reader.ReadToEndAsync();
-                            var jsonObject = JObject.Parse(jsonString);
-                            var validTranslations = new Dictionary<string,Dictionary<string,string>>();
+                            string blockName = property.Name;
+                            var blockValue = property.Value;
 
-                            // Iterate through each property in the JSON object.
-                            foreach(var property in jsonObject.Properties())
+                            // Check if the block contains the KTL key.
+                            if(blockValue[KTLKey] != null)
                             {
-                                string blockName = property.Name;
-                                var blockValue = property.Value;
-
-                                // Check if the block contains the KTL key.
-                                if(blockValue[KTLKey] != null)
+                                string ktValue = blockValue[KTLKey].ToString();
+                                // Verify if the KTL value matches the expected value.
+                                if(ktValue == ExpectedKTLValue)
                                 {
-                                    string ktValue = blockValue[KTLKey].ToString();
-                                    // Verify if the KTL value matches the expected value.
-                                    if(ktValue == ExpectedKTLValue)
-                                    {
-                                        // Add valid translations to the dictionary.
-                                        validTranslations[blockName] = blockValue.ToObject<Dictionary<string,string>>();
-                                    }
+                                    // Add valid translations to the dictionary.
+                                    validTranslations[blockName] = blockValue.ToObject<Dictionary<string,string>>();
                                 }
                             }
-
-                            // Add the valid translations to the main translations dictionary.
-                            foreach(var validTranslation in validTranslations)
-                            {
-                                translations[validTranslation.Key] = validTranslation.Value;
-                            }
+                        }
+                        // Add the valid translations to the main translations dictionary.
+                        foreach(var validTranslation in validTranslations)
+                        {
+                            translations[validTranslation.Key] = validTranslation.Value;
                         }
                     }
                     catch
@@ -110,7 +111,7 @@ namespace Overlayer.Core.Translatior
                 }
 
                 // Determine the overall failure state after processing all files.
-                if(translations.Count == 0 && Fail != 3)
+                if(translations.Count == 0)
                 {
                     Fail = 1; // No valid translations found.
                 }
@@ -158,7 +159,7 @@ namespace Overlayer.Core.Translatior
         {
             var languages = translations.Keys.ToList();
             // If no languages are found, add "Default".
-            if(languages.Count == 0)
+            if(languages.Count <= 0 || Fail != 0 || IsLoading || CurrentLanguage == "Default")
             {
                 languages.Add("Default");
             }

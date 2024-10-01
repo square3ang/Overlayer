@@ -52,7 +52,7 @@ namespace Overlayer
             GUI = new GUIController();
             HttpClient = new HttpClient();
             ModVersion = modEntry.Version;
-            Lang = new Translator(Path.Combine(Mod.Path,"lang"));
+            Lang = new Translator();
             modEntry.OnToggle = OnToggle;
             modEntry.OnShowGUI = OnShowGUI;
             modEntry.OnGUI = OnGUI;
@@ -71,6 +71,7 @@ namespace Overlayer
                 {
                     StaticCoroutine.Run(null);
                     Settings = ModSettings.Load<Settings>(modEntry);
+                    _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path,"lang"));
                     LazyPatchManager.Load(Ass);
                     LazyPatchManager.PatchInternal();
                     Tag.InitializeWrapperAssembly();
