@@ -161,6 +161,7 @@ namespace Overlayer.Scripting
         {
             return MiscUtils.TypeByName(clrType)?.GetMethod(name, (BindingFlags)15420);
         }
+        */
         [Api("resolve")]
         public static TypeReference Resolve(Engine engine, string clrType)
         {
@@ -169,8 +170,11 @@ namespace Overlayer.Scripting
                     return t;
                 else return dict[clrType] = TypeReference.CreateTypeReference(engine, MiscUtils.TypeByName(clrType));
             dict = jsTypes[engine] = new Dictionary<string, TypeReference>();
-            return dict[clrType] = TypeReference.CreateTypeReference(engine, MiscUtils.TypeByName(clrType));
-        }*/
+
+            var resolved = dict[clrType] = TypeReference.CreateTypeReference(engine, MiscUtils.TypeByName(clrType));
+            resolved.
+            return ;
+        }
         [Api("getAttr")]
         public static object GetAttr(object obj, string accessor = "")
         {
