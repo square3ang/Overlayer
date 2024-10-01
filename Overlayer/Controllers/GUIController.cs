@@ -67,13 +67,13 @@ namespace Overlayer.Controllers
             {
                 if (isUndoAvailable)
                 {
-                    if (Drawer.Button("◀ " + drawables[depth - 1].Name))
+                    if (GUILayout.Button("◀ " + drawables[depth - 1].Name))
                         Pop();
                 }
                 if (isRedoAvailable)
                 {
                     var draw = drawables[depth];
-                    if (Drawer.Button(draw.Name + " ▶"))
+                    if (GUILayout.Button(draw.Name + " ▶"))
                         Push(draw);
                 }
             }

@@ -20,7 +20,7 @@ namespace Overlayer.Views
             if (Drawer.DrawBool(L(TKTC.Active), ref model.Active))
                 text.gameObject.SetActive(model.Active);
             bool changed = false;
-            Drawer.ButtonLabel($"Available Tags: {TagManager.Count}", () => Application.OpenURL(Main.DiscordLink));
+            GUILayout.Label($"Available Tags: {TagManager.Count}");
             Drawer.DrawString(L(TKTC.Name), ref model.Name);
             changed |= Drawer.DrawVector2(L(TKTC.Position), ref model.Position, 0, 1);
             changed |= Drawer.DrawVector2(L(TKTC.Scale), ref model.Scale, 0, 2);
@@ -62,7 +62,7 @@ namespace Overlayer.Views
             changed |= Drawer.DrawSingleWithSlider(L(TKTC.OutlineWidth), ref model.OutlineWidth, 0, 1, 300f);
 
             GUILayout.BeginHorizontal();
-            Drawer.ButtonLabel(L(TKTC.Alignment), () => Application.OpenURL(Main.DiscordLink));
+            GUILayout.Label(L(TKTC.Alignment));
             changed |= Drawer.DrawEnum(L(TKTC.Alignment), ref model.Alignment);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -70,7 +70,7 @@ namespace Overlayer.Views
             changed |= Drawer.DrawString(L(TKTC.PlayingText), ref model.PlayingText, true);
             changed |= Drawer.DrawString(L(TKTC.NotPlayingText), ref model.NotPlayingText, true);
             GUILayout.BeginHorizontal();
-            if (Drawer.Button(L(TKTC.Export)))
+            if (GUILayout.Button(L(TKTC.Export)))
             {
                 string target = StandaloneFileBrowser.SaveFilePanel(L(TKTC.SelectText), Persistence.GetLastUsedFolder(), $"{model.Name}.json", "json");
                 if (!string.IsNullOrWhiteSpace(target))
@@ -80,12 +80,12 @@ namespace Overlayer.Views
                     File.WriteAllText(target, node.ToString(4));
                 }
             }
-            if (Drawer.Button(L(TKTC.Reset)))
+            if (GUILayout.Button(L(TKTC.Reset)))
             {
                 changed = true;
                 text.Config = model = new TextConfig();
             }
-            if (Drawer.Button(L(TKTC.Destroy)))
+            if (GUILayout.Button(L(TKTC.Destroy)))
             {
                 TextManager.DestroyText(text);
                 Main.GUI.Skip(frames: 2);

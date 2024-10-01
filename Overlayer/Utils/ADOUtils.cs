@@ -39,7 +39,7 @@ namespace Overlayer.Utils
             overlayerErrorCanvas.txtSubmit.text = ecc.submitText ?? RDString.Get("error.submit");
             overlayerErrorCanvas.txtSupportPages.text = ecc.supportPagesText ?? RDString.Get("error.supportPages");
             overlayerErrorCanvas.txtFaq.text = ecc.faqText ?? RDString.Get("error.faq");
-            overlayerErrorCanvas.txtDiscord.text = ecc.discordText ?? RDString.Get("error.discord");
+            //overlayerErrorCanvas.txtDiscord.text = ecc.discordText ?? RDString.Get("error.discord");
             overlayerErrorCanvas.txtSteam.text = ecc.steamText ?? RDString.Get("error.steam");
             overlayerErrorCanvas.txtGoBack.text = ecc.goBackText ?? RDString.Get("error.goBack");
             overlayerErrorCanvas.txtErrorMessage.text = ecc.errorMessage;
@@ -79,7 +79,7 @@ namespace Overlayer.Utils
         public string submitText;
         public string supportPagesText;
         public string faqText;
-        public string discordText;
+        //public string discordText;
         public string steamText;
         public string goBackText;
 

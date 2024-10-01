@@ -44,7 +44,7 @@ namespace Overlayer.Views
                 Drawer.DrawSingle(L(TKS.AdofaiFont_FontScale), ref model.AdofaiFont.fontScale);
                 Drawer.DrawSingle(L(TKS.AdofaiFont_LineSpacing), ref model.AdofaiFont.lineSpacing);
                 GUILayout.BeginHorizontal();
-                if (Drawer.Button(L(TKS.AdofaiFont_Apply)))
+                if (GUILayout.Button(L(TKS.AdofaiFont_Apply)))
                 {
                     if (model.AdofaiFont.Apply(out var font))
                     {
@@ -54,7 +54,7 @@ namespace Overlayer.Views
                         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                     }
                 }
-                if (Drawer.Button(L(TKS.LogFontList)))
+                if (GUILayout.Button(L(TKS.LogFontList)))
                 {
                     foreach (var font in FontManager.OSFonts)
                         Main.Logger.Log(font);
@@ -66,12 +66,12 @@ namespace Overlayer.Views
             Drawer.DrawSingle(L(TKS.FpsUpdateRate), ref model.FPSUpdateRate);
             Drawer.DrawSingle(L(TKS.FrameTimeUpdateRate), ref model.FrameTimeUpdateRate);
             GUILayout.BeginHorizontal();
-            if (Drawer.Button(L(TKS.NewText)))
+            if (GUILayout.Button(L(TKS.NewText)))
             {
                 TextManager.CreateText(new TextConfig());
                 TextManager.Refresh();
             }
-            if (Drawer.Button(L(TKS.ImportText)))
+            if (GUILayout.Button(L(TKS.ImportText)))
             {
                 var texts = StandaloneFileBrowser.OpenFilePanel(L(TKTC.SelectText), Main.Mod.Path, new[] { new ExtensionFilter("Text", "json") }, true);
                 foreach (var text in texts)
@@ -91,7 +91,7 @@ namespace Overlayer.Views
                 var text = TextManager.Get(i);
                 Drawer.TitleButton(L(TKS.EditThisText, text.Config.Name), L(TKS.Edit), () => Main.GUI.Push(new TextConfigDrawer(text.Config)), () =>
                 {
-                    if (Drawer.Button(L(TKTC.Destroy)))
+                    if (GUILayout.Button(L(TKTC.Destroy)))
                     {
                         TextManager.DestroyText(text);
                         Main.GUI.Skip(frames: 2);
