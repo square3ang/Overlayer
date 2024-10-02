@@ -33,7 +33,7 @@ namespace Overlayer.Core
                     str = str.Replace("<", "<<b></b>");
                     foreach (Match m in color.Matches(str))
                     {
-                        Main.Logger.Log(m.Groups[1].Value);
+                        //Main.Logger.Log(m.Groups[1].Value);
                         if (ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _))
                         {
                             str = str.Replace(m.Groups[1].Value, "<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>");
