@@ -368,6 +368,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeEditor\CodeEditor.cs" />
+    <Compile Include="CodeEditor\CodeTheme.cs" />
     <Compile Include="Controllers\GUIController.cs" />
     <Compile Include="Core\Drawer.cs" />
     <Compile Include="Core\EventEase.cs" />

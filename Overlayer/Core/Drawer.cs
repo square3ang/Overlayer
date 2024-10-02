@@ -3,12 +3,54 @@ using Overlayer.Models;
 using Overlayer.Utils;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Overlayer.CodeEditor;
 using UnityEngine;
 
 namespace Overlayer.Core
 {
     public static class Drawer
     {
+        public static CodeEditor.CodeEditor codeEditor = new CodeEditor.CodeEditor("OverlayerCodeEditor", new CodeTheme()
+        {
+            background = "#333333",
+            linenumbg = "#222222",
+            color = "#FFFFFF",
+            selection = "#264F78",
+            cursor = "#D4D4D4"
+        });
+
+        public static Regex highlight = new Regex("{(.*?)}");
+        public static Regex color = new Regex("<<b></b>color=(.*?)>");
+
+        static Drawer()
+        {
+            codeEditor.highlighter = str =>
+            {
+                try
+                {
+                    
+                    str = str.Replace("<", "<<b></b>");
+                    foreach (Match m in color.Matches(str))
+                    {
+                        Main.Logger.Log(m.Groups[1].Value);
+                        if (ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _))
+                        {
+                            str = str.Replace(m.Groups[1].Value, "<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>");
+                        }
+                    }
+                    str = highlight.Replace(str, "<color=lightblue>{$1}</color>");
+                    
+                    return str;
+                }
+                catch
+                {
+                    return str;
+                }
+
+                
+            };
+        }
         public static bool DrawVector2(string label, ref Vector2 vec2, float lValue, float rValue)
         {
             bool changed = false;
@@ -344,6 +386,17 @@ namespace Overlayer.Core
             else value = GUILayout.TextArea(value);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+            return prev != value;
+        }
+
+        public static bool DrawCodeEditor(string label, ref string value)
+        {
+            string prev = value;
+            GUILayout.Label(label);
+            var sk = new GUIStyle(GUI.skin.label);
+
+            sk.margin = new RectOffset(0, 0, 0, 0);
+            value = codeEditor.Draw(value, sk);
             return prev != value;
         }
         public static bool DrawToggleGroup(string[] labels, bool[] toggleGroup)
