@@ -58,6 +58,11 @@ namespace Overlayer
             MiscUtils.SetAttr(TMPro.TMP_Settings.instance, "m_warningsDisabled", true);
         }
 
+        public static IEnumerator LoadCoroutine(ModEntry modEntry)
+        {
+            while (!RDString.initialized) yield return null;
+            PatchGuard.Ignore(TextManager.Initialize);
+        }
 
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
@@ -66,6 +71,7 @@ namespace Overlayer
                 PatchGuard.Ignore(() =>
                 {
                     StaticCoroutine.Run(null);
+                    StaticCoroutine.Run(LoadCoroutine(modEntry));
                     Settings = ModSettings.Load<Settings>(modEntry);
                     _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path, "lang"));
                     LazyPatchManager.Load(Ass);
@@ -75,7 +81,6 @@ namespace Overlayer
                     TagManager.Initialize();
                     TagManager.Load(Ass);
                     FontManager.Initialize();
-                    TextManager.Initialize();
                     TagResetter.Postfix();
                 });
             }
