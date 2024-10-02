@@ -162,12 +162,12 @@ namespace Overlayer.Unity
         public void OnDrag(PointerEventData eventData)
         {
             // 드래그 중인 경우 객체 위치를 갱신
-            if(isDragging)
+            /*if(isDragging)
             {
                 Vector2 currentPointerPosition = eventData.position;
                 Vector2 offset = currentPointerPosition - initialPointerPosition;
                 Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
-            }
+            }*/
         }
 
         private void SetFont()
