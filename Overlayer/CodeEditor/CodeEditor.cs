@@ -55,6 +55,7 @@ public class CodeEditor
         GUI.skin.settings.cursorFlashSpeed = 0;
 
         var backStyle = new GUIStyle(style);
+        backStyle.richText = false;
         backStyle.normal.textColor = Color.clear;
         backStyle.hover.textColor = Color.clear;
         backStyle.active.textColor = Color.clear;
