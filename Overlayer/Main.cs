@@ -24,25 +24,21 @@ namespace Overlayer
     public static class Main
     {
         [Tag(NotPlaying = true)]
-        public static string Developer => Lang.Get("MISC_DEVELOPER","Super Kawaii Suckyoubus Chan~♥");
+        public static string Developer => Lang.Get("MISC_DEVELOPER", "Super Kawaii Suckyoubus Chan~♥");
+
         public static Assembly Ass { get; private set; }
         public static ModEntry Mod { get; private set; }
-        [Tag(NotPlaying = true)]
-        public static ModLogger Logger { get; private set; }
-        [Tag(NotPlaying = true)]
-        public static Settings Settings { get; private set; }
+        [Tag(NotPlaying = true)] public static ModLogger Logger { get; private set; }
+        [Tag(NotPlaying = true)] public static Settings Settings { get; private set; }
         public static GUIController GUI { get; private set; }
-        [Tag(NotPlaying = true)]
-        public static Scene ActiveScene { get; private set; }
+        [Tag(NotPlaying = true)] public static Scene ActiveScene { get; private set; }
         public static HttpClient HttpClient { get; private set; }
         public static Translator Lang { get; internal set; }
-        [Tag(NotPlaying = true)]
-        public static Version ModVersion { get; private set; }
-        [Tag(NotPlaying = true)]
-        public static Version LastestVersion { get; private set; }
-        [Tag(NotPlaying = true)]
-        public static string DownloadLink { get; private set; }
+        [Tag(NotPlaying = true)] public static Version ModVersion { get; private set; }
+        [Tag(NotPlaying = true)] public static Version LastestVersion { get; private set; }
+        [Tag(NotPlaying = true)] public static string DownloadLink { get; private set; }
         public static long GGReqCnt, GetGGReqCnt, TUFReqCnt, GetTUFReqCnt, PlayCnt, HandshakeCnt;
+
         public static void Load(ModEntry modEntry)
         {
             Logger = modEntry.Logger;
@@ -60,27 +56,9 @@ namespace Overlayer
             Lang.OnInitialize += OnLanguageInitialize;
             SceneManager.activeSceneChanged += (f, t) => ActiveScene = t;
             MiscUtils.SetAttr(TMPro.TMP_Settings.instance, "m_warningsDisabled", true);
-            
         }
 
-        public static IEnumerator LoadCoroutine(ModEntry modEntry)
-        {
-            while (!RDString.initialized) yield return null;
-            PatchGuard.Ignore(() =>
-            {
-                Settings = ModSettings.Load<Settings>(modEntry);
-                _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path, "lang"));
-                LazyPatchManager.Load(Ass);
-                LazyPatchManager.PatchInternal();
-                Tag.InitializeWrapperAssembly();
-                OverlayerTag.Initialize();
-                TagManager.Initialize();
-                TagManager.Load(Ass);
-                FontManager.Initialize();
-                TextManager.Initialize();
-                TagResetter.Postfix();
-            });
-        }
+
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
             if (toggle)
@@ -88,7 +66,17 @@ namespace Overlayer
                 PatchGuard.Ignore(() =>
                 {
                     StaticCoroutine.Run(null);
-                    StaticCoroutine.Run(LoadCoroutine(modEntry));
+                    Settings = ModSettings.Load<Settings>(modEntry);
+                    _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path, "lang"));
+                    LazyPatchManager.Load(Ass);
+                    LazyPatchManager.PatchInternal();
+                    Tag.InitializeWrapperAssembly();
+                    OverlayerTag.Initialize();
+                    TagManager.Initialize();
+                    TagManager.Load(Ass);
+                    FontManager.Initialize();
+                    TextManager.Initialize();
+                    TagResetter.Postfix();
                 });
             }
             else
@@ -105,31 +93,36 @@ namespace Overlayer
                     ModSettings.Save(Settings, modEntry);
                 });
             }
+
             return true;
         }
+
         public static void OnShowGUI(ModEntry modEntry)
         {
             GUI.Flush();
         }
+
         public static void OnGUI(ModEntry modEntry)
         {
             if (Lang.GetLoading())
                 GUILayout.Label("Preparing...");
             else GUI.Draw();
         }
+
         public static void OnHideGUI(ModEntry modEntry)
         {
             GUI.Flush();
         }
+
         public static void OnSaveGUI(ModEntry modEntry)
         {
-
             PatchGuard.Ignore(() =>
             {
                 TextManager.Save();
                 ModSettings.Save(Settings, modEntry);
             });
         }
+
         public static bool IsPlaying
         {
             get
@@ -141,6 +134,7 @@ namespace Overlayer
                 return false;
             }
         }
+
         public static void OnLanguageInitialize()
         {
             GUI.Flush();
