@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using HarmonyLib;
+using UnityModManagerNet;
 
 namespace Overlayer.CodeEditor;
 
@@ -42,6 +44,7 @@ public class CodeEditor
 
     public string Draw(string code, GUIStyle style, params GUILayoutOption[] options)
     {
+        float lineCountWidth = code.Split('\n').Length.ToString().Length * charWidth;
         var preBackgroundColor = GUI.backgroundColor;
         var preColor = GUI.color;
         Color preSelection = GUI.skin.settings.selectionColor;
@@ -60,7 +63,7 @@ public class CodeEditor
         backStyle.hover.textColor = Color.clear;
         backStyle.active.textColor = Color.clear;
         backStyle.focused.textColor = Color.clear;
-        
+
 
         backStyle.normal.background = Texture2D.whiteTexture;
         backStyle.hover.background = Texture2D.whiteTexture;
@@ -86,7 +89,10 @@ public class CodeEditor
 
         // Drawing the text area using GUILayout
         GUI.SetNextControlName(controlName);
-        string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true), GUILayout.Width(900));
+        string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true),
+            GUILayout.Width(
+                ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
+                    .GetValue(UnityModManager.UI.Instance)).width - (55 + lineCountWidth)));
 
         if (editedCode != code)
         {
@@ -158,13 +164,16 @@ public class CodeEditor
         {
             curwidth = 0;
             lineString += ++i + "\n";
+            var editorw = ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
+                    .GetValue(UnityModManager.UI.Instance))
+                .width - (55 + lineCountWidth);
             foreach (var ch in st)
             {
                 curwidth += baseStyle.CalcSize(new GUIContent(ch.ToString())).x;
-                if (curwidth >= 900)
+                if (curwidth >= editorw - 5)
                 {
                     lineString += "\n";
-                    curwidth -= 900;
+                    curwidth -= editorw - 5;
                 }
             }
         }
