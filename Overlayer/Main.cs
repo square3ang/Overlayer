@@ -66,17 +66,20 @@ namespace Overlayer
         public static IEnumerator LoadCoroutine(ModEntry modEntry)
         {
             while (!RDString.initialized) yield return null;
-            Settings = ModSettings.Load<Settings>(modEntry);
-            _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path,"lang"));
-            LazyPatchManager.Load(Ass);
-            LazyPatchManager.PatchInternal();
-            Tag.InitializeWrapperAssembly();
-            OverlayerTag.Initialize();
-            TagManager.Initialize();
-            TagManager.Load(Ass);
-            FontManager.Initialize();
-            TextManager.Initialize();
-            TagResetter.Postfix();
+            PatchGuard.Ignore(() =>
+            {
+                Settings = ModSettings.Load<Settings>(modEntry);
+                _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path, "lang"));
+                LazyPatchManager.Load(Ass);
+                LazyPatchManager.PatchInternal();
+                Tag.InitializeWrapperAssembly();
+                OverlayerTag.Initialize();
+                TagManager.Initialize();
+                TagManager.Load(Ass);
+                FontManager.Initialize();
+                TextManager.Initialize();
+                TagResetter.Postfix();
+            });
         }
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
