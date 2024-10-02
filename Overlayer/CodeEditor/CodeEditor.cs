@@ -60,6 +60,7 @@ public class CodeEditor
         backStyle.hover.textColor = Color.clear;
         backStyle.active.textColor = Color.clear;
         backStyle.focused.textColor = Color.clear;
+        
 
         backStyle.normal.background = Texture2D.whiteTexture;
         backStyle.hover.background = Texture2D.whiteTexture;

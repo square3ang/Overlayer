@@ -10,6 +10,7 @@ using Overlayer.Unity;
 using Overlayer.Utils;
 using Overlayer.Views;
 using System;
+using System.Collections;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -61,6 +62,22 @@ namespace Overlayer
             MiscUtils.SetAttr(TMPro.TMP_Settings.instance, "m_warningsDisabled", true);
             
         }
+
+        public static IEnumerator LoadCoroutine(ModEntry modEntry)
+        {
+            while (!RDString.initialized) yield return null;
+            Settings = ModSettings.Load<Settings>(modEntry);
+            _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path,"lang"));
+            LazyPatchManager.Load(Ass);
+            LazyPatchManager.PatchInternal();
+            Tag.InitializeWrapperAssembly();
+            OverlayerTag.Initialize();
+            TagManager.Initialize();
+            TagManager.Load(Ass);
+            FontManager.Initialize();
+            TextManager.Initialize();
+            TagResetter.Postfix();
+        }
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
             if (toggle)
@@ -68,17 +85,7 @@ namespace Overlayer
                 PatchGuard.Ignore(() =>
                 {
                     StaticCoroutine.Run(null);
-                    Settings = ModSettings.Load<Settings>(modEntry);
-                    _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path,"lang"));
-                    LazyPatchManager.Load(Ass);
-                    LazyPatchManager.PatchInternal();
-                    Tag.InitializeWrapperAssembly();
-                    OverlayerTag.Initialize();
-                    TagManager.Initialize();
-                    TagManager.Load(Ass);
-                    FontManager.Initialize();
-                    TextManager.Initialize();
-                    TagResetter.Postfix();
+                    StaticCoroutine.Run(LoadCoroutine(modEntry));
                 });
             }
             else
