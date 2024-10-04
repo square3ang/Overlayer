@@ -356,9 +356,17 @@ namespace Overlayer.Core
             {
                 GUILayout.Label(name,GUILayout.Width(labelWidth));
             }
+
+            var ns1 = new GUIStyle(GUI.skin.horizontalSlider);
+            var ns2 = new GUIStyle(GUI.skin.horizontalSliderThumb);
+
+            ns1.normal.background = Drawer.jittengray;
+            ns2.normal.background = Drawer.gray;
+            ns2.active.background = Drawer.dulgray;
+            ns2.hover.background = Drawer.dulgray;
             float newValue =
                 GUILayout.HorizontalSlider(
-                    value, leftValue, rightValue, GUILayout.Width(sliderWidth));
+                    value, leftValue, rightValue, ns1, ns2, GUILayout.Width(sliderWidth));
             if (roundNearest != 0)
             {
                 newValue = Mathf.Round(newValue / roundNearest) * roundNearest;
@@ -366,7 +374,7 @@ namespace Overlayer.Core
             GUILayout.Space(8f);
             if (valueFormat != "{0}")
                 GUILayout.Label(string.Format(valueFormat,newValue));
-            else newValue = StringConverter.ToFloat(GUILayout.TextField(newValue.ToString("F4")));
+            else newValue = StringConverter.ToFloat(GUILayout.TextField(newValue.ToString("F4"), Drawer.myTextField));
             GUILayout.FlexibleSpace();
             return newValue;
         }
@@ -516,11 +524,11 @@ namespace Overlayer.Core
 
                 // Move up/down
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("▲") && i > 0)
+                if (Drawer.Button("▲") && i > 0)
                 {
                     moveUp = i;
                 }
-                if (GUILayout.Button("▼") && i < list.Count - 1)
+                if (Drawer.Button("▼") && i < list.Count - 1)
                 {
                     moveDown = i;
                 }

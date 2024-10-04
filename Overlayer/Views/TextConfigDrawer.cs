@@ -69,7 +69,7 @@ namespace Overlayer.Views
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("PLAYING_TEXT","Playing Text"), ref model.PlayingText);
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("NOT_PLAYING_TEXT","Not Playing Text"), ref model.NotPlayingText);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(Main.Lang.Get("EXPORT","Export")))
+            if (Drawer.Button(Main.Lang.Get("EXPORT","Export")))
             {
                 string target = StandaloneFileBrowser.SaveFilePanel(Main.Lang.Get("SELECT_TEXT","Select Text"), Persistence.GetLastUsedFolder(), $"{model.Name}.json", "json");
                 if (!string.IsNullOrWhiteSpace(target))
@@ -79,12 +79,12 @@ namespace Overlayer.Views
                     File.WriteAllText(target, node.ToString(4));
                 }
             }
-            if (GUILayout.Button(Main.Lang.Get("RESET","Reset")))
+            if (Drawer.Button(Main.Lang.Get("RESET","Reset")))
             {
                 changed = true;
                 text.Config = model = new TextConfig();
             }
-            if (GUILayout.Button(Main.Lang.Get("DESTROY","Destroy")))
+            if (Drawer.Button(Main.Lang.Get("DESTROY","Destroy")))
             {
                 TextManager.DestroyText(text);
                 Main.GUI.Skip(frames: 2);

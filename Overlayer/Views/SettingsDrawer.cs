@@ -46,16 +46,16 @@ namespace Overlayer.Views
             string[] languageNames = Main.Lang.GetLanguages();
             int selectedIndex = Array.IndexOf(languageNames,Main.Lang.CurrentLanguage);
 
-            if(GUILayout.Button("◀",GUILayout.Width(40)))
+            if(Drawer.Button("◀",GUILayout.Width(40)))
             {
                 selectedIndex = (selectedIndex - 1 + languageNames.Length) % languageNames.Length;
                 UpdateLanguageSetting(selectedIndex);
             }
-            if(UI.PopupToggleGroup(ref selectedIndex,languageNames,Main.Lang.Get("SELECTLANGUAGE","Select Language"),GUI.skin.button,GUILayout.Width(400)))
+            if(UI.PopupToggleGroup(ref selectedIndex,languageNames,Main.Lang.Get("SELECTLANGUAGE","Select Language"),Drawer.myButton,GUILayout.Width(400)))
             {
                 UpdateLanguageSetting(selectedIndex);
             }
-            if(GUILayout.Button("▶",GUILayout.Width(40)))
+            if(Drawer.Button("▶",GUILayout.Width(40)))
             {
                 selectedIndex = (selectedIndex + 1) % languageNames.Length;
                 UpdateLanguageSetting(selectedIndex);
@@ -66,7 +66,7 @@ namespace Overlayer.Views
                 Main.Lang.CurrentLanguage = languageNames[index];
                 model.Lang = Main.Lang.CurrentLanguage;
             }
-            if(GUILayout.Button(Main.Lang.GetFail() ? FailString() : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
+            if(Drawer.Button(Main.Lang.GetFail() ? FailString() : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
             {
                 _ = Main.Lang.LoadTranslationsAsync(Path.Combine(Main.Mod.Path,"lang"));
                 Main.Lang.CurrentLanguage = model.Lang;
@@ -93,7 +93,7 @@ namespace Overlayer.Views
                 Drawer.DrawSingle(Main.Lang.Get("FONT_SCALE","Font Scale"), ref model.AdofaiFont.fontScale);
                 Drawer.DrawSingle(Main.Lang.Get("LINE_SPACING","Font Line Spacing"), ref model.AdofaiFont.lineSpacing);
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button(Main.Lang.Get("APPLY","Apply")))
+                if (Drawer.Button(Main.Lang.Get("APPLY","Apply")))
                 {
                     if (model.AdofaiFont.Apply(out var font))
                     {
@@ -103,7 +103,7 @@ namespace Overlayer.Views
                         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                     }
                 }
-                if (GUILayout.Button(Main.Lang.Get("LOG_FONT_LIST","Log Font List")))
+                if (Drawer.Button(Main.Lang.Get("LOG_FONT_LIST","Log Font List")))
                 {
                     foreach (var font in FontManager.OSFonts)
                         Main.Logger.Log(font);
@@ -115,12 +115,12 @@ namespace Overlayer.Views
             Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
             Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE","FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(Main.Lang.Get("NEW_TEXT","Create New Text")))
+            if (Drawer.Button(Main.Lang.Get("NEW_TEXT","Create New Text")))
             {
                 TextManager.CreateText(new TextConfig());
                 TextManager.Refresh();
             }
-            if (GUILayout.Button(Main.Lang.Get("IMPORT_TEXT","Import Text")))
+            if (Drawer.Button(Main.Lang.Get("IMPORT_TEXT","Import Text")))
             {
                 var texts = StandaloneFileBrowser.OpenFilePanel(Main.Lang.Get("SELECT_TEXT","Select Text"), Main.Mod.Path, new[] { new ExtensionFilter("Text", "json") }, true);
                 foreach (var text in texts)
@@ -144,7 +144,7 @@ namespace Overlayer.Views
                     () => Main.GUI.Push(new TextConfigDrawer(text.Config)),
                     () =>
                     {
-                    if (GUILayout.Button(Main.Lang.Get("DESTROY","Destroy")))
+                    if (Drawer.Button(Main.Lang.Get("DESTROY","Destroy")))
                     {
                         TextManager.DestroyText(text);
                         Main.GUI.Skip(frames: 2);

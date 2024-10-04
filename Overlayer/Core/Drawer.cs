@@ -2,6 +2,7 @@
 using Overlayer.Models;
 using Overlayer.Utils;
 using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Overlayer.CodeEditor;
@@ -11,46 +12,6 @@ namespace Overlayer.Core
 {
     public static class Drawer
     {
-        public static CodeEditor.CodeEditor codeEditor = new CodeEditor.CodeEditor("OverlayerCodeEditor", new CodeTheme()
-        {
-            background = "#333333",
-            linenumbg = "#222222",
-            color = "#FFFFFF",
-            selection = "#264F78",
-            cursor = "#D4D4D4"
-        });
-
-        public static Regex highlight = new Regex("{(.*?)}");
-        public static Regex color = new Regex("<<b></b>color=(.*?)>");
-
-        static Drawer()
-        {
-            codeEditor.highlighter = str =>
-            {
-                try
-                {
-                    
-                    str = str.Replace("<", "<<b></b>");
-                    foreach (Match m in color.Matches(str))
-                    {
-                        //Main.Logger.Log(m.Groups[1].Value);
-                        if (ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _))
-                        {
-                            str = str.Replace(m.Groups[1].Value, "<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>");
-                        }
-                    }
-                    str = highlight.Replace(str, "<color=lightblue>{$1}</color>");
-                    
-                    return str;
-                }
-                catch
-                {
-                    return str;
-                }
-
-                
-            };
-        }
         public static bool DrawVector2(string label, ref Vector2 vec2, float lValue, float rValue)
         {
             bool changed = false;
@@ -59,6 +20,7 @@ namespace Overlayer.Core
             changed |= DrawSingleWithSlider("Y", ref vec2.y, lValue, rValue, 300f);
             return changed;
         }
+
         public static bool DrawVector3(string label, ref Vector3 vec3, float lValue, float rValue)
         {
             bool changed = false;
@@ -68,26 +30,34 @@ namespace Overlayer.Core
             changed |= DrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f);
             return changed;
         }
+
         public static void DrawGColor(string label, ref GColor color, bool canEnableGradient, Action onChange)
         {
             GUILayout.Label(label);
             DrawGColor(ref color, canEnableGradient).IfTrue(onChange);
         }
+
         public static bool DrawGColor(ref GColor color, bool canEnableGradient)
         {
             bool ge = color.gradientEnabled, prevGe = color.gradientEnabled;
-            if (canEnableGradient && DrawBool(Main.Lang.Get("MISC_ENABLE_GRADIENT","Enable Gradient"), ref ge))
-                color = color with { gradientEnabled = ge };    
+            if (canEnableGradient && DrawBool(Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge))
+                color = color with { gradientEnabled = ge };
             color.gradientEnabled &= canEnableGradient;
             bool result = ge != prevGe;
             if (color.gradientEnabled)
             {
-                Color tl = color.topLeft, tr = color.topRight,
-                bl = color.bottomLeft, br = color.bottomRight;
-                ExpandableGUI(color.topLeftStatus, Main.Lang.Get("MISC_TOP_LEFT","Top Left"), () => result |= DrawColor(ref tl));
-                ExpandableGUI(color.topRightStatus, Main.Lang.Get("MISC_TOP_RIGHT","Top Right"), () => result |= DrawColor(ref tr));
-                ExpandableGUI(color.bottomLeftStatus, Main.Lang.Get("MISC_BOTTOM_LEFT","Bottom Left"), () => result |= DrawColor(ref bl));
-                ExpandableGUI(color.bottomRightStatus, Main.Lang.Get("MISC_BOTTOM_RIGHT","Bottom Right"), () => result |= DrawColor(ref br));
+                Color tl = color.topLeft,
+                    tr = color.topRight,
+                    bl = color.bottomLeft,
+                    br = color.bottomRight;
+                ExpandableGUI(color.topLeftStatus, Main.Lang.Get("MISC_TOP_LEFT", "Top Left"),
+                    () => result |= DrawColor(ref tl));
+                ExpandableGUI(color.topRightStatus, Main.Lang.Get("MISC_TOP_RIGHT", "Top Right"),
+                    () => result |= DrawColor(ref tr));
+                ExpandableGUI(color.bottomLeftStatus, Main.Lang.Get("MISC_BOTTOM_LEFT", "Bottom Left"),
+                    () => result |= DrawColor(ref bl));
+                ExpandableGUI(color.bottomRightStatus, Main.Lang.Get("MISC_BOTTOM_RIGHT", "Bottom Right"),
+                    () => result |= DrawColor(ref br));
                 if (result)
                 {
                     color.topLeft = tl;
@@ -101,12 +71,15 @@ namespace Overlayer.Core
                 Color dummy = color.topLeft;
                 if (result = DrawColor(ref dummy)) color = dummy;
             }
+
             return result;
         }
+
         public static void ExpandableGUI(GUIStatus status, string label, Action drawer)
         {
             GUILayoutEx.ExpandableGUI(drawer, label, ref status.Expanded);
         }
+
         public static bool DrawColor(ref Color color)
         {
             bool result = false;
@@ -120,18 +93,21 @@ namespace Overlayer.Core
                 result = true;
                 ColorUtility.TryParseHtmlString("#" + hex, out color);
             }
+
             return result;
         }
+
         public static void TitleButton(string label, string btnLabel, Action pressed, Action horizontal = null)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
-            if (GUILayout.Button(btnLabel))
+            if (Drawer.Button(btnLabel))
                 pressed?.Invoke();
             horizontal?.Invoke();
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
+
         public static bool DrawSingleWithSlider(string label, ref float value, float lValue, float rValue, float width)
         {
             GUILayout.BeginHorizontal();
@@ -141,22 +117,26 @@ namespace Overlayer.Core
             value = newValue;
             return result;
         }
-        public static bool DrawStringArray(ref string[] array, Action<int> arrayResized = null, Action<int> elementRightGUI = null, Action<int, string> onElementChange = null)
+
+        public static bool DrawStringArray(ref string[] array, Action<int> arrayResized = null,
+            Action<int> elementRightGUI = null, Action<int, string> onElementChange = null)
         {
             bool result = false;
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("+"))
+            if (Drawer.Button("+"))
             {
                 Array.Resize(ref array, array.Length + 1);
                 arrayResized?.Invoke(array.Length);
                 result = true;
             }
-            if (array.Length > 0 && GUILayout.Button("-"))
+
+            if (array.Length > 0 && Drawer.Button("-"))
             {
                 Array.Resize(ref array, array.Length - 1);
                 arrayResized?.Invoke(array.Length);
                 result = true;
             }
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             for (int i = 0; i < array.Length; i++)
@@ -164,7 +144,7 @@ namespace Overlayer.Core
                 string cache = array[i];
                 GUILayout.BeginHorizontal();
                 GUILayout.Label($"{i}: ");
-                cache = GUILayout.TextField(cache);
+                cache = GUILayout.TextField(cache, myTextField);
                 elementRightGUI?.Invoke(i);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
@@ -175,8 +155,10 @@ namespace Overlayer.Core
                     result = true;
                 }
             }
+
             return result;
         }
+
         public static bool DrawArray(string label, ref object[] array)
         {
             bool result = false;
@@ -184,9 +166,9 @@ namespace Overlayer.Core
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("+"))
+            if (Drawer.Button("+"))
                 Array.Resize(ref array, array.Length + 1);
-            if (array.Length > 0 && GUILayout.Button("-"))
+            if (array.Length > 0 && Drawer.Button("-"))
                 Array.Resize(ref array, array.Length - 1);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -196,15 +178,16 @@ namespace Overlayer.Core
             GUILayout.EndVertical();
             return result;
         }
+
         public static bool DrawArray(ref string[] array)
         {
             bool result = false;
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("+"))
+            if (Drawer.Button("+"))
                 Array.Resize(ref array, array.Length + 1);
-            if (array.Length > 0 && GUILayout.Button("-"))
+            if (array.Length > 0 && Drawer.Button("-"))
                 Array.Resize(ref array, array.Length - 1);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -214,16 +197,30 @@ namespace Overlayer.Core
             GUILayout.EndVertical();
             return result;
         }
+
         public static bool DrawBool(string label, ref bool value)
         {
             bool prev = value;
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
-            value = GUILayout.Toggle(value, string.Empty);
+            var old = GUI.backgroundColor;
+            GUI.backgroundColor = Color.clear;
+            var newskin = new GUIStyle(GUI.skin.button);
+            newskin.fontSize = 16;
+            newskin.margin = new RectOffset(0, 0, 6, 0);
+            newskin.padding = new RectOffset(0, 0, 0, 0);
+            if (GUILayout.Button(value ? "\u2611" : "\u2610", newskin))
+            {
+                value = !value;
+            }
+
+            GUI.backgroundColor = old;
+            //value = GUILayout.Toggle(value, string.Empty);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             return prev != value;
         }
+
         public static bool DrawByte(string label, ref byte value)
         {
             string str = value.ToString();
@@ -231,6 +228,7 @@ namespace Overlayer.Core
             value = StringConverter.ToUInt8(str);
             return result;
         }
+
         public static bool DrawDouble(string label, ref double value)
         {
             string str = value.ToString();
@@ -238,25 +236,30 @@ namespace Overlayer.Core
             value = StringConverter.ToDouble(str);
             return result;
         }
+
         public static bool DrawEnum<T>(string label, ref T @enum, int unique = 0) where T : Enum
         {
             int current = EnumHelper<T>.IndexOf(@enum);
             string[] names = EnumHelper<T>.GetNames();
-            bool result = UnityModManagerNet.UnityModManager.UI.PopupToggleGroup(ref current, names, label, unique);
+            bool result = UnityModManagerNet.UnityModManager.UI.PopupToggleGroup(ref current, names, label, unique, myButton);
             @enum = EnumHelper<T>.GetValues()[current];
             return result;
         }
-        public static bool DrawEnumPlus<T>(string label,ref T @enum,Func<string,string> translator,int unique = 0) where T : Enum
+
+        public static bool DrawEnumPlus<T>(string label, ref T @enum, Func<string, string> translator, int unique = 0)
+            where T : Enum
         {
             int current = EnumHelper<T>.IndexOf(@enum);
             string[] names = EnumHelper<T>.GetNames();
             string[] translatedNames = names.Select(name => translator(name)).ToArray();
 
-            bool result = UnityModManagerNet.UnityModManager.UI.PopupToggleGroup(ref current,translatedNames,label,unique);
+            bool result =
+                UnityModManagerNet.UnityModManager.UI.PopupToggleGroup(ref current, translatedNames, label, unique, myButton);
 
             @enum = EnumHelper<T>.GetValues()[current];
             return result;
         }
+
         public static bool DrawInt16(string label, ref short value)
         {
             string str = value.ToString();
@@ -264,6 +267,7 @@ namespace Overlayer.Core
             value = StringConverter.ToInt16(str);
             return result;
         }
+
         public static bool DrawInt32(string label, ref int value)
         {
             string str = value.ToString();
@@ -271,6 +275,7 @@ namespace Overlayer.Core
             value = StringConverter.ToInt32(str);
             return result;
         }
+
         public static bool DrawInt64(string label, ref long value)
         {
             string str = value.ToString();
@@ -278,6 +283,7 @@ namespace Overlayer.Core
             value = StringConverter.ToInt64(str);
             return result;
         }
+
         public static void DrawObject(string label, object value)
         {
             if (value == null) return;
@@ -286,6 +292,7 @@ namespace Overlayer.Core
                 drawable.Draw();
                 return;
             }
+
             Type t = value.GetType();
             if (!t.IsPrimitive && t != typeof(string)) return;
             var fields = t.GetFields();
@@ -295,6 +302,7 @@ namespace Overlayer.Core
                 if (DrawObject(field.Name, ref fValue))
                     field.SetValue(value, fValue);
             }
+
             var props = t.GetProperties();
             foreach (var prop in props.Where(p => p.CanRead && p.CanWrite))
             {
@@ -303,6 +311,7 @@ namespace Overlayer.Core
                     prop.SetValue(value, pValue);
             }
         }
+
         public static bool DrawObject(string label, ref object obj)
         {
             bool result = false;
@@ -360,8 +369,10 @@ namespace Overlayer.Core
                     GUILayout.Label($"{label}{obj}");
                     break;
             }
+
             return result;
         }
+
         public static bool DrawSByte(string label, ref sbyte value)
         {
             string str = value.ToString();
@@ -369,6 +380,7 @@ namespace Overlayer.Core
             value = StringConverter.ToInt8(str);
             return result;
         }
+
         public static bool DrawSingle(string label, ref float value)
         {
             string str = value.ToString();
@@ -376,14 +388,15 @@ namespace Overlayer.Core
             value = StringConverter.ToFloat(str);
             return result;
         }
+
         public static bool DrawString(string label, ref string value, bool textArea = false)
         {
             string prev = value;
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
             if (!textArea)
-                value = GUILayout.TextField(value);
-            else value = GUILayout.TextArea(value);
+                value = GUILayout.TextField(value, myTextField);
+            else value = GUILayout.TextArea(value, myTextField);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             return prev != value;
@@ -399,6 +412,7 @@ namespace Overlayer.Core
             value = codeEditor.Draw(value, sk);
             return prev != value;
         }
+
         public static bool DrawToggleGroup(string[] labels, bool[] toggleGroup)
         {
             bool result = false;
@@ -411,8 +425,10 @@ namespace Overlayer.Core
                         else toggleGroup[j] = false;
                     break;
                 }
+
             return result;
         }
+
         public static bool DrawUInt16(string label, ref ushort value)
         {
             string str = value.ToString();
@@ -420,6 +436,7 @@ namespace Overlayer.Core
             value = StringConverter.ToUInt16(str);
             return result;
         }
+
         public static bool DrawUInt32(string label, ref uint value)
         {
             string str = value.ToString();
@@ -427,12 +444,94 @@ namespace Overlayer.Core
             value = StringConverter.ToUInt32(str);
             return result;
         }
+
         public static bool DrawUInt64(string label, ref ulong value)
         {
             string str = value.ToString();
             bool result = DrawString(label, ref str);
             value = StringConverter.ToUInt64(str);
             return result;
+        }
+
+        
+
+        public static CodeEditor.CodeEditor codeEditor = new CodeEditor.CodeEditor("OverlayerCodeEditor",
+            new CodeTheme()
+            {
+                background = "#333333",
+                linenumbg = "#222222",
+                color = "#FFFFFF",
+                selection = "#264F78",
+                cursor = "#D4D4D4"
+            });
+
+        public static Regex highlight = new Regex("{(.*?)}");
+        public static Regex color = new Regex("<<b></b>color=(.*?)>");
+        public static GUIStyle myButton;
+        public static GUIStyle myTextField;
+
+        public static Texture2D gray;
+        public static Texture2D dulgray;
+        public static Texture2D jittengray;
+        public static Texture2D tfgray;
+
+        static Drawer()
+        {
+            codeEditor.highlighter = str =>
+            {
+                try
+                {
+                    str = str.Replace("<", "<<b></b>");
+                    foreach (Match m in color.Matches(str))
+                    {
+                        //Main.Logger.Log(m.Groups[1].Value);
+                        if (ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _))
+                        {
+                            str = str.Replace(m.Groups[1].Value,
+                                "<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>");
+                        }
+                    }
+
+                    str = highlight.Replace(str, "<color=lightblue>{$1}</color>");
+
+                    return str;
+                }
+                catch
+                {
+                    return str;
+                }
+            };
+            dulgray = new Texture2D(1, 1);
+            dulgray.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
+            dulgray.Apply();
+
+            gray = new Texture2D(1, 1);
+            gray.SetPixel(0, 0, new Color(0.3f, 0.3f, 0.3f));
+            gray.Apply();
+
+            jittengray = new Texture2D(1, 1);
+            jittengray.SetPixel(0, 0, new Color(0.15f, 0.15f, 0.15f));
+            jittengray.Apply();
+
+            tfgray = new Texture2D(1, 1);
+            tfgray.SetPixel(0, 0, new Color(0.2f, 0.2f, 0.2f));
+            tfgray.Apply();
+
+            myButton = new GUIStyle(GUI.skin.button);
+            myButton.normal.background = gray;
+            myButton.active.background = dulgray;
+            myButton.hover.background = dulgray;
+
+            myTextField = new GUIStyle(GUI.skin.textField);
+            myTextField.normal.background = tfgray;
+            myTextField.focused.background = tfgray;
+            myTextField.hover.background = tfgray;
+        }
+
+
+        public static bool Button(string str, params GUILayoutOption[] options)
+        {
+            return GUILayout.Button(str, myButton, options);
         }
     }
 }

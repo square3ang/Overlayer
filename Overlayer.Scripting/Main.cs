@@ -103,14 +103,14 @@ namespace Overlayer.Scripting
         public static void OnGUI(ModEntry modEntry)
         {
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Reload Scripts"))
+            if (Drawer.Button("Reload Scripts"))
                 RunScriptsNonBlocking();
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.Label("Test Code:");
             SandboxJSCode = GUILayout.TextArea(SandboxJSCode);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Execute"))
+            if (Drawer.Button("Execute"))
             {
                 Exception e;
                 MiscUtils.ExecuteSafe(() =>
@@ -122,7 +122,7 @@ namespace Overlayer.Scripting
                 if (e != null) SandboxResult = e.ToString();
                 EndScript();
             }
-            if (GUILayout.Button("Evaluate"))
+            if (Drawer.Button("Evaluate"))
             {
                 Exception e;
                 MiscUtils.ExecuteSafe(() =>
