@@ -10,7 +10,7 @@ namespace Overlayer.Utils
     {
         private Rect windowRect;
         private string version = "";
-        private string[] contentLines; // Changed from string to string array
+        private string[] contentLines;
         private bool isInitaialize = false;
         private bool isAnimating = false;
 
@@ -21,7 +21,6 @@ namespace Overlayer.Utils
             string filePath = Path.Combine(Main.Mod.Path,"update.txt");
             if(File.Exists(filePath))
             {
-                // Read all lines into the contentLines array
                 contentLines = File.ReadAllLines(filePath);
                 File.Delete(filePath);
             }
