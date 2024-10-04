@@ -145,14 +145,14 @@ namespace Overlayer.Unity
             mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - Config.ShadowDilate);
             mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
         }
-
+        /*
         public void OnPointerDown(PointerEventData eventData)
         {
             isDragging = true;
             initialPointerPosition = eventData.position;
             initialObjectPosition = Text.rectTransform.anchoredPosition;
         }
-        /*
+
         public void OnPointerUp(PointerEventData eventData)
         {
             isDragging = false;

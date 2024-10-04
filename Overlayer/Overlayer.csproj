@@ -446,6 +446,7 @@
     <Compile Include="Utils\IOUtils.cs" />
     <Compile Include="Utils\MiscUtils.cs" />
     <Compile Include="Utils\ModelUtils.cs" />
+    <Compile Include="Utils\Popup.cs" />
     <Compile Include="Utils\StringConverter.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\TextWriter.cs" />
