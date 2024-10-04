@@ -36,9 +36,12 @@ namespace Overlayer
         public static HttpClient HttpClient { get; private set; }
         public static Translator Lang { get; internal set; }
         [Tag(NotPlaying = true)] public static Version ModVersion { get; private set; }
+        /*
         [Tag(NotPlaying = true)] public static Version LastestVersion { get; private set; }
         [Tag(NotPlaying = true)] public static string DownloadLink { get; private set; }
         public static long GGReqCnt, GetGGReqCnt, TUFReqCnt, GetTUFReqCnt, PlayCnt, HandshakeCnt;
+        */
+        private static Popup popup;
 
         public static void Load(ModEntry modEntry)
         {
@@ -105,6 +108,10 @@ namespace Overlayer
 
         public static void OnShowGUI(ModEntry modEntry)
         {
+            popup = new GameObject().AddComponent<Popup>();
+            UnityEngine.Object.DontDestroyOnLoad(popup);
+            popup.Initialize();
+
             GUI.Flush();
         }
 
