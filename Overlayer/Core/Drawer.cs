@@ -198,26 +198,55 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static bool DrawBool(string label, ref bool value)
+        public static Texture2D textureSelected;
+        public static Texture2D textureUnselected;
+
+        public static void InitializeImages()
+        {
+            string base64ImageSelected = "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHxSURBVDhPvZTLSsNAFIbbVN15QRG84hXxguALiOJSitT78ygoqE8iuPENBPeiuBOx2ipWFHVnxZL6/clJTUwQF+IPX8+Zf86cTifTpP5aaYuJqlarDTBG2uk7qSJcOo7z7g9/Kdd122APnmgYkTzYhXYrjyi2QwpnCAfQBmfpdPqQeE0vhzgAWbwpxo/ENTjCSxbN5uAdniHLotgXqjGsWk2ZfNamomKyHfRzVDhudtCgH6+PmDFb9RNWf4ffYvaXmNgBacEsectQ8FxfeVi0ac2v0EznumuWL7w6TO3shNz7meRL4GpBWFgVQs7WOYzPQLusk+cJY9KKNzUmzZAX5SWJuSuCHpLWboA0pLFnoh6LeYu90O2nidJ5dijhKedBvyrSMHiarj4oVk3sCYdUNbxaReTFoOGtxRF90Ev3LthtkgrUlCwfpFbNr/whYlzPGTzA94fyoeKw5EHW1umhnEKBvHalPGFugVS7FhTlGF9CxbiAeZvWmuDabJv1JcxW0EV9gQmzg110QSd57VzJR+EVv0RsNjsqJmegDHop5MINAuHpC9as2RtM25Sn2AIr2OfQtaNzcr0cdOC6AcOwxNw4c/fk67zKjok/i6ZNsA067IjwiqC/aaOVRxTbYVisz4BeWbq0FbjRlQLl/6FU6hOuOzJxbCs2hAAAAABJRU5ErkJggg==";
+            string base64ImageUnselected = "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGlSURBVDhPvZRNS0JBFIb1au36FBdCEH0QqZv+QBitJSrKflFC9kuCFgX9gKB9JG0jLYuKotqlENrzes9FL9fPiF54ODPvnDnOzB0n9NcKW+yoRqMxCkmaCdcJVeDGcZya2x1Q9Xo9BofwRkGf5EEB4pbuU2CFJGYIxxCDYjgcPiWWqeUQ5yCLt0L/lZiDc7zOotg61OAdskwK/KAKw67lVGmv2ZBfDMZB21FiyuyuIidt+Y8UnTS7JQYOQNowq6/I3aGYzrVgliu8KKZWdkm755dvF7kOc4qgVUbl6aA1kORwp2ieERvyBhG5dcIJJKgxK69ZEM1YLFkcWBQtgXa1oL5X0NumfnEotR1RM3oFHywuWRxG8xTVMd26XUR/hIN9+eVHuYJ72hGzXWHug7RlVl+R612bvFktYU6DLuoHpM3uKuoswye5z8QJs/1iMANV0KOwCYHt42mbOSv2Bas21FRggiUccRN0t65p63HQgesGLMI2YynGnmjv8ZRdEHuLouOQBx22T3gV0N90zNJ96vlFmR8BPVm6tN9wx+rKoPZ/KBT6AekJcNd60oGuAAAAAElFTkSuQmCC";
+
+            byte[] imageBytesSelected = System.Convert.FromBase64String(base64ImageSelected);
+            textureSelected = new Texture2D(1,1);
+            textureSelected.LoadImage(imageBytesSelected);
+
+            byte[] imageBytesUnselected = System.Convert.FromBase64String(base64ImageUnselected);
+            textureUnselected = new Texture2D(1,1);
+            textureUnselected.LoadImage(imageBytesUnselected);
+        }
+
+        public static bool DrawBool(string label,ref bool value)
         {
             bool prev = value;
+
+            if(textureSelected == null || textureUnselected == null)
+            {
+                InitializeImages();
+            }
+
             GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
+
             var old = GUI.backgroundColor;
             GUI.backgroundColor = Color.clear;
             var newskin = new GUIStyle(GUI.skin.button);
             newskin.fontSize = 16;
-            newskin.margin = new RectOffset(0, 0, 6, 0);
-            newskin.padding = new RectOffset(0, 0, 0, 0);
-            if (GUILayout.Button(value ? "\u2611" : "\u2610", newskin))
+            newskin.margin = new RectOffset(0,0,6,0);
+            newskin.padding = new RectOffset(0,0,0,0);
+
+            if(GUILayout.Button(value ? textureSelected : textureUnselected,newskin))
+            {
+                value = !value;
+            }
+
+            if(GUILayout.Button(label,GUI.skin.label))
             {
                 value = !value;
             }
 
             GUI.backgroundColor = old;
-            //value = GUILayout.Toggle(value, string.Empty);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+
             return prev != value;
         }
 
