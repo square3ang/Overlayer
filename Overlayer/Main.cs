@@ -18,6 +18,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
+using Time = UnityEngine.Time;
 
 namespace Overlayer
 {
@@ -107,11 +108,40 @@ namespace Overlayer
             GUI.Flush();
         }
 
+        public static float preparinglastUpdateTime = 0f;
+        public static string[] preparingsymbols = { ".","..","..." };
+        public static int preparingsymbolIndex = 0;
+        public static float helptime = 0f;
+
         public static void OnGUI(ModEntry modEntry)
         {
-            if (Lang.GetLoading())
-                GUILayout.Label("Preparing...");
-            else GUI.Draw();
+            if(Lang.GetLoading())
+            {
+                float elapsedTime = Time.time - preparinglastUpdateTime;
+
+                if(elapsedTime >= 0.05f)
+                {
+                    preparingsymbolIndex = (preparingsymbolIndex + 1) % preparingsymbols.Length;
+                    preparinglastUpdateTime = Time.time;
+                }
+
+                GUILayout.Label("Preparing" + preparingsymbols[preparingsymbolIndex]);
+
+                helptime += Time.deltaTime;
+                if(helptime >= 4f)
+                {
+                    GUILayout.Label("Is the Preparing is taking too long??\nplease get in touch with the developer for assistance!!");
+                }
+                else
+                {
+                    GUILayout.Label("");
+                }
+            }
+            else
+            {
+                helptime = 0f;
+                GUI.Draw();
+            }
         }
 
         public static void OnHideGUI(ModEntry modEntry)
