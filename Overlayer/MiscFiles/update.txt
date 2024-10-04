@@ -1,4 +1,0 @@
-﻿[Add]
-update Changes pop-up
-Chinese (by xsdxy)
-New/Modern UI - Radio Button, Code Editor
