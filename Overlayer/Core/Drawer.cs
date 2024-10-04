@@ -230,7 +230,7 @@ namespace Overlayer.Core
             GUI.backgroundColor = Color.clear;
             var newskin = new GUIStyle(GUI.skin.button);
             newskin.fontSize = 16;
-            newskin.margin = new RectOffset(0,0,6,0);
+            newskin.margin = new RectOffset(0,0,4,0);
             newskin.padding = new RectOffset(0,0,0,0);
 
             if(GUILayout.Button(value ? textureSelected : textureUnselected,newskin))

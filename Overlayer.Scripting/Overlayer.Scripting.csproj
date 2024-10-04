@@ -384,6 +384,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer.Scripting\Overlayer.Scripting.dll"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer.Scripting\Overlayer.Scripting.dll"
+xcopy /Y /I "$(ProjectDir)MiscFiles\info.json" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer.Scripting\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
