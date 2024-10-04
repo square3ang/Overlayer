@@ -149,7 +149,7 @@ namespace Overlayer.Scripting
                 proxyStaticMethods: mm);
             File.WriteAllText(fileName, generated);
         }
-        /*[RawReturn]
+        [RawReturn]
         [Api("resolveClrType")]
         public static Type ResolveType(Engine engine, string clrType)
         {
@@ -161,7 +161,7 @@ namespace Overlayer.Scripting
         {
             return MiscUtils.TypeByName(clrType)?.GetMethod(name, (BindingFlags)15420);
         }
-        */
+        
         [Api("resolve")]
         public static TypeReference Resolve(Engine engine, string clrType)
         {
@@ -177,7 +177,7 @@ namespace Overlayer.Scripting
         {
             return OverlayerTag.RuntimeAccess(obj, accessor);
         }
-        /*[Api("setAttr")]
+        [Api("setAttr")]
         public static bool SetAttr(object obj, string accessor = "",  object value = null)
         {
             if (obj == null) return false;
@@ -222,7 +222,7 @@ namespace Overlayer.Scripting
                 type = result.GetType();
             }
             return false;
-        }*/
+        }
         [Api("wrapToJSObject")]
         public static JsValue WrapToJSObject(Engine engine, object obj) => JsValue.FromObject(engine, obj);
         [Api("unwrapFromJSObject")]

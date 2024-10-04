@@ -108,7 +108,7 @@ namespace Overlayer.Scripting
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.Label("Test Code:");
-            SandboxJSCode = GUILayout.TextArea(SandboxJSCode);
+            SandboxJSCode = GUILayout.TextArea(SandboxJSCode, Drawer.myTextField);
             GUILayout.BeginHorizontal();
             if (Drawer.Button("Execute"))
             {
