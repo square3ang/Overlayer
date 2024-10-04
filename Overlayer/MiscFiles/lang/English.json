@@ -93,6 +93,8 @@
     "CAPLINE_JUSTIFIED": "Capline Justified",
     "CAPLINE_FLUSH": "Capline Flush",
     "CAPLINE_GEO_ALIGNED": "Capline Geo Aligned",
-    "CONVERTED": "Converted"
+    "CONVERTED": "Converted",
+    "OK": "Ok!",
+    "UPDATE": "Update"
   }
 }

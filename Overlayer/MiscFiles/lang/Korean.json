@@ -91,6 +91,8 @@
     "CAPLINE_JUSTIFIED": "캡라인 정렬",
     "CAPLINE_FLUSH": "캡라인 플러시",
     "CAPLINE_GEO_ALIGNED": "캡라인 지리 정렬",
-    "CONVERTED": "변환됨"
+    "CONVERTED": "변환됨",
+    "OK": "넵!",
+    "UPDATE": "업데이트"
   }
 }
