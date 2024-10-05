@@ -114,9 +114,16 @@ namespace Overlayer.Core
             }
 
             return result;*/
+            var c = false;
+            string hex = ColorUtility.ToHtmlStringRGBA(color);
+            if (DrawString("Hex:", ref hex))
+            {
+                c = true;
+                ColorUtility.TryParseHtmlString("#" + hex, out color);
+            }
             var ncol = RGUI.Field(color, "");
 
-            var c = color != ncol;
+            if (!c) c = color != ncol;
             color = ncol;
             
             return c;

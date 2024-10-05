@@ -164,7 +164,7 @@ namespace RapidGUI
 
         Vector3 _hsv = new Vector3(0f, 0f, 0f);
 
-        public Rect windowRect = new Rect(20, 20, 350, 580);
+        public Rect windowRect = new Rect(20, 20, 350, 500);
         public bool destroy { get; protected set; }
 
         GUIStyle svStyle;
@@ -249,11 +249,11 @@ namespace RapidGUI
                 }
 
 
-                if (preset != null)
+                /*if (preset != null)
                 {
                     GUILayout.Space(10f);
                     DrawPresets();
-                }
+                }*/
             }
         }
 
