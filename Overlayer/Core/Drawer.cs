@@ -532,7 +532,28 @@ namespace Overlayer.Core
             return result;
         }
 
-        
+        public static void Tooltip(string text)
+        {
+            if(string.IsNullOrEmpty(text))
+            {
+                GUI.Box(new Rect(0,0,0,0),"");
+            }
+            else
+            {
+                Vector2 mousePosition = Event.current.mousePosition;
+                Rect labelPosition = new Rect(mousePosition.x,mousePosition.y - 40,0,0);
+                Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(text));
+
+                labelPosition.width = textSize.x + 20;
+                labelPosition.height = textSize.y + 20;
+                GUI.Box(labelPosition,"");
+                GUI.Box(labelPosition,"");
+
+                labelPosition.x += 10;
+                labelPosition.y += 10;
+                GUI.Label(labelPosition,text);
+            }
+        }
 
         public static CodeEditor.CodeEditor codeEditor = new CodeEditor.CodeEditor("OverlayerCodeEditor",
             new CodeTheme()
