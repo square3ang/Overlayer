@@ -360,10 +360,14 @@ namespace Overlayer.Core
             var ns1 = new GUIStyle(GUI.skin.horizontalSlider);
             var ns2 = new GUIStyle(GUI.skin.horizontalSliderThumb);
 
-            ns1.normal.background = Drawer.jittengray;
-            ns2.normal.background = Drawer.gray;
-            ns2.active.background = Drawer.dulgray;
-            ns2.hover.background = Drawer.dulgray;
+            if (!Main.Settings.useLegacyTheme)
+            {
+                ns1.normal.background = Drawer.jittengray;
+                ns2.normal.background = Drawer.gray;
+                ns2.active.background = Drawer.dulgray;
+                ns2.hover.background = Drawer.dulgray;
+            }
+
             float newValue =
                 GUILayout.HorizontalSlider(
                     value, leftValue, rightValue, ns1, ns2, GUILayout.Width(sliderWidth));

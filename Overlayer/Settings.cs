@@ -13,6 +13,7 @@ namespace Overlayer
         public string Lang = "Default";
         public float FPSUpdateRate = 100;
         public float FrameTimeUpdateRate = 100;
+        public bool useLegacyTheme = false;
         public JsonNode Serialize()
         {
             var node = JsonNode.Empty;
@@ -21,6 +22,7 @@ namespace Overlayer
             node[nameof(Lang)] = Lang;
             node[nameof(FPSUpdateRate)] = FPSUpdateRate;
             node[nameof(FrameTimeUpdateRate)] = FrameTimeUpdateRate;
+            node[nameof(useLegacyTheme)] = useLegacyTheme;
             return node;
         }
         public void Deserialize(JsonNode node)
@@ -30,6 +32,7 @@ namespace Overlayer
             Lang = node[nameof(Lang)];
             FPSUpdateRate = node[nameof(FPSUpdateRate)];
             FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)];
+            useLegacyTheme = node[nameof(useLegacyTheme)];
         }
         public Settings Copy()
         {
@@ -39,6 +42,7 @@ namespace Overlayer
             newSettings.Lang = Lang;
             newSettings.FPSUpdateRate = FPSUpdateRate;
             newSettings.FrameTimeUpdateRate = FrameTimeUpdateRate;
+            newSettings.useLegacyTheme = useLegacyTheme;
             return newSettings;
         }
     }

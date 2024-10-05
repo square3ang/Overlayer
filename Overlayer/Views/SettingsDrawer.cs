@@ -51,7 +51,7 @@ namespace Overlayer.Views
                 selectedIndex = (selectedIndex - 1 + languageNames.Length) % languageNames.Length;
                 UpdateLanguageSetting(selectedIndex);
             }
-            if(UI.PopupToggleGroup(ref selectedIndex,languageNames,Main.Lang.Get("SELECTLANGUAGE","Select Language"),Drawer.myButton,GUILayout.Width(400)))
+            if(UI.PopupToggleGroup(ref selectedIndex,languageNames,Main.Lang.Get("SELECTLANGUAGE","Select Language"),Main.Settings.useLegacyTheme ? GUI.skin.button : Drawer.myButton,GUILayout.Width(400)))
             {
                 UpdateLanguageSetting(selectedIndex);
             }
@@ -112,6 +112,7 @@ namespace Overlayer.Views
                 GUILayout.EndHorizontal();
                 GUILayoutEx.EndIndent();
             }
+            Drawer.DrawBool(Main.Lang.Get("USE_LEGACY_THEME","Use Legacy Theme"), ref model.useLegacyTheme);
             Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
             Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE","FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
             GUILayout.BeginHorizontal();

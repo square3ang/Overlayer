@@ -95,6 +95,7 @@
     "CAPLINE_GEO_ALIGNED": "对齐地理顶线（一般不用）",
     "CONVERTED": "转换对齐（一般不用）",
     "OK": "好嘞!",
-    "UPDATE": "重大更新"
+    "UPDATE": "重大更新",
+    "USE_LEGACY_THEME": "使用旧版主题"
   }
 }

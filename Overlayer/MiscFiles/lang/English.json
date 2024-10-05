@@ -95,6 +95,7 @@
     "CAPLINE_GEO_ALIGNED": "Capline Geo Aligned",
     "CONVERTED": "Converted",
     "OK": "Ok!",
-    "UPDATE": "Update"
+    "UPDATE": "Update",
+    "USE_LEGACY_THEME": "Use Legacy Theme"
   }
 }

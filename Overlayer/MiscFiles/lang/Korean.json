@@ -93,6 +93,7 @@
     "CAPLINE_GEO_ALIGNED": "캡라인 지리 정렬",
     "CONVERTED": "변환됨",
     "OK": "넵!",
-    "UPDATE": "업데이트"
+    "UPDATE": "업데이트",
+    "USE_LEGACY_THEME": "레거시 테마 사용"
   }
 }

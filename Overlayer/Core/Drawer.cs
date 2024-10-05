@@ -144,7 +144,7 @@ namespace Overlayer.Core
                 string cache = array[i];
                 GUILayout.BeginHorizontal();
                 GUILayout.Label($"{i}: ");
-                cache = GUILayout.TextField(cache, myTextField);
+                cache = GUILayout.TextField(cache, Main.Settings.useLegacyTheme ? GUI.skin.textField : myTextField);
                 elementRightGUI?.Invoke(i);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
@@ -203,6 +203,22 @@ namespace Overlayer.Core
 
         public static void InitializeImages()
         {
+            dulgray = new Texture2D(1, 1);
+            dulgray.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
+            dulgray.Apply();
+
+            gray = new Texture2D(1, 1);
+            gray.SetPixel(0, 0, new Color(0.3f, 0.3f, 0.3f));
+            gray.Apply();
+
+            jittengray = new Texture2D(1, 1);
+            jittengray.SetPixel(0, 0, new Color(0.15f, 0.15f, 0.15f));
+            jittengray.Apply();
+
+            tfgray = new Texture2D(1, 1);
+            tfgray.SetPixel(0, 0, new Color(0.2f, 0.2f, 0.2f));
+            tfgray.Apply();
+            
             string base64ImageSelected = "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHxSURBVDhPvZTLSsNAFIbbVN15QRG84hXxguALiOJSitT78ygoqE8iuPENBPeiuBOx2ipWFHVnxZL6/clJTUwQF+IPX8+Zf86cTifTpP5aaYuJqlarDTBG2uk7qSJcOo7z7g9/Kdd122APnmgYkTzYhXYrjyi2QwpnCAfQBmfpdPqQeE0vhzgAWbwpxo/ENTjCSxbN5uAdniHLotgXqjGsWk2ZfNamomKyHfRzVDhudtCgH6+PmDFb9RNWf4ffYvaXmNgBacEsectQ8FxfeVi0ac2v0EznumuWL7w6TO3shNz7meRL4GpBWFgVQs7WOYzPQLusk+cJY9KKNzUmzZAX5SWJuSuCHpLWboA0pLFnoh6LeYu90O2nidJ5dijhKedBvyrSMHiarj4oVk3sCYdUNbxaReTFoOGtxRF90Ev3LthtkgrUlCwfpFbNr/whYlzPGTzA94fyoeKw5EHW1umhnEKBvHalPGFugVS7FhTlGF9CxbiAeZvWmuDabJv1JcxW0EV9gQmzg110QSd57VzJR+EVv0RsNjsqJmegDHop5MINAuHpC9as2RtM25Sn2AIr2OfQtaNzcr0cdOC6AcOwxNw4c/fk67zKjok/i6ZNsA067IjwiqC/aaOVRxTbYVisz4BeWbq0FbjRlQLl/6FU6hOuOzJxbCs2hAAAAABJRU5ErkJggg==";
             string base64ImageUnselected = "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGlSURBVDhPvZRNS0JBFIb1au36FBdCEH0QqZv+QBitJSrKflFC9kuCFgX9gKB9JG0jLYuKotqlENrzes9FL9fPiF54ODPvnDnOzB0n9NcKW+yoRqMxCkmaCdcJVeDGcZya2x1Q9Xo9BofwRkGf5EEB4pbuU2CFJGYIxxCDYjgcPiWWqeUQ5yCLt0L/lZiDc7zOotg61OAdskwK/KAKw67lVGmv2ZBfDMZB21FiyuyuIidt+Y8UnTS7JQYOQNowq6/I3aGYzrVgliu8KKZWdkm755dvF7kOc4qgVUbl6aA1kORwp2ieERvyBhG5dcIJJKgxK69ZEM1YLFkcWBQtgXa1oL5X0NumfnEotR1RM3oFHywuWRxG8xTVMd26XUR/hIN9+eVHuYJ72hGzXWHug7RlVl+R612bvFktYU6DLuoHpM3uKuoswye5z8QJs/1iMANV0KOwCYHt42mbOSv2Bas21FRggiUccRN0t65p63HQgesGLMI2YynGnmjv8ZRdEHuLouOQBx22T3gV0N90zNJ96vlFmR8BPVm6tN9wx+rKoPZ/KBT6AekJcNd60oGuAAAAAElFTkSuQmCC";
 
@@ -219,23 +235,27 @@ namespace Overlayer.Core
         {
             bool prev = value;
 
-            if(textureSelected == null || textureUnselected == null)
-            {
-                InitializeImages();
-            }
-
             GUILayout.BeginHorizontal();
 
-            var old = GUI.backgroundColor;
-            GUI.backgroundColor = Color.clear;
-            var newskin = new GUIStyle(GUI.skin.button);
-            newskin.fontSize = 16;
-            newskin.margin = new RectOffset(0,0,4,0);
-            newskin.padding = new RectOffset(0,0,0,0);
-
-            if(GUILayout.Button(value ? textureSelected : textureUnselected,newskin))
+            if (Main.Settings.useLegacyTheme)
             {
-                value = !value;
+                value = GUILayout.Toggle(value, "");
+            }
+            else
+            {
+                var old = GUI.backgroundColor;
+                GUI.backgroundColor = Color.clear;
+                var newskin = new GUIStyle(GUI.skin.button);
+                newskin.fontSize = 16;
+                newskin.margin = new RectOffset(0, 0, 4, 0);
+                newskin.padding = new RectOffset(0, 0, 0, 0);
+
+                if (GUILayout.Button(value ? textureSelected : textureUnselected, newskin))
+                {
+                    value = !value;
+                }
+
+                GUI.backgroundColor = old;
             }
 
             if(GUILayout.Button(label,GUI.skin.label))
@@ -243,7 +263,7 @@ namespace Overlayer.Core
                 value = !value;
             }
 
-            GUI.backgroundColor = old;
+            
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -270,7 +290,7 @@ namespace Overlayer.Core
         {
             int current = EnumHelper<T>.IndexOf(@enum);
             string[] names = EnumHelper<T>.GetNames();
-            bool result = UnityModManagerNet.UnityModManager.UI.PopupToggleGroup(ref current, names, label, unique, myButton);
+            bool result = UnityModManagerNet.UnityModManager.UI.PopupToggleGroup(ref current, names, label, unique, Main.Settings.useLegacyTheme ? GUI.skin.button : myButton);
             @enum = EnumHelper<T>.GetValues()[current];
             return result;
         }
@@ -283,7 +303,7 @@ namespace Overlayer.Core
             string[] translatedNames = names.Select(name => translator(name)).ToArray();
 
             bool result =
-                UnityModManagerNet.UnityModManager.UI.PopupToggleGroup(ref current, translatedNames, label, unique, myButton);
+                UnityModManagerNet.UnityModManager.UI.PopupToggleGroup(ref current, translatedNames, label, unique, Main.Settings.useLegacyTheme ? GUI.skin.button : myButton);
 
             @enum = EnumHelper<T>.GetValues()[current];
             return result;
@@ -424,8 +444,8 @@ namespace Overlayer.Core
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
             if (!textArea)
-                value = GUILayout.TextField(value, myTextField);
-            else value = GUILayout.TextArea(value, myTextField);
+                value = GUILayout.TextField(value, Main.Settings.useLegacyTheme ? GUI.skin.textField : myTextField);
+            else value = GUILayout.TextArea(value, Main.Settings.useLegacyTheme ? GUI.skin.textField : myTextField);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             return prev != value;
@@ -530,21 +550,9 @@ namespace Overlayer.Core
                     return str;
                 }
             };
-            dulgray = new Texture2D(1, 1);
-            dulgray.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
-            dulgray.Apply();
-
-            gray = new Texture2D(1, 1);
-            gray.SetPixel(0, 0, new Color(0.3f, 0.3f, 0.3f));
-            gray.Apply();
-
-            jittengray = new Texture2D(1, 1);
-            jittengray.SetPixel(0, 0, new Color(0.15f, 0.15f, 0.15f));
-            jittengray.Apply();
-
-            tfgray = new Texture2D(1, 1);
-            tfgray.SetPixel(0, 0, new Color(0.2f, 0.2f, 0.2f));
-            tfgray.Apply();
+            
+            InitializeImages();
+            
 
             myButton = new GUIStyle(GUI.skin.button);
             myButton.normal.background = gray;
@@ -555,12 +563,14 @@ namespace Overlayer.Core
             myTextField.normal.background = tfgray;
             myTextField.focused.background = tfgray;
             myTextField.hover.background = tfgray;
+            
+            
         }
 
 
         public static bool Button(string str, params GUILayoutOption[] options)
         {
-            return GUILayout.Button(str, myButton, options);
+            return GUILayout.Button(str, Main.Settings.useLegacyTheme ? GUI.skin.button : myButton, options);
         }
     }
 }
