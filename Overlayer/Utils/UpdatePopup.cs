@@ -14,6 +14,7 @@ namespace Overlayer.Utils
         private string[] contentLines;
         private bool isInitaialize = false;
         private bool isAnimating = false;
+        private bool isSpawn = false;
 
         public void Initialize()
         {
@@ -31,7 +32,8 @@ namespace Overlayer.Utils
                 return;
             }
 
-            float maxWidth = 0;
+            var maxWidth = 0f;
+            
             foreach(var line in contentLines)
             {
                 float lineWidth = GUI.skin.label.CalcSize(new GUIContent(line)).x;
@@ -41,6 +43,7 @@ namespace Overlayer.Utils
             float width = maxWidth + 40;
             float height = (contentLines.Length * 20) + 40;
             windowRect = new Rect((Screen.width - width) / 2f,(Screen.height - height) / 2f ,width,height);
+            
             isInitaialize = true;
         }
 
@@ -48,6 +51,13 @@ namespace Overlayer.Utils
         {
             if(isInitaialize)
             {
+                if (!isSpawn && Event.current.type == EventType.Repaint)
+                {
+                    windowRect = GUILayout.Window(120, windowRect, DrawWindow, $"Overlayer {version} {Main.Lang.Get("UPDATE","Update")}", RGUIStyle.darkWindow);
+                    windowRect.x = (int)(Screen.width * 0.5f - windowRect.width * 0.5f);
+                    windowRect.y = (int)(Screen.height * 0.5f - windowRect.height * 0.5f);
+                    isSpawn = true;
+                }
                 windowRect = GUILayout.Window(120,windowRect,DrawWindow,$"Overlayer {version} {Main.Lang.Get("UPDATE","Update")}", RGUIStyle.darkWindow);
             }
         }
@@ -83,7 +93,7 @@ namespace Overlayer.Utils
             GUILayout.Space(10);
             GUILayout.EndVertical();
 
-            GUI.DragWindow();
+            //GUI.DragWindow();
         }
 
         private void AnimateAndDestroy()

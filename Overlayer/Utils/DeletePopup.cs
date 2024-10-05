@@ -14,13 +14,15 @@ namespace Overlayer.Utils
         private string[] contentLines;
         private bool isInitaialize = false;
         private bool isAnimating = false;
+        private bool isSpawn = false;
         private OverlayerText txt;
 
         public void Initialize(OverlayerText txt)
         {
             this.txt = txt;
-            float maxWidth = 0;
             contentLines = new[] { "<size=30>" + Main.Lang.Get("DESTROY_ASK", "Destroy?") + "</size>\n", "<size=20>" + txt.Config.Name + "</size>\n" };
+            var maxWidth = 0f;
+            
             foreach(var line in contentLines)
             {
                 float lineWidth = GUI.skin.label.CalcSize(new GUIContent(line)).x;
@@ -37,7 +39,16 @@ namespace Overlayer.Utils
         {
             if(isInitaialize)
             {
-                windowRect = GUILayout.Window(121,windowRect,DrawWindow,$"", RGUIStyle.darkWindow);
+                if (!isSpawn && Event.current.type == EventType.Repaint)
+                {
+                    windowRect = GUILayout.Window(121, windowRect, DrawWindow, $"", RGUIStyle.darkWindow,
+                        GUILayout.MaxWidth(1000));
+                    windowRect.x = (int)(Screen.width * 0.5f - windowRect.width * 0.5f);
+                    windowRect.y = (int)(Screen.height * 0.5f - windowRect.height * 0.5f);
+                    isSpawn = true;
+                }
+
+                windowRect = GUILayout.Window(121,windowRect,DrawWindow,$"", RGUIStyle.darkWindow, GUILayout.MaxWidth(1000));
             }
         }
 
@@ -79,7 +90,7 @@ namespace Overlayer.Utils
             GUILayout.Space(10);
             GUILayout.EndVertical();
 
-            GUI.DragWindow();
+            //GUI.DragWindow();
         }
 
         private void AnimateAndDestroy()

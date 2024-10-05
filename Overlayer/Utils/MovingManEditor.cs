@@ -18,6 +18,7 @@ namespace Overlayer.Utils
         private string[] contentLines;
         private bool isInitaialize = false;
         private bool isAnimating = false;
+        private bool isSpawn = false;
 
         public string targetTag = "Combo";
         public double startSize = 30;
@@ -43,10 +44,10 @@ namespace Overlayer.Utils
                 invert = bool.Parse(arr[5]);
                 ease = EnumHelper<Ease>.Parse(arr[6]);
             }
+            
+            windowRect.width = 300;
+            windowRect.height = 300;
 
-            float width = 300;
-            float height = 300;
-            windowRect = new Rect((Screen.width - width) / 2f, (Screen.height - height) / 2f, width, height);
             isInitaialize = true;
             this.codesBefore = codesBefore;
             this.codesAfter = codesAfter;
@@ -56,39 +57,49 @@ namespace Overlayer.Utils
         {
             if (isInitaialize)
             {
-                windowRect = GUILayout.Window(122, windowRect, windowID =>
+                if (!isSpawn && Event.current.type == EventType.Repaint)
                 {
-                    GUI.BringWindowToFront(windowID);
-                    GUILayout.BeginVertical();
-                    GUILayout.Space(10);
-                    
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Target Tag");
-                    Drawer.DrawTags(ref targetTag);
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
-                    Drawer.DrawDouble("Start Size", ref startSize);
-                    Drawer.DrawDouble("End Size", ref endSize);
-                    Drawer.DrawDouble("Default Size", ref defaultSize);
-                    Drawer.DrawDouble("Speed", ref speed);
-                    Drawer.DrawBool("Invert", ref invert);
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Ease");
-                    Drawer.DrawEnumPlus("", ref ease, a => a);
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
+                    windowRect = GUILayout.Window(122, windowRect, DrawWindow, $"MovingMan Editor", RGUIStyle.darkWindow);
+                    windowRect.x = (int)(Screen.width * 0.5f - windowRect.width * 0.5f);
+                    windowRect.y = (int)(Screen.height * 0.5f - windowRect.height * 0.5f);
+                    isSpawn = true;
+                }
 
-                    if (Drawer.Button("Done"))
-                    {
-                        AnimateAndDestroy();
-                    }
-
-                    GUILayout.Space(10);
-                    GUILayout.EndVertical();
-
-                    GUI.DragWindow();
-                }, $"", RGUIStyle.darkWindow);
+                windowRect = GUILayout.Window(122,windowRect,DrawWindow,$"MovingMan Editor", RGUIStyle.darkWindow);
             }
+        }
+
+        private void DrawWindow(int windowID)
+        {
+            GUI.BringWindowToFront(windowID);
+            GUILayout.BeginVertical();
+            GUILayout.Space(10);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Target Tag");
+            Drawer.DrawTags(ref targetTag);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            Drawer.DrawDouble("Start Size", ref startSize);
+            Drawer.DrawDouble("End Size", ref endSize);
+            Drawer.DrawDouble("Default Size", ref defaultSize);
+            Drawer.DrawDouble("Speed", ref speed);
+            Drawer.DrawBool("Invert", ref invert);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Ease");
+            Drawer.DrawEnumPlus("", ref ease, a => a);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            if (Drawer.Button("Done"))
+            {
+                AnimateAndDestroy();
+            }
+
+            GUILayout.Space(10);
+            GUILayout.EndVertical();
+
+            GUI.DragWindow();
         }
 
         private void AnimateAndDestroy()
