@@ -148,6 +148,14 @@ namespace Overlayer
             {
                 helptime = 0f;
                 GUI.Draw();
+                GUILayout.Space(30);
+                GUILayout.BeginHorizontal();
+                if (Drawer.Button("Square Mod Server"))
+                {
+                    Application.OpenURL("https://square.lrl.kr/");
+                }
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
             }
         }
 
