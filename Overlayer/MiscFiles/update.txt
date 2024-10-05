@@ -2,3 +2,9 @@
 Pop-up before trying to destroy text
 Dropdowns
 HSV Color Picker
+MovingMan and ColorRange Editor
+Advanced Syntax Highlighting
+Tag Inserter
+
+[Fix]
+Fixed bug where pop-up was not centered
