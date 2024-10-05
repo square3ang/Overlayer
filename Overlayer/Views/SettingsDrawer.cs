@@ -42,16 +42,19 @@ namespace Overlayer.Views
         {
             if(model != null)
             Main.Lang.CurrentLanguage = model.Lang;
+            
+            GUILayout.Label(Main.Lang.Get("SELECTLANGUAGE","Select Language"));
             GUILayout.BeginHorizontal();
             string[] languageNames = Main.Lang.GetLanguages();
             int selectedIndex = Array.IndexOf(languageNames,Main.Lang.CurrentLanguage);
-
+            
             if(Drawer.Button("◀",GUILayout.Width(40)))
             {
                 selectedIndex = (selectedIndex - 1 + languageNames.Length) % languageNames.Length;
                 UpdateLanguageSetting(selectedIndex);
             }
-            if(UI.PopupToggleGroup(ref selectedIndex,languageNames,Main.Lang.Get("SELECTLANGUAGE","Select Language"),Main.Settings.useLegacyTheme ? GUI.skin.button : Drawer.myButton,GUILayout.Width(400)))
+            
+            if(Drawer.RawSelectionPopup(ref selectedIndex,languageNames, "", GUILayout.Width(400)))
             {
                 UpdateLanguageSetting(selectedIndex);
             }
@@ -147,9 +150,10 @@ namespace Overlayer.Views
                     {
                     if (Drawer.Button(Main.Lang.Get("DESTROY","Destroy")))
                     {
-                        TextManager.DestroyText(text);
-                        Main.GUI.Skip(frames: 2);
-                        Main.GUI.Pop();
+                        var popup = new GameObject().AddComponent<DeletePopup>();
+                        UnityEngine.Object.DontDestroyOnLoad(popup);
+                        popup.Initialize(text);
+                        
                         return;
                     }
                 });

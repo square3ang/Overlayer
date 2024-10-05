@@ -1,5 +1,6 @@
 ﻿using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
+using UnityEngine;
 
 namespace Overlayer.Tags
 {
@@ -15,6 +16,20 @@ namespace Overlayer.Tags
         public static bool IsNoFailEnabled => ADOFAI.Controller?.noFail ?? GCS.useNoFail;
         [Tag]
         public static double Progress(int digits = -1) => (scrController.instance?.percentComplete * 100 ?? 0).Round(digits);
+
+        [Tag]
+        public static double ActualProgress(int digits = -1)
+        {
+            var listFloors = scrLevelMaker.instance?.listFloors;
+            if (listFloors == null || listFloors.
+                    Count == 0)
+                return 0;
+            var firstFloorTime = listFloors[1].entryTime;
+            var lastFloorTime = listFloors[listFloors.Count - 1].entryTime;
+            var actualProgress = (scrController.instance?.currFloor.entryTime - firstFloorTime) / (lastFloorTime - firstFloorTime) * 100;
+            if (actualProgress == null) return 0;
+            return (Mathf.Clamp((float)actualProgress, 0, 100)).Round(digits);
+        }
         [Tag]
         public static double Accuracy(int digits = -1) => (scrController.instance?.mistakesManager?.percentAcc * 100 ?? 0).Round(digits);
         [Tag]

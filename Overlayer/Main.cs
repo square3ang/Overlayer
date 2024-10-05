@@ -41,7 +41,7 @@ namespace Overlayer
         [Tag(NotPlaying = true)] public static string DownloadLink { get; private set; }
         public static long GGReqCnt, GetGGReqCnt, TUFReqCnt, GetTUFReqCnt, PlayCnt, HandshakeCnt;
         */
-        private static Popup popup;
+        private static UpdatePopup popup;
 
         public static void Load(ModEntry modEntry)
         {
@@ -108,7 +108,7 @@ namespace Overlayer
 
         public static void OnShowGUI(ModEntry modEntry)
         {
-            popup = new GameObject().AddComponent<Popup>();
+            popup = new GameObject().AddComponent<UpdatePopup>();
             UnityEngine.Object.DontDestroyOnLoad(popup);
             popup.Initialize();
 

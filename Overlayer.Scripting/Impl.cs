@@ -153,12 +153,22 @@ namespace Overlayer.Scripting
         [Api("resolveClrType")]
         public static Type ResolveType(Engine engine, string clrType)
         {
+            if (!Main.allowUnsafe)
+            {
+                Main.Logger.Log("<color=red>Script uses unsafe API. to enable it, create a file named 'allowUnsafe.txt' in the mod folder.</color>");
+                return null;
+            }
             return MiscUtils.TypeByName(clrType);
         }
         [RawReturn]
         [Api("resolveClrMethod")]
         public static MethodInfo ResolveMethod(Engine engine, string clrType, string name)
         {
+            if (!Main.allowUnsafe)
+            {
+                Main.Logger.Log("<color=red>Script uses unsafe API. to enable it, create a file named 'allowUnsafe.txt' in the mod folder.</color>");
+                return null;
+            }
             return MiscUtils.TypeByName(clrType)?.GetMethod(name, (BindingFlags)15420);
         }
         
@@ -247,6 +257,12 @@ namespace Overlayer.Scripting
         [Api("getClrGenericTypeName")]
         public static string GetGenericClrTypeString(Engine engine, string genericType, string[] genericArgs)
         {
+            if (!Main.allowUnsafe)
+            {
+                Main.Logger.Log("<color=red>Script uses unsafe API. to enable it, create a file named 'allowUnsafe.txt' in the mod folder.</color>");
+                return null;
+            }
+            
             string AggregateGenericArgs(Type[] types)
             {
                 StringBuilder sb = new StringBuilder();

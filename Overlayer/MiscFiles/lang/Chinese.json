@@ -93,9 +93,12 @@
     "CAPLINE_JUSTIFIED": "对齐顶线（一般不用）",
     "CAPLINE_FLUSH": "齐平顶线（一般不用）",
     "CAPLINE_GEO_ALIGNED": "对齐地理顶线（一般不用）",
-    "CONVERTED": "转换对齐（一般不用）"
+    "CONVERTED": "转换对齐（一般不用）",
     "OK": "好哒~",
-    "UPDATE": "该升级啦~"
-    "USE_LEGACY_THEME":"改为原本的界面"
+    "UPDATE": "该升级啦~",
+    "USE_LEGACY_THEME":"改为原本的界面",
+    "DESTROY_ASK": "我们要毁掉它吗？",
+    "YES": "是的",
+    "NO": "不"
   }
 }

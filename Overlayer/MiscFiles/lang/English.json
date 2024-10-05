@@ -96,6 +96,9 @@
     "CONVERTED": "Converted",
     "OK": "Ok!",
     "UPDATE": "Update",
-    "USE_LEGACY_THEME": "Use Legacy Theme"
+    "USE_LEGACY_THEME": "Use Legacy Theme",
+    "DESTROY_ASK": "Destroy?",
+    "YES": "Yes",
+    "NO": "No"
   }
 }

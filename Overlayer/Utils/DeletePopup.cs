@@ -3,34 +3,24 @@ using UnityEngine;
 using DG.Tweening;
 using Overlayer.Core.Translatior;
 using System.IO;
+using Overlayer.Unity;
+using RapidGUI;
 
 namespace Overlayer.Utils
 {
-    internal class Popup : MonoBehaviour
+    internal class DeletePopup : MonoBehaviour
     {
         private Rect windowRect;
-        private string version = "";
         private string[] contentLines;
         private bool isInitaialize = false;
         private bool isAnimating = false;
+        private OverlayerText txt;
 
-        public void Initialize()
+        public void Initialize(OverlayerText txt)
         {
-            version = Main.ModVersion.ToString();
-
-            string filePath = Path.Combine(Main.Mod.Path,"update.txt");
-            if(File.Exists(filePath))
-            {
-                contentLines = File.ReadAllLines(filePath);
-                File.Delete(filePath);
-            }
-            else
-            {
-                Destroy(gameObject);
-                return;
-            }
-
+            this.txt = txt;
             float maxWidth = 0;
+            contentLines = new[] { "<size=30>" + Main.Lang.Get("DESTROY_ASK", "Destroy?") + "</size>\n", "<size=20>" + txt.Config.Name + "</size>\n" };
             foreach(var line in contentLines)
             {
                 float lineWidth = GUI.skin.label.CalcSize(new GUIContent(line)).x;
@@ -39,7 +29,7 @@ namespace Overlayer.Utils
             }
             float width = maxWidth + 40;
             float height = (contentLines.Length * 20) + 40;
-            windowRect = new Rect((Screen.width - width) / 2,(Screen.height - height) / 2,width,height);
+            windowRect = new Rect((Screen.width - width) / 2f,(Screen.height - height) / 2f ,width,height);
             isInitaialize = true;
         }
 
@@ -47,12 +37,13 @@ namespace Overlayer.Utils
         {
             if(isInitaialize)
             {
-                windowRect = GUILayout.Window(120,windowRect,DrawWindow,$"Overlayer {version} {Main.Lang.Get("UPDATE","Update")}");
+                windowRect = GUILayout.Window(121,windowRect,DrawWindow,$"", RGUIStyle.darkWindow);
             }
         }
 
         private void DrawWindow(int windowID)
         {
+            GUI.BringWindowToFront(windowID);
             GUILayout.BeginVertical();
             GUILayout.Space(10);
 
@@ -68,10 +59,17 @@ namespace Overlayer.Utils
             }
 
             GUILayout.FlexibleSpace();
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if(Drawer.Button($"<size=18>{Main.Lang.Get("OK","OK!")}</size>",GUILayout.Width(100),GUILayout.Height(40)))
+            if(Drawer.Button($"<size=18>{Main.Lang.Get("YES","Yes")}</size>",GUILayout.Width(100),GUILayout.Height(40)))
+            {
+                TextManager.DestroyText(txt);
+                Main.GUI.Skip(frames: 2);
+                Main.GUI.Pop();
+                AnimateAndDestroy();
+            }
+            if(Drawer.Button($"<size=18>{Main.Lang.Get("NO","No")}</size>",GUILayout.Width(100),GUILayout.Height(40)))
             {
                 AnimateAndDestroy();
             }

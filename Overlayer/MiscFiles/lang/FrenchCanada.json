@@ -96,6 +96,9 @@
     "CONVERTED": "Convertie",
     "OK": "ok!",
     "UPDATE": "Mise À Jour",
-    "USE_LEGACY_THEME": "Utiliser le thème hérité"
+    "USE_LEGACY_THEME": "Utiliser le thème hérité",
+    "DESTROY_ASK": "Devons-nous le détruire ?",
+    "YES": "Oui",
+    "NO": "Non"
   }
 }
