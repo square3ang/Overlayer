@@ -90,7 +90,7 @@ namespace Overlayer.Utils
             GUILayout.Space(10);
             GUILayout.EndVertical();
 
-            //GUI.DragWindow();
+            GUI.DragWindow();
         }
 
         private void AnimateAndDestroy()
