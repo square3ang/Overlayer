@@ -37,21 +37,21 @@ namespace Overlayer.Views
             changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("FONT_SIZE","Font Size"), ref model.FontSize, 0, 100, 300f);
             changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE","Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
             changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS","Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
-            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS_TEXT","Edit {0} Text"),Main.Lang.Get("TEXT_COLOR","Text Color")), ref colorsExpanded[0]);
+            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS","Edit {0}"),Main.Lang.Get("TEXT_COLOR","Text Color")), ref colorsExpanded[0]);
             if (colorsExpanded[0])
             {
                 GUILayoutEx.BeginIndent();
                 changed |= Drawer.DrawGColor(ref model.TextColor, true);
                 GUILayoutEx.EndIndent();
             }
-            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS_TEXT","Edit {0} Text"),Main.Lang.Get("SHADOW_COLOR","Shadow Color")), ref colorsExpanded[1]);
+            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS","Edit {0}"),Main.Lang.Get("SHADOW_COLOR","Shadow Color")), ref colorsExpanded[1]);
             if (colorsExpanded[1])
             {
                 GUILayoutEx.BeginIndent();
                 changed |= Drawer.DrawGColor(ref model.ShadowColor, false);
                 GUILayoutEx.EndIndent();
             }
-            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS_TEXT","Edit {0} Text"),Main.Lang.Get("SHADOW_COLOR","Shadow Color")), ref colorsExpanded[2]);
+            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS","Edit {0}"),Main.Lang.Get("OUTLINE_COLOR","Outline Color")), ref colorsExpanded[2]);
             if (colorsExpanded[2])
             {
                 GUILayoutEx.BeginIndent();

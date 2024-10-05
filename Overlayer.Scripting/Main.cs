@@ -41,6 +41,8 @@ namespace Overlayer.Scripting
         public static Settings Settings { get; private set; }
         public static Api JSApi { get; private set; }
         public static bool PatchesLocked { get; private set; }
+
+        public static bool allowUnsafe { get; private set; }
         public static void Load(ModEntry modEntry)
         {
             Mod = modEntry;
@@ -56,6 +58,10 @@ namespace Overlayer.Scripting
             {
                 if (toggle)
                 {
+                    if (File.Exists(Path.Combine(modEntry.Path, "allowUnsafe.txt")))
+                    {
+                        allowUnsafe = true;
+                    }
                     Settings = ModSettings.Load<Settings>(modEntry);
                     TagManager.Load(typeof(Expression));
                     TagManager.Load(typeof(PerformanceTags));
@@ -66,11 +72,11 @@ namespace Overlayer.Scripting
                     foreach (var tag in TagManager.All)
                         JSApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
 
-                    foreach (var att in GetADOFAITagTypes())
+                    /*foreach (var att in GetADOFAITagTypes())
                     {
                         var tuple = (new ApiAttribute(att.Name), att);
                         JSApi.Types.Add(tuple);
-                    }
+                    }*/
 
                     OverlayerText.OnApplyConfig += text =>
                     {
