@@ -46,7 +46,6 @@ namespace Overlayer.Utils
             }
             
             windowRect.width = 300;
-            windowRect.height = 300;
 
             isInitaialize = true;
             this.codesBefore = codesBefore;

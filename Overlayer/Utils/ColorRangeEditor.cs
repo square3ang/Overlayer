@@ -40,11 +40,11 @@ namespace Overlayer.Utils
                 ColorUtility.TryParseHtmlString("#" + arr[4], out colorMax);
                 ease = EnumHelper<Ease>.Parse(arr[5]);
             }
+            windowRect.width = 300;
             isInitaialize = true;
             this.codesBefore = codesBefore;
             this.codesAfter = codesAfter;
-            windowRect.width = 300;
-            windowRect.height = 300;
+            
         }
 
         public void OnGUI()
