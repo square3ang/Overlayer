@@ -12,7 +12,7 @@ namespace Overlayer.Tags
     {
         public static bool Initialized { get; private set; }
         public static int Count => tags.Count;
-        private static Dictionary<string, OverlayerTag> tags;
+        internal static Dictionary<string, OverlayerTag> tags;
         public static IEnumerable<OverlayerTag> All => tags.Values;
         public static IEnumerable<OverlayerTag> NP => tags.Values.Where(ot => ot.NotPlaying);
         public static void Load(Assembly ass)

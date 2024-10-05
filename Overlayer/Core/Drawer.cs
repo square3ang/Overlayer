@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Overlayer.CodeEditor;
+using Overlayer.Tags;
 using RapidGUI;
 using UnityEngine;
 
@@ -346,6 +347,16 @@ namespace Overlayer.Core
             return result;
         }
 
+        public static bool DrawTags(ref string value)
+        {
+            var tags = TagManager.tags.Keys.ToList();
+            tags.Sort();
+            var selected = tags.IndexOf(value);
+            SelectionPopup(ref selected, tags.ToArray(), "");
+            value = tags[selected];
+            return selected != tags.IndexOf(value);
+        }
+
         public static bool DrawInt16(string label, ref short value)
         {
             string str = value.ToString();
@@ -572,8 +583,8 @@ namespace Overlayer.Core
                 cursor = "#D4D4D4"
             });
 
-        public static Regex highlight = new Regex("{(.*?)}");
-        public static Regex color = new Regex("<<b></b>color=(.*?)>");
+        public static Regex highlight = new Regex("{(.*?)}", RegexOptions.Compiled);
+        public static Regex color = new Regex("<<b></b>color=(.*?)>", RegexOptions.Compiled);
         public static GUIStyle myButton;
         public static GUIStyle myTextField;
         
@@ -599,8 +610,34 @@ namespace Overlayer.Core
                                 "<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>");
                         }
                     }
-
-                    str = highlight.Replace(str, "<color=lightblue>{$1}</color>");
+                    
+                    foreach (Match match in highlight.Matches(str))
+                    {
+                        var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
+                        if (TagManager.tags.Keys.Contains(name))
+                        {
+                            if (name == "MovingMan" && Main.Settings.useMovingManEditor)
+                            {
+                                str = str.Replace("{" + match.Groups[1].Value + "}",
+                                    "<color=lime>{" + match.Groups[1].Value + "}</color>");
+                            }
+                            else if (name == "ColorRange" && Main.Settings.useColorRangeEditor)
+                            {
+                                str = str.Replace("{" + match.Groups[1].Value + "}",
+                                    "<color=lime>{" + match.Groups[1].Value + "}</color>");
+                            }
+                            else
+                            {
+                                str = str.Replace("{" + match.Groups[1].Value + "}",
+                                    "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
+                            }
+                        }
+                        else
+                        {
+                            str = str.Replace("{" + match.Groups[1].Value + "}",
+                                "<color=red>{" + match.Groups[1].Value + "}</color>");
+                        }
+                    }
 
                     return str;
                 }

@@ -64,6 +64,7 @@ namespace Overlayer.Models
             topRightStatus = new GUIStatus();
             bottomLeftStatus = new GUIStatus();
             bottomRightStatus = new GUIStatus();
+
         }
         public GColor Copy()
         {

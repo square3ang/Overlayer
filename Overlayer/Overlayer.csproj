@@ -492,12 +492,14 @@
     <Compile Include="Unity\OverlayerText.cs" />
     <Compile Include="Unity\StaticCoroutine.cs" />
     <Compile Include="Utils\ADOUtils.cs" />
+    <Compile Include="Utils\ColorRangeEditor.cs" />
     <Compile Include="Utils\DeletePopup.cs" />
     <Compile Include="Utils\EnumHelper.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\IOUtils.cs" />
     <Compile Include="Utils\MiscUtils.cs" />
     <Compile Include="Utils\ModelUtils.cs" />
+    <Compile Include="Utils\MovingManEditor.cs" />
     <Compile Include="Utils\UpdatePopup.cs" />
     <Compile Include="Utils\StringConverter.cs" />
     <Compile Include="Utils\StringUtils.cs" />

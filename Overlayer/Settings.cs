@@ -14,6 +14,8 @@ namespace Overlayer
         public float FPSUpdateRate = 100;
         public float FrameTimeUpdateRate = 100;
         public bool useLegacyTheme = false;
+        public bool useMovingManEditor = true;
+        public bool useColorRangeEditor = true;
         public JsonNode Serialize()
         {
             var node = JsonNode.Empty;
@@ -23,6 +25,8 @@ namespace Overlayer
             node[nameof(FPSUpdateRate)] = FPSUpdateRate;
             node[nameof(FrameTimeUpdateRate)] = FrameTimeUpdateRate;
             node[nameof(useLegacyTheme)] = useLegacyTheme;
+            node[nameof(useMovingManEditor)] = useMovingManEditor;
+            node[nameof(useColorRangeEditor)] = useColorRangeEditor;
             return node;
         }
         public void Deserialize(JsonNode node)
@@ -33,6 +37,8 @@ namespace Overlayer
             FPSUpdateRate = node[nameof(FPSUpdateRate)];
             FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)];
             useLegacyTheme = node[nameof(useLegacyTheme)];
+            useMovingManEditor = node[nameof(useMovingManEditor)];
+            useColorRangeEditor = node[nameof(useColorRangeEditor)];
         }
         public Settings Copy()
         {
@@ -43,6 +49,8 @@ namespace Overlayer
             newSettings.FPSUpdateRate = FPSUpdateRate;
             newSettings.FrameTimeUpdateRate = FrameTimeUpdateRate;
             newSettings.useLegacyTheme = useLegacyTheme;
+            newSettings.useMovingManEditor = useMovingManEditor;
+            newSettings.useColorRangeEditor = useColorRangeEditor;
             return newSettings;
         }
     }

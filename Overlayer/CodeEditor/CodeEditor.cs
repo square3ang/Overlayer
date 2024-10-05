@@ -1,5 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using HarmonyLib;
+using Overlayer.Core;
+using Overlayer.Utils;
 using UnityModManagerNet;
 
 namespace Overlayer.CodeEditor;
@@ -24,6 +29,15 @@ public class CodeEditor
     private bool pressedTab = false;
     private bool pressedShift = false;
 
+    private MovingManEditor movingManEditor;
+    private ColorRangeEditor colorRangeEditor;
+    private int editingHash;
+
+
+    public static List<int> ignoreTextAreaNext = new();
+
+    private static Regex tagRegex = new(@"{(.*?)}", RegexOptions.Compiled);
+
     public bool isFocused
     {
         get { return GUI.GetNameOfFocusedControl() == controlName; }
@@ -42,8 +56,52 @@ public class CodeEditor
         return code;
     }
 
+    private string selectedtag = "Developer";
+
     public string Draw(string code, GUIStyle style, params GUILayoutOption[] options)
     {
+        if (movingManEditor)
+        {
+            if (editingHash == code.GetHashCode())
+            {
+                code = movingManEditor.codesBefore + "MovingMan(" + movingManEditor.targetTag + "," +
+                       movingManEditor.startSize + "," + movingManEditor.endSize + "," +
+                       movingManEditor.defaultSize + "," + movingManEditor.speed + "," +
+                       movingManEditor.invert + "," + movingManEditor.ease + ")" + movingManEditor.codesAfter;
+                editingHash = code.GetHashCode();
+            }
+        }
+
+        if (colorRangeEditor)
+        {
+            if (editingHash == code.GetHashCode())
+            {
+                code = colorRangeEditor.codesBefore + "ColorRange(" + colorRangeEditor.targetTag + "," +
+                       colorRangeEditor.valueMin + "," + colorRangeEditor.valueMax + "," +
+                       ColorUtility.ToHtmlStringRGB(colorRangeEditor.colorMin) + "," +
+                       ColorUtility.ToHtmlStringRGB(colorRangeEditor.colorMax) + "," +
+                       colorRangeEditor.ease +
+                       ")" + colorRangeEditor.codesAfter;
+                editingHash = code.GetHashCode();
+            }
+        }
+
+        GUILayout.BeginHorizontal();
+
+        Drawer.DrawTags(ref selectedtag);
+
+        if (Drawer.Button("Insert"))
+        {
+            TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+            var sb = new StringBuilder(code);
+            sb.Insert(editor.selectIndex, "{" + selectedtag + "}");
+            code = sb.ToString();
+            ignoreTextAreaNext.Clear();
+        }
+
+        GUILayout.FlexibleSpace();
+
+        GUILayout.EndHorizontal();
         float lineCountWidth = code.Split('\n').Length.ToString().Length * charWidth;
         var preBackgroundColor = GUI.backgroundColor;
         var preColor = GUI.color;
@@ -89,16 +147,30 @@ public class CodeEditor
 
         // Drawing the text area using GUILayout
         GUI.SetNextControlName(controlName);
-        string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true),
-            GUILayout.Width(
-                ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
-                    .GetValue(UnityModManager.UI.Instance)).width - (55 + lineCountWidth)));
+        var editorw = ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
+                .GetValue(UnityModManager.UI.Instance))
+            .width - (55 + lineCountWidth);
 
-        if (editedCode != code)
+
+        if (!ignoreTextAreaNext.Contains(code.GetHashCode()) && !movingManEditor && !colorRangeEditor)
         {
-            code = editedCode;
-            onValueChange?.Invoke();
+            string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true),
+                GUILayout.Width(editorw));
+            if (editedCode != code)
+            {
+                code = editedCode;
+                ignoreTextAreaNext.Clear();
+                onValueChange?.Invoke();
+            }
         }
+
+        else
+        {
+            //Main.Logger.Log("Ignore");
+            GUILayout.Box(code, backStyle, GUILayout.ExpandHeight(true),
+                GUILayout.Width(editorw));
+        }
+
 
         if (cachedCode != code)
         {
@@ -120,6 +192,167 @@ public class CodeEditor
 
         // Render highlighted text
         GUI.Label(GUILayoutUtility.GetLastRect(), cachedHighlightedCode, foreStyle);
+
+        var found = false;
+
+        var i = 0;
+        // Get Tags
+        foreach (Match match in tagRegex.Matches(code))
+        {
+            if (!Main.Settings.useMovingManEditor && !Main.Settings.useColorRangeEditor) break;
+            if (movingManEditor || colorRangeEditor) break;
+            var tag = match.Groups[1].Value;
+
+            if (tag.StartsWith("MovingMan") && Main.Settings.useMovingManEditor)
+            {
+                //Main.Logger.Log("Rendering MovingMan" + i++);
+                // moving man set
+                var start = match.Groups[1].Index;
+                var end = start + match.Groups[1].Length;
+                var codesBefore = code.Substring(0, start);
+                var codesAfter = code.Substring(end, code.Length - end);
+                var lines = codesBefore.Split('\n');
+                var lastline = lines[lines.Length - 1];
+                var height = style.CalcSize(new GUIContent("A")).y;
+
+                var len = lines.Length - 1;
+                var xc = 0f;
+                foreach (var l in lines)
+                {
+                    xc = style.CalcSize(new GUIContent(l)).x;
+                    while (xc >= editorw - 5)
+                    {
+                        xc -= editorw - 5;
+                        len++;
+                    }
+                }
+
+                //Main.Logger.Log(lastline);
+
+                var width = style.CalcSize(new GUIContent(lastline)).x;
+
+                while (width >= editorw - 5)
+                {
+                    width -= editorw - 5;
+                }
+
+                //Main.Logger.Log(width + "");
+
+
+                var y = len * height;
+
+                var x = width + 5;
+
+                var rect = GUILayoutUtility.GetLastRect();
+                rect.x += x;
+                rect.y += y;
+
+                rect.width = style.CalcSize(new GUIContent(match.Groups[1].Value)).x;
+                rect.height = height;
+
+                if (Event.current.type == EventType.Repaint)
+                {
+                    if (rect.Contains(Event.current.mousePosition))
+                    {
+                        found = true;
+                    }
+                }
+                else
+                {
+                    if (!found)
+                        found = ignoreTextAreaNext.Contains(code.GetHashCode());
+                }
+
+
+                if (GUI.Button(rect, ""))
+                {
+                    movingManEditor = new GameObject().AddComponent<MovingManEditor>();
+                    Object.DontDestroyOnLoad(movingManEditor);
+                    movingManEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                    editingHash = code.GetHashCode();
+                }
+            }
+
+            else if (tag.StartsWith("ColorRange") && Main.Settings.useColorRangeEditor)
+            {
+                //Main.Logger.Log("Rendering MovingMan" + i++);
+                // moving man set
+                var start = match.Groups[1].Index;
+                var end = start + match.Groups[1].Length;
+                var codesBefore = code.Substring(0, start);
+                var codesAfter = code.Substring(end, code.Length - end);
+                var lines = codesBefore.Split('\n');
+                var lastline = lines[lines.Length - 1];
+                var height = style.CalcSize(new GUIContent("A")).y;
+
+                var len = lines.Length - 1;
+                var xc = 0f;
+                foreach (var l in lines)
+                {
+                    xc = style.CalcSize(new GUIContent(l)).x;
+                    while (xc >= editorw - 5)
+                    {
+                        xc -= editorw - 5;
+                        len++;
+                    }
+                }
+
+                //Main.Logger.Log(lastline);
+
+                var width = style.CalcSize(new GUIContent(lastline)).x;
+
+                while (width >= editorw - 5)
+                {
+                    width -= editorw - 5;
+                }
+
+                //Main.Logger.Log(width + "");
+
+
+                var y = len * height;
+
+                var x = width + 5;
+
+                var rect = GUILayoutUtility.GetLastRect();
+                rect.x += x;
+                rect.y += y;
+
+                rect.width = style.CalcSize(new GUIContent(match.Groups[1].Value)).x;
+                rect.height = height;
+
+                if (Event.current.type == EventType.Repaint)
+                {
+                    if (rect.Contains(Event.current.mousePosition))
+                    {
+                        found = true;
+                    }
+                }
+                else
+                {
+                    if (!found)
+                        found = ignoreTextAreaNext.Contains(code.GetHashCode());
+                }
+
+
+                if (GUI.Button(rect, ""))
+                {
+                    colorRangeEditor = new GameObject().AddComponent<ColorRangeEditor>();
+                    Object.DontDestroyOnLoad(colorRangeEditor);
+                    colorRangeEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                    editingHash = code.GetHashCode();
+                }
+            }
+        }
+
+        if (found)
+        {
+            if (!ignoreTextAreaNext.Contains(code.GetHashCode()))
+                ignoreTextAreaNext.Add(code.GetHashCode());
+        }
+        else
+        {
+            ignoreTextAreaNext.Remove(code.GetHashCode());
+        }
 
         GUI.backgroundColor = preBackgroundColor;
         GUI.color = preColor;
