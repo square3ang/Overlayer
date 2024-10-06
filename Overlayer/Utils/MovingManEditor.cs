@@ -56,15 +56,16 @@ namespace Overlayer.Utils
         {
             if (isInitaialize)
             {
+                var fmt = string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan");
                 if (!isSpawn && Event.current.type == EventType.Repaint)
                 {
-                    windowRect = GUILayout.Window(122, windowRect, DrawWindow, $"MovingMan Editor", RGUIStyle.darkWindow);
+                    windowRect = GUILayout.Window(122, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
                     windowRect.x = (int)(Screen.width * 0.5f - windowRect.width * 0.5f);
                     windowRect.y = (int)(Screen.height * 0.5f - windowRect.height * 0.5f);
                     isSpawn = true;
                 }
 
-                windowRect = GUILayout.Window(122,windowRect,DrawWindow,$"MovingMan Editor", RGUIStyle.darkWindow);
+                windowRect = GUILayout.Window(122,windowRect,DrawWindow,fmt, RGUIStyle.darkWindow);
             }
         }
 
@@ -75,22 +76,22 @@ namespace Overlayer.Utils
             GUILayout.Space(10);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Target Tag");
+            GUILayout.Label(Main.Lang.Get("TARGET_TAG", "Target Tag"));
             Drawer.DrawTags(ref targetTag);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            Drawer.DrawDouble("Start Size", ref startSize);
-            Drawer.DrawDouble("End Size", ref endSize);
-            Drawer.DrawDouble("Default Size", ref defaultSize);
-            Drawer.DrawDouble("Speed", ref speed);
-            Drawer.DrawBool("Invert", ref invert);
+            Drawer.DrawDouble(Main.Lang.Get("START_SIZE", "Start Size"), ref startSize);
+            Drawer.DrawDouble(Main.Lang.Get("END_SIZE", "End Size"), ref endSize);
+            Drawer.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
+            Drawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
+            Drawer.DrawBool(Main.Lang.Get("INVERT", "Invert"), ref invert);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Ease");
+            GUILayout.Label(Main.Lang.Get("EASE", "Ease"));
             Drawer.DrawEnumPlus("", ref ease, a => a);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            if (Drawer.Button("Done"))
+            if (Drawer.Button(Main.Lang.Get("DONE", "Done")))
             {
                 AnimateAndDestroy();
             }

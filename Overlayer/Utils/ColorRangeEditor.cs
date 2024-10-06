@@ -51,16 +51,17 @@ namespace Overlayer.Utils
         {
             if (isInitaialize)
             {
+                var fmt = string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange");
                 
                 if (!isSpawn && Event.current.type == EventType.Repaint)
                 {
-                    windowRect = GUILayout.Window(123,windowRect,DrawWindow,$"ColorRange Editor", RGUIStyle.darkWindow);
+                    windowRect = GUILayout.Window(123,windowRect,DrawWindow,fmt, RGUIStyle.darkWindow);
                     windowRect.x = (int) ( Screen.width * 0.5f - windowRect.width * 0.5f );
                     windowRect.y = (int) ( Screen.height * 0.5f - windowRect.height * 0.5f );
                     isSpawn = true;
                 }
                 
-                windowRect = GUILayout.Window(123,windowRect,DrawWindow,$"ColorRange Editor", RGUIStyle.darkWindow);
+                windowRect = GUILayout.Window(123,windowRect,DrawWindow,fmt, RGUIStyle.darkWindow);
             }
         }
 
@@ -71,26 +72,26 @@ namespace Overlayer.Utils
             GUILayout.Space(10);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Target Tag");
+            GUILayout.Label(Main.Lang.Get("TARGET_TAG", "Target Tag"));
             Drawer.DrawTags(ref targetTag);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            Drawer.DrawDouble("Value Min", ref valueMin);
-            Drawer.DrawDouble("Value Max", ref valueMax);
+            Drawer.DrawDouble(Main.Lang.Get("VALUE_MIN", "Min Value"), ref valueMin);
+            Drawer.DrawDouble(Main.Lang.Get("VALUE_MAX", "Max Value"), ref valueMax);
 
-            GUILayout.Label("Color Min");
+            GUILayout.Label(Main.Lang.Get("COLOR_MIN", "Min Color"));
             Drawer.DrawColor(ref colorMin);
-            GUILayout.Label("Color Max");
+            GUILayout.Label(Main.Lang.Get("COLOR_MAX", "Max Color"));
             Drawer.DrawColor(ref colorMax);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Ease");
+            GUILayout.Label(Main.Lang.Get("EASE", "Ease"));
             Drawer.DrawEnumPlus("", ref ease, a => a);
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            if (Drawer.Button("Done"))
+            if (Drawer.Button(Main.Lang.Get("DONE", "Done")))
             {
                 AnimateAndDestroy();
             }

@@ -97,6 +97,20 @@
     "USE_LEGACY_THEME": "레거시 테마 사용",
     "DESTROY_ASK": "파괴할까요?",
     "YES": "네",
-    "NO": "아니요"
+    "NO": "아니요",
+    "INSERT": "삽입",
+    "TARGET_TAG": "대상 태그",
+    "START_SIZE": "시작 크기",
+    "END_SIZE": "끝 크기",
+    "DEFAULT_SIZE": "기본 크기",
+    "SPEED": "속도",
+    "INVERT": "반전",
+    "EASE": "가감속",
+    "DONE": "완료",
+    "THIS_EDITOR": "{0} 편집기",
+    "VALUE_MIN": "최소 값",
+    "VALUE_MAX": "최대 값",
+    "COLOR_MIN": "최소 색",
+    "COLOR_MAX": "최대 색"
   }
 }

@@ -90,7 +90,7 @@ public class CodeEditor
 
         Drawer.DrawTags(ref selectedtag);
 
-        if (Drawer.Button("Insert"))
+        if (Drawer.Button(Main.Lang.Get("INSERT", "Insert")))
         {
             TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
             var sb = new StringBuilder(code);
