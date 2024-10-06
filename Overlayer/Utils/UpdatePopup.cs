@@ -1,4 +1,5 @@
-﻿using Overlayer.Core;
+﻿using System.Collections;
+using Overlayer.Core;
 using UnityEngine;
 using DG.Tweening;
 using Overlayer.Core.Translatior;
@@ -96,19 +97,24 @@ namespace Overlayer.Utils
             //GUI.DragWindow();
         }
 
+
+        private IEnumerator DestroyCoroutine()
+        {
+            yield return new WaitForSeconds(0.5f);
+            Destroy(gameObject);
+        }
+
         private void AnimateAndDestroy()
         {
             if(isAnimating)
                 return;
             else
                 isAnimating = true;
-
-            DOTween.To(() => windowRect.position,x => windowRect.position = x,new Vector2(windowRect.position.x,Screen.height * -1.3f),0.4f)
-                   .SetEase(Ease.InBack)
-                   .OnComplete(() =>
-                   {
-                       Destroy(gameObject);
-                   });
+            StartCoroutine(DestroyCoroutine());
+            DOTween.To(() => windowRect.position, x => windowRect.position = x,
+                    new Vector2(windowRect.position.x, Screen.height * -1.3f), 0.4f)
+                .SetEase(Ease.InBack);
+            
         }
     }
 }

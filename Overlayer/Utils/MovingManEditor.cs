@@ -93,7 +93,7 @@ namespace Overlayer.Utils
 
             if (Drawer.Button(Main.Lang.Get("DONE", "Done")))
             {
-                AnimateAndDestroy();
+                Destroy(gameObject);
             }
 
             GUILayout.Space(10);
@@ -102,17 +102,6 @@ namespace Overlayer.Utils
             //
         }
 
-        private void AnimateAndDestroy()
-        {
-            if (isAnimating)
-                return;
-            else
-                isAnimating = true;
 
-            DOTween.To(() => windowRect.position, x => windowRect.position = x,
-                    new Vector2(windowRect.position.x, Screen.height * -1.3f), 0.4f)
-                .SetEase(Ease.InBack)
-                .OnComplete(() => { Destroy(gameObject); });
-        }
     }
 }

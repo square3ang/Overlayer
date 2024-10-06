@@ -78,11 +78,11 @@ namespace Overlayer.Utils
                 TextManager.DestroyText(txt);
                 Main.GUI.Skip(frames: 2);
                 Main.GUI.Pop();
-                AnimateAndDestroy();
+                Destroy(gameObject);
             }
             if(Drawer.Button($"<size=18>{Main.Lang.Get("NO","No")}</size>",GUILayout.Width(100),GUILayout.Height(40)))
             {
-                AnimateAndDestroy();
+                Destroy(gameObject);
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -93,19 +93,6 @@ namespace Overlayer.Utils
             //GUI.DragWindow();
         }
 
-        private void AnimateAndDestroy()
-        {
-            if(isAnimating)
-                return;
-            else
-                isAnimating = true;
 
-            DOTween.To(() => windowRect.position,x => windowRect.position = x,new Vector2(windowRect.position.x,Screen.height * -1.3f),0.4f)
-                   .SetEase(Ease.InBack)
-                   .OnComplete(() =>
-                   {
-                       Destroy(gameObject);
-                   });
-        }
     }
 }
