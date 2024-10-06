@@ -112,6 +112,9 @@
     "VALUE_MAX": "최대 값",
     "COLOR_MIN": "최소 색",
     "COLOR_MAX": "최대 색",
-    "USE_THIS": "{0} 사용"
+    "USE_THIS": "{0} 사용",
+    "TOOLTIP_ACCURACY": "정확도(정확일때 100+0.01)",
+    "TOOLTIP_ACTIVESCENE": "활성화된 씬",
+    "TOOLTIP_ACTUALPROGRESS": "시간에 기반한 현재 (실제) 진행도"
   }
 }

@@ -114,6 +114,9 @@
     "VALUE_MAX": "Max Value",
     "COLOR_MIN": "Min Color",
     "COLOR_MAX": "Max Color",
-    "USE_THIS": "Use {0}"
+    "USE_THIS": "Use {0}",
+    "TOOLTIP_ACCURACY": "Accuracy(when perfect: 100+0.01%)",
+    "TOOLTIP_ACTIVESCENE": "Active Scene",
+    "ACTUALPROGRESS": "Current (Actual) Progress based on time"
   }
 }

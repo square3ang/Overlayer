@@ -488,6 +488,7 @@
     <Compile Include="Tags\Tile.cs" />
     <Compile Include="Tags\Time.cs" />
     <Compile Include="Tags\HitTiming.cs" />
+    <Compile Include="Tags\Tooltip.cs" />
     <Compile Include="Unity\Capturer.cs" />
     <Compile Include="Unity\OverlayerText.cs" />
     <Compile Include="Unity\StaticCoroutine.cs" />

@@ -14,6 +14,7 @@ using System.Collections;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using RapidGUI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
@@ -43,8 +44,8 @@ namespace Overlayer
         */
         private static UpdatePopup popup;
 
-        private static bool showTooltip = false;
-        private static string tooltip = "";
+        public static bool showTooltip = false;
+        public static string tooltip = "";
 
         public static void Load(ModEntry modEntry)
         {
@@ -161,7 +162,7 @@ namespace Overlayer
                 }
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
-                if (showTooltip)
+                if (showTooltip && !RGUI.PopupWindow.showTooltip)
                 {
                     Drawer.Tooltip(tooltip);
                 }

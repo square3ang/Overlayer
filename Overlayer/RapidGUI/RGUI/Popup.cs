@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Overlayer;
 using Overlayer.Core;
@@ -32,14 +33,15 @@ namespace RapidGUI
             GUILayout.Box(label, RGUIStyle.alignLeftBox);
             return PopupOnLastRect(selectionIndex, displayOptions);
         }
-        
-        public static int SelectionPopup(int selectionIndex, string[] displayOptions, params GUILayoutOption[] options)
+
+        public static int SelectionPopup(int selectionIndex, string[] displayOptions,
+            Dictionary<string, string> tooltips = null, params GUILayoutOption[] options)
         {
             var label = (selectionIndex < 0 || displayOptions.Length <= selectionIndex)
                 ? ""
                 : displayOptions[selectionIndex];
             GUILayout.Box(label, RGUIStyle.alignLeftBox, options);
-            return PopupOnLastRect(selectionIndex, displayOptions);
+            return PopupOnLastRect(selectionIndex, displayOptions, -1, "", tooltips);
         }
 
         public static int PopupOnLastRect(string[] displayOptions, string label = "") =>
@@ -49,12 +51,13 @@ namespace RapidGUI
             PopupOnLastRect(-1, displayOptions, button, label);
 
         public static int PopupOnLastRect(int selectionIndex, string[] displayOptions, int mouseButton = -1,
-            string label = "") => Popup(GUILayoutUtility.GetLastRect(), mouseButton, selectionIndex, displayOptions,
-            label);
+            string label = "", Dictionary<string, string> tooltips = null) => Popup(GUILayoutUtility.GetLastRect(),
+            mouseButton, selectionIndex, displayOptions,
+            label, tooltips);
 
 
         public static int Popup(Rect launchRect, int mouseButton, int selectionIndex, string[] displayOptions,
-            string label = "")
+            string label = "", Dictionary<string, string> tooltips = null)
         {
             var ret = selectionIndex;
             var controlId = GUIUtility.GetControlID(FocusType.Passive);
@@ -130,6 +133,7 @@ namespace RapidGUI
 
                     popupWindow.label = label;
                     popupWindow.displayOptions = displayOptions;
+                    popupWindow.tooltips = tooltips;
                     WindowInvoker.Add(popupWindow);
                 }
             }
@@ -138,14 +142,18 @@ namespace RapidGUI
         }
 
 
-        class PopupWindow : IDoGUIWindow
+        public class PopupWindow : IDoGUIWindow
         {
             public string label;
             public Vector2 pos;
             public Vector2 size;
             public int? result;
             public string[] displayOptions;
+            public Dictionary<string, string> tooltips;
             public Vector2 scrollPosition;
+
+            public static bool showTooltip = false;
+            public static string tooltip = "";
 
             static readonly int PopupWindowId = "Popup".GetHashCode();
 
@@ -153,8 +161,19 @@ namespace RapidGUI
 
             public void DoGUIWindow()
             {
-                GUI.ModalWindow(PopupWindowId, GetWindowRect(), (id) =>
+                var npopup = new GUIStyle(RGUIStyle.popup);
+                npopup.normal.background = Texture2D.blackTexture;
+                npopup.hover.background = Texture2D.blackTexture;
+                npopup.padding = new RectOffset(100, 100, 100, 100);
+                var wrect = GetWindowRect();
+                wrect.x -= 100;
+                wrect.y -= 100;
+                wrect.width += 200;
+                wrect.height += 200;
+                GUI.ModalWindow(PopupWindowId, wrect, (id) =>
                     {
+                        GUI.Box(new Rect(100, 100, GetWindowRect().width, GetWindowRect().height), "", RGUIStyle.popup);
+                        showTooltip = false;
                         var bakv = GUI.skin.verticalScrollbar.normal.background;
                         GUI.skin.verticalScrollbar.normal.background = Drawer.jittengray;
                         var bakvt = GUI.skin.verticalScrollbarThumb.normal.background;
@@ -168,6 +187,23 @@ namespace RapidGUI
                                 if (GUILayout.Button(displayOptions[j], RGUIStyle.popupFlatButton))
                                 {
                                     result = j;
+                                    showTooltip = false;
+                                }
+
+                                /*if (displayOptions[j] == "Accuracy")
+                                {
+                                    Main.Logger.Log(displayOptions[j]);
+                                    Main.Logger.Log("Hover: " + GUILayoutUtility.GetLastRect()
+                                        .Contains(Event.current.mousePosition));
+                                }*/
+
+                                if (tooltips != null &&
+                                    GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) &&
+                                    tooltips.TryGetValue(displayOptions[j], out var tooltip))
+                                {
+                                    Main.Logger.Log("ShowTooltip");
+                                    showTooltip = true;
+                                    PopupWindow.tooltip = tooltip;
                                 }
                             }
                         }
@@ -181,14 +217,21 @@ namespace RapidGUI
                         {
                             result = -1;
                             ;
+                            showTooltip = false;
+                        }
+
+                        if (showTooltip)
+                        {
+                            Drawer.Tooltip(tooltip);
                         }
                     }
-                    , label, RGUIStyle.popup);
+                    , label, npopup);
             }
 
             public void CloseWindow()
             {
                 result = -1;
+                showTooltip = false;
             }
         }
     }

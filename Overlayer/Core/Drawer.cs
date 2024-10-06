@@ -2,6 +2,7 @@
 using Overlayer.Models;
 using Overlayer.Utils;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -38,8 +39,9 @@ namespace Overlayer.Core
             GUILayout.Label(label);
             DrawGColor(ref color, canEnableGradient).IfTrue(onChange);
         }
-        
-        public static bool SelectionPopup(ref int selected, string[] options, string label, params GUILayoutOption[] layoutOptions)
+
+        public static bool SelectionPopup(ref int selected, string[] options, string label,
+            params GUILayoutOption[] layoutOptions)
         {
             if (label != "")
             {
@@ -47,15 +49,33 @@ namespace Overlayer.Core
                 GUILayout.Label(label);
             }
 
-            var news = RGUI.SelectionPopup(selected, options, layoutOptions);
+            var news = RGUI.SelectionPopup(selected, options, null, layoutOptions);
             var c = selected != news;
-            
+
             selected = news;
             if (label != "")
                 GUILayout.EndHorizontal();
             return c;
         }
-        
+
+        public static bool SelectionPopupWithTooltip(ref int selected, string[] options, string label,
+            Dictionary<string, string> tooltips, params GUILayoutOption[] layoutOptions)
+        {
+            if (label != "")
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(label);
+            }
+
+            var news = RGUI.SelectionPopup(selected, options, tooltips, layoutOptions);
+            var c = selected != news;
+
+            selected = news;
+            if (label != "")
+                GUILayout.EndHorizontal();
+            return c;
+        }
+
 
         public static bool DrawGColor(ref GColor color, bool canEnableGradient)
         {
@@ -122,11 +142,12 @@ namespace Overlayer.Core
                 c = true;
                 ColorUtility.TryParseHtmlString("#" + hex, out color);
             }
+
             var ncol = RGUI.Field(color, "");
 
             if (!c) c = color != ncol;
             color = ncol;
-            
+
             return c;
         }
 
@@ -255,21 +276,23 @@ namespace Overlayer.Core
             veryjittengray = new Texture2D(1, 1);
             veryjittengray.SetPixel(0, 0, new Color(0.1f, 0.1f, 0.1f));
             veryjittengray.Apply();
-            
-            
-            string base64ImageSelected = "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHxSURBVDhPvZTLSsNAFIbbVN15QRG84hXxguALiOJSitT78ygoqE8iuPENBPeiuBOx2ipWFHVnxZL6/clJTUwQF+IPX8+Zf86cTifTpP5aaYuJqlarDTBG2uk7qSJcOo7z7g9/Kdd122APnmgYkTzYhXYrjyi2QwpnCAfQBmfpdPqQeE0vhzgAWbwpxo/ENTjCSxbN5uAdniHLotgXqjGsWk2ZfNamomKyHfRzVDhudtCgH6+PmDFb9RNWf4ffYvaXmNgBacEsectQ8FxfeVi0ac2v0EznumuWL7w6TO3shNz7meRL4GpBWFgVQs7WOYzPQLusk+cJY9KKNzUmzZAX5SWJuSuCHpLWboA0pLFnoh6LeYu90O2nidJ5dijhKedBvyrSMHiarj4oVk3sCYdUNbxaReTFoOGtxRF90Ev3LthtkgrUlCwfpFbNr/whYlzPGTzA94fyoeKw5EHW1umhnEKBvHalPGFugVS7FhTlGF9CxbiAeZvWmuDabJv1JcxW0EV9gQmzg110QSd57VzJR+EVv0RsNjsqJmegDHop5MINAuHpC9as2RtM25Sn2AIr2OfQtaNzcr0cdOC6AcOwxNw4c/fk67zKjok/i6ZNsA067IjwiqC/aaOVRxTbYVisz4BeWbq0FbjRlQLl/6FU6hOuOzJxbCs2hAAAAABJRU5ErkJggg==";
-            string base64ImageUnselected = "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGlSURBVDhPvZRNS0JBFIb1au36FBdCEH0QqZv+QBitJSrKflFC9kuCFgX9gKB9JG0jLYuKotqlENrzes9FL9fPiF54ODPvnDnOzB0n9NcKW+yoRqMxCkmaCdcJVeDGcZya2x1Q9Xo9BofwRkGf5EEB4pbuU2CFJGYIxxCDYjgcPiWWqeUQ5yCLt0L/lZiDc7zOotg61OAdskwK/KAKw67lVGmv2ZBfDMZB21FiyuyuIidt+Y8UnTS7JQYOQNowq6/I3aGYzrVgliu8KKZWdkm755dvF7kOc4qgVUbl6aA1kORwp2ieERvyBhG5dcIJJKgxK69ZEM1YLFkcWBQtgXa1oL5X0NumfnEotR1RM3oFHywuWRxG8xTVMd26XUR/hIN9+eVHuYJ72hGzXWHug7RlVl+R612bvFktYU6DLuoHpM3uKuoswye5z8QJs/1iMANV0KOwCYHt42mbOSv2Bas21FRggiUccRN0t65p63HQgesGLMI2YynGnmjv8ZRdEHuLouOQBx22T3gV0N90zNJ96vlFmR8BPVm6tN9wx+rKoPZ/KBT6AekJcNd60oGuAAAAAElFTkSuQmCC";
+
+
+            string base64ImageSelected =
+                "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHxSURBVDhPvZTLSsNAFIbbVN15QRG84hXxguALiOJSitT78ygoqE8iuPENBPeiuBOx2ipWFHVnxZL6/clJTUwQF+IPX8+Zf86cTifTpP5aaYuJqlarDTBG2uk7qSJcOo7z7g9/Kdd122APnmgYkTzYhXYrjyi2QwpnCAfQBmfpdPqQeE0vhzgAWbwpxo/ENTjCSxbN5uAdniHLotgXqjGsWk2ZfNamomKyHfRzVDhudtCgH6+PmDFb9RNWf4ffYvaXmNgBacEsectQ8FxfeVi0ac2v0EznumuWL7w6TO3shNz7meRL4GpBWFgVQs7WOYzPQLusk+cJY9KKNzUmzZAX5SWJuSuCHpLWboA0pLFnoh6LeYu90O2nidJ5dijhKedBvyrSMHiarj4oVk3sCYdUNbxaReTFoOGtxRF90Ev3LthtkgrUlCwfpFbNr/whYlzPGTzA94fyoeKw5EHW1umhnEKBvHalPGFugVS7FhTlGF9CxbiAeZvWmuDabJv1JcxW0EV9gQmzg110QSd57VzJR+EVv0RsNjsqJmegDHop5MINAuHpC9as2RtM25Sn2AIr2OfQtaNzcr0cdOC6AcOwxNw4c/fk67zKjok/i6ZNsA067IjwiqC/aaOVRxTbYVisz4BeWbq0FbjRlQLl/6FU6hOuOzJxbCs2hAAAAABJRU5ErkJggg==";
+            string base64ImageUnselected =
+                "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGlSURBVDhPvZRNS0JBFIb1au36FBdCEH0QqZv+QBitJSrKflFC9kuCFgX9gKB9JG0jLYuKotqlENrzes9FL9fPiF54ODPvnDnOzB0n9NcKW+yoRqMxCkmaCdcJVeDGcZya2x1Q9Xo9BofwRkGf5EEB4pbuU2CFJGYIxxCDYjgcPiWWqeUQ5yCLt0L/lZiDc7zOotg61OAdskwK/KAKw67lVGmv2ZBfDMZB21FiyuyuIidt+Y8UnTS7JQYOQNowq6/I3aGYzrVgliu8KKZWdkm755dvF7kOc4qgVUbl6aA1kORwp2ieERvyBhG5dcIJJKgxK69ZEM1YLFkcWBQtgXa1oL5X0NumfnEotR1RM3oFHywuWRxG8xTVMd26XUR/hIN9+eVHuYJ72hGzXWHug7RlVl+R612bvFktYU6DLuoHpM3uKuoswye5z8QJs/1iMANV0KOwCYHt42mbOSv2Bas21FRggiUccRN0t65p63HQgesGLMI2YynGnmjv8ZRdEHuLouOQBx22T3gV0N90zNJ96vlFmR8BPVm6tN9wx+rKoPZ/KBT6AekJcNd60oGuAAAAAElFTkSuQmCC";
 
             byte[] imageBytesSelected = System.Convert.FromBase64String(base64ImageSelected);
-            textureSelected = new Texture2D(1,1);
+            textureSelected = new Texture2D(1, 1);
             textureSelected.LoadImage(imageBytesSelected);
 
             byte[] imageBytesUnselected = System.Convert.FromBase64String(base64ImageUnselected);
-            textureUnselected = new Texture2D(1,1);
+            textureUnselected = new Texture2D(1, 1);
             textureUnselected.LoadImage(imageBytesUnselected);
         }
 
-        public static bool DrawBool(string label,ref bool value)
+        public static bool DrawBool(string label, ref bool value)
         {
             bool prev = value;
 
@@ -278,7 +301,7 @@ namespace Overlayer.Core
             if (Main.Settings.useLegacyTheme)
             {
                 value = GUILayout.Toggle(value, "");
-            } 
+            }
             else
             {
                 var old = GUI.backgroundColor;
@@ -296,12 +319,12 @@ namespace Overlayer.Core
                 GUI.backgroundColor = old;
             }
 
-            if(GUILayout.Button(label,GUI.skin.label))
+            if (GUILayout.Button(label, GUI.skin.label))
             {
                 value = !value;
             }
 
-            
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -352,7 +375,15 @@ namespace Overlayer.Core
             var tags = TagManager.tags.Keys.ToList();
             tags.Sort();
             var selected = tags.IndexOf(value);
-            SelectionPopup(ref selected, tags.ToArray(), "");
+
+            var tooltip = new Dictionary<string, string>();
+            foreach (var toolt in Tags.Tooltip.tooltip)
+            {
+                tooltip[toolt.Key] = Main.Lang.Get("TOOLTIP_" + toolt.Key.ToUpper(), toolt.Value);
+            }
+
+
+            SelectionPopupWithTooltip(ref selected, tags.ToArray(), "", tooltip);
             value = tags[selected];
             return selected != tags.IndexOf(value);
         }
@@ -573,6 +604,7 @@ namespace Overlayer.Core
             }
         }
 
+
         public static CodeEditor.CodeEditor codeEditor = new CodeEditor.CodeEditor("OverlayerCodeEditor",
             new CodeTheme()
             {
@@ -587,7 +619,7 @@ namespace Overlayer.Core
         public static Regex color = new Regex("<<b></b>color=(.*?)>", RegexOptions.Compiled);
         public static GUIStyle myButton;
         public static GUIStyle myTextField;
-        
+
         public static Texture2D veryjittengray;
         public static Texture2D gray;
         public static Texture2D dulgray;
@@ -610,7 +642,7 @@ namespace Overlayer.Core
                                 "<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>");
                         }
                     }
-                    
+
                     foreach (Match match in highlight.Matches(str))
                     {
                         var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
@@ -646,9 +678,9 @@ namespace Overlayer.Core
                     return str;
                 }
             };
-            
+
             InitializeImages();
-            
+
 
             myButton = new GUIStyle(GUI.skin.button);
             myButton.normal.background = gray;
@@ -659,8 +691,6 @@ namespace Overlayer.Core
             myTextField.normal.background = tfgray;
             myTextField.focused.background = tfgray;
             myTextField.hover.background = tfgray;
-            
-            
         }
 
 
