@@ -117,6 +117,6 @@
     "USE_THIS": "Use {0}",
     "TOOLTIP_ACCURACY": "Accuracy(when perfect: 100+0.01%)",
     "TOOLTIP_ACTIVESCENE": "Active Scene",
-    "ACTUALPROGRESS": "Current (Actual) Progress based on time"
+    "TOOLTIP_ACTUALPROGRESS": "Current (Actual) Progress based on time"
   }
 }
