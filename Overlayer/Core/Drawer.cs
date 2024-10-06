@@ -602,10 +602,7 @@ namespace Overlayer.Core
 
                 labelPosition.width = textSize.x + 20;
                 labelPosition.height = textSize.y + 20;
-                var styl = new GUIStyle(GUI.skin.box);
-                styl.normal.background = outlineimg;
-                styl.border = new RectOffset(2, 2, 2, 2);
-                GUI.Box(labelPosition,"", styl);
+                GUI.Box(labelPosition,"", RGUIStyle.darkWindow);
 
                 labelPosition.x += 10;
                 labelPosition.y += 10;
