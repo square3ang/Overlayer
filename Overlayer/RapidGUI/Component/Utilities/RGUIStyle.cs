@@ -44,7 +44,7 @@ namespace RapidGUI
         {
             var style = new GUIStyle(GUI.skin.label)
             {
-                wordWrap = false, 
+                wordWrap = false,
                 alignment = TextAnchor.MiddleCenter
             };
 
@@ -60,7 +60,7 @@ namespace RapidGUI
             style.name = nameof(flatButton);
             flatButton = style;
         }
-        
+
         static void CreatePopupFlatButton()
         {
             var style = new GUIStyle(flatButton)
@@ -80,14 +80,19 @@ namespace RapidGUI
                 border = new RectOffset()
             };
 
-            popupTex = new Texture2D(1, 1);
-            var brightness = 0.2f;
-            var alpha = 0.9f;
-            popupTex.SetPixels(new[] { new Color(brightness, brightness, brightness, alpha) });
-            popupTex.Apply();
+            if (!Main.Settings.useLegacyTheme)
+            {
+                popupTex = new Texture2D(1, 1);
+                var brightness = 0.2f;
+                var alpha = 0.9f;
+                popupTex.SetPixels(new[] { new Color(brightness, brightness, brightness, alpha) });
+                popupTex.Apply();
 
-            style.normal.background =
-            style.hover.background = popupTex;
+
+                style.normal.background =
+                    style.hover.background = popupTex;
+            }
+
 
             style.name = nameof(popup);
             popup = style;
@@ -98,13 +103,12 @@ namespace RapidGUI
         {
             var style = new GUIStyle(GUI.skin.window);
 
-            
 
             if (Main.Settings.useLegacyTheme)
             {
                 style.normal.background = darkWindowTexNormal = CreateTexDark(style.normal.background, 0.5f, 1.4f);
-                style.onNormal.background = darkWindowTexOnNormal = CreateTexDark(style.onNormal.background, 0.6f, 1.5f);
-                
+                style.onNormal.background =
+                    darkWindowTexOnNormal = CreateTexDark(style.onNormal.background, 0.6f, 1.5f);
             }
             else
             {
@@ -120,7 +124,7 @@ namespace RapidGUI
 
         public static void CreateAlignLeftBox()
         {
-            var style = new GUIStyle(Drawer.myButton)
+            var style = new GUIStyle(Main.Settings.useLegacyTheme ? GUI.skin.button : Drawer.myButton)
             {
                 //alignment = TextAnchor.MiddleLeft,
                 name = nameof(alignLeftBox)
@@ -142,7 +146,7 @@ namespace RapidGUI
 
             var dst = new Texture2D(src.width, src.height, TextureFormat.RGBA32, false);
             dst.ReadPixels(new Rect(0f, 0f, src.width, src.height), 0, 0);
-            
+
 
             RenderTexture.active = prev;
             RenderTexture.ReleaseTemporary(tmp);
@@ -172,7 +176,7 @@ namespace RapidGUI
             var style = new GUIStyle(GUI.skin.box)
             {
                 alignment = GUI.skin.label.alignment,
-                richText = true, 
+                richText = true,
                 name = nameof(warningLabel)
             };
 
