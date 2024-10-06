@@ -96,9 +96,10 @@
     "CONVERTED": "Đã chuyển đổi",
     "OK": "Okê!",
     "UPDATE": "Cập nhật",
-    "USE_LEGACY_THEME": "Sử dụng giao diện cũ",
+    "LEGACY_THEME": "giao diện cũ",
     "DESTROY_ASK": "Hủy bỏ?",
     "YES": "Có",
-    "NO": "Không"
+    "NO": "Không",
+    "USE_THIS": "Sử dụng {0}"
   }
 }
