@@ -78,8 +78,8 @@ public class CodeEditor
             {
                 code = colorRangeEditor.codesBefore + "ColorRange(" + colorRangeEditor.targetTag + "," +
                        colorRangeEditor.valueMin + "," + colorRangeEditor.valueMax + "," +
-                       ColorUtility.ToHtmlStringRGB(colorRangeEditor.colorMin) + "," +
-                       ColorUtility.ToHtmlStringRGB(colorRangeEditor.colorMax) + "," +
+                       ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMin) + "," +
+                       ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMax) + "," +
                        colorRangeEditor.ease +
                        ")" + colorRangeEditor.codesAfter;
                 editingHash = code.GetHashCode();
