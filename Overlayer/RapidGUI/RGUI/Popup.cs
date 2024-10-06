@@ -164,15 +164,15 @@ namespace RapidGUI
                 var npopup = new GUIStyle(RGUIStyle.popup);
                 npopup.normal.background = Texture2D.blackTexture;
                 npopup.hover.background = Texture2D.blackTexture;
-                npopup.padding = new RectOffset(100, 100, 100, 100);
+                npopup.padding = new RectOffset(1000, 1000, 100, 100);
                 var wrect = GetWindowRect();
-                wrect.x -= 100;
+                wrect.x -= 1000;
                 wrect.y -= 100;
-                wrect.width += 200;
+                wrect.width += 2000;
                 wrect.height += 200;
                 GUI.ModalWindow(PopupWindowId, wrect, (id) =>
                     {
-                        var rc = new Rect(new Vector2(100, 100), GetWindowRect().size);
+                        var rc = new Rect(new Vector2(1000, 100), GetWindowRect().size);
                         GUI.Box(rc, "", RGUIStyle.popup);
                         showTooltip = false;
                         var bakv = GUI.skin.verticalScrollbar.normal.background;
