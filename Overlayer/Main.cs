@@ -43,6 +43,9 @@ namespace Overlayer
         */
         private static UpdatePopup popup;
 
+        private static bool showTooltip = false;
+        private static string tooltip = "";
+
         public static void Load(ModEntry modEntry)
         {
             Logger = modEntry.Logger;
@@ -147,6 +150,7 @@ namespace Overlayer
             }
             else
             {
+                showTooltip = false;
                 helptime = 0f;
                 GUI.Draw();
                 GUILayout.Space(30);
@@ -157,6 +161,10 @@ namespace Overlayer
                 }
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
+                if (showTooltip)
+                {
+                    Drawer.Tooltip(tooltip);
+                }
             }
         }
 
