@@ -43,20 +43,15 @@ namespace Overlayer.Core
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
-            var c = RawSelectionPopup(ref selected, options, layoutOptions);
-            GUILayout.EndHorizontal();
-            return c;
-        }
-        
-        public static bool RawSelectionPopup(ref int selected, string[] options, params GUILayoutOption[] layoutOptions)
-        {
             var news = RGUI.SelectionPopup(selected, options, layoutOptions);
             var c = selected != news;
             
             selected = news;
-
+            GUILayout.EndHorizontal();
             return c;
         }
+        
+
         public static bool DrawGColor(ref GColor color, bool canEnableGradient)
         {
             bool ge = color.gradientEnabled, prevGe = color.gradientEnabled;
@@ -352,7 +347,7 @@ namespace Overlayer.Core
             var tags = TagManager.tags.Keys.ToList();
             tags.Sort();
             var selected = tags.IndexOf(value);
-            RawSelectionPopup(ref selected, tags.ToArray());
+            SelectionPopup(ref selected, tags.ToArray(), "");
             value = tags[selected];
             return selected != tags.IndexOf(value);
         }
