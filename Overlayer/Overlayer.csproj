@@ -516,6 +516,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MiscFiles\lang\FrenchCanada.json" />
+    <Content Include="MiscFiles\lang\Vietnamese.json" />
     <Content Include="MiscFiles\update.txt" />
     <Content Include="RapidGUI\Component\IMColorPicker\Resources\imBorder.png" />
     <Content Include="RapidGUI\Component\IMColorPicker\Resources\imBorderHighlighted.png" />

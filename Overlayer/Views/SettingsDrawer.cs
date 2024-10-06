@@ -115,9 +115,9 @@ namespace Overlayer.Views
                 GUILayout.EndHorizontal();
                 GUILayoutEx.EndIndent();
             }
-            Drawer.DrawBool(Main.Lang.Get("USE_LEGACY_THEME","Use Legacy Theme"), ref model.useLegacyTheme);
-            Drawer.DrawBool("Use Moving Man Editor", ref model.useMovingManEditor);
-            Drawer.DrawBool("Use Color Range Editor", ref model.useColorRangeEditor);
+            Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME","Legacy Theme")), ref model.useLegacyTheme);
+            Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan")), ref model.useMovingManEditor);
+            Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
             Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
             Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE","FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
             GUILayout.BeginHorizontal();

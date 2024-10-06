@@ -96,7 +96,7 @@
     "CONVERTED": "Converted",
     "OK": "Ok!",
     "UPDATE": "Update",
-    "USE_LEGACY_THEME": "Use Legacy Theme",
+    "LEGACY_THEME": "Legacy Theme",
     "DESTROY_ASK": "Destroy?",
     "YES": "Yes",
     "NO": "No",
@@ -113,6 +113,7 @@
     "VALUE_MIN": "Min Value",
     "VALUE_MAX": "Max Value",
     "COLOR_MIN": "Min Color",
-    "COLOR_MAX": "Max Color"
+    "COLOR_MAX": "Max Color",
+    "USE_THIS": "Use {0}"
   }
 }
