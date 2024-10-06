@@ -1,4 +1,5 @@
 ﻿using System;
+using Overlayer;
 using Overlayer.Core;
 using UnityEngine;
 
@@ -100,10 +101,12 @@ namespace RapidGUI
             //style.normal.background = darkWindowTexNormal = CreateTexDark(style.normal.background, 0.5f, 1.4f);
             //style.onNormal.background = darkWindowTexOnNormal = CreateTexDark(style.onNormal.background, 0.6f, 1.5f);
 
-            
-            style.normal.background = Drawer.outlineimg;
-            style.onNormal.background = Drawer.outlineimg;
-            style.border = new RectOffset(2, 2, 2, 2);
+            if (!Main.Settings.useLegacyTheme)
+            {
+                style.normal.background = Drawer.outlineimg;
+                style.onNormal.background = Drawer.outlineimg;
+                style.border = new RectOffset(2, 2, 2, 2);
+            }
 
             style.name = nameof(darkWindow);
 
