@@ -7,6 +7,7 @@ using SA.GoogleDoc;
 using SFB;
 using System;
 using System.IO;
+using RapidGUI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
@@ -115,7 +116,13 @@ namespace Overlayer.Views
                 GUILayout.EndHorizontal();
                 GUILayoutEx.EndIndent();
             }
-            Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME","Legacy Theme")), ref model.useLegacyTheme);
+
+            if (Drawer.DrawBool(
+                    string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
+                    ref model.useLegacyTheme))
+            {
+                RGUIStyle.CreateStyles();
+            }
             Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan")), ref model.useMovingManEditor);
             Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
             Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
