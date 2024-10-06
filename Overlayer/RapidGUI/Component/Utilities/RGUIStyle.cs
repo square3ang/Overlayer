@@ -75,13 +75,11 @@ namespace RapidGUI
 
         static void CreatePopup()
         {
-            var style = new GUIStyle(GUI.skin.box)
-            {
-                border = new RectOffset()
-            };
+            var style = new GUIStyle(GUI.skin.box);
 
             if (!Main.Settings.useLegacyTheme)
             {
+                style.border = new RectOffset();
                 popupTex = new Texture2D(1, 1);
                 var brightness = 0.2f;
                 var alpha = 0.9f;
