@@ -162,7 +162,7 @@ namespace Overlayer
                 }
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
-                if (showTooltip && !RGUI.PopupWindow.showTooltip)
+                if (showTooltip && !RGUI.PopupWindow.isOpen)
                 {
                     Drawer.Tooltip(tooltip);
                 }

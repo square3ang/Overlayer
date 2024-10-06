@@ -134,6 +134,7 @@ namespace RapidGUI
                     popupWindow.label = label;
                     popupWindow.displayOptions = displayOptions;
                     popupWindow.tooltips = tooltips;
+                    PopupWindow.isOpen = true;
                     WindowInvoker.Add(popupWindow);
                 }
             }
@@ -154,6 +155,7 @@ namespace RapidGUI
 
             public static bool showTooltip = false;
             public static string tooltip = "";
+            public static bool isOpen = false;
 
             static readonly int PopupWindowId = "Popup".GetHashCode();
 
@@ -188,7 +190,7 @@ namespace RapidGUI
                                 if (GUILayout.Button(displayOptions[j], RGUIStyle.popupFlatButton))
                                 {
                                     result = j;
-                                    showTooltip = false;
+                                    isOpen = false;
                                 }
 
                                 /*if (displayOptions[j] == "Accuracy")
@@ -218,7 +220,7 @@ namespace RapidGUI
                         {
                             result = -1;
                             ;
-                            showTooltip = false;
+                            isOpen = false;
                         }
 
                         if (showTooltip)
@@ -232,7 +234,7 @@ namespace RapidGUI
             public void CloseWindow()
             {
                 result = -1;
-                showTooltip = false;
+                isOpen = false;
             }
         }
     }
