@@ -98,10 +98,15 @@ namespace RapidGUI
         {
             var style = new GUIStyle(GUI.skin.window);
 
-            //style.normal.background = darkWindowTexNormal = CreateTexDark(style.normal.background, 0.5f, 1.4f);
-            //style.onNormal.background = darkWindowTexOnNormal = CreateTexDark(style.onNormal.background, 0.6f, 1.5f);
+            
 
-            if (!Main.Settings.useLegacyTheme)
+            if (Main.Settings.useLegacyTheme)
+            {
+                style.normal.background = darkWindowTexNormal = CreateTexDark(style.normal.background, 0.5f, 1.4f);
+                style.onNormal.background = darkWindowTexOnNormal = CreateTexDark(style.onNormal.background, 0.6f, 1.5f);
+                
+            }
+            else
             {
                 style.normal.background = Drawer.outlineimg;
                 style.onNormal.background = Drawer.outlineimg;
