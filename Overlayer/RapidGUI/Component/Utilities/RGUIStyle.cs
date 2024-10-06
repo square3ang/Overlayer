@@ -32,9 +32,9 @@ namespace RapidGUI
         public static void CreateStyles()
         {
             CreateFlatButton();
+            CreateDarkWindow();
             CreatePopupFlatButton();
             CreatePopup();
-            CreateDarkWindow();
             CreateAlignLeftBox();
             CreateWarningLabel();
             CreateWarningLabelNoStyle();
@@ -89,6 +89,10 @@ namespace RapidGUI
 
                 style.normal.background =
                     style.hover.background = popupTex;
+            }
+            else
+            {
+                style = new GUIStyle(darkWindow);
             }
 
 
