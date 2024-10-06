@@ -307,7 +307,7 @@ namespace RapidGUI
             using (new GUILayout.HorizontalScope())
             {
                 GUILayout.FlexibleSpace();
-                var style = new GUIStyle(Drawer.myButton);
+                var style = new GUIStyle(Main.Settings.useLegacyTheme ? GUI.skin.button : Drawer.myButton);
                 style.fontSize = 12;
                 if (GUILayout.Button(sliderMode.ToString(), style, GUILayout.Width(50f)))
                 {
