@@ -177,10 +177,18 @@ namespace RapidGUI
                         var rc = new Rect(new Vector2(1000, 100), GetWindowRect().size);
                         GUI.Box(rc, "", RGUIStyle.popup);
                         showTooltip = false;
+                        
                         var bakv = GUI.skin.verticalScrollbar.normal.background;
-                        GUI.skin.verticalScrollbar.normal.background = Drawer.jittengray;
                         var bakvt = GUI.skin.verticalScrollbarThumb.normal.background;
-                        GUI.skin.verticalScrollbarThumb.normal.background = Drawer.gray;
+
+                        if (!Main.Settings.useLegacyTheme)
+                        {
+                            GUI.skin.verticalScrollbar.normal.background = Drawer.jittengray;
+
+                            GUI.skin.verticalScrollbarThumb.normal.background = Drawer.gray;
+
+                        }
+
                         using (var sc = new GUILayout.ScrollViewScope(scrollPosition))
                         {
                             scrollPosition = sc.scrollPosition;
