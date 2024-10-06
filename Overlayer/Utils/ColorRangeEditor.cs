@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using Overlayer.Core.Translatior;
 using System.IO;
+using Overlayer.Patches;
 using Overlayer.Unity;
 using RapidGUI;
 
@@ -44,6 +45,7 @@ namespace Overlayer.Utils
             isInitaialize = true;
             this.codesBefore = codesBefore;
             this.codesAfter = codesAfter;
+            BlockUMMClosing.Block = true;
             
         }
 
@@ -93,6 +95,7 @@ namespace Overlayer.Utils
 
             if (Drawer.Button(Main.Lang.Get("DONE", "Done")))
             {
+                BlockUMMClosing.Block = false;
                 Destroy(gameObject);
             }
 

@@ -405,6 +405,7 @@
     <Compile Include="Models\GColor.cs" />
     <Compile Include="Models\GUIStatus.cs" />
     <Compile Include="Models\TextConfig.cs" />
+    <Compile Include="Patches\BlockUMMClosing.cs" />
     <Compile Include="Patches\FontPatch.cs" />
     <Compile Include="Patches\PatchGuard.cs" />
     <Compile Include="Patches\TagResetter.cs" />
