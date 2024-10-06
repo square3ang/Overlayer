@@ -276,6 +276,10 @@ namespace Overlayer.Core
             veryjittengray = new Texture2D(1, 1);
             veryjittengray.SetPixel(0, 0, new Color(0.1f, 0.1f, 0.1f));
             veryjittengray.Apply();
+            
+            outlineimg = new Texture2D(1, 1, TextureFormat.RGBA32, false, true);
+            outlineimg.filterMode = FilterMode.Point;
+            outlineimg.LoadImage(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURX9/fxoaGksz5AgAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAiSURBVEjHY2CgHAjiBaMKRhWMKhhVMKpgVMGogsGmgFIAADYjd4nBtq0YAAAAAElFTkSuQmCC"));
 
 
             string base64ImageSelected =
@@ -625,6 +629,7 @@ namespace Overlayer.Core
         public static Texture2D dulgray;
         public static Texture2D jittengray;
         public static Texture2D tfgray;
+        public static Texture2D outlineimg;
 
         static Drawer()
         {

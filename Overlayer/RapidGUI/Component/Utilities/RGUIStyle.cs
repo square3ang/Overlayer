@@ -100,10 +100,9 @@ namespace RapidGUI
             //style.normal.background = darkWindowTexNormal = CreateTexDark(style.normal.background, 0.5f, 1.4f);
             //style.onNormal.background = darkWindowTexOnNormal = CreateTexDark(style.onNormal.background, 0.6f, 1.5f);
 
-            var outlineimg = new Texture2D(1, 1);
-            outlineimg.LoadImage(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf///xoaGgk89nkAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAiSURBVEjHY2CgHAjiBaMKRhWMKhhVMKpgVMGogsGmgFIAADYjd4nBtq0YAAAAAElFTkSuQmCC"));
-            style.normal.background = outlineimg;
-            style.onNormal.background = outlineimg;
+            
+            style.normal.background = Drawer.outlineimg;
+            style.onNormal.background = Drawer.outlineimg;
             style.border = new RectOffset(2, 2, 2, 2);
 
             style.name = nameof(darkWindow);
