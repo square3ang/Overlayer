@@ -7,4 +7,4 @@ Originally made by [c3nb](https://github.com/c3nb).
 
 # Licenses
 [RapidGUI](https://github.com/fuqunaga/RapidGUI) is licensed under the MIT License.   
-[UnityCodeEditor](https://github.com/joshcamas/UnityCodeEditor/) is Unlicensed.
+[UnityCodeEditor](https://github.com/joshcamas/UnityCodeEditor/) is Unlicensed but it uses MIT Licensed Code.
