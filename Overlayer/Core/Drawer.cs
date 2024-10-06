@@ -281,6 +281,9 @@ namespace Overlayer.Core
             outlineimg.filterMode = FilterMode.Point;
             outlineimg.LoadImage(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURX9/fxoaGksz5AgAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAiSURBVEjHY2CgHAjiBaMKRhWMKhhVMKpgVMGogsGmgFIAADYjd4nBtq0YAAAAAElFTkSuQmCC"));
 
+            black = new Texture2D(1, 1);
+            black.SetPixel(0, 0, Color.black);
+            black.Apply();
 
             string base64ImageSelected =
                 "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHxSURBVDhPvZTLSsNAFIbbVN15QRG84hXxguALiOJSitT78ygoqE8iuPENBPeiuBOx2ipWFHVnxZL6/clJTUwQF+IPX8+Zf86cTifTpP5aaYuJqlarDTBG2uk7qSJcOo7z7g9/Kdd122APnmgYkTzYhXYrjyi2QwpnCAfQBmfpdPqQeE0vhzgAWbwpxo/ENTjCSxbN5uAdniHLotgXqjGsWk2ZfNamomKyHfRzVDhudtCgH6+PmDFb9RNWf4ffYvaXmNgBacEsectQ8FxfeVi0ac2v0EznumuWL7w6TO3shNz7meRL4GpBWFgVQs7WOYzPQLusk+cJY9KKNzUmzZAX5SWJuSuCHpLWboA0pLFnoh6LeYu90O2nidJ5dijhKedBvyrSMHiarj4oVk3sCYdUNbxaReTFoOGtxRF90Ev3LthtkgrUlCwfpFbNr/whYlzPGTzA94fyoeKw5EHW1umhnEKBvHalPGFugVS7FhTlGF9CxbiAeZvWmuDabJv1JcxW0EV9gQmzg110QSd57VzJR+EVv0RsNjsqJmegDHop5MINAuHpC9as2RtM25Sn2AIr2OfQtaNzcr0cdOC6AcOwxNw4c/fk67zKjok/i6ZNsA067IjwiqC/aaOVRxTbYVisz4BeWbq0FbjRlQLl/6FU6hOuOzJxbCs2hAAAAABJRU5ErkJggg==";
@@ -599,8 +602,10 @@ namespace Overlayer.Core
 
                 labelPosition.width = textSize.x + 20;
                 labelPosition.height = textSize.y + 20;
-                GUI.Box(labelPosition,"");
-                GUI.Box(labelPosition,"");
+                var styl = new GUIStyle(GUI.skin.box);
+                styl.normal.background = outlineimg;
+                styl.border = new RectOffset(2, 2, 2, 2);
+                GUI.Box(labelPosition,"", styl);
 
                 labelPosition.x += 10;
                 labelPosition.y += 10;
@@ -630,6 +635,7 @@ namespace Overlayer.Core
         public static Texture2D jittengray;
         public static Texture2D tfgray;
         public static Texture2D outlineimg;
+        public static Texture2D black;
 
         static Drawer()
         {
