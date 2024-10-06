@@ -64,6 +64,7 @@ namespace Overlayer
 
         public static IEnumerator LoadCoroutine(ModEntry modEntry)
         {
+            yield return null;
             while (!RDString.initialized) yield return null;
             PatchGuard.Ignore(TextManager.Initialize);
         }
