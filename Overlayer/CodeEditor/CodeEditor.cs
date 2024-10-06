@@ -69,7 +69,10 @@ public class CodeEditor
                        movingManEditor.defaultSize + "," + movingManEditor.speed + "," +
                        movingManEditor.invert + "," + movingManEditor.ease + ")" + movingManEditor.codesAfter;
                 editingHash = code.GetHashCode();
+                
             }
+            GUILayout.Label("wait");
+            return code;
         }
 
         if (colorRangeEditor)
@@ -84,6 +87,8 @@ public class CodeEditor
                        ")" + colorRangeEditor.codesAfter;
                 editingHash = code.GetHashCode();
             }
+            GUILayout.Label("wait");
+            return code;
         }
 
         GUILayout.BeginHorizontal();
