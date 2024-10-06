@@ -100,7 +100,7 @@ namespace Overlayer.Utils
             GUILayout.EndVertical();
             
 
-            GUI.DragWindow();
+            //GUI.DragWindow();
         }
 
         private void AnimateAndDestroy()

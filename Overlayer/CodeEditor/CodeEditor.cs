@@ -71,8 +71,6 @@ public class CodeEditor
                 editingHash = code.GetHashCode();
                 
             }
-            GUILayout.Label("wait");
-            return code;
         }
 
         if (colorRangeEditor)
@@ -87,8 +85,6 @@ public class CodeEditor
                        ")" + colorRangeEditor.codesAfter;
                 editingHash = code.GetHashCode();
             }
-            GUILayout.Label("wait");
-            return code;
         }
 
         GUILayout.BeginHorizontal();
