@@ -42,7 +42,9 @@ namespace Overlayer.Core
         public static bool SelectionPopup(ref int selected, string[] options, string label, params GUILayoutOption[] layoutOptions)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
+            
+            if (label != "")
+                GUILayout.Label(label);
             var news = RGUI.SelectionPopup(selected, options, layoutOptions);
             var c = selected != news;
             
