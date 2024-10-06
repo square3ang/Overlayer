@@ -99,12 +99,6 @@ namespace Overlayer.Utils
             GUILayout.Space(10);
             GUILayout.EndVertical();
             
-            var ev = Event.current;
-            if ((ev.rawType == EventType.MouseDown) &&
-                !(new Rect(Vector2.zero, windowRect.size).Contains(ev.mousePosition)))
-            {
-                AnimateAndDestroy();
-            }
 
             GUI.DragWindow();
         }

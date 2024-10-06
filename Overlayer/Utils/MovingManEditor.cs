@@ -71,7 +71,7 @@ namespace Overlayer.Utils
 
         private void DrawWindow(int windowID)
         {
-            //GUI.BringWindowToFront(windowID);
+            GUI.BringWindowToFront(windowID);
             GUILayout.BeginVertical();
             GUILayout.Space(10);
 
@@ -99,13 +99,6 @@ namespace Overlayer.Utils
             GUILayout.Space(10);
             GUILayout.EndVertical();
             
-            var ev = Event.current;
-            if ((ev.rawType == EventType.MouseDown) &&
-                !(new Rect(Vector2.zero, windowRect.size).Contains(ev.mousePosition)))
-            {
-                AnimateAndDestroy();
-            }
-
             GUI.DragWindow();
         }
 
