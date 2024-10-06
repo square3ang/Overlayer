@@ -172,7 +172,8 @@ namespace RapidGUI
                 wrect.height += 200;
                 GUI.ModalWindow(PopupWindowId, wrect, (id) =>
                     {
-                        GUI.Box(new Rect(100, 100, GetWindowRect().width, GetWindowRect().height), "", RGUIStyle.popup);
+                        var rc = new Rect(new Vector2(100, 100), GetWindowRect().size);
+                        GUI.Box(rc, "", RGUIStyle.popup);
                         showTooltip = false;
                         var bakv = GUI.skin.verticalScrollbar.normal.background;
                         GUI.skin.verticalScrollbar.normal.background = Drawer.jittengray;
@@ -213,7 +214,7 @@ namespace RapidGUI
 
                         var ev = Event.current;
                         if ((ev.rawType == EventType.MouseDown) &&
-                            !(new Rect(Vector2.zero, size).Contains(ev.mousePosition)))
+                            !(rc.Contains(ev.mousePosition)))
                         {
                             result = -1;
                             ;
