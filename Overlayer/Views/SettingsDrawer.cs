@@ -11,6 +11,7 @@ using RapidGUI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
+using Object = UnityEngine.Object;
 
 namespace Overlayer.Views
 {
@@ -159,10 +160,13 @@ namespace Overlayer.Views
                     {
                     if (Drawer.Button(Main.Lang.Get("DESTROY","Destroy")))
                     {
-                        var popup = new GameObject().AddComponent<DeletePopup>();
-                        UnityEngine.Object.DontDestroyOnLoad(popup);
-                        popup.Initialize(text);
-                        
+                        if (Object.FindAnyObjectByType<DeletePopup>() == null)
+                        {
+                            var popup = new GameObject().AddComponent<DeletePopup>();
+                            UnityEngine.Object.DontDestroyOnLoad(popup);
+                            popup.Initialize(text);
+                        }
+
                         return;
                     }
                 });
