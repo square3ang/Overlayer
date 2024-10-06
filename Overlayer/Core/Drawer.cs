@@ -43,12 +43,12 @@ namespace Overlayer.Core
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
-            var c = RawSelectionPopup(ref selected, options, "", layoutOptions);
+            var c = RawSelectionPopup(ref selected, options, layoutOptions);
             GUILayout.EndHorizontal();
             return c;
         }
         
-        public static bool RawSelectionPopup(ref int selected, string[] options, string label, params GUILayoutOption[] layoutOptions)
+        public static bool RawSelectionPopup(ref int selected, string[] options, params GUILayoutOption[] layoutOptions)
         {
             var news = RGUI.SelectionPopup(selected, options, layoutOptions);
             var c = selected != news;
@@ -352,7 +352,7 @@ namespace Overlayer.Core
             var tags = TagManager.tags.Keys.ToList();
             tags.Sort();
             var selected = tags.IndexOf(value);
-            SelectionPopup(ref selected, tags.ToArray(), "");
+            RawSelectionPopup(ref selected, tags.ToArray());
             value = tags[selected];
             return selected != tags.IndexOf(value);
         }

@@ -54,7 +54,7 @@ namespace Overlayer.Views
                 UpdateLanguageSetting(selectedIndex);
             }
             
-            if(Drawer.RawSelectionPopup(ref selectedIndex,languageNames, "", GUILayout.Width(400)))
+            if(Drawer.RawSelectionPopup(ref selectedIndex,languageNames, GUILayout.Width(400)))
             {
                 UpdateLanguageSetting(selectedIndex);
             }
