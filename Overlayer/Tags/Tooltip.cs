@@ -71,7 +71,7 @@ public class Tooltip
         ["CSlow"] = "Slow judgment in Current difficulty",
 
         ["Accuracy"] = "Accuracy(when perfect: 100+0.01%)",
-        ["XAccuracy"] = "Accuracy(when pure perfect: 100%)",
+        ["XAccuracy"] = "XAccuracy(when pure perfect: 100)",
 
         ["Combo"] = "Combo count",
         ["MaxCombo"] = "Maximum Combo",

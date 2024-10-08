@@ -168,7 +168,7 @@
     "TOOLTIP_CSLOW": "Current Slow",
 
     "TOOLTIP_ACCURACY": "Accuracy(when perfect: 100+0.01%)",
-    "TOOLTIP_XACCURACY": "Accuracy(when pure perfect: 100%)",
+    "TOOLTIP_XACCURACY": "XAccuracy(when pure perfect: 100)",
 
     "TOOLTIP_COMBO": "Combo count",
     "TOOLTIP_MAXCOMBO": "Maximum Combo",
