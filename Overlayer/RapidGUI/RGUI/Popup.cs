@@ -212,7 +212,6 @@ namespace RapidGUI
                                     GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) &&
                                     tooltips.TryGetValue(displayOptions[j], out var tooltip))
                                 {
-                                    Main.Logger.Log("ShowTooltip");
                                     showTooltip = true;
                                     PopupWindow.tooltip = tooltip;
                                 }
