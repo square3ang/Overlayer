@@ -27,6 +27,8 @@ namespace Overlayer
     {
         [Tag(NotPlaying = true)]
         public static string Developer => Lang.Get("MISC_DEVELOPER", "Super Kawaii Suckyoubus Chan~♥");
+        [Tag(NotPlaying = true)]
+        public static string MipaNyang => "MipaNyang is God";
 
         public static Assembly Ass { get; private set; }
         public static ModEntry Mod { get; private set; }
