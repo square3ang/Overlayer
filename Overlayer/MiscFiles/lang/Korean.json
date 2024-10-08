@@ -171,7 +171,7 @@
     "TOOLTIP_COMBO": "콤보 수",
     "TOOLTIP_MAXCOMBO": "최대 콤보",
     "TOOLTIP_PROGRESS": "현재 진행도",
-    "TOOLTIP_ACTUALPROGRESS": "시간 기반 실제 현재 진행도",
+    "TOOLTIP_ACTUALPROGRESS": "시간 기반의 실제 현재 진행도",
     "TOOLTIP_STARTPROGRESS": "시작 타일의 진행도",
     "TOOLTIP_BESTPROGRESS": "레벨의 최고 진행도",
     "TOOLTIP_SCORE": "현재 난이도 점수",

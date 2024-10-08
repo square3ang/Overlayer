@@ -173,7 +173,7 @@
     "TOOLTIP_COMBO": "Combo count",
     "TOOLTIP_MAXCOMBO": "Maximum Combo",
     "TOOLTIP_PROGRESS": "Current progress",
-    "TOOLTIP_ACTUALPROGRESS": "Current (Actual) Progress based on time",
+    "TOOLTIP_ACTUALPROGRESS": "Current Actual Progress based on time",
     "TOOLTIP_STARTPROGRESS": "Progress of start tile",
     "TOOLTIP_BESTPROGRESS": "Best progress of the level",
     "TOOLTIP_SCORE": "Current difficulty score",

@@ -76,7 +76,7 @@ public class Tooltip
         ["Combo"] = "Combo count",
         ["MaxCombo"] = "Maximum Combo",
         ["Progress"] = "Current progress",
-        ["ActualProgress"] = "Current (Actual) Progress based on time",
+        ["ActualProgress"] = "Current Actual Progress based on time",
         ["StartProgress"] = "Progress of start tile",
         ["BestProgress"] = "Best progress of the level",
         ["Score"] = "Current difficulty score",
