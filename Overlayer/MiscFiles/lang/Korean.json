@@ -214,9 +214,9 @@
     "TOOLTIP_TITLE": "노래 제목",
     "TOOLTIP_ARTIST": "작곡가",
     "TOOLTIP_AUTHOR": "레벨 제작자",
-    "TOOLTIP_TITLERAW": "노래 제목 (서식 태그 포함)",
-    "TOOLTIP_ARTISTRAW": "작곡가 (서식 태그 포함)",
-    "TOOLTIP_AUTHORRAW": "레벨 제작자 (서식 태그 포함)",
+    "TOOLTIP_TITLERAW": "노래 제목 (리치 태그 포함)",
+    "TOOLTIP_ARTISTRAW": "작곡가 (리치 태그 포함)",
+    "TOOLTIP_AUTHORRAW": "레벨 제작자 (리치 태그 포함)",
 
     "TOOLTIP_CURBPM": "현재 BPM",
     "TOOLTIP_TILEBPM": "타일 BPM",
