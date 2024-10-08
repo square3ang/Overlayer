@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using HarmonyLib;
 using Overlayer.Core;
+using Overlayer.Tags;
 using Overlayer.Utils;
 using UnityModManagerNet;
 
@@ -69,7 +70,6 @@ public class CodeEditor
                        movingManEditor.defaultSize + "," + movingManEditor.speed + "," +
                        movingManEditor.invert + "," + movingManEditor.ease + ")" + movingManEditor.codesAfter;
                 editingHash = code.GetHashCode();
-                
             }
         }
 
@@ -197,150 +197,138 @@ public class CodeEditor
         var found = false;
 
         var i = 0;
+
+
+        var tooltip = new Dictionary<string, string>();
+        foreach (var toolt in Tags.Tooltip.tooltip)
+        {
+            tooltip[toolt.Key] = Main.Lang.Get("TOOLTIP_" + toolt.Key.ToUpper(), toolt.Value);
+        }
+
         // Get Tags
         foreach (Match match in tagRegex.Matches(code))
         {
-            if (!Main.Settings.useMovingManEditor && !Main.Settings.useColorRangeEditor) break;
-            if (movingManEditor || colorRangeEditor) break;
             var tag = match.Groups[1].Value;
+            var start = match.Groups[1].Index;
+            var end = start + match.Groups[1].Length;
+            var codesBefore = code.Substring(0, start);
+            var codesAfter = code.Substring(end, code.Length - end);
+            var lines = codesBefore.Split('\n');
+            var lastline = lines[lines.Length - 1];
+            var height = style.CalcSize(new GUIContent("A")).y;
 
-            if (tag.StartsWith("MovingMan") && Main.Settings.useMovingManEditor)
+            var len = lines.Length - 1;
+            var xc = 0f;
+            foreach (var l in lines)
             {
-                //Main.Logger.Log("Rendering MovingMan" + i++);
-                // moving man set
-                var start = match.Groups[1].Index;
-                var end = start + match.Groups[1].Length;
-                var codesBefore = code.Substring(0, start);
-                var codesAfter = code.Substring(end, code.Length - end);
-                var lines = codesBefore.Split('\n');
-                var lastline = lines[lines.Length - 1];
-                var height = style.CalcSize(new GUIContent("A")).y;
-
-                var len = lines.Length - 1;
-                var xc = 0f;
-                foreach (var l in lines)
+                xc = style.CalcSize(new GUIContent(l)).x;
+                while (xc >= editorw - 5)
                 {
-                    xc = style.CalcSize(new GUIContent(l)).x;
-                    while (xc >= editorw - 5)
-                    {
-                        xc -= editorw - 5;
-                        len++;
-                    }
-                }
-
-                //Main.Logger.Log(lastline);
-
-                var width = style.CalcSize(new GUIContent(lastline)).x;
-
-                while (width >= editorw - 5)
-                {
-                    width -= editorw - 5;
-                }
-
-                //Main.Logger.Log(width + "");
-
-
-                var y = len * height;
-
-                var x = width + 5;
-
-                var rect = GUILayoutUtility.GetLastRect();
-                rect.x += x;
-                rect.y += y;
-
-                rect.width = style.CalcSize(new GUIContent(match.Groups[1].Value)).x;
-                rect.height = height;
-
-                if (Event.current.type == EventType.Repaint)
-                {
-                    if (rect.Contains(Event.current.mousePosition))
-                    {
-                        found = true;
-                    }
-                }
-                else
-                {
-                    if (!found)
-                        found = ignoreTextAreaNext.Contains(code.GetHashCode());
-                }
-
-
-                if (GUI.Button(rect, ""))
-                {
-                    movingManEditor = new GameObject().AddComponent<MovingManEditor>();
-                    Object.DontDestroyOnLoad(movingManEditor);
-                    movingManEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
-                    editingHash = code.GetHashCode();
+                    xc -= editorw - 5;
+                    len++;
                 }
             }
 
-            else if (tag.StartsWith("ColorRange") && Main.Settings.useColorRangeEditor)
+            //Main.Logger.Log(lastline);
+
+            var width = style.CalcSize(new GUIContent(lastline)).x;
+
+
+            while (width >= editorw - 5)
             {
-                //Main.Logger.Log("Rendering MovingMan" + i++);
-                // moving man set
-                var start = match.Groups[1].Index;
-                var end = start + match.Groups[1].Length;
-                var codesBefore = code.Substring(0, start);
-                var codesAfter = code.Substring(end, code.Length - end);
-                var lines = codesBefore.Split('\n');
-                var lastline = lines[lines.Length - 1];
-                var height = style.CalcSize(new GUIContent("A")).y;
+                width -= editorw - 5;
+            }
 
-                var len = lines.Length - 1;
-                var xc = 0f;
-                foreach (var l in lines)
-                {
-                    xc = style.CalcSize(new GUIContent(l)).x;
-                    while (xc >= editorw - 5)
-                    {
-                        xc -= editorw - 5;
-                        len++;
-                    }
-                }
-
-                //Main.Logger.Log(lastline);
-
-                var width = style.CalcSize(new GUIContent(lastline)).x;
-
-                while (width >= editorw - 5)
-                {
-                    width -= editorw - 5;
-                }
-
-                //Main.Logger.Log(width + "");
+            //Main.Logger.Log(width + "");
 
 
-                var y = len * height;
+            var y = len * height;
 
-                var x = width + 5;
+            var x = width + 5;
 
-                var rect = GUILayoutUtility.GetLastRect();
-                rect.x += x;
-                rect.y += y;
+            var rects = new List<Rect>();
 
-                rect.width = style.CalcSize(new GUIContent(match.Groups[1].Value)).x;
-                rect.height = height;
+            var rect1 = GUILayoutUtility.GetLastRect();
+            rect1.x += x;
+            rect1.y += y;
 
-                if (Event.current.type == EventType.Repaint)
+            rect1.width = style.CalcSize(new GUIContent(match.Groups[1].Value)).x;
+
+            rect1.height = height;
+
+            var rc = 0;
+
+            while (rect1.width + width >= editorw - 5)
+            {
+                rc++;
+                var chai = rect1.width + width - (editorw - 5);
+                rect1.width -= editorw - 5;
+                var rect2 = new Rect(rect1);
+                rect2.x = 5;
+                rect2.y += height * rc;
+                if (chai >= editorw - 5) chai = editorw - 5;
+                rect2.width = chai;
+                rects.Add(rect2);
+                
+            }
+
+            rects.Add(rect1);
+
+            var mvm = match.Groups[1].Value.StartsWith("MovingMan");
+
+            var cr = match.Groups[1].Value.StartsWith("ColorRange");
+
+            var special = mvm || cr;
+
+            if (mvm && !Main.Settings.useMovingManEditor) special = false;
+            if (cr && !Main.Settings.useColorRangeEditor) special = false;
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                foreach (var rect in rects)
                 {
                     if (rect.Contains(Event.current.mousePosition))
                     {
-                        found = true;
+                        if (special)
+                            found = true;
+
+                        var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
+                        if (TagManager.tags.ContainsKey(pars) && tooltip.TryGetValue(pars, out var tooltipp))
+                        {
+                            Main.showTooltip = true;
+                            Main.tooltip = tooltipp;
+                        }
                     }
                 }
-                else
-                {
-                    if (!found)
-                        found = ignoreTextAreaNext.Contains(code.GetHashCode());
-                }
+            }
+            else
+            {
+                if (special && !found)
+                    found = ignoreTextAreaNext.Contains(code.GetHashCode());
+            }
 
 
-                if (GUI.Button(rect, ""))
+            if (special)
+            {
+                foreach (var rect in rects)
                 {
-                    colorRangeEditor = new GameObject().AddComponent<ColorRangeEditor>();
-                    Object.DontDestroyOnLoad(colorRangeEditor);
-                    colorRangeEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
-                    editingHash = code.GetHashCode();
+                    if (GUI.Button(rect, ""))
+                    {
+                        if (cr)
+                        {
+                            colorRangeEditor = new GameObject().AddComponent<ColorRangeEditor>();
+                            Object.DontDestroyOnLoad(colorRangeEditor);
+                            colorRangeEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                        }
+                        else if (mvm)
+                        {
+                            movingManEditor = new GameObject().AddComponent<MovingManEditor>();
+                            Object.DontDestroyOnLoad(movingManEditor);
+                            movingManEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                        }
+
+                        editingHash = code.GetHashCode();
+                    }
                 }
             }
         }

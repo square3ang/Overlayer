@@ -654,7 +654,7 @@ namespace Overlayer.Core
                     foreach (Match match in highlight.Matches(str))
                     {
                         var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                        if (TagManager.tags.Keys.Contains(name))
+                        if (TagManager.tags.ContainsKey(name))
                         {
                             if (name == "MovingMan" && Main.Settings.useMovingManEditor)
                             {
