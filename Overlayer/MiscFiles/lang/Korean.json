@@ -218,12 +218,12 @@
     "TOOLTIP_ARTISTRAW": "작곡가 (리치 태그 포함)",
     "TOOLTIP_AUTHORRAW": "레벨 제작자 (리치 태그 포함)",
 
-    "TOOLTIP_CURBPM": "현재 BPM",
+    "TOOLTIP_CURBPM": "체감 BPM",
     "TOOLTIP_TILEBPM": "타일 BPM",
-    "TOOLTIP_RECKPS": "권장 KPS",
-    "TOOLTIP_CURBPMWITHOUTPITCH": "피치 없이 현재 BPM",
-    "TOOLTIP_TILEBPMWITHOUTPITCH": "피치 없이 타일 BPM",
-    "TOOLTIP_RECKPSWITHOUTPITCH": "피치 없이 권장 KPS",
+    "TOOLTIP_RECKPS": "체감 KPS",
+    "TOOLTIP_CURBPMWITHOUTPITCH": "피치를 제거한 현재 BPM",
+    "TOOLTIP_TILEBPMWITHOUTPITCH": "피치를 제거한 타일 BPM",
+    "TOOLTIP_RECKPSWITHOUTPITCH": "피치를 제거한 체감 KPS",
 
     "TOOLTIP_FRAME": "프레임",
     "TOOLTIP_FRAMETIME": "이전 프레임과 현재 프레임 간의 시간 차이(ms)",
