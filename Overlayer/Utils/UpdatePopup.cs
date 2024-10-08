@@ -100,7 +100,7 @@ namespace Overlayer.Utils
 
         private IEnumerator DestroyCoroutine()
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSecondsRealtime(0.5f);
             Destroy(gameObject);
         }
 
@@ -113,7 +113,8 @@ namespace Overlayer.Utils
             StartCoroutine(DestroyCoroutine());
             DOTween.To(() => windowRect.position, x => windowRect.position = x,
                     new Vector2(windowRect.position.x, Screen.height * -1.3f), 0.4f)
-                .SetEase(Ease.InBack);
+                .SetEase(Ease.InBack)
+                .SetUpdate(true);
             
         }
     }
