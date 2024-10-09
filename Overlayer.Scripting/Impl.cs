@@ -297,7 +297,7 @@ namespace Overlayer.Scripting
             return globalVariables[name] = obj;
         }
         [Api("registerTag")]
-        public static void RegisterTag(Engine engine, string name, JsValue func, bool notplaying)
+        public static void RegisterTag(Engine engine, string name, JsValue func, bool notplaying, string tooltip)
         {
             if (!(func is Function fi)) return;
             FIWrapper wrapper = new FIWrapper(fi);
@@ -309,6 +309,10 @@ namespace Overlayer.Scripting
             TagManager.SetTag(new ScriptTag(pathOrScript, tagWrapper, new Tags.Attributes.TagAttribute(name) { NotPlaying = notplaying }));
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
             registeredCustomTags.Add(name);
+            if (tooltip != null)
+            {
+                Tooltip.tooltip[name] = tooltip;
+            }
             Main.Logger.Log($"Registered Tag \"{name}\" (NotPlaying:{notplaying})");
         }
         [Api("unregisterTag")]
@@ -317,6 +321,7 @@ namespace Overlayer.Scripting
             Main.JSApi.Methods.RemoveAll(t => t.Item1.Name == name);
             Expression.expressions.Clear();
             TagManager.RemoveTag(name);
+            Tooltip.tooltip.Remove(name);
             StaticCoroutine.Queue(StaticCoroutine.SyncRunner(TextManager.Refresh));
         }
         /*[Api("prefix")]
