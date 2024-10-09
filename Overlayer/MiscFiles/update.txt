@@ -5,6 +5,10 @@ HSV Color Picker
 MovingMan and ColorRange Editor
 Advanced Syntax Highlighting
 Tag Inserter
+Tooltips
+
+[Changes]
+Popups are no longer draggable.
 
 [Fix]
 Fixed bug where pop-up was not centered
