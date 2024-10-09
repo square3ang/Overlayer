@@ -192,6 +192,7 @@ namespace Overlayer.Core.Translatior
                     return translatedValue; // Return the translated value if found.
                 }
             }
+            //Main.Logger.Log(defaultValue);
 
             return defaultValue; // Return the default value if translation is not found.
         }

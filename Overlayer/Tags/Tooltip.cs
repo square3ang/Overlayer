@@ -1,9 +1,19 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Overlayer.Tags;
 
 public class Tooltip
 {
+    /*static Tooltip()
+    {
+        var dict = new Dictionary<string, string>();
+        foreach (var itm in tooltip)
+        {
+            dict.Add("TOOLTIP_" + itm.Key.ToUpper(), itm.Value);
+        }
+        Main.Logger.Log(JObject.FromObject(dict).ToString());
+    }*/
     public static Dictionary<string, string> tooltip = new()
     {
         ["CTE"] = "Current Too Early",

@@ -115,7 +115,6 @@
     "COLOR_MIN": "Min Color",
     "COLOR_MAX": "Max Color",
     "USE_THIS": "Use {0}",
-
     "TOOLTIP_CTE": "Current Too Early",
     "TOOLTIP_CVE": "Current Very Early",
     "TOOLTIP_CEP": "Current Early Perfect",
@@ -126,7 +125,6 @@
     "TOOLTIP_MISSCOUNT": "Number of Misses",
     "TOOLTIP_OVERLOADS": "Number of Overloads",
     "TOOLTIP_MULTIPRESS": "Number of Multipresses",
-
     "TOOLTIP_LTE": "Lenient Too Early",
     "TOOLTIP_LVE": "Lenient Very Early",
     "TOOLTIP_LEP": "Lenient Early Perfect",
@@ -134,7 +132,6 @@
     "TOOLTIP_LLP": "Lenient Late Perfect",
     "TOOLTIP_LVL": "Lenient Very Late",
     "TOOLTIP_LTL": "Lenient Too Late",
-
     "TOOLTIP_NTE": "Normal Too Early",
     "TOOLTIP_NVE": "Normal Very Early",
     "TOOLTIP_NEP": "Normal Early Perfect",
@@ -142,7 +139,6 @@
     "TOOLTIP_NLP": "Normal Late Perfect",
     "TOOLTIP_NVL": "Normal Very Late",
     "TOOLTIP_NTL": "Normal Too Late",
-
     "TOOLTIP_STE": "Strict Too Early",
     "TOOLTIP_SVE": "Strict Very Early",
     "TOOLTIP_SEP": "Strict Early Perfect",
@@ -150,7 +146,6 @@
     "TOOLTIP_SLP": "Strict Late Perfect",
     "TOOLTIP_SVL": "Strict Very Late",
     "TOOLTIP_STL": "Strict Too Late",
-
     "TOOLTIP_TEHEX": "TooEarly Hex Color",
     "TOOLTIP_VEHEX": "VeryEarly Hex Color",
     "TOOLTIP_EPHEX": "EarlyPerfect Hex Color",
@@ -161,29 +156,25 @@
     "TOOLTIP_FMHEX": "Miss Hex Color",
     "TOOLTIP_FOHEX": "Overload Hex Color",
     "TOOLTIP_MPHEX": "Multipress Hex Color",
-
     "TOOLTIP_LHIT": "Lenient Hit",
     "TOOLTIP_NHIT": "Normal Hit",
     "TOOLTIP_SHIT": "Strict Hit",
     "TOOLTIP_CHIT": "Current Hit",
-    "TOOLTIP_LHITRAW": "Lenient Hit (fixed value)",
-    "TOOLTIP_NHITRAW": "Normal Hit (fixed value)",
-    "TOOLTIP_SHITRAW": "Strict Hit (fixed value)",
-    "TOOLTIP_CHITRAW": "Current Hit (fixed value)",
-
-    "TOOLTIP_LFAST": "Lenient Fast",
-    "TOOLTIP_NFAST": "Normal Fast",
-    "TOOLTIP_SFAST": "Strict Fast",
-    "TOOLTIP_CFAST": "Current Fast",
-
-    "TOOLTIP_LSLOW": "Lenient Slow",
-    "TOOLTIP_NSLOW": "Normal Slow",
-    "TOOLTIP_SLOW": "Strict Slow",
-    "TOOLTIP_CSLOW": "Current Slow",
-
+    "TOOLTIP_LHITRAW": "Lenient Hit Raw",
+    "TOOLTIP_NHITRAW": "Normal Hit Raw",
+    "TOOLTIP_SHITRAW": "Strict Hit Raw",
+    "TOOLTIP_CHITRAW": "Current Hit Raw",
+    "TOOLTIP_MARGINSCALE": "Level's judgment range",
+    "TOOLTIP_LFAST": "Fast judgment in Lenient difficulty",
+    "TOOLTIP_NFAST": "Fast judgment in Normal difficulty",
+    "TOOLTIP_SFAST": "Fast judgment in Strict difficulty",
+    "TOOLTIP_CFAST": "Fast judgment in Current difficulty",
+    "TOOLTIP_LSLOW": "Slow judgment in Lenient difficulty",
+    "TOOLTIP_NSLOW": "Slow judgment in Normal difficulty",
+    "TOOLTIP_SSLOW": "Slow judgment in Strict difficulty",
+    "TOOLTIP_CSLOW": "Slow judgment in Current difficulty",
     "TOOLTIP_ACCURACY": "Accuracy(when perfect: 100+0.01%)",
     "TOOLTIP_XACCURACY": "XAccuracy(when pure perfect: 100)",
-
     "TOOLTIP_COMBO": "Combo count",
     "TOOLTIP_MAXCOMBO": "Maximum Combo",
     "TOOLTIP_PROGRESS": "Current progress",
@@ -197,55 +188,43 @@
     "TOOLTIP_CHECKPOINTUSED": "Number of checkpoints used",
     "TOOLTIP_CURCHECKPOINT": "Current checkpoint number",
     "TOOLTIP_TOTALCHECKPOINTS": "Total number of checkpoints",
-
     "TOOLTIP_STARTTILE": "Start tile number",
     "TOOLTIP_CURTILE": "Current tile number",
     "TOOLTIP_LEFTTILE": "Number of tiles left",
     "TOOLTIP_TOTALTILE": "Total number of tiles",
-
     "TOOLTIP_PITCH": "Speed set in CLS (displayed as 1 when at 1x speed)",
     "TOOLTIP_EDITORPITCH": "Pitch set in the LevelEditor (displayed as 1 when 100%)",
-
     "TOOLTIP_DIFFICULTY": "Current Difficulty",
     "TOOLTIP_DIFFICULTYRAW": "Fixed difficulty return value regardless of language setting",
-
     "TOOLTIP_ISSTARTED": "Displays false if not started, or true if started by pressing any key",
     "TOOLTIP_ISAUTOENABLED": "Displays true if auto is enabled, false otherwise",
     "TOOLTIP_ISPRACTICEMODEENABLED": "Displays true if practice mode is enabled, false otherwise",
     "TOOLTIP_ISOLDAUTOENABLED": "Displays true if Old Auto is enabled, false if disabled",
     "TOOLTIP_ISNOFAILENABLED": "Displays true if No-fail Mode is enabled, false if disabled",
-
     "TOOLTIP_TIMING": "Error range showing the timing of keystrokes in ms from the center of the tile",
     "TOOLTIP_TIMINGAVG": "Average of Timing",
-
-    "TOOLTIP_CURRENTTIMESTAMP": "Current timestamp of the song",
-    "TOOLTIP_LENGTHOFSONG": "Length of the song",
     "TOOLTIP_CURMINUTE": "Current minute of song",
     "TOOLTIP_TOTALMINUTE": "Total minute of song",
     "TOOLTIP_CURSECOND": "Current second of song",
     "TOOLTIP_TOTALSECOND": "Total second of song",
     "TOOLTIP_CURMILLISECOND": "Current millisecond of song",
     "TOOLTIP_TOTALMILLISECOND": "Total millisecond of song",
-
     "TOOLTIP_TITLE": "Title of the song",
     "TOOLTIP_ARTIST": "Composer of the song",
     "TOOLTIP_AUTHOR": "Level creator",
     "TOOLTIP_TITLERAW": "Title of the song (with rich tags)",
     "TOOLTIP_ARTISTRAW": "Composer of the song (with rich tags)",
     "TOOLTIP_AUTHORRAW": "Level creator (with rich tags)",
-
     "TOOLTIP_CURBPM": "Current BPM",
     "TOOLTIP_TILEBPM": "Tile BPM",
     "TOOLTIP_RECKPS": "Recommended KPS",
     "TOOLTIP_CURBPMWITHOUTPITCH": "Current BPM (without pitch)",
     "TOOLTIP_TILEBPMWITHOUTPITCH": "Tile BPM (without pitch)",
     "TOOLTIP_RECKPSWITHOUTPITCH": "Recommended KPS (without pitch)",
-
     "TOOLTIP_FRAME": "Frame",
     "TOOLTIP_FRAMETIME": "Time difference between the previous frame and the current frame in ms",
     "TOOLTIP_FPS": "Current FPS of ADOFAI",
     "TOOLTIP_TARGETFPS": "Target FPS of ADOFAI",
-
     "TOOLTIP_YEAR": "Year on current computer",
     "TOOLTIP_MONTH": "Month on current computer",
     "TOOLTIP_DAY": "Day on current computer",
@@ -262,8 +241,6 @@
     "TOOLTIP_COLORRANGE": "You can adjust the color from any color to any color you want based on a specific tag. Use with <color>.",
     "TOOLTIP_EASEDVALUE": "When the tag value changes, the tag value changes according to the speed.",
     "TOOLTIP_DEVELOPER": "Display overlayer mod developer name Super Kawaii Suckyoubus Chan~♥︎",
-    "TOOLTIP_MARGINSCALE": "Level's judgement range",
-    
     "NOT_EXIST_TAG": "This tag does not exist."
   }
 }
