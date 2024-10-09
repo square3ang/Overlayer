@@ -547,6 +547,7 @@ namespace Overlayer.Core
 
             sk.margin = new RectOffset(0, 0, 0, 0);
             sk.wordWrap = false;
+            sk.richText = false;
             value = codeEditor.Draw(value, sk);
             return prev != value;
         }
