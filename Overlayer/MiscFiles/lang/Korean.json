@@ -260,6 +260,7 @@
     "TOOLTIP_COLORRANGE": "특정 태그를 기준으로 원하는 색상에서 원하는 색상으로 조정할 수 있습니다. <color>와 함께 사용됩니다.",
     "TOOLTIP_EASEDVALUE": "태그 값이 변경될 때, 속도에 따라 태그 값이 변경됩니다.",
     "TOOLTIP_DEVELOPER": "모드 개발자 이름을 표시합니다. 초 카와이 석큐버스 짱~♥︎",
+    "TOOLTIP_MARGINSCALE": "레벨의 판정 범위",
     
     "NOT_EXIST_TAG": "존재하지 않는 태그입니다."
     
