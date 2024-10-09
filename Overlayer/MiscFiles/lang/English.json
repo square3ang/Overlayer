@@ -246,6 +246,8 @@
     "TOOLTIP_MOVINGMAN": "You can animate text on criterion certain tags. Used with <size>.",
     "TOOLTIP_COLORRANGE": "You can adjust the color from any color to any color you want based on a specific tag. Use with <color>.",
     "TOOLTIP_EASEDVALUE": "When the tag value changes, the tag value changes according to the speed.",
-    "TOOLTIP_DEVELOPER": "Display overlayer mod developer name Super Kawaii Suckyoubus Chan~♥︎"
+    "TOOLTIP_DEVELOPER": "Display overlayer mod developer name Super Kawaii Suckyoubus Chan~♥︎",
+    
+    "NOT_EXIST_TAG": "This tag does not exist."
   }
 }

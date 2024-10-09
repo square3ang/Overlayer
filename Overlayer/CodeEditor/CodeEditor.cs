@@ -264,10 +264,16 @@ public class CodeEditor
                 if (rect.Contains(Event.current.mousePosition))
                 {
                     var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                    if (TagManager.tags.ContainsKey(pars) && tooltip.TryGetValue(pars, out var tooltipp))
+                    var contains = TagManager.tags.ContainsKey(pars);
+                    if (contains && tooltip.TryGetValue(pars, out var tooltipp))
                     {
                         Main.showTooltip = true;
                         Main.tooltip = tooltipp;
+                    }
+                    else if (!contains)
+                    {
+                        Main.showTooltip = true;
+                        Main.tooltip = Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
                     }
                 }
                 
