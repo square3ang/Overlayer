@@ -270,7 +270,7 @@ public class CodeEditor
                         Main.tooltip = tooltipp;
                     }
                 }
-
+                
 
                 if (special)
                 {
