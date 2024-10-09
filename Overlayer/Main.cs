@@ -119,7 +119,7 @@ namespace Overlayer
             UnityEngine.Object.DontDestroyOnLoad(popup);
             popup.Initialize();
             
-            CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
+            //CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
 
             GUI.Flush();
         }
@@ -175,7 +175,7 @@ namespace Overlayer
 
         public static void OnHideGUI(ModEntry modEntry)
         {
-            CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
+            //CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
             GUI.Flush();
         }
 

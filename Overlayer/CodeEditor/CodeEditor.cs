@@ -57,11 +57,11 @@ public class CodeEditor
     }
 
     private string selectedtag = "Developer";
-
-    public static List<int> ignoreTextAreaNext = new();
+    
 
     public string Draw(string code, GUIStyle style, params GUILayoutOption[] options)
     {
+        var actualType = Event.current.type;
         if (movingManEditor)
         {
             if (editingHash == code.GetHashCode())
@@ -150,14 +150,13 @@ public class CodeEditor
         GUI.SetNextControlName(controlName);
         var editorw = 700;
 
-        if (!ignoreTextAreaNext.Contains(code.GetHashCode()) && !movingManEditor && !colorRangeEditor)
+        if (!movingManEditor && !colorRangeEditor)
         {
             string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true),
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
             if (editedCode != code)
             {
                 code = editedCode;
-                ignoreTextAreaNext.Clear();
                 onValueChange?.Invoke();
             }
         }
@@ -197,10 +196,11 @@ public class CodeEditor
         {
             tooltip[toolt.Key] = Main.Lang.Get("TOOLTIP_" + toolt.Key.ToUpper(), toolt.Value);
         }
+        
+        Event.current.type = actualType;
 
         if (!movingManEditor && !colorRangeEditor)
         {
-            var found = false;
             // Get Tags
             foreach (Match match in tagRegex.Matches(code))
             {
@@ -280,11 +280,7 @@ public class CodeEditor
 
                 if (special)
                 {
-                    if (Event.current.type == EventType.Repaint && rect.Contains(Event.current.mousePosition))
-                    {
-                        found = true;
-                    }
-
+                    
                     if (GUI.Button(rect, ""))
                     {
                         if (cr)
@@ -304,18 +300,7 @@ public class CodeEditor
                     }
                 }
             }
-
-            if (Event.current.type == EventType.Repaint)
-            {
-                if (found)
-                {
-                    ignoreTextAreaNext.Add(code.GetHashCode());
-                }
-                else
-                {
-                    ignoreTextAreaNext.Remove(code.GetHashCode());
-                }
-            }
+            
         }
 
 
