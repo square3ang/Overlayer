@@ -398,6 +398,7 @@
     <Compile Include="Core\TextReplacing\Replacer.cs" />
     <Compile Include="Core\TextReplacing\Tag.cs" />
     <Compile Include="Core\Translation\Translator.cs" />
+    <Compile Include="Core\UndoRedoManager.cs" />
     <Compile Include="Lib\JSON.cs" />
     <Compile Include="Lib\JSON.Unity.cs" />
     <Compile Include="Main.cs" />
