@@ -6,6 +6,7 @@ MovingMan and ColorRange Editor
 Advanced Syntax Highlighting
 Tag Inserter
 Tooltips
+Legacy Theme
 
 [Changes]
 Popups are no longer draggable.
