@@ -678,17 +678,11 @@ namespace Overlayer.Core
                     var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
                     if (TagManager.tags.ContainsKey(name))
                     {
-                        if (name == "MovingMan" && Main.Settings.useMovingManEditor)
+                        if (name == "MovingMan" && Main.Settings.useMovingManEditor || name == "ColorRange" && Main.Settings.useColorRangeEditor)
                         {
                             str = str.Replace("{" + match.Groups[1].Value + "}",
-                                "<color=lime>{" + match.Groups[1].Value + "}</color>");
+                                "<color=orange>{" + match.Groups[1].Value + "}</color>");
                         }
-                        else if (name == "ColorRange" && Main.Settings.useColorRangeEditor)
-                        {
-                            str = str.Replace("{" + match.Groups[1].Value + "}",
-                                "<color=lime>{" + match.Groups[1].Value + "}</color>");
-                        }
-
                         else if (name.EndsWith("Hex"))
                         {
                             try
