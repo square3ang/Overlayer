@@ -123,6 +123,9 @@
     "TOOLTIP_CLP": "Current Late Perfect",
     "TOOLTIP_CVL": "Current Very Late",
     "TOOLTIP_CTL": "Current Too Late",
+    "TOOLTIP_MISSCOUNT": "Number of Misses",
+    "TOOLTIP_OVERLOADS": "Number of Overloads",
+    "TOOLTIP_MULTIPRESS": "Number of Multipresses",
 
     "TOOLTIP_LTE": "Lenient Too Early",
     "TOOLTIP_LVE": "Lenient Very Early",
@@ -147,6 +150,17 @@
     "TOOLTIP_SLP": "Strict Late Perfect",
     "TOOLTIP_SVL": "Strict Very Late",
     "TOOLTIP_STL": "Strict Too Late",
+
+    "TOOLTIP_TEHEX": "TooEarly Hex Color",
+    "TOOLTIP_VEHEX": "VeryEarly Hex Color",
+    "TOOLTIP_EPHEX": "EarlyPerfect Hex Color",
+    "TOOLTIP_PHEX": "Perfect Hex Color",
+    "TOOLTIP_LPHEX": "LatePerfect Hex Color",
+    "TOOLTIP_VLHEX": "VeryLate Hex Color",
+    "TOOLTIP_TLHEX": "TooLate Hex Color",
+    "TOOLTIP_FMHEX": "Miss Hex Color",
+    "TOOLTIP_FOHEX": "Overload Hex Color",
+    "TOOLTIP_MPHEX": "Multipress Hex Color",
 
     "TOOLTIP_LHIT": "Lenient Hit",
     "TOOLTIP_NHIT": "Normal Hit",

@@ -11,6 +11,7 @@ using Overlayer.Tags;
 using RapidGUI;
 using UnityEngine;
 using UnityModManagerNet;
+using Extensions = UnityModManagerNet.Extensions;
 using IDrawable = Overlayer.Core.Interfaces.IDrawable;
 
 namespace Overlayer.Core
@@ -278,10 +279,11 @@ namespace Overlayer.Core
             veryjittengray = new Texture2D(1, 1);
             veryjittengray.SetPixel(0, 0, new Color(0.1f, 0.1f, 0.1f));
             veryjittengray.Apply();
-            
+
             outlineimg = new Texture2D(1, 1, TextureFormat.RGBA32, false, true);
             outlineimg.filterMode = FilterMode.Point;
-            outlineimg.LoadImage(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURX9/fxoaGksz5AgAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAiSURBVEjHY2CgHAjiBaMKRhWMKhhVMKpgVMGogsGmgFIAADYjd4nBtq0YAAAAAElFTkSuQmCC"));
+            outlineimg.LoadImage(Convert.FromBase64String(
+                "iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURX9/fxoaGksz5AgAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAiSURBVEjHY2CgHAjiBaMKRhWMKhhVMKpgVMGogsGmgFIAADYjd4nBtq0YAAAAAElFTkSuQmCC"));
 
             black = new Texture2D(1, 1);
             black.SetPixel(0, 0, Color.black);
@@ -594,27 +596,24 @@ namespace Overlayer.Core
 
         public static void Tooltip(string text, bool ignoreWidth = false)
         {
-            if(string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text))
             {
-                GUI.Box(new Rect(0,0,0,0),"");
+                GUI.Box(new Rect(0, 0, 0, 0), "");
             }
             else
             {
-
-                
-                    
-                    
                 Vector2 mousePosition = Event.current.mousePosition;
-                
+
                 Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(text));
-                Rect labelPosition = new Rect(mousePosition.x, mousePosition.y - 40,0,0);
+                Rect labelPosition = new Rect(mousePosition.x, mousePosition.y - 40, 0, 0);
 
                 if (!ignoreWidth)
                 {
                     var windowwidth = ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
                             .GetValue(UnityModManager.UI.Instance))
                         .width;
-                    var scroll = (Vector2[])AccessTools.Field(typeof(UnityModManager.UI), "mScrollPosition").GetValue(UnityModManager.UI.Instance);
+                    var scroll = (Vector2[])AccessTools.Field(typeof(UnityModManager.UI), "mScrollPosition")
+                        .GetValue(UnityModManager.UI.Instance);
                     windowwidth += scroll[UnityModManager.UI.Instance.tabId].x;
                     if (labelPosition.x + textSize.x + 20 + 20 > windowwidth)
                     {
@@ -624,11 +623,11 @@ namespace Overlayer.Core
 
                 labelPosition.width = textSize.x + 20;
                 labelPosition.height = textSize.y + 20;
-                GUI.Box(labelPosition,"", RGUIStyle.darkWindow);
+                GUI.Box(labelPosition, "", RGUIStyle.darkWindow);
 
                 labelPosition.x += 10;
                 labelPosition.y += 10;
-                GUI.Label(labelPosition,text);
+                GUI.Label(labelPosition, text);
             }
         }
 
@@ -660,35 +659,43 @@ namespace Overlayer.Core
         {
             codeEditor.highlighter = str =>
             {
-                try
+                str = str.Replace("<", "<<b></b>");
+                foreach (Match m in color.Matches(str))
                 {
-                    str = str.Replace("<", "<<b></b>");
-                    foreach (Match m in color.Matches(str))
+                    //Main.Logger.Log(m.Groups[1].Value);
+                    if (ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _))
                     {
-                        //Main.Logger.Log(m.Groups[1].Value);
-                        if (ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _))
-                        {
-                            str = str.Replace(m.Groups[1].Value,
-                                "<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>");
-                        }
+                        str = str.Replace(m.Groups[1].Value,
+                            "<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>");
                     }
+                }
 
-                    foreach (Match match in highlight.Matches(str))
+                foreach (Match match in highlight.Matches(str))
+                {
+                    var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
+                    if (TagManager.tags.ContainsKey(name))
                     {
-                        var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                        if (TagManager.tags.ContainsKey(name))
+                        if (name == "MovingMan" && Main.Settings.useMovingManEditor)
                         {
-                            if (name == "MovingMan" && Main.Settings.useMovingManEditor)
+                            str = str.Replace("{" + match.Groups[1].Value + "}",
+                                "<color=lime>{" + match.Groups[1].Value + "}</color>");
+                        }
+                        else if (name == "ColorRange" && Main.Settings.useColorRangeEditor)
+                        {
+                            str = str.Replace("{" + match.Groups[1].Value + "}",
+                                "<color=lime>{" + match.Groups[1].Value + "}</color>");
+                        }
+
+                        else if (name.EndsWith("Hex"))
+                        {
+                            try
                             {
+                                var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
+                                    new object[] { "-1", Overlayer.Utils.Extensions.DefaultTrimStr });
                                 str = str.Replace("{" + match.Groups[1].Value + "}",
-                                    "<color=lime>{" + match.Groups[1].Value + "}</color>");
+                                    "<color=#" + val + ">{" + match.Groups[1].Value + "}</color>");
                             }
-                            else if (name == "ColorRange" && Main.Settings.useColorRangeEditor)
-                            {
-                                str = str.Replace("{" + match.Groups[1].Value + "}",
-                                    "<color=lime>{" + match.Groups[1].Value + "}</color>");
-                            }
-                            else
+                            catch
                             {
                                 str = str.Replace("{" + match.Groups[1].Value + "}",
                                     "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
@@ -697,16 +704,17 @@ namespace Overlayer.Core
                         else
                         {
                             str = str.Replace("{" + match.Groups[1].Value + "}",
-                                "<color=red>{" + match.Groups[1].Value + "}</color>");
+                                "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
                         }
                     }
+                    else
+                    {
+                        str = str.Replace("{" + match.Groups[1].Value + "}",
+                            "<color=red>{" + match.Groups[1].Value + "}</color>");
+                    }
+                }
 
-                    return str;
-                }
-                catch
-                {
-                    return str;
-                }
+                return str;
             };
 
             InitializeImages();

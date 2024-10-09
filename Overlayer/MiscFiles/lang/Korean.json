@@ -121,6 +121,9 @@
     "TOOLTIP_CLP": "현재 느림",
     "TOOLTIP_CVL": "현재 느림!",
     "TOOLTIP_CTL": "현재 너무 느림",
+    "TOOLTIP_MISSCOUNT": "놓침 수",
+    "TOOLTIP_OVERLOADS": "과부하 수",
+    "TOOLTIP_MULTIPRESS": "다중 입력 수",
 
     "TOOLTIP_LTE": "느슨 너무 빠름",
     "TOOLTIP_LVE": "느슨 빠름!",
@@ -145,6 +148,17 @@
     "TOOLTIP_SLP": "엄격 느림",
     "TOOLTIP_SVL": "엄격 느림!",
     "TOOLTIP_STL": "엄격 너무 느림",
+
+    "TOOLTIP_TEHEX": "너무 빠름 Hex 색상",
+    "TOOLTIP_VEHEX": "빠름! Hex 색상",
+    "TOOLTIP_EPHEX": "빠름 Hex 색상",
+    "TOOLTIP_PHEX": "정확 Hex 색상",
+    "TOOLTIP_LPHEX": "느림 Hex 색상",
+    "TOOLTIP_VLHEX": "느림! Hex 색상",
+    "TOOLTIP_TLHEX": "너무 느림 Hex 색상",
+    "TOOLTIP_FMHEX": "놓침 Hex 색상",
+    "TOOLTIP_FOHEX": "과부하 Hex 색상",
+    "TOOLTIP_MPHEX": "다중 입력 Hex 색상",
 
     "TOOLTIP_LHIT": "느슨 판정 텍스트",
     "TOOLTIP_NHIT": "보통 판정 텍스트",
