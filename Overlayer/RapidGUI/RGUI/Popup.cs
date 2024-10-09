@@ -232,7 +232,7 @@ namespace RapidGUI
 
                         if (showTooltip)
                         {
-                            Drawer.Tooltip(tooltip);
+                            Drawer.Tooltip(tooltip, true);
                         }
                     }
                     , label, npopup);

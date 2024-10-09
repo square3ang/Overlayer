@@ -1,15 +1,17 @@
-﻿using Overlayer.Core.Interfaces;
-using Overlayer.Models;
+﻿using Overlayer.Models;
 using Overlayer.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using HarmonyLib;
 using Overlayer.CodeEditor;
 using Overlayer.Tags;
 using RapidGUI;
 using UnityEngine;
+using UnityModManagerNet;
+using IDrawable = Overlayer.Core.Interfaces.IDrawable;
 
 namespace Overlayer.Core
 {
@@ -544,6 +546,7 @@ namespace Overlayer.Core
             var sk = new GUIStyle(GUI.skin.label);
 
             sk.margin = new RectOffset(0, 0, 0, 0);
+            sk.wordWrap = false;
             value = codeEditor.Draw(value, sk);
             return prev != value;
         }
@@ -588,7 +591,7 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static void Tooltip(string text)
+        public static void Tooltip(string text, bool ignoreWidth = false)
         {
             if(string.IsNullOrEmpty(text))
             {
@@ -596,9 +599,25 @@ namespace Overlayer.Core
             }
             else
             {
+
+                
+                    
+                    
                 Vector2 mousePosition = Event.current.mousePosition;
-                Rect labelPosition = new Rect(mousePosition.x,mousePosition.y - 40,0,0);
+                
                 Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(text));
+                Rect labelPosition = new Rect(mousePosition.x, mousePosition.y - 40,0,0);
+
+                if (!ignoreWidth)
+                {
+                    var windowwidth = ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
+                            .GetValue(UnityModManager.UI.Instance))
+                        .width;
+                    if (labelPosition.x + textSize.x + 20 + 20 > windowwidth)
+                    {
+                        labelPosition.x = windowwidth - textSize.x - 20 - 20;
+                    }
+                }
 
                 labelPosition.width = textSize.x + 20;
                 labelPosition.height = textSize.y + 20;
