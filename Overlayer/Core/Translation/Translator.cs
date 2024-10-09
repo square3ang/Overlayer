@@ -17,14 +17,17 @@ namespace Overlayer.Core.Translatior
         private Dictionary<string,Dictionary<string,string>> translations = new Dictionary<string,Dictionary<string,string>>();
         public string CurrentLanguage = "Default";
         private int Fail = 0;
+        private static readonly string[] failMessages =
+        {
+            "Load Language Pack",
+            "Fail: Unknown Cause",
+            "Fail: No valid translation was found",
+            "Fail: Error Reading Directory",
+            "Fail: Error loading file",
+            "Fail: The file does not exist"
+        };
+        public string FailString() => failMessages[GetFailAdvence()];
 
-        // Failure states:
-        // 0: No failure occurred; language pack can be loaded successfully.
-        // -1: Fail to load JSON: Unknown cause.
-        // 1: Fail to load JSON: The file exists, but no valid translation was found.
-        // 2: Fail to load JSON: Error reading directory.
-        // 3: Fail to load JSON: Error loading file.
-        // 4: Fail to load JSON: The file does not exist.
         private bool IsLoading = true;
 
         // Static event to signal when the language initialization is complete.
@@ -62,12 +65,12 @@ namespace Overlayer.Core.Translatior
                 catch
                 {
                     // If there's an error reading the directory, set failure state to 2.
-                    Fail = 2;
+                    Fail = 3;
                     return;
                 }
                 if(files.Count() == 0)
                 {
-                    Fail = 4;
+                    Fail = 5;
                     return;
                 }
                 foreach(var file in files)
@@ -106,14 +109,14 @@ namespace Overlayer.Core.Translatior
                     catch
                     {
                         // If there's an error loading the file, set failure state to 3.
-                        Fail = 3;
+                        Fail = 4;
                     }
                 }
 
                 // Determine the overall failure state after processing all files.
                 if(translations.Count == 0)
                 {
-                    Fail = 1; // No valid translations found.
+                    Fail = 2; // No valid translations found.
                 }
                 else
                 {
@@ -124,7 +127,7 @@ namespace Overlayer.Core.Translatior
             {
                 // Reset translations on an unknown failure.
                 translations = new Dictionary<string,Dictionary<string,string>>();
-                Fail = -1;
+                Fail = 1;
             }
             finally
             {

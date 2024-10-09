@@ -19,27 +19,6 @@ namespace Overlayer.Views
     {
         public SettingsDrawer(Settings settings) : base(settings) { }
 
-        private static string FailString()
-        {
-            switch(Main.Lang.GetFailAdvence())
-            {
-                case 0:
-                    return "Load Language Pack";
-                case -1:
-                    return "Fail: Unknown Cause";
-                case 1:
-                    return "Fail: No valid translation was found";
-                case 2:
-                    return "Fail: Error Reading Directory";
-                case 3:
-                    return "Fail: Error loading file";
-                case 4:
-                    return "Fail: The file does not exist";
-                default:
-                    return "Load Language Pack (Unknown error)";
-            }
-        }
-
         public override void Draw()
         {
             if(model != null)
@@ -71,7 +50,7 @@ namespace Overlayer.Views
                 Main.Lang.CurrentLanguage = languageNames[index];
                 model.Lang = Main.Lang.CurrentLanguage;
             }
-            if(Drawer.Button(Main.Lang.GetFail() ? FailString() : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
+            if(Drawer.Button(Main.Lang.GetFail() ? Main.Lang.FailString() : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
             {
                 _ = Main.Lang.LoadTranslationsAsync(Path.Combine(Main.Mod.Path,"lang"));
                 Main.Lang.CurrentLanguage = model.Lang;
