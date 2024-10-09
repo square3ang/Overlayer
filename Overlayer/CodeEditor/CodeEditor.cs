@@ -61,7 +61,7 @@ public class CodeEditor
 
     public string Draw(string code, GUIStyle style, params GUILayoutOption[] options)
     {
-        var actualType = Event.current.type;
+        var oldEvent = new Event(Event.current);
         if (movingManEditor)
         {
             if (editingHash == code.GetHashCode())
@@ -197,7 +197,8 @@ public class CodeEditor
             tooltip[toolt.Key] = Main.Lang.Get("TOOLTIP_" + toolt.Key.ToUpper(), toolt.Value);
         }
         
-        Event.current.type = actualType;
+        var bak = Event.current;
+        Event.current = oldEvent;
 
         if (!movingManEditor && !colorRangeEditor)
         {
@@ -298,11 +299,13 @@ public class CodeEditor
 
                         editingHash = code.GetHashCode();
                     }
+
+                    
                 }
             }
             
         }
-
+        Event.current = bak;
 
         GUI.backgroundColor = preBackgroundColor;
         GUI.color = preColor;
