@@ -131,7 +131,7 @@ public class Tooltip
         ["Frame"] = "Frame",
         ["FrameTime"] = "Time difference between the previous frame and the current frame in ms",
         ["Fps"] = "Current FPS of ADOFAI",
-        ["TargetFps"] = "FPS limit of ADOFAI",
+        ["TargetFps"] = "Target FPS of ADOFAI",
 
         ["Year"] = "Year on current computer",
         ["Month"] = "Month on current computer",
