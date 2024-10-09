@@ -70,6 +70,7 @@ namespace Overlayer.Utils
         private void DrawWindow(int windowID)
         {
             GUI.BringWindowToFront(windowID);
+            GUI.FocusWindow(windowID);
             GUILayout.BeginVertical();
             GUILayout.Space(10);
 

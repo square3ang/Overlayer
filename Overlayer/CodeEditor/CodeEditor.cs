@@ -58,6 +58,8 @@ public class CodeEditor
 
     private string selectedtag = "Developer";
 
+    public static List<int> ignoreTextAreaNext = new();
+
     public string Draw(string code, GUIStyle style, params GUILayoutOption[] options)
     {
         if (movingManEditor)
@@ -148,13 +150,14 @@ public class CodeEditor
         GUI.SetNextControlName(controlName);
         var editorw = 700;
 
-        if (!movingManEditor && !colorRangeEditor)
+        if (!ignoreTextAreaNext.Contains(code.GetHashCode()) && !movingManEditor && !colorRangeEditor)
         {
             string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true),
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
             if (editedCode != code)
             {
                 code = editedCode;
+                ignoreTextAreaNext.Clear();
                 onValueChange?.Invoke();
             }
         }
@@ -195,96 +198,116 @@ public class CodeEditor
             tooltip[toolt.Key] = Main.Lang.Get("TOOLTIP_" + toolt.Key.ToUpper(), toolt.Value);
         }
 
-        // Get Tags
-        foreach (Match match in tagRegex.Matches(code))
+        if (!movingManEditor && !colorRangeEditor)
         {
-            var tag = match.Groups[1].Value;
-            var start = match.Groups[1].Index;
-            var end = start + match.Groups[1].Length;
-            var codesBefore = code.Substring(0, start);
-            var codesAfter = code.Substring(end, code.Length - end);
-            var lines = codesBefore.Split('\n');
-            var lastline = lines[lines.Length - 1];
-            var height = style.lineHeight;
-
-            var len = lines.Length - 1;
-            /*var xc = 0f;
-            foreach (var l in lines)
+            var found = false;
+            // Get Tags
+            foreach (Match match in tagRegex.Matches(code))
             {
-                xc = style.CalcSize(new GUIContent(l)).x;
-                while (xc >= editorw - 5)
+                var tag = match.Groups[1].Value;
+                var start = match.Groups[1].Index;
+                var end = start + match.Groups[1].Length;
+                var codesBefore = code.Substring(0, start);
+                var codesAfter = code.Substring(end, code.Length - end);
+                var lines = codesBefore.Split('\n');
+                var lastline = lines[lines.Length - 1];
+                var height = style.lineHeight;
+
+                var len = lines.Length - 1;
+                /*var xc = 0f;
+                foreach (var l in lines)
                 {
-                    xc -= editorw - 5;
-                    len++;
+                    xc = style.CalcSize(new GUIContent(l)).x;
+                    while (xc >= editorw - 5)
+                    {
+                        xc -= editorw - 5;
+                        len++;
+                    }
+                }*/
+
+                //Main.Logger.Log(lastline);
+
+                var width = style.CalcSize(new GUIContent(lastline)).x;
+
+
+                /*while (width >= editorw - 5)
+                {
+                    width -= editorw - 5;
+                }*/
+
+                //Main.Logger.Log(width + "");
+
+
+                var y = len * height;
+
+                var x = width + 5;
+
+
+                var rect = GUILayoutUtility.GetLastRect();
+                rect.x += x;
+                rect.y += y;
+
+                rect.width = style.CalcSize(new GUIContent(match.Groups[1].Value)).x;
+
+                rect.height = height;
+
+
+                var mvm = match.Groups[1].Value.StartsWith("MovingMan");
+
+                var cr = match.Groups[1].Value.StartsWith("ColorRange");
+
+                var special = mvm || cr;
+
+                if (mvm && !Main.Settings.useMovingManEditor) special = false;
+                if (cr && !Main.Settings.useColorRangeEditor) special = false;
+
+                if (rect.Contains(Event.current.mousePosition))
+                {
+                    var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
+                    if (TagManager.tags.ContainsKey(pars) && tooltip.TryGetValue(pars, out var tooltipp))
+                    {
+                        Main.showTooltip = true;
+                        Main.tooltip = tooltipp;
+                    }
                 }
-            }*/
-
-            //Main.Logger.Log(lastline);
-
-            var width = style.CalcSize(new GUIContent(lastline)).x;
 
 
-            /*while (width >= editorw - 5)
-            {
-                width -= editorw - 5;
-            }*/
-
-            //Main.Logger.Log(width + "");
-
-
-            var y = len * height;
-
-            var x = width + 5;
-
-
-            var rect = GUILayoutUtility.GetLastRect();
-            rect.x += x;
-            rect.y += y;
-
-            rect.width = style.CalcSize(new GUIContent(match.Groups[1].Value)).x;
-
-            rect.height = height;
-
-
-            var mvm = match.Groups[1].Value.StartsWith("MovingMan");
-
-            var cr = match.Groups[1].Value.StartsWith("ColorRange");
-
-            var special = mvm || cr;
-
-            if (mvm && !Main.Settings.useMovingManEditor) special = false;
-            if (cr && !Main.Settings.useColorRangeEditor) special = false;
-
-            if (rect.Contains(Event.current.mousePosition))
-            {
-                var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                if (TagManager.tags.ContainsKey(pars) && tooltip.TryGetValue(pars, out var tooltipp))
+                if (special)
                 {
-                    Main.showTooltip = true;
-                    Main.tooltip = tooltipp;
+                    if (Event.current.type == EventType.Repaint && rect.Contains(Event.current.mousePosition))
+                    {
+                        found = true;
+                    }
+
+                    if (GUI.Button(rect, ""))
+                    {
+                        if (cr)
+                        {
+                            colorRangeEditor = new GameObject().AddComponent<ColorRangeEditor>();
+                            Object.DontDestroyOnLoad(colorRangeEditor);
+                            colorRangeEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                        }
+                        else if (mvm)
+                        {
+                            movingManEditor = new GameObject().AddComponent<MovingManEditor>();
+                            Object.DontDestroyOnLoad(movingManEditor);
+                            movingManEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                        }
+
+                        editingHash = code.GetHashCode();
+                    }
                 }
             }
 
-
-            if (special)
+            if (Event.current.type == EventType.Repaint)
             {
-                if (Event.current.type == EventType.Repaint && Input.GetMouseButtonDown(0) &&
-                    rect.Contains(Event.current.mousePosition))
+                if (found)
                 {
-                    if (cr)
-                    {
-                        colorRangeEditor = new GameObject().AddComponent<ColorRangeEditor>();
-                        Object.DontDestroyOnLoad(colorRangeEditor);
-                        colorRangeEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
-                    }
-                    else if (mvm)
-                    {
-                        movingManEditor = new GameObject().AddComponent<MovingManEditor>();
-                        Object.DontDestroyOnLoad(movingManEditor);
-                        movingManEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
-                    }
-
-                    editingHash = code.GetHashCode();
+                    ignoreTextAreaNext.Add(code.GetHashCode());
+                }
+                else
+                {
+                    ignoreTextAreaNext.Remove(code.GetHashCode());
                 }
             }
         }

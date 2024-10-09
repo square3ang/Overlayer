@@ -1,4 +1,6 @@
 ﻿using System;
+using Overlayer;
+using Overlayer.Core;
 using UnityEngine;
 
 namespace RapidGUI
@@ -19,7 +21,7 @@ namespace RapidGUI
             using (new ColorScope(color))
             {
                 var text = unparsedStr.Get() ?? ((v != null) ? v.ToString() : "");
-                var displayStr = GUILayout.TextField(text, option ?? fieldWidthMin);
+                var displayStr = GUILayout.TextField(text, Main.Settings.useLegacyTheme ? GUI.skin.textField : Drawer.myTextField, option ?? fieldWidthMin);
                 if (displayStr != text)
                 {
                     try

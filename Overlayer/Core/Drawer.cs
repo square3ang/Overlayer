@@ -613,6 +613,8 @@ namespace Overlayer.Core
                     var windowwidth = ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
                             .GetValue(UnityModManager.UI.Instance))
                         .width;
+                    var scroll = (Vector2[])AccessTools.Field(typeof(UnityModManager.UI), "mScrollPosition").GetValue(UnityModManager.UI.Instance);
+                    windowwidth += scroll[UnityModManager.UI.Instance.tabId].x;
                     if (labelPosition.x + textSize.x + 20 + 20 > windowwidth)
                     {
                         labelPosition.x = windowwidth - textSize.x - 20 - 20;
