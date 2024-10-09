@@ -5,8 +5,6 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overlayer", "Overlayer\Overlayer.csproj", "{A10DA92A-C5BB-4708-B1B4-9A112A644D8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overlayer.WebAPI", "Overlayer.WebAPI\Overlayer.WebAPI.csproj", "{0B73A63B-DA79-4EB4-809F-0F82F33360D5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overlayer.Scripting", "Overlayer.Scripting\Overlayer.Scripting.csproj", "{EDBE0893-14CC-48A2-AFB4-567F977A62BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overlayer.Scripting.Bootstrapper", "Overlayer.Scripting.Bootstrapper\Overlayer.Scripting.Bootstrapper.csproj", "{C1F649B8-09F3-434C-986C-65D714624AC7}"
