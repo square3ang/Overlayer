@@ -244,6 +244,7 @@
     "TOOLTIP_FRAME": "Frame",
     "TOOLTIP_FRAMETIME": "Time difference between the previous frame and the current frame in ms",
     "TOOLTIP_FPS": "Current FPS of ADOFAI",
+    "TOOLTIP_TARGETFPS": "FPS limit of ADOFAI",
 
     "TOOLTIP_YEAR": "Year on current computer",
     "TOOLTIP_MONTH": "Month on current computer",

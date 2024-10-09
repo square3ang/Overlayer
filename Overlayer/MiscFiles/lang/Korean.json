@@ -241,7 +241,8 @@
 
     "TOOLTIP_FRAME": "프레임",
     "TOOLTIP_FRAMETIME": "이전 프레임과 현재 프레임 간의 시간 차이(ms)",
-    "TOOLTIP_FPS": "ADOFAI의 현재 FPS",
+    "TOOLTIP_FPS": "얼불춤의 현재 FPS",
+    "TOOLTIP_TARGETFPS": "얼불춤의 목표 FPS",
 
     "TOOLTIP_YEAR": "현재 컴퓨터 연도",
     "TOOLTIP_MONTH": "현재 컴퓨터 월",
