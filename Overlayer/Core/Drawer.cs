@@ -670,8 +670,11 @@ namespace Overlayer.Core
                     }
                 }
 
+                var highlighted = new List<string>();
+                
                 foreach (Match match in highlight.Matches(str))
                 {
+                    if (highlighted.Contains(match.Groups[1].Value)) continue;
                     var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
                     if (TagManager.tags.ContainsKey(name))
                     {
@@ -712,6 +715,8 @@ namespace Overlayer.Core
                         str = str.Replace("{" + match.Groups[1].Value + "}",
                             "<color=red>{" + match.Groups[1].Value + "}</color>");
                     }
+
+                    highlighted.Add(match.Groups[1].Value);
                 }
 
                 return str;
