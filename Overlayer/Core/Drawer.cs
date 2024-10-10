@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityModManagerNet;
 using Extensions = UnityModManagerNet.Extensions;
 using IDrawable = Overlayer.Core.Interfaces.IDrawable;
+using Object = UnityEngine.Object;
 
 namespace Overlayer.Core
 {
@@ -541,7 +542,7 @@ namespace Overlayer.Core
             return prev != value;
         }
 
-        public static bool DrawCodeEditor(string label, ref string value)
+        public static bool DrawCodeEditor(string label, string id, ref string value)
         {
             string prev = value;
             GUILayout.Label(label);
@@ -550,7 +551,7 @@ namespace Overlayer.Core
             sk.margin = new RectOffset(0, 0, 0, 0);
             sk.wordWrap = false;
             sk.richText = false;
-            value = codeEditor.Draw(value, sk);
+            value = codeEditor.Draw(value, sk, id);
             return prev != value;
         }
 
@@ -641,6 +642,7 @@ namespace Overlayer.Core
                 selection = "#264F78",
                 cursor = "#D4D4D4"
             });
+        
 
         public static Regex highlight = new Regex("{(.*?)}", RegexOptions.Compiled);
         public static Regex color = new Regex("<<b></b>color=(.*?)>", RegexOptions.Compiled);

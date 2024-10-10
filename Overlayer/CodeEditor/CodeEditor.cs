@@ -14,7 +14,6 @@ namespace Overlayer.CodeEditor;
 using UnityEngine;
 using System.Reflection;
 
-[System.Serializable]
 public class CodeEditor
 {
     public string controlName { get; set; }
@@ -35,13 +34,13 @@ public class CodeEditor
     private ColorRangeEditor colorRangeEditor;
     private int editingHash;
 
-
     private static Regex tagRegex = new(@"{(.*?)}", RegexOptions.Compiled);
 
     public bool isFocused
     {
         get { return GUI.GetNameOfFocusedControl() == controlName; }
     }
+
 
     public CodeEditor(string controlName, CodeTheme theme)
     {
@@ -50,17 +49,21 @@ public class CodeEditor
         highlighter = code => code;
     }
 
-    public string Update(string code)
-    {
-        // Update logic without using TextEditor (since it's editor-only)
-        return code;
-    }
+
 
     private string selectedtag = "Developer";
-    
 
-    public string Draw(string code, GUIStyle style, params GUILayoutOption[] options)
+    internal Dictionary<string, UndoRedoManager> undoRedoManagers = new();
+    public string Draw(string code, GUIStyle style, string id, params GUILayoutOption[] options)
     {
+        if (!undoRedoManagers.ContainsKey(id))
+        {
+            
+            undoRedoManagers[id] = new UndoRedoManager();
+            undoRedoManagers[id].SaveState(code);
+            Main.Logger.Log("Created UndoRedoManager for " + id);
+        }
+        controlName = id;
         var oldEvent = new Event(Event.current);
         if (movingManEditor)
         {
@@ -149,14 +152,47 @@ public class CodeEditor
         // Drawing the text area using GUILayout
         GUI.SetNextControlName(controlName);
         var editorw = 700;
+        
+        if (isFocused)
+        {
+            if (Event.current.type == EventType.KeyDown)
+            {
+                var oldcode = code;
+                if (Event.current.keyCode == KeyCode.Z && Event.current.control)
+                {
+                    if (Event.current.shift)
+                    {
+                        var tx = undoRedoManagers[id].Redo();
+                        if (tx != null) code = tx;
+                    }
+                    else
+                    {
+                        var tx = undoRedoManagers[id].Undo();
+                        if (tx != null) code = tx;
+                    }
+                }
+                else if (Event.current.keyCode == KeyCode.Y && Event.current.control)
+                {
+                    var tx = undoRedoManagers[id].Redo();
+                    if (tx != null) code = tx;
+                }
+
+                if (code != oldcode)
+                {
+                    Event.current.Use();
+                }
+            }
+        }
 
         if (!movingManEditor && !colorRangeEditor)
         {
+            GUI.SetNextControlName(id);
             string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true),
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
             if (editedCode != code)
             {
                 code = editedCode;
+                undoRedoManagers[id].SaveState(code);
                 onValueChange?.Invoke();
             }
         }
@@ -166,6 +202,7 @@ public class CodeEditor
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
         }
 
+        
         if (cachedCode != code)
         {
             cachedCode = code;

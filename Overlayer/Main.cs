@@ -176,6 +176,7 @@ namespace Overlayer
         public static void OnHideGUI(ModEntry modEntry)
         {
             //CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
+            Drawer.codeEditor.undoRedoManagers.Clear();
             GUI.Flush();
         }
 

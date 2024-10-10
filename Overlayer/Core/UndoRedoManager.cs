@@ -15,7 +15,7 @@ namespace Overlayer.Core
 
         public string Undo()
         {
-            if(undoStack.Count > 0)
+            if(undoStack.Count > 1)
             {
                 string state = undoStack.Pop();
                 redoStack.Push(state);

@@ -66,8 +66,8 @@ namespace Overlayer.Views
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            changed |= Drawer.DrawCodeEditor(Main.Lang.Get("PLAYING_TEXT","Playing Text"), ref model.PlayingText);
-            changed |= Drawer.DrawCodeEditor(Main.Lang.Get("NOT_PLAYING_TEXT","Not Playing Text"), ref model.NotPlayingText);
+            changed |= Drawer.DrawCodeEditor(Main.Lang.Get("PLAYING_TEXT","Playing Text"), model.Name + "PlayingText", ref model.PlayingText);
+            changed |= Drawer.DrawCodeEditor(Main.Lang.Get("NOT_PLAYING_TEXT","Not Playing Text"), model.Name + "NotPlayingText", ref model.NotPlayingText);
             GUILayout.BeginHorizontal();
             if (Drawer.Button(Main.Lang.Get("EXPORT","Export")))
             {
