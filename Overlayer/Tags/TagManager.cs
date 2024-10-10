@@ -15,6 +15,10 @@ namespace Overlayer.Tags
         internal static Dictionary<string, OverlayerTag> tags;
         public static IEnumerable<OverlayerTag> All => tags.Values;
         public static IEnumerable<OverlayerTag> NP => tags.Values.Where(ot => ot.NotPlaying);
+
+        internal static string testerValue;
+
+        private static OverlayerTag testerTag = new("INTERNAL_TESTER_TAG_1234512345", () => testerValue, true);
         public static void Load(Assembly ass)
         {
             foreach (var t in ass.GetExportedTypes())
@@ -59,6 +63,10 @@ namespace Overlayer.Tags
         }
         public static OverlayerTag GetTag(string name)
         {
+            if (name.StartsWith("INTERNAL_TESTER_TAG_1234512345"))
+            {
+                return testerTag;
+            }
             return tags.TryGetValue(name, out var ot) ? ot : null;
         }
         public static void SetTag(OverlayerTag tag)

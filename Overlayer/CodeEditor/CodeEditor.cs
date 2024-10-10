@@ -50,19 +50,19 @@ public class CodeEditor
     }
 
 
-
     private string selectedtag = "Developer";
 
     internal Dictionary<string, UndoRedoManager> undoRedoManagers = new();
+
     public string Draw(string code, GUIStyle style, string id, params GUILayoutOption[] options)
     {
         if (!undoRedoManagers.ContainsKey(id))
         {
-            
             undoRedoManagers[id] = new UndoRedoManager();
             undoRedoManagers[id].SaveState(code);
             Main.Logger.Log("Created UndoRedoManager for " + id);
         }
+
         controlName = id;
         var oldEvent = new Event(Event.current);
         if (movingManEditor)
@@ -85,7 +85,7 @@ public class CodeEditor
                        colorRangeEditor.valueMin + "," + colorRangeEditor.valueMax + "," +
                        ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMin) + "," +
                        ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMax) + "," +
-                       colorRangeEditor.ease +
+                       colorRangeEditor.ease + "," + colorRangeEditor.maxLength +
                        ")" + colorRangeEditor.codesAfter;
                 editingHash = code.GetHashCode();
             }
@@ -152,7 +152,7 @@ public class CodeEditor
         // Drawing the text area using GUILayout
         GUI.SetNextControlName(controlName);
         var editorw = 700;
-        
+
         if (isFocused)
         {
             if (Event.current.type == EventType.KeyDown)
@@ -202,7 +202,7 @@ public class CodeEditor
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
         }
 
-        
+
         if (cachedCode != code)
         {
             cachedCode = code;
@@ -233,7 +233,7 @@ public class CodeEditor
         {
             tooltip[toolt.Key] = Main.Lang.Get("TOOLTIP_" + toolt.Key.ToUpper(), toolt.Value);
         }
-        
+
         var bak = Event.current;
         Event.current = oldEvent;
 
@@ -314,11 +314,10 @@ public class CodeEditor
                         Main.tooltip = Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
                     }
                 }
-                
+
 
                 if (special)
                 {
-                    
                     if (GUI.Button(rect, ""))
                     {
                         if (cr)
@@ -336,12 +335,10 @@ public class CodeEditor
 
                         editingHash = code.GetHashCode();
                     }
-
-                    
                 }
             }
-            
         }
+
         Event.current = bak;
 
         GUI.backgroundColor = preBackgroundColor;

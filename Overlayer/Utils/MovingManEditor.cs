@@ -5,8 +5,10 @@ using DG.Tweening;
 using Overlayer.Core.Translatior;
 using System.IO;
 using Overlayer.Patches;
+using Overlayer.Tags;
 using Overlayer.Unity;
 using RapidGUI;
+using Time = UnityEngine.Time;
 
 namespace Overlayer.Utils
 {
@@ -16,10 +18,14 @@ namespace Overlayer.Utils
         public string codesAfter;
         public string matchValue;
         private Rect windowRect;
+        private Rect previewWindowRect;
         private string[] contentLines;
         private bool isInitaialize = false;
         private bool isAnimating = false;
         private bool isSpawn = false;
+
+        private int tester = 0;
+        private float timer = 0;
 
         public string targetTag = "Combo";
         public double startSize = 30;
@@ -45,13 +51,26 @@ namespace Overlayer.Utils
                 invert = bool.Parse(arr[5]);
                 ease = EnumHelper<Ease>.Parse(arr[6]);
             }
-            
+
             windowRect.width = 300;
 
             isInitaialize = true;
             this.codesBefore = codesBefore;
             this.codesAfter = codesAfter;
             BlockUMMClosing.Block = true;
+            TagManager.testerValue = "0";
+        }
+
+        public void Update()
+        {
+            timer += Time.deltaTime;
+            if (timer >= speed / 1000f)
+            {
+                timer -= (float)speed / 1000f;
+                tester++;
+                if (tester > 100) tester = 0;
+                TagManager.testerValue = tester.ToString();
+            }
         }
 
         public void OnGUI()
@@ -64,18 +83,36 @@ namespace Overlayer.Utils
                     windowRect = GUILayout.Window(122, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
                     windowRect.x = (int)(Screen.width * 0.5f - windowRect.width * 0.5f);
                     windowRect.y = (int)(Screen.height * 0.5f - windowRect.height * 0.5f);
+                    
+                    
+                    
                     isSpawn = true;
                 }
-
-                windowRect = GUILayout.Window(122,windowRect,DrawWindow,fmt, RGUIStyle.darkWindow);
+                
+                windowRect = GUILayout.Window(122, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
+                var txt = "<size=" + Math.Max(Math.Max(startSize, endSize), defaultSize) +
+                          ">Test</size>";
+                var sz = GUI.skin.label.CalcSize(new GUIContent(txt));
+                previewWindowRect.width = sz.x + 50;
+                previewWindowRect.height = sz.y + 50;
+                previewWindowRect.x = windowRect.x + windowRect.width + 10;
+                previewWindowRect.y = windowRect.y;
+                previewWindowRect = GUI.Window(1122, previewWindowRect, PreviewWindow, "",
+                    RGUIStyle.darkWindow);
             }
+        }
+
+        private void PreviewWindow(int windowID)
+        {
+            GUI.BringWindowToFront(windowID);
+            GUILayout.Label("<size=" + Effect.MovingMan("INTERNAL_TESTER_TAG_1234512345", startSize, endSize,
+                defaultSize, speed, invert, ease) + ">Test</size>");
         }
 
         private void DrawWindow(int windowID)
         {
             GUI.BringWindowToFront(windowID);
-            GUI.FocusWindow(windowID);
-            
+
             GUILayout.BeginVertical();
             GUILayout.Space(10);
 
@@ -103,10 +140,8 @@ namespace Overlayer.Utils
 
             GUILayout.Space(10);
             GUILayout.EndVertical();
-            
+
             //
         }
-
-
     }
 }

@@ -30,7 +30,7 @@ namespace Overlayer.Tags
             if (colorMinHex[0] != '#') colorMinHex = '#' + colorMinHex;
             if (colorMaxHex[0] != '#') colorMaxHex = '#' + colorMaxHex;
             val = Clamp(val, valueMin, valueMax);
-            if (rawFunc == "XAccuracy" && val == 100) return "FFDA00";
+            if ((rawFunc == "XAccuracy" || rawFunc == "INTERNAL_TESTER_TAG_1234512345_XAccuracy") && val == 100) return "FFDA00";
             float eased = DOVirtual.EasedValue(0, 1, (float)ZeroAndOne(val, valueMin, valueMax), EnumHelper<Ease>.Parse(easeRaw));
             ColorUtility.TryParseHtmlString(colorMinHex, out Color min);
             ColorUtility.TryParseHtmlString(colorMaxHex, out Color max);
