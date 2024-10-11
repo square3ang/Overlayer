@@ -9,6 +9,14 @@ Tooltips
 Legacy Theme
 Editor Undo/Redo
 
+TargetFps Tag
+ActualProgress Tag
+
+Experimental French (Canada) Language
+Experimental Vietnamese Language
+Experimental Russian Language
+
+
 [Changes]
 Popups are no longer draggable.
 
