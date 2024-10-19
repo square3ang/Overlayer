@@ -662,13 +662,16 @@ namespace Overlayer.Core
             codeEditor.highlighter = str =>
             {
                 str = str.Replace("<", "<<b></b>");
+
+                var colorHighlighted = new List<string>();
                 foreach (Match m in color.Matches(str))
                 {
                     //Main.Logger.Log(m.Groups[1].Value);
-                    if (ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _))
+                    if (!colorHighlighted.Contains(m.Groups[1].Value) && ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _))
                     {
-                        str = str.Replace(m.Groups[1].Value,
-                            "<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>");
+                        str = str.Replace("<<b></b>color=" + m.Groups[1].Value + ">",
+                            "<<b></b>color=<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>>");
+                        colorHighlighted.Add(m.Groups[1].Value);
                     }
                 }
 
