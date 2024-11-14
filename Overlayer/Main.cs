@@ -189,12 +189,14 @@ namespace Overlayer
                     }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
+                    GUILayout.Space(30);
                 }
 
                 if (isTest)
                 {
-                    GUILayout.Label("<size=30><color=green>Test Version</color></size>");
+                    GUILayout.Label("<size=30><color=lime>Test Version</color></size>");
                     GUILayout.Label("Test version may be unstable");
+                    GUILayout.Space(30);
                 }
 
                 showTooltip = false;
