@@ -1,6 +1,6 @@
 ﻿[Add]
 Added text that was not in the Chinese translation
-Added outdated version notification
+Added outdated & beta version notification
 
 [Changes]
 MovingMan preview size has been reduced
