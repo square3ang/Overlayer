@@ -53,7 +53,7 @@ namespace Overlayer
 
         private static bool isLatest = true;
 
-        private static bool isTest = false;
+        private static bool isBeta = false;
 
         public static void Load(ModEntry modEntry)
         {
@@ -90,7 +90,7 @@ namespace Overlayer
             }
             if (ver < new Version(modEntry.Info.Version))
             {
-                isTest = true;
+                isBeta = true;
             }
         }
 
@@ -192,10 +192,10 @@ namespace Overlayer
                     GUILayout.Space(30);
                 }
 
-                if (isTest)
+                if (isBeta)
                 {
-                    GUILayout.Label("<size=30><color=lime>Test Version</color></size>");
-                    GUILayout.Label("Test version may be unstable");
+                    GUILayout.Label("<size=30><color=lime>Beta Version</color></size>");
+                    GUILayout.Label("Beta version may be unstable");
                     GUILayout.Space(30);
                 }
 
