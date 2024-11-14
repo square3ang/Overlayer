@@ -53,6 +53,8 @@ namespace Overlayer
 
         private static bool isLatest = true;
 
+        private static bool isTest = false;
+
         public static void Load(ModEntry modEntry)
         {
             Logger = modEntry.Logger;
@@ -85,6 +87,10 @@ namespace Overlayer
             if (ver > new Version(modEntry.Info.Version))
             {
                 isLatest = false;
+            }
+            if (ver < new Version(modEntry.Info.Version))
+            {
+                isTest = true;
             }
         }
 
@@ -183,6 +189,12 @@ namespace Overlayer
                     }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
+                }
+
+                if (isTest)
+                {
+                    GUILayout.Label("<size=30><color=green>Test Version</color></size>");
+                    GUILayout.Label("Test version may be unstable");
                 }
 
                 showTooltip = false;
