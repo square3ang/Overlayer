@@ -1,24 +1,9 @@
 ﻿[Add]
-Pop-up before trying to destroy text
-Dropdowns
-HSV Color Picker
-MovingMan and ColorRange Editor
-Advanced Syntax Highlighting
-Tag Inserter
-Tooltips
-Legacy Theme
-Editor Undo/Redo
-
-TargetFps Tag
-ActualProgress Tag
-
-Experimental French (Canada) Language
-Experimental Vietnamese Language
-Experimental Russian Language
-
+Added text that was not in the Chinese translation
+Added outdated version notification
 
 [Changes]
-Popups are no longer draggable.
+MovingMan preview size has been reduced
 
 [Fix]
-Fixed bug where pop-up was not centered
+Fixed an error where <color> rich tag highlighting did not work properly

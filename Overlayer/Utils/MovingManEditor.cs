@@ -90,7 +90,7 @@ namespace Overlayer.Utils
                 }
                 
                 windowRect = GUILayout.Window(122, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
-                var txt = "<size=" + Math.Max(Math.Max(startSize, endSize), defaultSize) +
+                var txt = "<size=" + Math.Max(Math.Max(startSize / 2f, endSize / 2f), defaultSize / 2f) +
                           ">Test</size>";
                 var sz = GUI.skin.label.CalcSize(new GUIContent(txt));
                 previewWindowRect.width = sz.x + 50;
@@ -106,7 +106,7 @@ namespace Overlayer.Utils
         {
             GUI.BringWindowToFront(windowID);
             GUILayout.Label("<size=" + Effect.MovingMan("INTERNAL_TESTER_TAG_1234512345", startSize, endSize,
-                defaultSize, speed, invert, ease) + ">Test</size>");
+                defaultSize, speed, invert, ease) / 2f + ">Test</size>");
         }
 
         private void DrawWindow(int windowID)

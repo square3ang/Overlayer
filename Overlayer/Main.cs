@@ -14,8 +14,10 @@ using System.Collections;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
 using RapidGUI;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
@@ -49,6 +51,8 @@ namespace Overlayer
         public static bool showTooltip = false;
         public static string tooltip = "";
 
+        private static bool isLatest = true;
+
         public static void Load(ModEntry modEntry)
         {
             Logger = modEntry.Logger;
@@ -73,6 +77,15 @@ namespace Overlayer
             yield return null;
             while (!RDString.initialized) yield return null;
             PatchGuard.Ignore(TextManager.Initialize);
+            yield return null;
+            var wr = UnityWebRequest.Get("https://api.github.com/repos/square3ang/Overlayer/releases/latest");
+            yield return wr.SendWebRequest();
+            var json = JObject.Parse(wr.downloadHandler.text);
+            var ver = new Version(json["tag_name"].ToString());
+            if (ver > new Version(modEntry.Info.Version))
+            {
+                isLatest = false;
+            }
         }
 
         public static bool OnToggle(ModEntry modEntry, bool toggle)
@@ -93,6 +106,7 @@ namespace Overlayer
                     TagManager.Load(Ass);
                     FontManager.Initialize();
                     TagResetter.Postfix();
+                    
                 });
             }
             else
@@ -155,6 +169,22 @@ namespace Overlayer
             }
             else
             {
+                if (!isLatest)
+                {
+                    GUILayout.Label("<size=50><color=red>Outdated Version Detected!</color></size>");
+                    GUILayout.BeginHorizontal();
+                    if (Drawer.Button("<size=30>Update</size>"))
+                    {
+                        Application.OpenURL("https://overlayer.lrl.kr/");
+                    }
+                    if (Drawer.Button("<size=30>Square Mod Server</size>"))
+                    {
+                        Application.OpenURL("https://square.lrl.kr/");
+                    }
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+                }
+
                 showTooltip = false;
                 helptime = 0f;
                 GUI.Draw();
