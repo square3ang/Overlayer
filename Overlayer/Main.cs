@@ -80,17 +80,21 @@ namespace Overlayer
             while (!RDString.initialized) yield return null;
             PatchGuard.Ignore(TextManager.Initialize);
             yield return null;
-            var wr = UnityWebRequest.Get("https://api.github.com/repos/square3ang/Overlayer/releases/latest");
-            yield return wr.SendWebRequest();
-            var json = JObject.Parse(wr.downloadHandler.text);
-            var ver = new Version(json["tag_name"].ToString());
-            if (ver > new Version(modEntry.Info.Version))
+            if (Application.internetReachability != NetworkReachability.NotReachable)
             {
-                isLatest = false;
-            }
-            if (ver < new Version(modEntry.Info.Version))
-            {
-                isBeta = true;
+                var wr = UnityWebRequest.Get("https://api.github.com/repos/square3ang/Overlayer/releases/latest");
+                yield return wr.SendWebRequest();
+                var json = JObject.Parse(wr.downloadHandler.text);
+                var ver = new Version(json["tag_name"].ToString());
+                if (ver > new Version(modEntry.Info.Version))
+                {
+                    isLatest = false;
+                }
+
+                if (ver < new Version(modEntry.Info.Version))
+                {
+                    isBeta = true;
+                }
             }
         }
 
