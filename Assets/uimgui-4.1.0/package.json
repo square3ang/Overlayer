@@ -1,0 +1,23 @@
+{
+  "name": "com.psydack.uimgui",
+  "displayName": "UImGui",
+  "version": "5.0.0",
+  "description": "A Unity wrapper for ImGui",
+  "unity": "2019.4",
+  "dependencies": {
+  },
+  "keywords": [
+    "dear",
+    "imgui",
+    "ui"
+  ],
+  "author": {
+    "name": "Psydack",
+    "url": "https://github.com/psydack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/psydack/uimgui",
+    "revision": ""
+  }
+}

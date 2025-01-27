@@ -1,0 +1,26 @@
+{
+    "name": "Overlayer",
+    "rootNamespace": "Overlayer",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "0Harmony.dll",
+        "Assembly-CSharp.dll",
+        "Assembly-CSharp-firstpass.dll",
+        "UnityModManager.dll",
+        "ImGui.NET.dll",
+        "RDTools.dll",
+        "Newtonsoft.Json.dll",
+        "Lua.dll",
+        "DOTween.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
