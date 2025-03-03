@@ -16,13 +16,11 @@ namespace Overlayer.Tags
         //[Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
         public static scrLevelMaker LevelMaker => scrLevelMaker.instance;
         //[Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
-        public static scrPlanet ChosenPlanet => Controller?.chosenplanet;
+        public static scrPlanet chosenPlanet => Controller?.chosenPlanet;
         //[Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
-        public static scrPlanet RedPlanet => Controller?.redPlanet;
+        public static scrPlanet planetRed => Controller?.planetRed;
         //[Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
-        public static scrPlanet BluePlanet => Controller?.bluePlanet;
-        //[Tag(NotPlaying = true)]
-        public static scrPlanet OtherPlanet(int index) => Controller?.allPlanets[index];
+        public static scrPlanet planetBlue => Controller?.planetBlue;
         //[Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
         public static scnCLS CLS => scnCLS.instance;
         //[Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]

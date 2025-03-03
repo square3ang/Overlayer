@@ -22,6 +22,7 @@ using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
 using Time = UnityEngine.Time;
+using System.Linq;
 
 namespace Overlayer
 {
@@ -80,20 +81,30 @@ namespace Overlayer
             while (!RDString.initialized) yield return null;
             PatchGuard.Ignore(TextManager.Initialize);
             yield return null;
-            if (Application.internetReachability != NetworkReachability.NotReachable)
+            if(Application.internetReachability != NetworkReachability.NotReachable)
             {
-                var wr = UnityWebRequest.Get("https://api.github.com/repos/square3ang/Overlayer/releases/latest");
+                var wr = UnityWebRequest.Get("https://api.github.com/repos/square3ang/Overlayer/releases");
                 yield return wr.SendWebRequest();
-                var json = JObject.Parse(wr.downloadHandler.text);
-                var ver = new Version(json["tag_name"].ToString());
-                if (ver > new Version(modEntry.Info.Version))
-                {
-                    isLatest = false;
-                }
+                var releases = JArray.Parse(wr.downloadHandler.text);
 
-                if (ver < new Version(modEntry.Info.Version))
+                JObject latestV3Release = releases
+                    .Where(r => r["target_commitish"]?.ToString() == "v3")
+                    .OrderByDescending(r => new Version(r["tag_name"].ToString()))
+                    .FirstOrDefault() as JObject;
+
+                if(latestV3Release != null)
                 {
-                    isBeta = true;
+                    var latestV3Ver = new Version(latestV3Release["tag_name"].ToString());
+
+                    if(latestV3Ver > new Version(modEntry.Info.Version))
+                    {
+                        isLatest = false;
+                    }
+
+                    if(latestV3Ver < new Version(modEntry.Info.Version))
+                    {
+                        isBeta = true;
+                    }
                 }
             }
         }

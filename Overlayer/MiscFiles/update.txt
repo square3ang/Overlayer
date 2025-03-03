@@ -1,9 +1,2 @@
-﻿[Add]
-Added text that was not in the Chinese translation
-Added outdated & beta version notification
-
-[Changes]
-MovingMan preview size has been reduced
-
-[Fix]
-Fixed an error where <color> rich tag highlighting did not work properly
+﻿[Fix]
+Fix mismatched class names
