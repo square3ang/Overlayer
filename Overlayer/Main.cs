@@ -88,7 +88,7 @@ namespace Overlayer
                 var releases = JArray.Parse(wr.downloadHandler.text);
 
                 JObject latestV3Release = releases
-                    .Where(r => r["target_commitish"]?.ToString() == "v3")
+                    .Where(r => r["target_commitish"]?.ToString() == "v3" && r["prerelease"]?.ToObject<bool>() == false)
                     .OrderByDescending(r => new Version(r["tag_name"].ToString()))
                     .FirstOrDefault() as JObject;
 
