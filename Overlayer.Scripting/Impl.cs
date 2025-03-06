@@ -731,26 +731,26 @@ namespace Overlayer.Scripting
         public class Adofai
         {
             [Api("getPlanetRenderer", ReturnComment = "UnityEngine.SpriteRenderer (Planet SpriteRenderer)")]
-            public static SpriteRenderer GetPlanetRenderer(scrPlanet planet)
+            public static SpriteRenderer GetPlanetRenderer(scrPlanet planet, PlanetRenderer planetrenderer)
             {
-                return planet.GetOrAddRenderer();
+                return planet.GetOrAddRenderer(planetrenderer);
             }
             [Api("scalePlanet")]
-            public static void ScalePlanet(scrPlanet planet, Vector2 vec)
+            public static void ScalePlanet(PlanetRenderer planetrender, Vector2 vec)
             {
                 ScaleAll(new[]
                 {
-                    (mr.GetValue(planet.sprite) as SpriteRenderer)?.transform,
-                    planet.coreParticles?.transform,
-                    planet.tailParticles?.transform,
-                    planet.sparks?.transform,
-                    planet.ring?.transform,
-                    planet.glow?.transform,
-                    planet.deathExplosion?.transform,
-                    planet.faceSprite?.transform,
-                    planet.faceDetails?.transform,
-                    planet.faceHolder?.transform,
-                    planet.samuraiSprite?.transform,
+                    (mr.GetValue(planetrender.sprite) as SpriteRenderer)?.transform,
+                    planetrender.coreParticles?.transform,
+                    planetrender.tailParticles?.transform,
+                    planetrender.sparks?.transform,
+                    planetrender.ring?.transform,
+                    planetrender.glow?.transform,
+                    planetrender.deathExplosion?.transform,
+                    planetrender.faceSprite?.transform,
+                    planetrender.faceDetails?.transform,
+                    planetrender.faceHolder?.transform,
+                    planetrender.samuraiSprite?.transform,
                 }, vec);
             }
             [Api("setDiscordRp")]
@@ -921,7 +921,7 @@ namespace Overlayer.Scripting
         static ModuleBuilder ApiModule;
         static FieldInfo mr = typeof(PlanetRenderer).GetField("meshRenderer", (BindingFlags)15420);
         // From PlanetTweaks By tjwogud
-        public static SpriteRenderer GetOrAddRenderer(this scrPlanet planet)
+        public static SpriteRenderer GetOrAddRenderer(this scrPlanet planet, PlanetRenderer planetrender)
         {
             if (!planet) return null;
             SpriteRenderer renderer = planet.transform.Find("PlanetTweaksRenderer")?.GetComponent<SpriteRenderer>();
@@ -930,9 +930,9 @@ namespace Overlayer.Scripting
                 GameObject obj = new GameObject("PlanetTweaksRenderer");
                 obj.AddComponent<RendererController>();
                 renderer = obj.AddComponent<SpriteRenderer>();
-                renderer.sortingOrder = (mr.GetValue(planet.sprite) as SpriteRenderer).sortingOrder + 1;
-                renderer.sortingLayerID = planet.faceDetails.sortingLayerID;
-                renderer.sortingLayerName = planet.faceDetails.sortingLayerName;
+                renderer.sortingOrder = (mr.GetValue(planetrender.sprite) as SpriteRenderer).sortingOrder + 1;
+                renderer.sortingLayerID = planetrender.faceDetails.sortingLayerID;
+                renderer.sortingLayerName = planetrender.faceDetails.sortingLayerName;
                 renderer.transform.SetParent(planet.transform);
                 renderer.transform.position = planet.transform.position;
             }
@@ -1040,20 +1040,24 @@ namespace Overlayer.Scripting
         public class RendererController : MonoBehaviour
         {
             private scrPlanet planet;
+            private PlanetRenderer planetrender;
             private SpriteRenderer renderer;
 
             private void Awake()
             {
                 planet = GetComponentInParent<scrPlanet>();
-                renderer = planet.GetOrAddRenderer();
+                planetrender = GetComponentInParent<PlanetRenderer>();
+                renderer = planet.GetOrAddRenderer(planetrender);
             }
 
             private void Update()
             {
                 if (!planet)
                     planet = GetComponentInParent<scrPlanet>();
+                if (!planetrender)
+                    planetrender = GetComponentInParent<PlanetRenderer>();
                 if (!renderer)
-                    renderer = planet.GetOrAddRenderer();
+                    renderer = planet.GetOrAddRenderer(planetrender);
                 if (planet && renderer)
                 {
                     if (planet.dummyPlanets)
@@ -1061,7 +1065,7 @@ namespace Overlayer.Scripting
                         Destroy(gameObject);
                         return;
                     }
-                    renderer.enabled = planet.sprite.visible;
+                    renderer.enabled = planetrender.sprite.visible;
                 }
             }
         }
