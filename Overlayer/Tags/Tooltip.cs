@@ -166,8 +166,8 @@ public class Tooltip
         ["GCMemAllocRate"] = "Shows the allocation rate of memory by the Garbage Collector in MB per second",
         ["GCMemAllocRateGB"] = "Shows the allocation rate of memory by the Garbage Collector in GB per second",
         ["GCMemAllocRateKB"] = "Shows the allocation rate of memory by the Garbage Collector in KB per second",
-        ["UnityMemUsage"] = "Shows the total memory allocated by Unity, not including the entire process memory",
-        ["UnityMemUsageGB"] = "Shows the total memory allocated by Unity in GB, not including the entire process memory",
-        ["UnityMemUsageKB"] = "Shows the total memory allocated by Unity in KB, not including the entire process memory"
+        ["UnityMemUsage"] = "Shows the total memory used by Unity, not including the entire process memory",
+        ["UnityMemUsageGB"] = "Shows the total memory used by Unity in GB, not including the entire process memory",
+        ["UnityMemUsageKB"] = "Shows the total memory used by Unity in KB, not including the entire process memory"
     };
 }
