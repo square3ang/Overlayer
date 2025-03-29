@@ -107,6 +107,7 @@ namespace Overlayer.Views
             Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
             Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
             Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE","FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
+            Drawer.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE","System Tag Update Rate"), ref model.SystemTagUpdateRate);
             GUILayout.BeginHorizontal();
             if (Drawer.Button(Main.Lang.Get("NEW_TEXT","Create New Text")))
             {

@@ -1,2 +1,11 @@
-﻿[Fix]
-Fix mismatched class names
+﻿[Add]
+Added System Tags:
+- GCMemUsage
+- GCMemUsageGB
+- GCMemUsageKB
+- UnityMemUsage
+- UnityMemUsageGB
+- UnityMemUsageKB
+- GCMemAllocRate
+- GCMemAllocRateGB
+- GCMemAllocRateKB

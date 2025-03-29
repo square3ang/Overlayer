@@ -158,6 +158,16 @@ public class Tooltip
         ["MovingMan"] = "You can animate text on criterion certain tags. Used with <size>.",
         ["ColorRange"] = "You can adjust the color from any color to any color you want based on a specific tag. Use with <color>.",
         ["EasedValue"] = "When the tag value changes, the tag value changes according to the speed.",
-        ["Developer"] = "Display overlayer mod developer name Super Kawaii Suckyoubus Chan~♥︎"
+        ["Developer"] = "Display overlayer mod developer name Super Kawaii Suckyoubus Chan~♥︎",
+
+        ["GCMemUsage"] = "Shows the total memory used by the Garbage Collector in MB",
+        ["GCMemUsageGB"] = "Shows the total memory used by the Garbage Collector in GB",
+        ["GCMemUsageKB"] = "Shows the total memory used by the Garbage Collector in KB",
+        ["GCMemAllocRate"] = "Shows the allocation rate of memory by the Garbage Collector in MB per second",
+        ["GCMemAllocRateGB"] = "Shows the allocation rate of memory by the Garbage Collector in GB per second",
+        ["GCMemAllocRateKB"] = "Shows the allocation rate of memory by the Garbage Collector in KB per second",
+        ["UnityMemUsage"] = "Shows the total memory allocated by Unity, not including the entire process memory",
+        ["UnityMemUsageGB"] = "Shows the total memory allocated by Unity in GB, not including the entire process memory",
+        ["UnityMemUsageKB"] = "Shows the total memory allocated by Unity in KB, not including the entire process memory"
     };
 }

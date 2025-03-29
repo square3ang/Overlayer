@@ -486,6 +486,7 @@
     <Compile Include="Tags\Patches\TilePatch.cs" />
     <Compile Include="Tags\Song.cs" />
     <Compile Include="Tags\Status.cs" />
+    <Compile Include="Tags\System.cs" />
     <Compile Include="Tags\TagManager.cs" />
     <Compile Include="Tags\Tile.cs" />
     <Compile Include="Tags\Time.cs" />

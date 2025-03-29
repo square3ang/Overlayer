@@ -241,6 +241,16 @@
     "TOOLTIP_EASEDVALUE": "태그 값이 변경될 때, 속도에 따라 태그 값이 변경됩니다.",
     "TOOLTIP_DEVELOPER": "모드 개발자 이름을 표시합니다. 초 카와이 석큐버스 짱~♥︎",
     "TOOLTIP_MARGINSCALE": "레벨의 판정 범위",
-    "NOT_EXIST_TAG": "존재하지 않는 태그입니다."
+    "NOT_EXIST_TAG": "존재하지 않는 태그입니다.",
+    "SYSTEMTAG_UPDATE_RATE": "시스템 태그 업데이트 주기",
+    "TOOLTIP_GCMEMUSAGE": "Garbage Collector가 사용하는 총 MB 메모리",
+    "TOOLTIP_GCMEMUSAGEGB": "Garbage Collector가 사용하는 총 GB 메모리",
+    "TOOLTIP_GCMEMUSAGEKB": "Garbage Collector가 사용하는 총 KB 메모리",
+    "TOOLTIP_GCMEMALLOCRATE": "Garbage Collector의 초당 MB 메모리 할당 속도",
+    "TOOLTIP_GCMEMALLOCRATEGB": "Garbage Collector의 초당 GB 메모리 할당 속도",
+    "TOOLTIP_GCMEMALLOCRATEKB": "Garbage Collector의 초당 KB 메모리 할당 속도",
+    "TOOLTIP_UNITYMEMUSAGE": "Unity가 사용하는 총 MB 메모리 (프로세스 메모리 아님)",
+    "TOOLTIP_UNITYMEMUSAGEGB": "Unity가 사용하는 총 GB 메모리 (프로세스 메모리 아님)",
+    "TOOLTIP_UNITYMEMUSAGEKB": "Unity가 사용하는 총 KB 메모리 (프로세스 메모리 아님)"
   }
 }

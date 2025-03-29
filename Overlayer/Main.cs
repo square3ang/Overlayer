@@ -23,6 +23,7 @@ using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
 using Time = UnityEngine.Time;
 using System.Linq;
+using static UnityEngine.UI.CanvasScaler;
 
 namespace Overlayer
 {
@@ -127,13 +128,14 @@ namespace Overlayer
                     TagManager.Load(Ass);
                     FontManager.Initialize();
                     TagResetter.Postfix();
-                    
+                    Tags.System.Init();
                 });
             }
             else
             {
                 PatchGuard.Ignore(() =>
                 {
+                    Tags.System.Free();
                     TextManager.Release();
                     FontManager.Release();
                     TagManager.Release();

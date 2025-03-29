@@ -241,6 +241,16 @@
     "TOOLTIP_COLORRANGE": "You can adjust the color from any color to any color you want based on a specific tag. Use with <color>.",
     "TOOLTIP_EASEDVALUE": "When the tag value changes, the tag value changes according to the speed.",
     "TOOLTIP_DEVELOPER": "Display overlayer mod developer name Super Kawaii Suckyoubus Chan~♥︎",
-    "NOT_EXIST_TAG": "This tag does not exist."
+    "NOT_EXIST_TAG": "This tag does not exist.",
+    "SYSTEMTAG_UPDATE_RATE": "System Tag Update Rate",
+    "TOOLTIP_GCMEMUSAGE": "Shows the total memory used by the Garbage Collector in MB",
+    "TOOLTIP_GCMEMUSAGEGB": "Shows the total memory used by the Garbage Collector in GB",
+    "TOOLTIP_GCMEMUSAGEKB": "Shows the total memory used by the Garbage Collector in KB",
+    "TOOLTIP_GCMEMALLOCRATE": "Shows the allocation rate of memory by the Garbage Collector in MB per second",
+    "TOOLTIP_GCMEMALLOCRATEGB": "Shows the allocation rate of memory by the Garbage Collector in GB per second",
+    "TOOLTIP_GCMEMALLOCRATEKB": "Shows the allocation rate of memory by the Garbage Collector in KB per second",
+    "TOOLTIP_UNITYMEMUSAGE": "Shows the total memory allocated by Unity, not including the entire process memory",
+    "TOOLTIP_UNITYMEMUSAGEGB": "Shows the total memory allocated by Unity in GB, not including the entire process memory",
+    "TOOLTIP_UNITYMEMUSAGEKB": "Shows the total memory allocated by Unity in KB, not including the entire process memory"
   }
 }

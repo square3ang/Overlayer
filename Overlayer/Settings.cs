@@ -13,6 +13,7 @@ namespace Overlayer
         public string Lang = "Default";
         public float FPSUpdateRate = 100;
         public float FrameTimeUpdateRate = 100;
+        public int SystemTagUpdateRate = 100;
         public bool useLegacyTheme = false;
         public bool useMovingManEditor = true;
         public bool useColorRangeEditor = true;
@@ -24,6 +25,7 @@ namespace Overlayer
             node[nameof(Lang)] = Lang;
             node[nameof(FPSUpdateRate)] = FPSUpdateRate;
             node[nameof(FrameTimeUpdateRate)] = FrameTimeUpdateRate;
+            node[nameof(SystemTagUpdateRate)] = SystemTagUpdateRate;
             node[nameof(useLegacyTheme)] = useLegacyTheme;
             node[nameof(useMovingManEditor)] = useMovingManEditor;
             node[nameof(useColorRangeEditor)] = useColorRangeEditor;
@@ -36,6 +38,7 @@ namespace Overlayer
             Lang = node[nameof(Lang)];
             FPSUpdateRate = node[nameof(FPSUpdateRate)];
             FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)];
+            SystemTagUpdateRate = node[nameof(SystemTagUpdateRate)];
             useLegacyTheme = node[nameof(useLegacyTheme)];
             useMovingManEditor = node[nameof(useMovingManEditor)];
             useColorRangeEditor = node[nameof(useColorRangeEditor)];
@@ -48,6 +51,7 @@ namespace Overlayer
             newSettings.Lang = Lang;
             newSettings.FPSUpdateRate = FPSUpdateRate;
             newSettings.FrameTimeUpdateRate = FrameTimeUpdateRate;
+            newSettings.SystemTagUpdateRate = SystemTagUpdateRate;
             newSettings.useLegacyTheme = useLegacyTheme;
             newSettings.useMovingManEditor = useMovingManEditor;
             newSettings.useColorRangeEditor = useColorRangeEditor;
