@@ -54,7 +54,7 @@ namespace Overlayer.Unity
                 GameObject pCanvasObj = PCanvasObj = new GameObject("Overlayer Canvas");
                 PublicCanvas = pCanvasObj.AddComponent<Canvas>();
                 PublicCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                PublicCanvas.sortingOrder = int.MaxValue;
+                PublicCanvas.sortingOrder = 32760;
                 CanvasScaler scaler = pCanvasObj.AddComponent<CanvasScaler>();
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
                 var currentRes = Screen.currentResolution;
