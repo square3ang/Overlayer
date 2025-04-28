@@ -1,11 +1,3 @@
-﻿[Add]
-Added System Tags:
-- GCMemUsage
-- GCMemUsageGB
-- GCMemUsageKB
-- UnityMemUsage
-- UnityMemUsageGB
-- UnityMemUsageKB
-- GCMemAllocRate
-- GCMemAllocRateGB
-- GCMemAllocRateKB
+﻿[Fix]
+Move layer sort to top of top
+GCMemUsage fix: just Compare differences with previous values (per ssecond too hard..)
