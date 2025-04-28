@@ -19,7 +19,6 @@ namespace Overlayer.Tags {
         public static double GCMemAllocRateKB;
 
         private static long lastGCAllocatedMemory = GC.GetTotalMemory(false);
-        private static Stopwatch gcStopwatch = Stopwatch.StartNew();
 
         private static Thread Update;
         public static bool inited { get; private set; }
@@ -72,13 +71,9 @@ namespace Overlayer.Tags {
         public static double _UnityMemUsageKB() => UnityMemUsageKB;
 
         private static double GCMemoryAllocRateCheck(long currentMemory) {
-            double elapsedSeconds = gcStopwatch.Elapsed.TotalSeconds;
-            gcStopwatch.Restart();
-            long allocatedSinceLastCheck = currentMemory - lastGCAllocatedMemory;
-
+            long rate = currentMemory - lastGCAllocatedMemory;
             lastGCAllocatedMemory = currentMemory;
-
-            return allocatedSinceLastCheck / elapsedSeconds;
+            return rate;
         }
 
         public static void Free() {
