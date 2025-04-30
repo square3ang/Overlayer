@@ -46,16 +46,6 @@ namespace Overlayer.Core.Patches
                 return;
             }
             if (force) Locked = false;
-            PatchGuard.Ignore(() =>
-            {
-                var pre_hm = prefix != null ? new HarmonyMethod(prefix) : null;
-                var post_hm = postfix != null ? new HarmonyMethod(postfix) : null;
-                var trans_hm = transpiler != null ? new HarmonyMethod(transpiler) : null;
-                var final_hm = finalizer != null ? new HarmonyMethod(finalizer) : null;
-                patch = harmony.Patch(target, pre_hm, post_hm, trans_hm, final_hm);
-                Main.Logger.Log($"ID:{attr.Id} Patched!");
-                Patched = true;
-            });
         }
         public void Unpatch(bool force = false)
         {
@@ -66,13 +56,6 @@ namespace Overlayer.Core.Patches
                 return;
             }
             if (force) Locked = false;
-            PatchGuard.Ignore(() =>
-            {
-                harmony.Unpatch(target, patch);
-                Main.Logger.Log($"ID:{attr.Id} Unpatched!");
-                patch = null;
-                Patched = false;
-            });
         }
     }
 }

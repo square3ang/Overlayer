@@ -408,7 +408,6 @@
     <Compile Include="Models\TextConfig.cs" />
     <Compile Include="Patches\BlockUMMClosing.cs" />
     <Compile Include="Patches\FontPatch.cs" />
-    <Compile Include="Patches\PatchGuard.cs" />
     <Compile Include="Patches\TagResetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RapidGUI\Component\FastScrollView.cs" />
@@ -516,6 +515,7 @@
     <None Include="MiscFiles\lang\English.json" />
     <None Include="MiscFiles\info.json" />
     <None Include="MiscFiles\lang\Korean.json" />
+    <None Include="MiscFiles\lang\Russian.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -537,6 +537,7 @@
     <Content Include="RapidGUI\RGUI\MinMaxSlider\Resources\minmax slider thumb act.png" />
     <Content Include="RapidGUI\RGUI\MinMaxSlider\Resources\minmax slider thumb.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\Overlayer.dll"

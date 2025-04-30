@@ -34,10 +34,7 @@ namespace Overlayer.Unity
         public static Shader sr_msdf;
         static OverlayerText()
         {
-            PatchGuard.Ignore(() =>
-            {
-                sr_msdf = (Shader)typeof(ShaderUtilities).GetProperty("ShaderRef_MobileSDF", (BindingFlags)15420).GetValue(null);
-            });
+            sr_msdf = (Shader)typeof(ShaderUtilities).GetProperty("ShaderRef_MobileSDF", (BindingFlags)15420).GetValue(null);
         }
         #endregion
         public void Init(TextConfig config)

@@ -1,9 +1,7 @@
-﻿using Overlayer.Core.Patches;
-using Overlayer.Tags;
+﻿using Overlayer.Tags;
 
 namespace Overlayer.Patches
 {
-    [LazyPatch("Patches.TagResetter", "scrController", "Awake_Rewind")]
     public static class TagResetter
     {
         public static void Postfix()

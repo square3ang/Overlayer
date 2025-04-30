@@ -68,20 +68,14 @@ namespace Overlayer.Core.Patches
         public static List<LazyPatch> UnpatchAll(string trigger = null)
         {
             List<LazyPatch> patches = new List<LazyPatch>();
-            PatchGuard.Ignore(() =>
-            {
-                if (trigger != null)
-                {
-                    if (PatchedTriggers.Remove(trigger))
-                        foreach (var patch in patches = Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)).ToList())
-                            patch.Unpatch();
-                }
-                else
-                {
-                    foreach (var patchType in Patches.Keys)
-                        patches.AddRange(Unpatch(patchType));
-                }
-            });
+            if(trigger != null) {
+                if(PatchedTriggers.Remove(trigger))
+                    foreach(var patch in patches = Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)).ToList())
+                        patch.Unpatch();
+            } else {
+                foreach(var patchType in Patches.Keys)
+                    patches.AddRange(Unpatch(patchType));
+            }
             return patches;
         }
         public static List<LazyPatch> Patch(Type patchType, bool force = false)

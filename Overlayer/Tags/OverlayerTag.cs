@@ -23,7 +23,7 @@ namespace Overlayer.Tags
         public OverlayerTag(MethodInfo method, TagAttribute attr, object target = null)
         {
             Tag = new Tag(Name = attr.Name ?? method.Name);
-            PatchGuard.Ignore(() => Tag.SetGetter(WrapProcessor(method, target, attr.ProcessingFlags, attr.ProcessingFlagsArg), target));
+            Tag.SetGetter(WrapProcessor(method, target, attr.ProcessingFlags, attr.ProcessingFlagsArg), target);
             Attributes = attr;
             NotPlaying = attr.NotPlaying;
             DeclaringType = method.DeclaringType;
@@ -31,7 +31,7 @@ namespace Overlayer.Tags
         public OverlayerTag(FieldInfo field, TagAttribute attr, object target = null)
         {
             Tag = new Tag(Name = attr.Name ?? field.Name);
-            PatchGuard.Ignore(() => Tag.SetGetter(WrapProcessor(field, target, attr.ProcessingFlags, attr.ProcessingFlagsArg)));
+            Tag.SetGetter(WrapProcessor(field, target, attr.ProcessingFlags, attr.ProcessingFlagsArg));
             Attributes = attr;
             NotPlaying = attr.NotPlaying;
             DeclaringType = field.DeclaringType;
@@ -39,7 +39,7 @@ namespace Overlayer.Tags
         public OverlayerTag(PropertyInfo prop, TagAttribute attr, object target = null)
         {
             Tag = new Tag(Name = attr.Name ?? prop.Name);
-            PatchGuard.Ignore(() => Tag.SetGetter(WrapProcessor(prop, target, attr.ProcessingFlags, attr.ProcessingFlagsArg)));
+            Tag.SetGetter(WrapProcessor(prop, target, attr.ProcessingFlags, attr.ProcessingFlagsArg));
             Attributes = attr;
             NotPlaying = attr.NotPlaying;
             DeclaringType = prop.DeclaringType;
@@ -49,7 +49,7 @@ namespace Overlayer.Tags
             var attr = new TagAttribute(Name = name);
             attr.ProcessingFlags = flags;
             Tag = new Tag(name);
-            PatchGuard.Ignore(() => Tag.SetGetter(del));
+            Tag.SetGetter(del);
             Attributes = attr;
             NotPlaying = notPlaying;
             DeclaringType = del.Method.DeclaringType;
@@ -250,12 +250,9 @@ namespace Overlayer.Tags
         private static Dictionary<string, DynamicMethod> accessorCacheDM = new Dictionary<string, DynamicMethod>();
         static OverlayerTag()
         {
-            PatchGuard.Ignore(() =>
-            {
-                runtimeAccessor = typeof(OverlayerTag).GetMethod(nameof(RuntimeAccess), (BindingFlags)15420, null, new[] { typeof(object), typeof(string) }, null);
-                round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });
-                trim = typeof(Extensions).GetMethod("Trim", new[] { typeof(string), typeof(int), typeof(string) });
-            });
+            runtimeAccessor = typeof(OverlayerTag).GetMethod(nameof(RuntimeAccess), (BindingFlags)15420, null, new[] { typeof(object), typeof(string) }, null);
+            round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });
+            trim = typeof(Extensions).GetMethod("Trim", new[] { typeof(string), typeof(int), typeof(string) });
         }
     }
 }

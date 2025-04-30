@@ -80,7 +80,7 @@ namespace Overlayer
         {
             yield return null;
             while (!RDString.initialized) yield return null;
-            PatchGuard.Ignore(TextManager.Initialize);
+            TextManager.Initialize();
             yield return null;
             if(Application.internetReachability != NetworkReachability.NotReachable)
             {
@@ -114,37 +114,31 @@ namespace Overlayer
         {
             if (toggle)
             {
-                PatchGuard.Ignore(() =>
-                {
-                    StaticCoroutine.Run(null);
-                    StaticCoroutine.Run(LoadCoroutine(modEntry));
-                    Settings = ModSettings.Load<Settings>(modEntry);
-                    _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path, "lang"));
-                    LazyPatchManager.Load(Ass);
-                    LazyPatchManager.PatchInternal();
-                    Tag.InitializeWrapperAssembly();
-                    OverlayerTag.Initialize();
-                    TagManager.Initialize();
-                    TagManager.Load(Ass);
-                    FontManager.Initialize();
-                    TagResetter.Postfix();
-                    Tags.System.Init();
-                });
+                StaticCoroutine.Run(null);
+                StaticCoroutine.Run(LoadCoroutine(modEntry));
+                Settings = ModSettings.Load<Settings>(modEntry);
+                _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path, "lang"));
+                LazyPatchManager.Load(Ass);
+                LazyPatchManager.PatchInternal();
+                Tag.InitializeWrapperAssembly();
+                OverlayerTag.Initialize();
+                TagManager.Initialize();
+                TagManager.Load(Ass);
+                FontManager.Initialize();
+                TagResetter.Postfix();
+                Tags.System.Init();
             }
             else
             {
-                PatchGuard.Ignore(() =>
-                {
-                    Tags.System.Free();
-                    TextManager.Release();
-                    FontManager.Release();
-                    TagManager.Release();
-                    OverlayerTag.Release();
-                    Tag.ReleaseWrapperAssembly();
-                    LazyPatchManager.UnloadAll();
-                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
-                    ModSettings.Save(Settings, modEntry);
-                });
+                Tags.System.Free();
+                TextManager.Release();
+                FontManager.Release();
+                TagManager.Release();
+                OverlayerTag.Release();
+                Tag.ReleaseWrapperAssembly();
+                LazyPatchManager.UnloadAll();
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+                ModSettings.Save(Settings, modEntry);
             }
 
             return true;
@@ -243,11 +237,8 @@ namespace Overlayer
 
         public static void OnSaveGUI(ModEntry modEntry)
         {
-            PatchGuard.Ignore(() =>
-            {
-                TextManager.Save();
-                ModSettings.Save(Settings, modEntry);
-            });
+            TextManager.Save();
+            ModSettings.Save(Settings, modEntry);
         }
 
         public static bool IsPlaying

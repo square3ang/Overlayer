@@ -5,16 +5,6 @@ namespace Overlayer.Tags.Patches
     public class BpmPatch : PatchBase<BpmPatch>
     {
         public static float bpm, pitch, bpmwithoutpitch, playbackSpeed = 1;
-        [LazyPatch("Tags.Bpm.Initializer_scnGame", "scnGame", "Play", Triggers = new string[]
-        {
-            nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.RecKPS),
-            nameof(Bpm.TileBpmWithoutPitch), nameof(Bpm.CurBpmWithoutPitch), nameof(Bpm.RecKPSWithoutPitch),
-        })]
-        [LazyPatch("Tags.Bpm.Initializer_scrPressToStart", "scrPressToStart", "ShowText", Triggers = new string[]
-        {
-            nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.RecKPS),
-            nameof(Bpm.TileBpmWithoutPitch), nameof(Bpm.CurBpmWithoutPitch), nameof(Bpm.RecKPSWithoutPitch),
-        })]
         public static class Initializer
         {
             public static void Postfix(scrController __instance)

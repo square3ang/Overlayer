@@ -26,30 +26,24 @@ namespace Overlayer.Tags
         }
         public static void Load(Type type)
         {
-            PatchGuard.Ignore(() =>
-            {
-                PatchGuard.ForceIgnore();
-                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
-                {
-                    var attr = method.GetCustomAttribute<TagAttribute>();
-                    if (attr == null) continue;
-                    SetTag(new OverlayerTag(method, attr));
-                }
-                PatchGuard.ForceIgnore();
-                foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static))
-                {
-                    var attr = field.GetCustomAttribute<TagAttribute>();
-                    if (attr == null) continue;
-                    SetTag(new OverlayerTag(field, attr));
-                }
-                PatchGuard.ForceIgnore();
-                foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Static))
-                {
-                    var attr = prop.GetCustomAttribute<TagAttribute>();
-                    if (attr == null) continue;
-                    SetTag(new OverlayerTag(prop, attr));
-                }
-            });
+            foreach(var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static)) {
+                var attr = method.GetCustomAttribute<TagAttribute>();
+                if(attr == null)
+                    continue;
+                SetTag(new OverlayerTag(method, attr));
+            }
+            foreach(var field in type.GetFields(BindingFlags.Public | BindingFlags.Static)) {
+                var attr = field.GetCustomAttribute<TagAttribute>();
+                if(attr == null)
+                    continue;
+                SetTag(new OverlayerTag(field, attr));
+            }
+            foreach(var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Static)) {
+                var attr = prop.GetCustomAttribute<TagAttribute>();
+                if(attr == null)
+                    continue;
+                SetTag(new OverlayerTag(prop, attr));
+            }
         }
         public static void Unload(Assembly ass)
         {
