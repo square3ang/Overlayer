@@ -9,6 +9,7 @@ namespace Overlayer.Models
     public class TextConfig : IModel, ICopyable<TextConfig>
     {
         public bool Active = true;
+        public bool Drag = true;
         public string Name = string.Empty;
         public string Font = "Default";
         public string PlayingText = "<color=#{FOHex}>{Overloads}</color> <color=#{TEHex}>{CTE}</color> <color=#{VEHex}>{CVE}</color> <color=#{EPHex}>{CEP}</color> <color=#{PHex}>{CP}</color> <color=#{LPHex}>{CLP}</color> <color=#{VLHex}>{CVL}</color> <color=#{TLHex}>{CTL}</color> <color=#{FMHex}>{MissCount}</color>";
@@ -35,6 +36,7 @@ namespace Overlayer.Models
         {
             var newConfig = new TextConfig();
             newConfig.Active = Active;
+            newConfig.Drag = Drag;
             newConfig.Name = Name;
             newConfig.Font = Font;
             newConfig.PlayingText = PlayingText;
@@ -63,6 +65,7 @@ namespace Overlayer.Models
         {
             var node = JsonNode.Empty;
             node[nameof(Active)] = Active;
+            node[nameof(Drag)] = Drag;
             node[nameof(Name)] = Name;
             node[nameof(Font)] = Font;
             node[nameof(PlayingText)] = PlayingText;
@@ -90,6 +93,7 @@ namespace Overlayer.Models
         public void Deserialize(JsonNode node)
         {
             Active = node[nameof(Active)];
+            Drag = node[nameof(Drag)];
             Name = node[nameof(Name)];
             Font = node[nameof(Font)];
             PlayingText = node[nameof(PlayingText)];

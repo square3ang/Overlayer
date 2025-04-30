@@ -14,7 +14,7 @@ using UnityEngine.UI;
 
 namespace Overlayer.Unity
 {
-    public class OverlayerText : MonoBehaviour//, IPointerDownHandler, IPointerUpHandler, IDragHandler
+    public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
         public static event Action<OverlayerText> OnApplyConfig = delegate { };
         public bool Initialized { get; private set; }
@@ -22,11 +22,15 @@ namespace Overlayer.Unity
         public Replacer PlayingReplacer;
         public Replacer NotPlayingReplacer;
         public TextMeshProUGUI Text;
-        /*
+        public static GameObject DragObj;
+        public static Image DragImage;
+        public static Outline DragOutline;
+
+        public bool isFrontDragging = false;
         private bool isDragging = false;
         private Vector2 initialPointerPosition;
         private Vector2 initialObjectPosition;
-        */
+
 
         #region Statics
         public static GameObject PCanvasObj;
@@ -46,20 +50,8 @@ namespace Overlayer.Unity
             PlayingReplacer = new Replacer(config.PlayingText, TagManager.All.Select(ot => ot.Tag));
             NotPlayingReplacer = new Replacer(config.NotPlayingText, TagManager.NP.Select(ot => ot.Tag));
             DontDestroyOnLoad(gameObject);
-            if (!PublicCanvas)
-            {
-                GameObject pCanvasObj = PCanvasObj = new GameObject("Overlayer Canvas");
-                PublicCanvas = pCanvasObj.AddComponent<Canvas>();
-                PublicCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                PublicCanvas.sortingOrder = 32760;
-                CanvasScaler scaler = pCanvasObj.AddComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                var currentRes = Screen.currentResolution;
-                scaler.referenceResolution = new Vector2(currentRes.width, currentRes.height);
-                pCanvasObj.AddComponent<GraphicRaycaster>();
-                DontDestroyOnLoad(PublicCanvas);
-
-            }
+            PublicCanvasInit();
+            DragInit();
             GameObject mainObject = gameObject;
             mainObject.transform.SetParent(PublicCanvas.transform);
             mainObject.MakeFlexible();
@@ -87,7 +79,45 @@ namespace Overlayer.Unity
             }
             Text.fontSharedMaterials = sharedMaterials;
             Text.gameObject.SetActive(config.Active);
+
             Initialized = true;
+        }
+        public static void PublicCanvasInit() {
+            if(PublicCanvas) {
+                return;
+            }
+            GameObject pCanvasObj = PCanvasObj = new GameObject("Overlayer Canvas");
+            PublicCanvas = pCanvasObj.AddComponent<Canvas>();
+            PublicCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            PublicCanvas.sortingOrder = 32760;
+            CanvasScaler scaler = pCanvasObj.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            var currentRes = Screen.currentResolution;
+            scaler.referenceResolution = new Vector2(currentRes.width, currentRes.height);
+            pCanvasObj.AddComponent<GraphicRaycaster>();
+            DontDestroyOnLoad(PublicCanvas);
+        }
+        public static void DragInit() {
+            if (DragObj != null) {
+                return;
+            }
+            if(PublicCanvas == null) {
+                PublicCanvasInit();
+            }
+            DragObj = new GameObject("Outline");
+            DragObj.transform.SetParent(PublicCanvas.transform);
+            DragObj.transform.localPosition = Vector3.zero;
+            DragImage = DragObj.AddComponent<Image>();
+            DragImage.color = new Color(1.0f, 1.0f, 1.0f, 0.16f);
+            DragImage.sprite = null;
+            DragImage.type = Image.Type.Simple;
+            DragImage.rectTransform.sizeDelta = Vector2.zero;
+            DragOutline = DragObj.AddComponent<Outline>();
+            DragOutline.effectColor = Color.cyan;
+            DragOutline.effectDistance = new Vector2(3, 3);
+            DragOutline.useGraphicAlpha = true;
+            DragOutline.enabled = true;
+            DragObj.SetActive(false);
         }
         public void Update()
         {
@@ -142,17 +172,33 @@ namespace Overlayer.Unity
             mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - Config.ShadowDilate);
             mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
         }
-        /*
+
         public void OnPointerDown(PointerEventData eventData)
         {
+            if(isFrontDragging || !Config.Drag) {
+                return;
+            }
+            isFrontDragging = true;
             isDragging = true;
             initialPointerPosition = eventData.position;
             initialObjectPosition = Text.rectTransform.anchoredPosition;
+
+            DragObj.transform.SetParent(Text.transform);
+
+            DragObj.transform.position = Text.gameObject.transform.position;
+            DragObj.transform.rotation = Text.gameObject.transform.rotation;
+            DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
+
+            DragObj.SetActive(true);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            isDragging = false;
+            if(isDragging) {
+                isDragging = false;
+                isFrontDragging = false;
+                DragObj.SetActive(false);
+            }
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -162,9 +208,16 @@ namespace Overlayer.Unity
                 Vector2 currentPointerPosition = eventData.position;
                 Vector2 offset = currentPointerPosition - initialPointerPosition;
                 Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
+
+                DragObj.transform.position = Text.gameObject.transform.position;
+                DragObj.transform.rotation = Text.gameObject.transform.rotation;
+                DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
+
+                Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+                Config.Position = (Text.rectTransform.anchoredPosition / screenSize) + new Vector2(0.5f, 0.5f);
             }
         }
-        */
+
         private void SetFont()
         {
             if (FontManager.TryGetFont(Config.Font, out FontData font))

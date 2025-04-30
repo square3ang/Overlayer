@@ -21,6 +21,7 @@ namespace Overlayer.Views
         {
             if (Drawer.DrawBool(Main.Lang.Get("ACTIVE","Active"), ref model.Active))
                 text.gameObject.SetActive(model.Active);
+            Drawer.DrawBool(Main.Lang.Get("DRAG", "Drag"), ref model.Drag);
             bool changed = false;
             GUILayout.Label($"{Main.Lang.Get("AVAILABLE_TAGS","Available Tags")}: {TagManager.Count}");
             Drawer.DrawString(Main.Lang.Get("NAME","Name"), ref model.Name);
