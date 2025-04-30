@@ -1,3 +1,2 @@
-﻿[Fix]
-Move layer sort to top of top
-GCMemUsage fix: just Compare differences with previous values (per ssecond too hard..)
+﻿[Add]
+Added a simple text alignment GUI
