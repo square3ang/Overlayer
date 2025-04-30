@@ -251,6 +251,7 @@
     "TOOLTIP_GCMEMALLOCRATEKB": "Shows the allocation rate of memory by the Garbage Collector in KB per tick",
     "TOOLTIP_UNITYMEMUSAGE": "Shows the total memory used by Unity, not including the entire process memory",
     "TOOLTIP_UNITYMEMUSAGEGB": "Shows the total memory used by Unity in GB, not including the entire process memory",
-    "TOOLTIP_UNITYMEMUSAGEKB": "Shows the total memory used by Unity in KB, not including the entire process memory"
+    "TOOLTIP_UNITYMEMUSAGEKB": "Shows the total memory used by Unity in KB, not including the entire process memory",
+    "DRAG": "Drag"
   }
 }

@@ -100,6 +100,7 @@
     "DESTROY_ASK": "Hủy bỏ?",
     "YES": "Có",
     "NO": "Không",
-    "USE_THIS": "Sử dụng {0}"
+    "USE_THIS": "Sử dụng {0}",
+    "DRAG": "Kéo"
   }
 }

@@ -251,6 +251,7 @@
     "TOOLTIP_GCMEMALLOCRATEKB": "Garbage Collector의 초당 KB 메모리 할당 속도",
     "TOOLTIP_UNITYMEMUSAGE": "Unity가 사용하는 총 MB 메모리 (프로세스 메모리 아님)",
     "TOOLTIP_UNITYMEMUSAGEGB": "Unity가 사용하는 총 GB 메모리 (프로세스 메모리 아님)",
-    "TOOLTIP_UNITYMEMUSAGEKB": "Unity가 사용하는 총 KB 메모리 (프로세스 메모리 아님)"
+    "TOOLTIP_UNITYMEMUSAGEKB": "Unity가 사용하는 총 KB 메모리 (프로세스 메모리 아님)",
+    "DRAG": "드래그"
   }
 }

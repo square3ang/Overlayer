@@ -96,7 +96,7 @@
     "CONVERTED": "转换对齐（一般不用）",
     "OK": "好哒~",
     "UPDATE": "该升级啦~",
-    "USE_LEGACY_THEME":"改为原本的界面",
+    "USE_LEGACY_THEME": "改为原本的界面",
     "DESTROY_ASK": "确定要删掉吗qwq？",
     "YES": "是的",
     "NO": "不删了,我再想想qwq",
@@ -241,6 +241,7 @@
     "TOOLTIP_COLORRANGE": "你可以为文本添加可变颜色哦，与 ColorRange 的 <color> 一起使用",
     "TOOLTIP_EASEDVALUE": "当 Tag 的值发生变化时，Tag 的值会随着速度一起改变（其实我也没看懂）",
     "TOOLTIP_DEVELOPER": "显示 Overlayer 的原作者“超级卡哇伊的Suckyoubus酱❤~”",
-    "NOT_EXIST_TAG": "这个 Tag 不存在捏~"
+    "NOT_EXIST_TAG": "这个 Tag 不存在捏~",
+    "DRAG": "拖拽"
   }
 }

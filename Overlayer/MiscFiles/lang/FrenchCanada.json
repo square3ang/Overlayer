@@ -100,6 +100,7 @@
     "DESTROY_ASK": "Devons-nous le détruire ?",
     "YES": "Oui",
     "NO": "Non",
-    "USE_THIS": "Utiliser {0}"
+    "USE_THIS": "Utiliser {0}",
+    "DRAG": "Glisser"
   }
 }
