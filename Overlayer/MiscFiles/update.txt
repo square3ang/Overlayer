@@ -1,2 +1,2 @@
-﻿[Fix]
-fix error when Alignment is 'Converted'
+﻿[Add]
+Add Drag
