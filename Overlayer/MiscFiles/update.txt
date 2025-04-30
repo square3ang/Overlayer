@@ -1,2 +1,2 @@
-﻿[Add]
-Added a simple text alignment GUI
+﻿[Fix]
+fix error when Alignment is 'Converted'
