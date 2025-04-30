@@ -273,6 +273,8 @@ namespace Overlayer.Core
         public static Texture2D ali_Midline;
         public static Texture2D ali_Capline;
 
+        public static Texture2D ali_Unknown;
+
         public static void InitializeImages() {
             dulgray = new Texture2D(1, 1);
             dulgray.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
@@ -318,6 +320,7 @@ namespace Overlayer.Core
             ali_Baseline = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAFhJREFUKBWljksOACEIQ3v/S2Mw06biBBNlQ+njB7xGRETd8eepp4Xq+gSbmclrTR8EzAS1pj8HEmbIBLTIvc30IdcaqqbXrpc3EpxCFzqRSzouxmsybsQAR5qHeeQT+nYAAAAASUVORK5CYII=");
             ali_Midline = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAFNJREFUKBW1jUEOwCAQAvn/p2tohFBqjD2Uy7KDrLg+Ci32T5jfrAoO2+ixpvLexaFAU0Hv4neBIWUI+FCyF8xSepca5p7ehZ35r8DL1OP3yY7HAIm8u0V+JRVyAAAAAElFTkSuQmCC");
             ali_Capline = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAFdJREFUKBWdjtsOgDAMQvn/n3bBBIJodrEvpZzRDtdhoYv5Hc9vvgKGLfRYXbxn+RBQF+hZ/h0gZNkEvCi9l5mh1A61mXPqxzcIVuULM8ElM26mazb+iAGMGbdJNacDYQAAAABJRU5ErkJggg==");
+            ali_Unknown = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAADRJREFUKBVjYKAU/EcDeM0DqUVXgE0MrgabJDYxOmqAWwVl4HUORYpBmkkyHd02ovhUswEAHzw/wUSFD2QAAAAASUVORK5CYII=");
         }
 
         public static Texture2D Base64ToTexture(string base64) {
@@ -620,61 +623,59 @@ namespace Overlayer.Core
         }
 
         public static TextAlignmentOptions DrawAlignment(TextAlignmentOptions value) {
-            GUILayout.BeginHorizontal();
             Color active = new Color(0f, 1f, 1f);
+
+            if (value == TextAlignmentOptions.Converted) {
+                GUI.color = active;
+                ButtonImage(ali_Unknown, GUILayout.Width(404));
+                GUI.color = Color.white;
+                return TextAlignmentOptions.Converted;
+            }
+
+            int newvalue = (int)value;
+
+            GUILayout.BeginHorizontal();
 
             // Left 0
             GUI.color = (((int)value & (1 << 0)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Left, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~0xFF;         // clear 0~7
-                raw |= (1 << 0);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~0xFF;         // clear 0~7
+                newvalue |= (1 << 0);
             }
 
             // Center 1
             GUI.color = (((int)value & (1 << 1)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Center, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~0xFF;
-                raw |= (1 << 1);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~0xFF;
+                newvalue |= (1 << 1);
             }
 
             // Right 2
             GUI.color = (((int)value & (1 << 2)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Right, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~0xFF;
-                raw |= (1 << 2);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~0xFF;
+                newvalue |= (1 << 2);
             }
 
             // Justified 3
             GUI.color = (((int)value & (1 << 3)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Justified, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~0xFF;
-                raw |= (1 << 3);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~0xFF;
+                newvalue |= (1 << 3);
             }
 
             // Flush 4
             GUI.color = (((int)value & (1 << 4)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Flush, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~0xFF;
-                raw |= (1 << 4);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~0xFF;
+                newvalue |= (1 << 4);
             }
 
             // Geometry_Center 5
             GUI.color = (((int)value & (1 << 5)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Geometry_Center, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~0xFF;
-                raw |= (1 << 5);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~0xFF;
+                newvalue |= (1 << 5);
             }
 
             GUILayout.Space(20);
@@ -682,62 +683,53 @@ namespace Overlayer.Core
             // Top 8
             GUI.color = (((int)value & (1 << 8)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Top, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~(0xFF << 8);  // clear 8~15
-                raw |= (1 << 8);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~(0xFF << 8);  // clear 8~15
+                newvalue |= (1 << 8);
             }
 
             // Middle 9
             GUI.color = (((int)value & (1 << 9)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Middle, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~(0xFF << 8);
-                raw |= (1 << 9);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~(0xFF << 8);
+                newvalue |= (1 << 9);
             }
 
             // Bottom 10
             GUI.color = (((int)value & (1 << 10)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Bottom, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~(0xFF << 8);
-                raw |= (1 << 10);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~(0xFF << 8);
+                newvalue |= (1 << 10);
             }
 
             // Baseline 11
             GUI.color = (((int)value & (1 << 11)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Baseline, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~(0xFF << 8);
-                raw |= (1 << 11);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~(0xFF << 8);
+                newvalue |= (1 << 11);
             }
 
             // Midline 12
             GUI.color = (((int)value & (1 << 12)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Midline, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~(0xFF << 8);
-                raw |= (1 << 12);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~(0xFF << 8);
+                newvalue |= (1 << 12);
             }
 
             // Capline 13
             GUI.color = (((int)value & (1 << 13)) != 0) ? active : Color.white;
             if(ButtonImage(ali_Capline, GUILayout.Width(32))) {
-                int raw = (int)value;
-                raw &= ~(0xFF << 8);
-                raw |= (1 << 13);
-                value = (TextAlignmentOptions)raw;
+                newvalue &= ~(0xFF << 8);
+                newvalue |= (1 << 13);
             }
 
             GUI.color = Color.white;
             GUILayout.EndHorizontal();
+
+            if (Enum.IsDefined(typeof(TextAlignmentOptions), newvalue)) {
+                value = (TextAlignmentOptions)newvalue;
+            }
             return value;
         }
-
 
         public static void Tooltip(string text, bool ignoreWidth = false)
         {
