@@ -14,6 +14,7 @@ using UnityModManagerNet;
 using Extensions = UnityModManagerNet.Extensions;
 using IDrawable = Overlayer.Core.Interfaces.IDrawable;
 using Object = UnityEngine.Object;
+using TMPro;
 
 namespace Overlayer.Core
 {
@@ -259,8 +260,20 @@ namespace Overlayer.Core
         public static Texture2D textureSelected;
         public static Texture2D textureUnselected;
 
-        public static void InitializeImages()
-        {
+        public static Texture2D ali_Left;
+        public static Texture2D ali_Right;
+        public static Texture2D ali_Center;
+        public static Texture2D ali_Justified;
+        public static Texture2D ali_Flush;
+        public static Texture2D ali_Geometry_Center;
+        public static Texture2D ali_Top;
+        public static Texture2D ali_Middle;
+        public static Texture2D ali_Bottom;
+        public static Texture2D ali_Baseline;
+        public static Texture2D ali_Midline;
+        public static Texture2D ali_Capline;
+
+        public static void InitializeImages() {
             dulgray = new Texture2D(1, 1);
             dulgray.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
             dulgray.Apply();
@@ -290,18 +303,29 @@ namespace Overlayer.Core
             black.SetPixel(0, 0, Color.black);
             black.Apply();
 
-            string base64ImageSelected =
-                "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHxSURBVDhPvZTLSsNAFIbbVN15QRG84hXxguALiOJSitT78ygoqE8iuPENBPeiuBOx2ipWFHVnxZL6/clJTUwQF+IPX8+Zf86cTifTpP5aaYuJqlarDTBG2uk7qSJcOo7z7g9/Kdd122APnmgYkTzYhXYrjyi2QwpnCAfQBmfpdPqQeE0vhzgAWbwpxo/ENTjCSxbN5uAdniHLotgXqjGsWk2ZfNamomKyHfRzVDhudtCgH6+PmDFb9RNWf4ffYvaXmNgBacEsectQ8FxfeVi0ac2v0EznumuWL7w6TO3shNz7meRL4GpBWFgVQs7WOYzPQLusk+cJY9KKNzUmzZAX5SWJuSuCHpLWboA0pLFnoh6LeYu90O2nidJ5dijhKedBvyrSMHiarj4oVk3sCYdUNbxaReTFoOGtxRF90Ev3LthtkgrUlCwfpFbNr/whYlzPGTzA94fyoeKw5EHW1umhnEKBvHalPGFugVS7FhTlGF9CxbiAeZvWmuDabJv1JcxW0EV9gQmzg110QSd57VzJR+EVv0RsNjsqJmegDHop5MINAuHpC9as2RtM25Sn2AIr2OfQtaNzcr0cdOC6AcOwxNw4c/fk67zKjok/i6ZNsA067IjwiqC/aaOVRxTbYVisz4BeWbq0FbjRlQLl/6FU6hOuOzJxbCs2hAAAAABJRU5ErkJggg==";
-            string base64ImageUnselected =
-                "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGlSURBVDhPvZRNS0JBFIb1au36FBdCEH0QqZv+QBitJSrKflFC9kuCFgX9gKB9JG0jLYuKotqlENrzes9FL9fPiF54ODPvnDnOzB0n9NcKW+yoRqMxCkmaCdcJVeDGcZya2x1Q9Xo9BofwRkGf5EEB4pbuU2CFJGYIxxCDYjgcPiWWqeUQ5yCLt0L/lZiDc7zOotg61OAdskwK/KAKw67lVGmv2ZBfDMZB21FiyuyuIidt+Y8UnTS7JQYOQNowq6/I3aGYzrVgliu8KKZWdkm755dvF7kOc4qgVUbl6aA1kORwp2ieERvyBhG5dcIJJKgxK69ZEM1YLFkcWBQtgXa1oL5X0NumfnEotR1RM3oFHywuWRxG8xTVMd26XUR/hIN9+eVHuYJ72hGzXWHug7RlVl+R612bvFktYU6DLuoHpM3uKuoswye5z8QJs/1iMANV0KOwCYHt42mbOSv2Bas21FRggiUccRN0t65p63HQgesGLMI2YynGnmjv8ZRdEHuLouOQBx22T3gV0N90zNJ96vlFmR8BPVm6tN9wx+rKoPZ/KBT6AekJcNd60oGuAAAAAElFTkSuQmCC";
+            textureSelected = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHxSURBVDhPvZTLSsNAFIbbVN15QRG84hXxguALiOJSitT78ygoqE8iuPENBPeiuBOx2ipWFHVnxZL6/clJTUwQF+IPX8+Zf86cTifTpP5aaYuJqlarDTBG2uk7qSJcOo7z7g9/Kdd122APnmgYkTzYhXYrjyi2QwpnCAfQBmfpdPqQeE0vhzgAWbwpxo/ENTjCSxbN5uAdniHLotgXqjGsWk2ZfNamomKyHfRzVDhudtCgH6+PmDFb9RNWf4ffYvaXmNgBacEsectQ8FxfeVi0ac2v0EznumuWL7w6TO3shNz7meRL4GpBWFgVQs7WOYzPQLusk+cJY9KKNzUmzZAX5SWJuSuCHpLWboA0pLFnoh6LeYu90O2nidJ5dijhKedBvyrSMHiarj4oVk3sCYdUNbxaReTFoOGtxRF90Ev3LthtkgrUlCwfpFbNr/whYlzPGTzA94fyoeKw5EHW1umhnEKBvHalPGFugVS7FhTlGF9CxbiAeZvWmuDabJv1JcxW0EV9gQmzg110QSd57VzJR+EVv0RsNjsqJmegDHop5MINAuHpC9as2RtM25Sn2AIr2OfQtaNzcr0cdOC6AcOwxNw4c/fk67zKjok/i6ZNsA067IjwiqC/aaOVRxTbYVisz4BeWbq0FbjRlQLl/6FU6hOuOzJxbCs2hAAAAABJRU5ErkJggg==");
+            textureUnselected = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGlSURBVDhPvZRNS0JBFIb1au36FBdCEH0QqZv+QBitJSrKflFC9kuCFgX9gKB9JG0jLYuKotqlENrzes9FL9fPiF54ODPvnDnOzB0n9NcKW+yoRqMxCkmaCdcJVeDGcZya2x1Q9Xo9BofwRkGf5EEB4pbuU2CFJGYIxxCDYjgcPiWWqeUQ5yCLt0L/lZiDc7zOotg61OAdskwK/KAKw67lVGmv2ZBfDMZB21FiyuyuIidt+Y8UnTS7JQYOQNowq6/I3aGYzrVgliu8KKZWdkm755dvF7kOc4qgVUbl6aA1kORwp2ieERvyBhG5dcIJJKgxK69ZEM1YLFkcWBQtgXa1oL5X0NumfnEotR1RM3oFHywuWRxG8xTVMd26XUR/hIN9+eVHuYJ72hGzXWHug7RlVl+R612bvFktYU6DLuoHpM3uKuoswye5z8QJs/1iMANV0KOwCYHt42mbOSv2Bas21FRggiUccRN0t65p63HQgesGLMI2YynGnmjv8ZRdEHuLouOQBx22T3gV0N90zNJ96vlFmR8BPVm6tN9wx+rKoPZ/KBT6AekJcNd60oGuAAAAAElFTkSuQmCC");
 
-            byte[] imageBytesSelected = System.Convert.FromBase64String(base64ImageSelected);
-            textureSelected = new Texture2D(1, 1);
-            textureSelected.LoadImage(imageBytesSelected);
+            ali_Left = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAADtJREFUKBVjYCAV/CcBkGo2RD0xFpBnMkwXMTYgq4HpI55G1o3OJt4UfCrRTcXHx2cObjl8JsLkkHUDANyN6xWcPsMwAAAAAElFTkSuQmCC");
+            ali_Right = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAADlJREFUKBVjYCAH/CcBkGM+Qg8xFiFUE8sixlRkNcSai18dsonobPw6ccmim4KPj8sM4sTxmQyTAwDzFOsVkFMoHQAAAABJRU5ErkJggg==");
+            ali_Center = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAADVJREFUKBVjYCAV/CcRkGo+RD2xlpBnOrIuXDYhqyGPjctkdHHamg6zjTxbQLpgJuCiYSYDAPkO5xmTt8+IAAAAAElFTkSuQmCC");
+            ali_Justified = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAACFJREFUKBVjYCAV/CcRkGo+AwOJFvwftYGYEKNeKOEyCQDp3AcIzw3J3gAAAABJRU5ErkJggg==");
+            ali_Flush = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAB9JREFUKBVjYCAV/CcRkGo+AwOJFvwftYGYEKN9KAEAFM4e8G7D3VYAAAAASUVORK5CYII=");
+            ali_Geometry_Center = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAEJJREFUKBVj+P///38GIgFYLUwDiMYHQGaC5CEEOTbATMBmC8w8ymzAZjKyGMwFg9kPyCGB7nZkOfL9gGwqNjYslADGEf8BS+eeKgAAAABJRU5ErkJggg==");
+            ali_Top = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAB9JREFUKBVjYCAV/CcRkGo+AwOJFvwfjDaQ7qahrwMAbauPceuNas4AAAAASUVORK5CYII=");
+            ali_Middle = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAB1JREFUKBVjYBgG4D+JgHQvk2jB/8FoA+luIlEHAAuNj3Eb1k1EAAAAAElFTkSuQmCC");
+            ali_Bottom = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAABpJREFUKBVjYBgFtAiB/yQC0t1AogX/aW8DAKlgj3GkAGqCAAAAAElFTkSuQmCC");
+            ali_Baseline = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAFhJREFUKBWljksOACEIQ3v/S2Mw06biBBNlQ+njB7xGRETd8eepp4Xq+gSbmclrTR8EzAS1pj8HEmbIBLTIvc30IdcaqqbXrpc3EpxCFzqRSzouxmsybsQAR5qHeeQT+nYAAAAASUVORK5CYII=");
+            ali_Midline = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAFNJREFUKBW1jUEOwCAQAvn/p2tohFBqjD2Uy7KDrLg+Ci32T5jfrAoO2+ixpvLexaFAU0Hv4neBIWUI+FCyF8xSepca5p7ehZ35r8DL1OP3yY7HAIm8u0V+JRVyAAAAAElFTkSuQmCC");
+            ali_Capline = Base64ToTexture("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAFdJREFUKBWdjtsOgDAMQvn/n3bBBIJodrEvpZzRDtdhoYv5Hc9vvgKGLfRYXbxn+RBQF+hZ/h0gZNkEvCi9l5mh1A61mXPqxzcIVuULM8ElM26mazb+iAGMGbdJNacDYQAAAABJRU5ErkJggg==");
+        }
 
-            byte[] imageBytesUnselected = System.Convert.FromBase64String(base64ImageUnselected);
-            textureUnselected = new Texture2D(1, 1);
-            textureUnselected.LoadImage(imageBytesUnselected);
+        public static Texture2D Base64ToTexture(string base64) {
+            byte[] imageBytes = System.Convert.FromBase64String(base64);
+
+            Texture2D texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            texture.LoadImage(imageBytes);
+            return texture;
         }
 
         public static bool DrawBool(string label, ref bool value)
@@ -595,6 +619,126 @@ namespace Overlayer.Core
             return result;
         }
 
+        public static TextAlignmentOptions DrawAlignment(TextAlignmentOptions value) {
+            GUILayout.BeginHorizontal();
+            Color active = new Color(0f, 1f, 1f);
+
+            // Left 0
+            GUI.color = (((int)value & (1 << 0)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Left, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~0xFF;         // clear 0~7
+                raw |= (1 << 0);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Center 1
+            GUI.color = (((int)value & (1 << 1)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Center, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~0xFF;
+                raw |= (1 << 1);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Right 2
+            GUI.color = (((int)value & (1 << 2)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Right, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~0xFF;
+                raw |= (1 << 2);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Justified 3
+            GUI.color = (((int)value & (1 << 3)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Justified, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~0xFF;
+                raw |= (1 << 3);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Flush 4
+            GUI.color = (((int)value & (1 << 4)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Flush, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~0xFF;
+                raw |= (1 << 4);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Geometry_Center 5
+            GUI.color = (((int)value & (1 << 5)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Geometry_Center, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~0xFF;
+                raw |= (1 << 5);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            GUILayout.Space(20);
+
+            // Top 8
+            GUI.color = (((int)value & (1 << 8)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Top, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~(0xFF << 8);  // clear 8~15
+                raw |= (1 << 8);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Middle 9
+            GUI.color = (((int)value & (1 << 9)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Middle, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~(0xFF << 8);
+                raw |= (1 << 9);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Bottom 10
+            GUI.color = (((int)value & (1 << 10)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Bottom, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~(0xFF << 8);
+                raw |= (1 << 10);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Baseline 11
+            GUI.color = (((int)value & (1 << 11)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Baseline, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~(0xFF << 8);
+                raw |= (1 << 11);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Midline 12
+            GUI.color = (((int)value & (1 << 12)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Midline, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~(0xFF << 8);
+                raw |= (1 << 12);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            // Capline 13
+            GUI.color = (((int)value & (1 << 13)) != 0) ? active : Color.white;
+            if(ButtonImage(ali_Capline, GUILayout.Width(32))) {
+                int raw = (int)value;
+                raw &= ~(0xFF << 8);
+                raw |= (1 << 13);
+                value = (TextAlignmentOptions)raw;
+            }
+
+            GUI.color = Color.white;
+            GUILayout.EndHorizontal();
+            return value;
+        }
+
+
         public static void Tooltip(string text, bool ignoreWidth = false)
         {
             if (string.IsNullOrEmpty(text))
@@ -739,6 +883,11 @@ namespace Overlayer.Core
         public static bool Button(string str, params GUILayoutOption[] options)
         {
             return GUILayout.Button(str, Main.Settings.useLegacyTheme ? GUI.skin.button : myButton, options);
+        }
+
+        public static bool ButtonImage(Texture2D texture, params GUILayoutOption[] options) {
+            GUIStyle style = Main.Settings.useLegacyTheme ? GUI.skin.button : myButton;
+            return GUILayout.Button(texture, style, options);
         }
     }
 }

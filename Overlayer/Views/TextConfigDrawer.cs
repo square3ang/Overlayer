@@ -1,10 +1,13 @@
-﻿using Overlayer.Core;
+﻿using Newtonsoft.Json.Linq;
+using Overlayer.Core;
 using Overlayer.Models;
 using Overlayer.Tags;
 using Overlayer.Unity;
 using SFB;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 
 namespace Overlayer.Views
@@ -65,6 +68,8 @@ namespace Overlayer.Views
             changed |= Drawer.DrawEnumPlus("Text Alignment",ref model.Alignment,TranslateTextAlignment);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+
+            model.Alignment = Drawer.DrawAlignment(model.Alignment);
 
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("PLAYING_TEXT","Playing Text"), model.Name + "PlayingText", ref model.PlayingText);
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("NOT_PLAYING_TEXT","Not Playing Text"), model.Name + "NotPlayingText", ref model.NotPlayingText);
