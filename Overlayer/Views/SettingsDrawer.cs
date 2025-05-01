@@ -12,6 +12,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
 using Object = UnityEngine.Object;
+using Overlayer.Core.Patches;
+using Overlayer.Tags.Patches;
+using static Overlayer.Patches.HitFixPatch;
 
 namespace Overlayer.Views
 {
@@ -102,6 +105,10 @@ namespace Overlayer.Views
                     ref model.useLegacyTheme))
             {
                 RGUIStyle.CreateStyles();
+            }
+            if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
+                LazyPatchManager.Unpatch(typeof(ChangeAddHit));
+                LazyPatchManager.Patch(typeof(ChangeAddHit));
             }
             Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan")), ref model.useMovingManEditor);
             Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
