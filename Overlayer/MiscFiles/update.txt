@@ -1,2 +1,5 @@
 ﻿[Add]
-Add Drag
+Add Show True Auto Judgment
+[Fix]
+Fix Drag Image Pivot
+Fix Patch mistake
