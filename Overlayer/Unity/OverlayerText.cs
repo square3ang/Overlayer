@@ -123,6 +123,12 @@ namespace Overlayer.Unity
         {
             if (Main.IsPlaying) Text.text = PlayingReplacer.Replace();
             else Text.text = NotPlayingReplacer.Replace();
+            if (isDragging) {
+                DragObj.transform.position = Text.gameObject.transform.position;
+                DragObj.transform.rotation = Text.gameObject.transform.rotation;
+                DragImage.rectTransform.pivot = Text.rectTransform.pivot;
+                DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
+            }
         }
         public void ApplyConfig()
         {
@@ -184,11 +190,6 @@ namespace Overlayer.Unity
             initialObjectPosition = Text.rectTransform.anchoredPosition;
 
             DragObj.transform.SetParent(Text.transform);
-
-            DragObj.transform.position = Text.gameObject.transform.position;
-            DragObj.transform.rotation = Text.gameObject.transform.rotation;
-            DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
-
             DragObj.SetActive(true);
         }
 
@@ -208,10 +209,6 @@ namespace Overlayer.Unity
                 Vector2 currentPointerPosition = eventData.position;
                 Vector2 offset = currentPointerPosition - initialPointerPosition;
                 Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
-
-                DragObj.transform.position = Text.gameObject.transform.position;
-                DragObj.transform.rotation = Text.gameObject.transform.rotation;
-                DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
 
                 Vector2 screenSize = new Vector2(Screen.width, Screen.height);
                 Config.Position = (Text.rectTransform.anchoredPosition / screenSize) + new Vector2(0.5f, 0.5f);
