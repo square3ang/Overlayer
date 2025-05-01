@@ -60,7 +60,7 @@ public class CodeEditor
         {
             undoRedoManagers[id] = new UndoRedoManager();
             undoRedoManagers[id].SaveState(code);
-            Main.Logger.Log("Created UndoRedoManager for " + id);
+            //Main.Logger.Log("Created UndoRedoManager for " + id);
         }
 
         controlName = id;

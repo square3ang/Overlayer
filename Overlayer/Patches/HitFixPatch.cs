@@ -22,8 +22,6 @@ namespace Overlayer.Patches {
                     }
                 }
 
-                Main.Logger.Log("PP");
-
                 return list;
             }
         }
