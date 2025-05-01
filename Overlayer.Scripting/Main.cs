@@ -54,54 +54,45 @@ namespace Overlayer.Scripting
         }
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
-            PatchGuard.Ignore(() =>
-            {
-                if (toggle)
+            if(toggle) {
+                if(File.Exists(Path.Combine(modEntry.Path, "allowUnsafe.txt"))) {
+                    allowUnsafe = true;
+                }
+                Settings = ModSettings.Load<Settings>(modEntry);
+                TagManager.Load(typeof(Expression));
+                TagManager.Load(typeof(PerformanceTags));
+
+                JSApi = new Api();
+                JSApi.RegisterType(typeof(Impl));
+                foreach(var tag in TagManager.All)
+                    JSApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
+
+                /*foreach (var att in GetADOFAITagTypes())
                 {
-                    if (File.Exists(Path.Combine(modEntry.Path, "allowUnsafe.txt")))
-                    {
-                        allowUnsafe = true;
+                    var tuple = (new ApiAttribute(att.Name), att);
+                    JSApi.Types.Add(tuple);
+                }*/
+
+                OverlayerText.OnApplyConfig += text =>
+                {
+                    if(!PatchesLocked && TagManager.HasReference(typeof(Expression))) {
+                        LazyPatchManager.PatchAll().ForEach(lp => lp.Locked = true);
+                        PatchesLocked = true;
                     }
-                    Settings = ModSettings.Load<Settings>(modEntry);
-                    TagManager.Load(typeof(Expression));
-                    TagManager.Load(typeof(PerformanceTags));
+                };
 
-                    PatchGuard.ForceIgnore();
-                    JSApi = new Api();
-                    JSApi.RegisterType(typeof(Impl));
-                    foreach (var tag in TagManager.All)
-                        JSApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
-
-                    /*foreach (var att in GetADOFAITagTypes())
-                    {
-                        var tuple = (new ApiAttribute(att.Name), att);
-                        JSApi.Types.Add(tuple);
-                    }*/
-
-                    OverlayerText.OnApplyConfig += text =>
-                    {
-                        if (!PatchesLocked && TagManager.HasReference(typeof(Expression)))
-                        {
-                            LazyPatchManager.PatchAll().ForEach(lp => lp.Locked = true);
-                            PatchesLocked = true;
-                        }
-                    };
-
-                    RunScriptsNonBlocking();
-                    PerformanceTags.Initialize();
-                }
-                else
-                {
-                    PerformanceTags.Release();
-                    TagManager.Unload(typeof(Expression));
-                    TagManager.Unload(typeof(PerformanceTags));
-                    Impl.Release();
-                    JSApi = null;
-                    ModSettings.Save(Settings, modEntry);
-                }
-                Expression.expressions.Clear();
-                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false);
-            });
+                RunScriptsNonBlocking();
+                PerformanceTags.Initialize();
+            } else {
+                PerformanceTags.Release();
+                TagManager.Unload(typeof(Expression));
+                TagManager.Unload(typeof(PerformanceTags));
+                Impl.Release();
+                JSApi = null;
+                ModSettings.Save(Settings, modEntry);
+            }
+            Expression.expressions.Clear();
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, false);
             return true;
         }
         static string SandboxJSCode = string.Empty;
