@@ -1,2 +1,2 @@
 ﻿[Fix]
-Fix Patch mistake2
+Fix GUI Text Alligenment not working + resize
