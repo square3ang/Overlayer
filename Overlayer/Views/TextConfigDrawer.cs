@@ -70,7 +70,7 @@ namespace Overlayer.Views
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            model.Alignment = Drawer.DrawAlignment(model.Alignment);
+            changed |= Drawer.DrawAlignment(ref model.Alignment);
 
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("PLAYING_TEXT","Playing Text"), model.Name + "PlayingText", ref model.PlayingText);
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("NOT_PLAYING_TEXT","Not Playing Text"), model.Name + "NotPlayingText", ref model.NotPlayingText);

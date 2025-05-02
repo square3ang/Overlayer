@@ -622,58 +622,59 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static TextAlignmentOptions DrawAlignment(TextAlignmentOptions value) {
+        public static bool DrawAlignment(ref TextAlignmentOptions value) {
             Color active = new Color(0f, 1f, 1f);
 
-            if (value == TextAlignmentOptions.Converted) {
+            if(value == TextAlignmentOptions.Converted) {
                 GUI.color = active;
                 ButtonImage(ali_Unknown, GUILayout.Width(404));
                 GUI.color = Color.white;
-                return TextAlignmentOptions.Converted;
+                return false;
             }
 
-            int newvalue = (int)value;
+            int oldvalue = (int)value;
+            int newvalue = oldvalue;
 
             GUILayout.BeginHorizontal();
 
             // Left 0
             GUI.color = (((int)value & (1 << 0)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Left, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Left, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;         // clear 0~7
                 newvalue |= (1 << 0);
             }
 
             // Center 1
             GUI.color = (((int)value & (1 << 1)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Center, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Center, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 1);
             }
 
             // Right 2
             GUI.color = (((int)value & (1 << 2)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Right, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Right, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 2);
             }
 
             // Justified 3
             GUI.color = (((int)value & (1 << 3)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Justified, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Justified, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 3);
             }
 
             // Flush 4
             GUI.color = (((int)value & (1 << 4)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Flush, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Flush, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 4);
             }
 
             // Geometry_Center 5
             GUI.color = (((int)value & (1 << 5)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Geometry_Center, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Geometry_Center, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 5);
             }
@@ -682,42 +683,42 @@ namespace Overlayer.Core
 
             // Top 8
             GUI.color = (((int)value & (1 << 8)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Top, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Top, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);  // clear 8~15
                 newvalue |= (1 << 8);
             }
 
             // Middle 9
             GUI.color = (((int)value & (1 << 9)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Middle, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Middle, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 9);
             }
 
             // Bottom 10
             GUI.color = (((int)value & (1 << 10)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Bottom, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Bottom, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 10);
             }
 
             // Baseline 11
             GUI.color = (((int)value & (1 << 11)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Baseline, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Baseline, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 11);
             }
 
             // Midline 12
             GUI.color = (((int)value & (1 << 12)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Midline, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Midline, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 12);
             }
 
             // Capline 13
             GUI.color = (((int)value & (1 << 13)) != 0) ? active : Color.white;
-            if(ButtonImage(ali_Capline, GUILayout.Width(32))) {
+            if(ButtonImage(ali_Capline, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 13);
             }
@@ -725,10 +726,12 @@ namespace Overlayer.Core
             GUI.color = Color.white;
             GUILayout.EndHorizontal();
 
-            if (Enum.IsDefined(typeof(TextAlignmentOptions), newvalue)) {
+            if(Enum.IsDefined(typeof(TextAlignmentOptions), newvalue) && newvalue != oldvalue) {
                 value = (TextAlignmentOptions)newvalue;
+                return true;
             }
-            return value;
+
+            return false;
         }
 
         public static void Tooltip(string text, bool ignoreWidth = false)
