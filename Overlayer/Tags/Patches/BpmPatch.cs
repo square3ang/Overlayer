@@ -19,8 +19,7 @@ namespace Overlayer.Tags.Patches
         {
             public static void Postfix(scrController __instance)
             {
-                if (!(scrController.instance?.gameworld ?? false)) return;
-                if (scnGame.instance == null && scnEditor.instance == null) return;
+                if (scnGame.instance == null && scnEditor.instance == null && !(scrController.instance?.gameworld ?? false)) return;
                 try
                 {
                     if (scnGame.instance != null)
