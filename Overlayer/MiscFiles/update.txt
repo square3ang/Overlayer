@@ -1,2 +1,2 @@
 ﻿[Fix]
-Fix GUI Text Alligenment not working + resize
+Fix an issue where BPM tags were not working on official maps

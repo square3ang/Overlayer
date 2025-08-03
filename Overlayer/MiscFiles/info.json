@@ -1,8 +1,8 @@
 {
     "Id": "Overlayer",
     "DisplayName": "Overlayer",
-    "Author": "Square & kkitut",
-    "Version": "3.19.2",
+    "Author": "Square & Kkitut",
+    "Version": "3.19.3",
     "AssemblyName": "Overlayer.dll",
     "EntryMethod": "Overlayer.Main.Load"
   }
