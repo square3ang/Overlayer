@@ -252,6 +252,7 @@
     "TOOLTIP_UNITYMEMUSAGE": "Unity가 사용하는 총 MB 메모리 (프로세스 메모리 아님)",
     "TOOLTIP_UNITYMEMUSAGEGB": "Unity가 사용하는 총 GB 메모리 (프로세스 메모리 아님)",
     "TOOLTIP_UNITYMEMUSAGEKB": "Unity가 사용하는 총 KB 메모리 (프로세스 메모리 아님)",
-    "SHOW_TRUE_AUTO_JUDGMENT": "실제 오토 판정 보이기"
+    "SHOW_TRUE_AUTO_JUDGMENT": "실제 오토 판정 보이기",
+    "DRAG": "드래그"
   }
 }
