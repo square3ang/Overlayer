@@ -11,6 +11,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.Random;
 
 namespace Overlayer.Unity
 {
@@ -78,6 +79,10 @@ namespace Overlayer.Unity
                 sharedMaterials[i] = mat;
             }
             Text.fontSharedMaterials = sharedMaterials;
+            config.OnDragChanged += (state) => {
+                Text.raycastTarget = state;
+            };
+            Text.raycastTarget = config.Drag;
             Text.gameObject.SetActive(config.Active);
 
             Initialized = true;

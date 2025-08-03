@@ -9,7 +9,18 @@ namespace Overlayer.Models
     public class TextConfig : IModel, ICopyable<TextConfig>
     {
         public bool Active = true;
-        public bool Drag = true;
+        public delegate void DragChangeHandler(bool state);
+        public event DragChangeHandler OnDragChanged;
+        private bool _drag;
+        public bool Drag {
+            get => _drag;
+            set {
+                if(_drag == value)
+                    return;
+                _drag = value;
+                OnDragChanged?.Invoke(_drag);
+            }
+        }
         public string Name = string.Empty;
         public string Font = "Default";
         public string PlayingText = "<color=#{FOHex}>{Overloads}</color> <color=#{TEHex}>{CTE}</color> <color=#{VEHex}>{CVE}</color> <color=#{EPHex}>{CEP}</color> <color=#{PHex}>{CP}</color> <color=#{LPHex}>{CLP}</color> <color=#{VLHex}>{CVL}</color> <color=#{TLHex}>{CTL}</color> <color=#{FMHex}>{MissCount}</color>";
