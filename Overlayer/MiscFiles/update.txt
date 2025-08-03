@@ -1,2 +1,2 @@
 ﻿[Fix]
-Fix an issue where BPM tags were not working on official maps
+Fixed an issue where objects behind text could not be interacted with when text dragging was turned off.
