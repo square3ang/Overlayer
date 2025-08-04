@@ -20,27 +20,18 @@ namespace Overlayer.Tags.Patches
             public static void Postfix(scrController __instance)
             {
                 if (scnGame.instance == null && scnEditor.instance == null && !(scrController.instance?.gameworld ?? false)) return;
-                try
-                {
-                    if (scnGame.instance != null)
-                    {
-                        pitch = (float)scnGame.instance.levelData.pitch / 100;
-                        if (ADOBase.isCLSLevel) pitch *= GCS.currentSpeedTrial;
-                        bpm = scnGame.instance.levelData.bpm * playbackSpeed * pitch;
-                        bpmwithoutpitch = scnGame.instance.levelData.bpm * playbackSpeed;
+                
+                if(scnGame.instance != null) {
+                    pitch = (float)scnGame.instance.levelData.pitch / 100;
+                    if(ADOBase.isCLSLevel)
+                        pitch *= GCS.currentSpeedTrial;
+                    if (scnEditor.instance != null) {
+                        pitch *= scnEditor.instance.playbackSpeed;
                     }
-                    else
-                    {
-                        pitch = scrConductor.instance.song.pitch;
-                        bpm = scrConductor.instance.bpm * pitch;
-                        bpmwithoutpitch = scrConductor.instance.bpm;
-                    }
-                    playbackSpeed = scnEditor.instance?.playbackSpeed ?? 1;
-                }
-                catch
-                {
+                    bpm = scnGame.instance.levelData.bpm * pitch;
+                    bpmwithoutpitch = scnGame.instance.levelData.bpm;
+                } else {
                     pitch = scrConductor.instance.song.pitch;
-                    playbackSpeed = 1;
                     bpm = scrConductor.instance.bpm * pitch;
                     bpmwithoutpitch = scrConductor.instance.bpm;
                 }
