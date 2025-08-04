@@ -1,2 +1,2 @@
 ﻿[Fix]
-Fix MarginScale tag rounding issue
+Fix an issue where the editor pitch was not reflected in the bpm
