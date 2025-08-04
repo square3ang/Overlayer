@@ -1,2 +1,2 @@
 ﻿[Fix]
-Fixed an issue where objects behind text could not be interacted with when text dragging was turned off.
+Fix MarginScale tag rounding issue
