@@ -16,7 +16,7 @@ namespace Overlayer.Tags
         public static double StartProgress;
         [Tag]
         public static bool IsStarted;
-        [Tag]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double MarginScale() => scrController.instance?.currFloor?.marginScale ?? 0;
         public static void Reset()
         {
