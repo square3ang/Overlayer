@@ -15,8 +15,7 @@ using static UnityEngine.Random;
 
 namespace Overlayer.Unity
 {
-    public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
-    {
+    public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
         public static event Action<OverlayerText> OnApplyConfig = delegate { };
         public bool Initialized { get; private set; }
         public TextConfig Config;
@@ -25,10 +24,10 @@ namespace Overlayer.Unity
         public TextMeshProUGUI Text;
         public static GameObject DragObj;
         public static Image DragImage;
-        public static Outline DragOutline;
 
-        public bool isFrontDragging = false;
+        private static bool isAlreadyDragging;
         private bool isDragging = false;
+        private bool isPointing = false;
         private Vector2 initialPointerPosition;
         private Vector2 initialObjectPosition;
 
@@ -113,15 +112,30 @@ namespace Overlayer.Unity
             DragObj.transform.SetParent(PublicCanvas.transform);
             DragObj.transform.localPosition = Vector3.zero;
             DragImage = DragObj.AddComponent<Image>();
-            DragImage.color = new Color(1.0f, 1.0f, 1.0f, 0.16f);
-            DragImage.sprite = null;
-            DragImage.type = Image.Type.Simple;
+
+            Texture2D outlinetex = new Texture2D(3, 3, TextureFormat.RGBA32, false);
+            Color[] outlinetexpixels = new Color[] {
+                Color.white, Color.white, Color.white,
+                Color.white, Color.clear, Color.white,
+                Color.white, Color.white, Color.white,
+            };
+            outlinetex.SetPixels(outlinetexpixels);
+            outlinetex.Apply();
+            outlinetex.filterMode = FilterMode.Point;
+            Sprite outline = Sprite.Create(
+                outlinetex,
+                new Rect(0, 0, 3, 3),
+                new Vector2(0.5f, 0.5f),
+                32f,
+                0,
+                SpriteMeshType.FullRect,
+                new Vector4(1, 1, 1, 1)
+            );
+
+            DragImage.color = new Color(0.0f, 1.0f, 1.0f, 0.8f);
+            DragImage.sprite = outline;
+            DragImage.type = Image.Type.Sliced;
             DragImage.rectTransform.sizeDelta = Vector2.zero;
-            DragOutline = DragObj.AddComponent<Outline>();
-            DragOutline.effectColor = Color.cyan;
-            DragOutline.effectDistance = new Vector2(3, 3);
-            DragOutline.useGraphicAlpha = true;
-            DragOutline.enabled = true;
             DragObj.SetActive(false);
         }
         public void Update()
@@ -133,7 +147,7 @@ namespace Overlayer.Unity
                 DragObj.transform.rotation = Text.gameObject.transform.rotation;
                 DragImage.rectTransform.pivot = Text.rectTransform.pivot;
                 DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
-            }
+            } 
         }
         public void ApplyConfig()
         {
@@ -184,39 +198,57 @@ namespace Overlayer.Unity
             mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        public void OnPointerDown(PointerEventData e)
         {
-            if(isFrontDragging || !Config.Drag) {
+            if(!Config.Drag || isAlreadyDragging) {
                 return;
             }
-            isFrontDragging = true;
             isDragging = true;
-            initialPointerPosition = eventData.position;
+            isAlreadyDragging = true;
+            initialPointerPosition = e.position;
             initialObjectPosition = Text.rectTransform.anchoredPosition;
-
-            DragObj.transform.SetParent(Text.transform);
-            DragObj.SetActive(true);
         }
 
-        public void OnPointerUp(PointerEventData eventData)
+        public void OnPointerUp(PointerEventData e)
         {
             if(isDragging) {
                 isDragging = false;
-                isFrontDragging = false;
-                DragObj.SetActive(false);
+                isAlreadyDragging = false;
             }
         }
 
-        public void OnDrag(PointerEventData eventData)
+        public void OnDrag(PointerEventData e)
         {
             if(isDragging)
             {
-                Vector2 currentPointerPosition = eventData.position;
+                Vector2 currentPointerPosition = e.position;
                 Vector2 offset = currentPointerPosition - initialPointerPosition;
                 Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
 
                 Vector2 screenSize = new Vector2(Screen.width, Screen.height);
                 Config.Position = (Text.rectTransform.anchoredPosition / screenSize) + new Vector2(0.5f, 0.5f);
+            }
+        }
+
+        public void OnPointerEnter(PointerEventData e) {
+            if(!Config.Drag || isAlreadyDragging) {
+                return;
+            }
+            isPointing = true;
+            DragObj.transform.SetParent(Text.transform);
+            DragObj.transform.position = Text.gameObject.transform.position;
+            DragObj.transform.rotation = Text.gameObject.transform.rotation;
+            DragImage.rectTransform.pivot = Text.rectTransform.pivot;
+            DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
+            DragObj.SetActive(true);
+        }
+
+        public void OnPointerExit(PointerEventData e) {
+            if(isPointing) {
+                isPointing = false;
+                if(!isDragging && !isAlreadyDragging) {
+                    DragObj.SetActive(false);
+                }
             }
         }
 
