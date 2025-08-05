@@ -49,6 +49,30 @@ namespace Overlayer.Tags
         [Tag]
         public static int CSlow() => CTL + CVL + CLP;
         [Tag]
+        public static int LELP() => LEP + LLP;
+        [Tag]
+        public static int NELP() => NEP + NLP;
+        [Tag]
+        public static int SELP() => SEP + SLP;
+        [Tag]
+        public static int CELP() => CEP + CLP;
+        [Tag]
+        public static int LV() => LVE + LVL;
+        [Tag]
+        public static int NV() => NVE + NVL;
+        [Tag]
+        public static int SV() => SVE + SVL;
+        [Tag]
+        public static int CV() => CVE + CVL;
+        [Tag]
+        public static int LT() => LTE + LTL;
+        [Tag]
+        public static int NT() => NTE + NTL;
+        [Tag]
+        public static int ST() => STE + STL;
+        [Tag]
+        public static int CT() => CTE + CTL;
+        [Tag]
         public static int MissCount() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
         [Tag]
         public static int Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
