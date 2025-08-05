@@ -171,6 +171,7 @@ public class Tooltip
         ["ColorRange"] = "You can adjust the color from any color to any color you want based on a specific tag. Use with <color>.",
         ["EasedValue"] = "When the tag value changes, the tag value changes according to the speed.",
         ["Developer"] = "Square & Kkitut",
+        ["Rainbow"] = "Rainbow Hex with continuously changing colors. It takes a speed as an argument, with lower values making it faster. Use with <color>.",
 
         ["GCMemUsage"] = "Shows the total memory used by the Garbage Collector in MB",
         ["GCMemUsageGB"] = "Shows the total memory used by the Garbage Collector in GB",
