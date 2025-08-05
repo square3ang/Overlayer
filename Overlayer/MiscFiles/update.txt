@@ -1,2 +1,8 @@
 ﻿[Fix]
-Fix an issue where the editor pitch was not reflected in the bpm
+Fix an issue where the Artist and Author Tag.
+[Add]
+Add Some Tags (Rainbow, LELP, NELP...)
+Drag Improved
+
+
+aand... now 'c3nb' was DELETED.

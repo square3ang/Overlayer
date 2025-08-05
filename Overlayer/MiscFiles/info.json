@@ -2,7 +2,7 @@
     "Id": "Overlayer",
     "DisplayName": "Overlayer",
     "Author": "Square & Kkitut",
-    "Version": "3.19.6",
+    "Version": "3.19.7",
     "AssemblyName": "Overlayer.dll",
     "EntryMethod": "Overlayer.Main.Load"
 }
