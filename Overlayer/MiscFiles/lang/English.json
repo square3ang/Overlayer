@@ -22,7 +22,6 @@
     "RESET": "Reset",
     "MISC_BOTTOM_RIGHT": "Bottom Right",
     "LINE_SPACING": "Font Line Spacing",
-    "MISC_DEVELOPER": "Super Kawaii Suckyoubus Chan~♥",
     "APPLY": "Apply",
     "FONT_SIZE": "Font Size",
     "MISC_TOTAL_GGAPI_REQUEST_COUNT": "Accumulated Number Of Requests By The Overlayer Server To API On Adofai.gg",
@@ -240,7 +239,6 @@
     "TOOLTIP_MOVINGMAN": "You can animate text on criterion certain tags. Used with <size>.",
     "TOOLTIP_COLORRANGE": "You can adjust the color from any color to any color you want based on a specific tag. Use with <color>.",
     "TOOLTIP_EASEDVALUE": "When the tag value changes, the tag value changes according to the speed.",
-    "TOOLTIP_DEVELOPER": "Display overlayer mod developer name Super Kawaii Suckyoubus Chan~♥︎",
     "NOT_EXIST_TAG": "This tag does not exist.",
     "SYSTEMTAG_UPDATE_RATE": "System Tag Update Rate",
     "TOOLTIP_GCMEMUSAGE": "Shows the total memory used by the Garbage Collector in MB",
@@ -253,6 +251,9 @@
     "TOOLTIP_UNITYMEMUSAGEGB": "Shows the total memory used by Unity in GB, not including the entire process memory",
     "TOOLTIP_UNITYMEMUSAGEKB": "Shows the total memory used by Unity in KB, not including the entire process memory",
     "DRAG": "Drag",
-    "SHOW_TRUE_AUTO_JUDGMENT": "Show True Auto Judgment"
+    "SHOW_TRUE_AUTO_JUDGMENT": "Show True Auto Judgment",
+    "MISC_DEVELOPER": "Square & Kkitut. Display everything as you wish. Thank you for being with Overlayer",
+    "TOOLTIP_DEVELOPER": "Square & Kkitut",
+    "TOOLTIP_RAINBOW": "Rainbow"
   }
 }

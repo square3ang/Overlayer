@@ -22,7 +22,6 @@
     "RESET": "重置",
     "MISC_BOTTOM_RIGHT": "右下角",
     "LINE_SPACING": "字体行间距",
-    "MISC_DEVELOPER": "超级卡哇伊的Suckyoubus酱❤~",
     "APPLY": "应用",
     "FONT_SIZE": "文本字体大小",
     "MISC_TOTAL_GGAPI_REQUEST_COUNT": "Overlayer 服务器对 Adofai.gg API 的累计请求数量",
@@ -240,7 +239,6 @@
     "TOOLTIP_MOVINGMAN": "你可以为文本添加动画捏，与 MovingMan 的 <size> 一起使用",
     "TOOLTIP_COLORRANGE": "你可以为文本添加可变颜色哦，与 ColorRange 的 <color> 一起使用",
     "TOOLTIP_EASEDVALUE": "当 Tag 的值发生变化时，Tag 的值会随着速度一起改变（其实我也没看懂）",
-    "TOOLTIP_DEVELOPER": "显示 Overlayer 的原作者“超级卡哇伊的Suckyoubus酱❤~”",
     "NOT_EXIST_TAG": "这个 Tag 不存在捏~",
     "DRAG": "拖拽"
   }
