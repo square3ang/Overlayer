@@ -93,5 +93,28 @@ namespace Overlayer.Tags
         {
             return (Math.Min(Math.Max(nowV, minV), maxV) - minV) / (maxV - minV);
         }
+
+        [Tag(NotPlaying = true)]
+        public static string Rainbow(double speed = 18) {
+            double hue = (Environment.TickCount % (int)(360 * speed)) / speed;
+
+            double c = 1;
+            double x = 1 - Math.Abs(hue / 60 % 2 - 1);
+            double m = 0;
+            double r = 0, g = 0, b = 0;
+
+            if(hue < 60) { r = c; g = x; b = 0; } 
+            else if(hue < 120) { r = x; g = c; b = 0; } 
+            else if(hue < 180) { r = 0; g = c; b = x; } 
+            else if(hue < 240) { r = 0; g = x; b = c; } 
+            else if(hue < 300) { r = x; g = 0; b = c; } 
+            else { r = c; g = 0; b = x; }
+
+            int R = (int)((r + m) * 255);
+            int G = (int)((g + m) * 255);
+            int B = (int)((b + m) * 255);
+
+            return $"{R:X2}{G:X2}{B:X2}";
+        }
     }
 }
