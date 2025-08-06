@@ -9,11 +9,13 @@ namespace Overlayer.Tags.Patches
         {
             nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.RecKPS),
             nameof(Bpm.TileBpmWithoutPitch), nameof(Bpm.CurBpmWithoutPitch), nameof(Bpm.RecKPSWithoutPitch),
+            nameof(Level.Title), nameof(Level.Author), nameof(Level.Artist), nameof(Level.TitleRaw), nameof(Level.AuthorRaw), nameof(Level.ArtistRaw),
         })]
         [LazyPatch("Tags.Bpm.Initializer_scrPressToStart", "scrPressToStart", "ShowText", Triggers = new string[]
         {
             nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.RecKPS),
             nameof(Bpm.TileBpmWithoutPitch), nameof(Bpm.CurBpmWithoutPitch), nameof(Bpm.RecKPSWithoutPitch),
+            nameof(Level.Title), nameof(Level.Author), nameof(Level.Artist), nameof(Level.TitleRaw), nameof(Level.AuthorRaw), nameof(Level.ArtistRaw),
         })]
         public static class Initializer
         {
@@ -44,6 +46,8 @@ namespace Overlayer.Tags.Patches
                 Bpm.TileBpm = cur;
                 Bpm.CurBpm = cur;
                 Bpm.RecKPS = cur / 60;
+
+                Level.LevelInit();
             }
         }
         [LazyPatch("Tags.Bpm.BpmGetPatch", "scrPlanet", "MoveToNextFloor", Triggers = new string[]

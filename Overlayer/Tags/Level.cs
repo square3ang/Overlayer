@@ -1,44 +1,50 @@
 ﻿using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
+using RapidGUI;
 
 namespace Overlayer.Tags {
     public static class Level {
-        [Tag]
-        public static string Title(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => ADOBase.isOfficialLevel ? ADOBase.sceneName.Trim(maxLength, afterTrimStr) : ADOFAI.LevelData?.song?.BreakRichTag()?.Trim(maxLength, afterTrimStr);
-        [Tag]
-        public static string Author(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
+        private static string _title;
+        private static string _author;
+        private static string _artist;
+        private static string _titleRaw;
+        private static string _authorRaw;
+        private static string _artistRaw;
+        public static void LevelInit() {
             if(scnGame.instance != null) {
-                return ADOFAI.LevelData?.author?.BreakRichTag()?.Trim(maxLength, afterTrimStr);
+                _titleRaw = ADOFAI.LevelData?.song;
             } else {
-                return string.Empty;
+                _titleRaw = ADOBase.sceneName;
+            }
+            _title = _titleRaw.BreakRichTag();
+
+            if(scnGame.instance != null) {
+                _authorRaw = ADOFAI.LevelData?.author;
+                _author = _authorRaw.BreakRichTag();
+            } else {
+                _authorRaw = string.Empty;
+                _author = string.Empty;
+            }
+
+            if(scnGame.instance != null) {
+                _artistRaw = ADOFAI.LevelData?.artist;
+                _artist = _artistRaw.BreakRichTag();
+            } else {
+                _artistRaw = string.Empty;
+                _artist = string.Empty;
             }
         }
         [Tag]
-        public static string Artist(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
-            if(scnGame.instance != null) {
-                return ADOFAI.LevelData?.artist.BreakRichTag()?.Trim(maxLength, afterTrimStr);
-            } else {
-                return string.Empty;
-            }
-        }
+        public static string Title(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _title.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string TitleRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => ADOBase.isOfficialLevel ? ADOBase.sceneName.Trim(maxLength, afterTrimStr) : ADOFAI.LevelData?.song?.Trim(maxLength, afterTrimStr);
+        public static string Author(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _author.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string AuthorRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
-            if(scnGame.instance != null) {
-                return ADOFAI.LevelData?.author?.Trim(maxLength, afterTrimStr);
-            } else {
-                return string.Empty;
-            }
-        }
+        public static string Artist(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _artist.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string ArtistRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
-            if(scnGame.instance != null) {
-                return ADOFAI.LevelData?.artist?.Trim(maxLength, afterTrimStr);
-            } else {
-                return string.Empty;
-            }
-        }
-        public static void Reset() { }
+        public static string TitleRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _titleRaw.Trim(maxLength, afterTrimStr);
+        [Tag]
+        public static string AuthorRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _authorRaw.Trim(maxLength, afterTrimStr);
+        [Tag]
+        public static string ArtistRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _artistRaw.Trim(maxLength, afterTrimStr);
     }
 }
