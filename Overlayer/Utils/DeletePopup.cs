@@ -73,14 +73,14 @@ namespace Overlayer.Utils
             
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if(Drawer.Button($"<size=18>{Main.Lang.Get("YES","Yes")}</size>",GUILayout.Width(100),GUILayout.Height(40)))
+            if(Drawer.Button($"<size=18>{Main.Lang.Get("YES","Yes")}</size>",GUILayout.Width(150),GUILayout.Height(52)))
             {
                 TextManager.DestroyText(txt);
                 Main.GUI.Skip(frames: 2);
                 Main.GUI.Pop();
                 Destroy(gameObject);
             }
-            if(Drawer.Button($"<size=18>{Main.Lang.Get("NO","No")}</size>",GUILayout.Width(100),GUILayout.Height(40)))
+            if(Drawer.Button($"<size=18>{Main.Lang.Get("NO","No")}</size>",GUILayout.Width(150),GUILayout.Height(52)))
             {
                 Destroy(gameObject);
             }
