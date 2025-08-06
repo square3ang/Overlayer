@@ -26,6 +26,7 @@ namespace Overlayer.Unity
         public static Image DragImage;
 
         private static bool isAlreadyDragging;
+        private static int pointingCount = 0;
         private bool isDragging = false;
         private bool isPointing = false;
         private Vector2 initialPointerPosition;
@@ -41,11 +42,11 @@ namespace Overlayer.Unity
             sr_msdf = (Shader)typeof(ShaderUtilities).GetProperty("ShaderRef_MobileSDF", (BindingFlags)15420).GetValue(null);
         }
         #endregion
-        public void Init(TextConfig config)
-        {
-            if (Initialized) return;
+        public void Init(TextConfig config) {
+            if(Initialized)
+                return;
             Config = config;
-            if (string.IsNullOrEmpty(config.Name))
+            if(string.IsNullOrEmpty(config.Name))
                 config.Name = $"Text {TextManager.Count + 1}";
             PlayingReplacer = new Replacer(config.PlayingText, TagManager.All.Select(ot => ot.Tag));
             NotPlayingReplacer = new Replacer(config.NotPlayingText, TagManager.NP.Select(ot => ot.Tag));
@@ -58,32 +59,16 @@ namespace Overlayer.Unity
             Text = mainObject.AddComponent<TextMeshProUGUI>();
             Text.enableVertexGradient = true;
             Text.color = Color.white;
-            Text.colorGradient = config.TextColor;
+            Text.enableAutoSizing = false;
             var rt = Text.rectTransform;
             rt.anchorMin = Vector2.zero;
-            rt.anchorMax = new Vector2(1, 1);
-            rt.pivot = config.Pivot;
-            rt.localScale = config.Scale;
-            Text.enableAutoSizing = false;
-            Text.lineSpacing = config.LineSpacing;
-            Text.lineSpacingAdjustment = config.LineSpacingAdj;
-            rt.eulerAngles = config.Rotation;
-            SetFont();
-            Material[] sharedMaterials = Text.fontSharedMaterials;
-            for (int i = 0; i < sharedMaterials.Length; i++)
-            {
-                var mat = new Material(sharedMaterials[i]);
-                InitMaterial(mat);
-                ApplyMaterial(mat);
-                sharedMaterials[i] = mat;
-            }
-            Text.fontSharedMaterials = sharedMaterials;
+            rt.anchorMax = Vector2.one;
+            ApplyConfig();
             config.OnDragChanged += (state) => {
                 Text.raycastTarget = state;
             };
             Text.raycastTarget = config.Drag;
             Text.gameObject.SetActive(config.Active);
-
             Initialized = true;
         }
         public static void PublicCanvasInit() {
@@ -96,8 +81,8 @@ namespace Overlayer.Unity
             PublicCanvas.sortingOrder = 32760;
             CanvasScaler scaler = pCanvasObj.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            var currentRes = Screen.currentResolution;
-            scaler.referenceResolution = new Vector2(currentRes.width, currentRes.height);
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
             pCanvasObj.AddComponent<GraphicRaycaster>();
             DontDestroyOnLoad(PublicCanvas);
         }
@@ -166,7 +151,7 @@ namespace Overlayer.Unity
             Text.colorGradient = Config.TextColor;
             Text.rectTransform.pivot = Config.Pivot;
             Text.rectTransform.localScale = Config.Scale;
-            Text.rectTransform.anchoredPosition = (Config.Position - new Vector2(0.5f, 0.5f)) * new Vector2(Screen.width, Screen.height);
+            Text.rectTransform.anchoredPosition = (Config.Position - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
             Text.rectTransform.eulerAngles = Config.Rotation;
             Text.fontSize = Config.FontSize;
             Text.alignment = Config.Alignment;
@@ -200,7 +185,7 @@ namespace Overlayer.Unity
 
         public void OnPointerDown(PointerEventData e)
         {
-            if(!Config.Drag || isAlreadyDragging) {
+            if(isAlreadyDragging) {
                 return;
             }
             isDragging = true;
@@ -225,31 +210,34 @@ namespace Overlayer.Unity
                 Vector2 offset = currentPointerPosition - initialPointerPosition;
                 Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
 
-                Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+                Vector2 screenSize = new Vector2(1920, 1080);
                 Config.Position = (Text.rectTransform.anchoredPosition / screenSize) + new Vector2(0.5f, 0.5f);
             }
         }
 
         public void OnPointerEnter(PointerEventData e) {
-            if(!Config.Drag || isAlreadyDragging) {
-                return;
-            }
             isPointing = true;
-            DragObj.transform.SetParent(Text.transform);
-            DragObj.transform.position = Text.gameObject.transform.position;
-            DragObj.transform.rotation = Text.gameObject.transform.rotation;
-            DragImage.rectTransform.pivot = Text.rectTransform.pivot;
-            DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
+            pointingCount++;
+            if(!isAlreadyDragging) {
+                DragObj.transform.SetParent(Text.transform);
+                DragObj.transform.position = Text.gameObject.transform.position;
+                DragObj.transform.rotation = Text.gameObject.transform.rotation;
+                DragImage.rectTransform.pivot = Text.rectTransform.pivot;
+                DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
+            }
             DragObj.SetActive(true);
         }
 
         public void OnPointerExit(PointerEventData e) {
-            if(isPointing) {
-                isPointing = false;
-                if(!isDragging && !isAlreadyDragging) {
+            pointingCount--;
+            if(pointingCount == 0) {
+                if(!isAlreadyDragging) {
                     DragObj.SetActive(false);
                 }
+            } else if (pointingCount < 0) {
+                pointingCount = 0;
             }
+            isPointing = false;
         }
 
         private void SetFont()
