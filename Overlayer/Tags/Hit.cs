@@ -77,6 +77,8 @@ namespace Overlayer.Tags
         [Tag]
         public static int Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
         [Tag]
+        public static int Fail() => MissCount() + Overloads();
+        [Tag]
         public static int Multipress;
         [Tag]
         public static string Difficulty(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("enum.Difficulty." + GCS.difficulty).Trim(maxLength, afterTrimStr);
