@@ -94,6 +94,7 @@ namespace Overlayer.Views
                 changed = true;
                 text.Config = model = new TextConfig();
             }
+            GUI.color = new Color(1f, 0.8f, 0.8f);
             if (Drawer.Button(Main.Lang.Get("DESTROY","Destroy")))
             {
                 TextManager.DestroyText(text);
@@ -101,6 +102,7 @@ namespace Overlayer.Views
                 Main.GUI.Pop();
                 return;
             }
+            GUI.color = Color.white;
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             if (changed) text.ApplyConfig();
