@@ -14,7 +14,6 @@ namespace Overlayer.Patches
             Hex.Reset();
             Hit.Reset();
             HitTiming.Reset();
-            Tags.Level.Reset();
             Song.Reset();
             Status.Reset();
             Tile.Reset();
