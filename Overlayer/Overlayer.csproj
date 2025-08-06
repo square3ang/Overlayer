@@ -512,16 +512,17 @@
     <Compile Include="Views\TextConfigDrawer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MiscFiles\info.json" />
     <None Include="MiscFiles\lang\Chinese.json" />
     <None Include="MiscFiles\lang\English.json" />
-    <None Include="MiscFiles\info.json" />
+    <None Include="MiscFiles\lang\FrenchCanada.json" />
     <None Include="MiscFiles\lang\Korean.json" />
     <None Include="MiscFiles\lang\Russian.json" />
+    <None Include="MiscFiles\lang\Vietnamese.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MiscFiles\lang\FrenchCanada.json" />
-    <Content Include="MiscFiles\lang\Vietnamese.json" />
+    <Content Include="MiscFiles\ov3_logo.png" />
     <Content Include="MiscFiles\update.txt" />
     <Content Include="RapidGUI\Component\IMColorPicker\Resources\imBorder.png" />
     <Content Include="RapidGUI\Component\IMColorPicker\Resources\imBorderHighlighted.png" />
@@ -544,6 +545,7 @@
     <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\Overlayer.dll"
 xcopy /Y /I /S /E "$(ProjectDir)MiscFiles\lang\*" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\lang\"
 xcopy /Y /I "$(ProjectDir)MiscFiles\info.json" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\"
-xcopy /Y /I "$(ProjectDir)MiscFiles\update.txt" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\"</PostBuildEvent>
+xcopy /Y /I "$(ProjectDir)MiscFiles\update.txt" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\"
+xcopy /Y /I "$(ProjectDir)MiscFiles\ov3_logo.png" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

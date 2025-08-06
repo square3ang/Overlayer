@@ -24,6 +24,7 @@ using static UnityModManagerNet.UnityModManager.ModEntry;
 using Time = UnityEngine.Time;
 using System.Linq;
 using static UnityEngine.UI.CanvasScaler;
+using System.Drawing;
 
 namespace Overlayer
 {
@@ -56,6 +57,8 @@ namespace Overlayer
         private static bool isLatest = true;
 
         private static bool isBeta = false;
+
+        public static Texture2D Logo;
 
         public static void Load(ModEntry modEntry)
         {
@@ -127,9 +130,20 @@ namespace Overlayer
                 FontManager.Initialize();
                 TagResetter.Postfix();
                 Tags.System.Init();
+                string logopath = Path.Combine(modEntry.Path, "ov3_logo.png");
+                if(System.IO.File.Exists(logopath)) {
+                    byte[] fileData = System.IO.File.ReadAllBytes(logopath);
+                    Logo = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                    Logo.LoadImage(fileData);
+                } else {
+                    Logger.Log("Logo image not found!");
+                }
             }
             else
             {
+                if(Logo != null) {
+                    Logo = null;
+                }
                 Tags.System.Free();
                 TextManager.Release();
                 FontManager.Release();
