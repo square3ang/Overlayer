@@ -15,6 +15,7 @@ using Object = UnityEngine.Object;
 using Overlayer.Core.Patches;
 using Overlayer.Tags.Patches;
 using static Overlayer.Patches.HitFixPatch;
+using Newtonsoft.Json;
 
 namespace Overlayer.Views
 {
@@ -24,9 +25,18 @@ namespace Overlayer.Views
 
         public override void Draw()
         {
+            if(Main.Logo != null) {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(Main.Logo, GUILayout.Width(Main.Logo.width), GUILayout.Height(Main.Logo.height));
+                GUILayout.BeginVertical();
+                GUILayout.Label("<size=62>Overlayer v3</size>");
+                GUILayout.Label("<size=26>Display everything as you wish.</size>");
+                GUILayout.Label($"<size=16>{Main.ModVersion}, by <color=#{Tags.Effect.Rainbow()}>Square & Kkitut</color></size>");
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+            }
             if(model != null)
             Main.Lang.CurrentLanguage = model.Lang;
-            
             GUILayout.Label(Main.Lang.Get("SELECTLANGUAGE","Select Language"));
             GUILayout.BeginHorizontal();
             string[] languageNames = Main.Lang.GetLanguages();
@@ -138,25 +148,34 @@ namespace Overlayer.Views
             GUILayout.EndHorizontal();
             for (int i = 0; i < TextManager.Count; i++)
             {
+                GUILayout.BeginHorizontal();
                 var text = TextManager.Get(i);
-                Drawer.TitleButton(
-                    string.Format(Main.Lang.Get("EDIT_THIS_TEXT","Edit {0} Text"),text.Config.Name),
-                    Main.Lang.Get("EDIT","Edit"),
-                    () => Main.GUI.Push(new TextConfigDrawer(text.Config)),
-                    () =>
-                    {
-                    if (Drawer.Button(Main.Lang.Get("DESTROY","Destroy")))
-                    {
-                        if (Object.FindAnyObjectByType<DeletePopup>() == null)
-                        {
+                GUI.color = new Color(0.8f, 0.8f, 1f);
+                if(Drawer.Button(Main.Lang.Get("EDIT", "Edit"))) {
+                    Main.GUI.Push(new TextConfigDrawer(text.Config));
+                }
+                GUI.color = new Color(0.8f, 1f, 0.8f);
+                if(Drawer.Button(Main.Lang.Get("CLONE", "Clone"))) {
+                    TextManager.CreateText(text.Config.Copy());
+                }
+                GUI.color = new Color(1f, 0.8f, 0.8f);
+                if(Drawer.Button(Main.Lang.Get("DESTROY", "Destroy"))) {
+                    if(Object.FindAnyObjectByType<DeletePopup>() == null) {
+                        if(Input.GetKey(KeyCode.LeftShift)) {
+                            TextManager.DestroyText(text);
+                        } else {
                             var popup = new GameObject().AddComponent<DeletePopup>();
                             UnityEngine.Object.DontDestroyOnLoad(popup);
                             popup.Initialize(text);
                         }
-
-                        return;
                     }
-                });
+                    return;
+                }
+                GUI.color = Color.white;
+                GUILayout.Label(text.Config.Name);
+
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
             }
         }
     }
