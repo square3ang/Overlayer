@@ -98,7 +98,7 @@
     "USE_LEGACY_THEME": "改为原本的界面",
     "DESTROY_ASK": "确定要删掉吗qwq？",
     "YES": "是的",
-    "NO": "不删了,我再想想qwq",
+    "NO": "不删了,\n我再想想qwq",
     "INSERT": "插入",
     "TARGET_TAG": "目标 Tag",
     "START_SIZE": "初始大小",
