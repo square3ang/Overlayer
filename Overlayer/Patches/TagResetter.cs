@@ -8,7 +8,6 @@ namespace Overlayer.Patches
     {
         public static void Postfix()
         {
-            OverlayerAPI.Reset();
             Bpm.Reset();
             Tags.FrameRate.Reset();
             Hex.Reset();
