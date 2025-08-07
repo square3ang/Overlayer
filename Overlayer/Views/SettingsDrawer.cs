@@ -110,6 +110,12 @@ namespace Overlayer.Views
                 GUILayoutEx.EndIndent();
             }
 
+            Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("AUTO_UPDATE","Auto Update")), ref model.useAutoUpdate);
+            if (model.useAutoUpdate) {
+                GUILayoutEx.BeginIndent();
+                Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA", "Beta")), ref model.useAutoUpdateBeta);
+                GUILayoutEx.EndIndent();
+            }
             if (Drawer.DrawBool(
                     string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
                     ref model.useLegacyTheme))

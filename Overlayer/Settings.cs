@@ -19,6 +19,8 @@ namespace Overlayer
         public bool useShowTrueAutoJudgment = false;
         public bool useMovingManEditor = true;
         public bool useColorRangeEditor = true;
+        public bool useAutoUpdate = false;
+        public bool useAutoUpdateBeta = false;
         public JsonNode Serialize()
         {
             var node = JsonNode.Empty;
