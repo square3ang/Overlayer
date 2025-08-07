@@ -1,11 +1,2 @@
 ﻿[Fix]
-Fix an issue where positioning and size would change depending on resolution
-(WARN: Users ≠ 1920×1080 may need to reposition)
-Level Tag Optimize
-Fix Drag issue
-Increased the size of the text destruction pop-up button
-(fix Chinese language issue)
-[Add]
-Add Overlayer Logo, Slogan
-Change the Edit Text, Button, and add color
-Add Fail Tag (MissCount + Overloads)
+Fix Some Translation
