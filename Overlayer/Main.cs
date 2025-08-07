@@ -51,6 +51,7 @@ namespace Overlayer
 
         public static bool isLatest = true;
         public static bool isBeta = false;
+        public static readonly string OverlayerGithubLink = "https://api.github.com/repos/Kkitut/Overlayer/releases";
 
         public static Texture2D Logo;
 
@@ -81,7 +82,7 @@ namespace Overlayer
             yield return null;
             if(Application.internetReachability != NetworkReachability.NotReachable)
             {
-                var wr = UnityWebRequest.Get("https://api.github.com/repos/Kkitut/Overlayer/releases");
+                var wr = UnityWebRequest.Get(OverlayerGithubLink);
                 yield return wr.SendWebRequest();
                 var releases = JArray.Parse(wr.downloadHandler.text);
 
