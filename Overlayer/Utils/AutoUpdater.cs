@@ -17,7 +17,7 @@ namespace Overlayer.Utils {
         public static string BetaUrl;
         public static bool IsUpdating { get; private set; } = false;
         public static bool RequireRestart { get; private set; }
-        public static readonly string OverlayerGithubApiLink = "https://api.github.com/repos/Kkitut/Overlayer/releases";
+        public static readonly string OverlayerGithubApiLink = "https://api.github.com/repos/modlist-org/Overlayer/releases";
         private static Version newVersion = new();
 
         public static void Reload(ModEntry modEntry) {
