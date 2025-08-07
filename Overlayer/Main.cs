@@ -44,11 +44,6 @@ namespace Overlayer
         public static HttpClient HttpClient { get; private set; }
         public static Translator Lang { get; internal set; }
         [Tag(NotPlaying = true)] public static Version ModVersion { get; private set; }
-        /*
-        [Tag(NotPlaying = true)] public static Version LastestVersion { get; private set; }
-        [Tag(NotPlaying = true)] public static string DownloadLink { get; private set; }
-        public static long GGReqCnt, GetGGReqCnt, TUFReqCnt, GetTUFReqCnt, PlayCnt, HandshakeCnt;
-        */
         private static UpdatePopup popup;
 
         public static bool showTooltip = false;
