@@ -30,7 +30,7 @@ namespace Overlayer.Views
                 GUILayout.Label(Main.Logo, GUILayout.Width(Main.Logo.width), GUILayout.Height(Main.Logo.height));
                 GUILayout.BeginVertical();
                 GUILayout.Label("<size=62>Overlayer v3</size>");
-                GUILayout.Label("<size=26>Display everything as you wish.</size>");
+                GUILayout.Label($"<size=26>{Main.Lang.Get("SLOGAN_TEXT", "Display everything as you wish.")}</size>");
                 GUILayout.Label($"<size=16>{Main.ModVersion}, by <color=#{Tags.Effect.Rainbow()}>Square & Kkitut</color></size>");
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();

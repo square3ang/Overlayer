@@ -197,9 +197,9 @@ namespace Overlayer
             {
                 if (!isLatest)
                 {
-                    GUILayout.Label("<size=50><color=red>Outdated Version Detected!</color></size>");
+                    GUILayout.Label($"<size=50><color=red>{Lang.Get("OUTDATED_DESCRIPTION", "Outdated Version Detected!")}</color></size>");
                     GUILayout.BeginHorizontal();
-                    if (Drawer.Button("<size=30>Update</size>"))
+                    if (Drawer.Button($"<size=30>{Lang.Get("UPDATE","Update")}</size>"))
                     {
                         Application.OpenURL("https://overlayer.lrl.kr/");
                     }
@@ -214,8 +214,8 @@ namespace Overlayer
 
                 if (isBeta)
                 {
-                    GUILayout.Label("<size=30><color=lime>Beta Version</color></size>");
-                    GUILayout.Label("Beta version may be unstable");
+                    GUILayout.Label($"<size=30><color=lime>{Lang.Get("BETA_TEXT", "Beta Version")}</color></size>");
+                    GUILayout.Label($"{Lang.Get("BETA_DESCRIPTION", "Beta version may be unstable")}");
                     GUILayout.Space(30);
                 }
 
