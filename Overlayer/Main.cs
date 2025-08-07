@@ -49,8 +49,8 @@ namespace Overlayer
         public static bool showTooltip = false;
         public static string tooltip = "";
 
-        private static bool isLatest = true;
-        private static bool isBeta = false;
+        public static bool isLatest = true;
+        public static bool isBeta = false;
 
         public static Texture2D Logo;
 
