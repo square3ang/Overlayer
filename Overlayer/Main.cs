@@ -50,7 +50,6 @@ namespace Overlayer
         public static string tooltip = "";
 
         private static bool isLatest = true;
-
         private static bool isBeta = false;
 
         public static Texture2D Logo;
@@ -82,7 +81,7 @@ namespace Overlayer
             yield return null;
             if(Application.internetReachability != NetworkReachability.NotReachable)
             {
-                var wr = UnityWebRequest.Get("https://api.github.com/repos/square3ang/Overlayer/releases");
+                var wr = UnityWebRequest.Get("https://api.github.com/repos/Kkitut/Overlayer/releases");
                 yield return wr.SendWebRequest();
                 var releases = JArray.Parse(wr.downloadHandler.text);
 
