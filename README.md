@@ -1,4 +1,4 @@
-<img src = "ol_icon.png" width="25%" height="25%">
+<img src = "ov3.png" width="25%" height="25%">
 
 # Overlayer
 Overlayer is a mod that displays texts in ADOFAI in-game.   
