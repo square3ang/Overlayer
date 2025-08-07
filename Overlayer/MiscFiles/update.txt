@@ -1,2 +1,2 @@
-﻿[Fix]
-Fix Some Translation
+﻿[Add]
+aDd mAGicAutOupDaTe
