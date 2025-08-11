@@ -42,6 +42,8 @@
         "EDIT_THIS": "Edit {0}",
         "EDIT_THIS_TEXT": "Edit {0} Text",
         "END_SIZE": "End Size",
+        "ERROR": "Error",
+        "ERROR_THIS_TEXT_INDEX": "Unable to load text data at index {0}",
         "EXPORT": "Export",
         "FALLBACK_FONTS": "Enable Alternate Font",
         "FLUSH": "Flush",

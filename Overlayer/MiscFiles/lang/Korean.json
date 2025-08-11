@@ -42,6 +42,8 @@
         "EDIT_THIS": "{0} 수정",
         "EDIT_THIS_TEXT": "텍스트 {0} 수정",
         "END_SIZE": "끝 크기",
+        "ERROR": "오류",
+        "ERROR_THIS_TEXT_INDEX": "{0}번째 텍스트를 불러오는데 실패하였습니다.",
         "EXPORT": "내보내기",
         "FALLBACK_FONTS": "대체 폰트 활성화",
         "FLUSH": "플러시",
