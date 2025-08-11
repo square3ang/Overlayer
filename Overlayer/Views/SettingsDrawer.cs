@@ -156,7 +156,7 @@ namespace Overlayer.Views
             {
                 var text = TextManager.Get(i);
                 if(text == null) {
-                    GUILayout.Label($"[{Main.Lang.Get("ERROR","Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX","Unable to load text data at index {0}")), i.ToString());
+                    GUILayout.Label($"[{Main.Lang.Get("ERROR","Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX","Unable to load text data at index {0}"), i.ToString()));
                     continue;
                 }
                 GUILayout.BeginHorizontal();
