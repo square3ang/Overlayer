@@ -38,9 +38,9 @@ namespace Overlayer.Core
         }
         public static OverlayerText Get(int index) {
             if(index < 0 || index >= Texts.Count) {
-                return Texts[index];
+                return null;
             }
-            return null;
+            return Texts[index];
         }
         public static OverlayerText Find(TextConfig configRef) => Texts.Find(ot => ReferenceEquals(ot.Config, configRef));
         public static void Remove(int index) => DestroyText(Texts[index]);
