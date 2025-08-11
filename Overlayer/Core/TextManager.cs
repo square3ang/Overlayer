@@ -36,7 +36,12 @@ namespace Overlayer.Core
             Texts.Add(text);
             return text;
         }
-        public static OverlayerText Get(int index) => Texts[index];
+        public static OverlayerText Get(int index) {
+            if(index < 0 || index >= Texts.Count) {
+                return Texts[index];
+            }
+            return null;
+        }
         public static OverlayerText Find(TextConfig configRef) => Texts.Find(ot => ReferenceEquals(ot.Config, configRef));
         public static void Remove(int index) => DestroyText(Texts[index]);
         public static void DestroyText(OverlayerText text)

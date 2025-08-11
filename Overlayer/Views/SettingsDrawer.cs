@@ -154,8 +154,12 @@ namespace Overlayer.Views
             GUILayout.EndHorizontal();
             for (int i = 0; i < TextManager.Count; i++)
             {
-                GUILayout.BeginHorizontal();
                 var text = TextManager.Get(i);
+                if(text == null) {
+                    GUILayout.Label($"[{Main.Lang.Get("ERROR","Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX","Unable to load text data at index {0}")), i.ToString());
+                    continue;
+                }
+                GUILayout.BeginHorizontal();
                 GUI.color = new Color(0.8f, 0.8f, 1f);
                 if(Drawer.Button(Main.Lang.Get("EDIT", "Edit"))) {
                     Main.GUI.Push(new TextConfigDrawer(text.Config));
