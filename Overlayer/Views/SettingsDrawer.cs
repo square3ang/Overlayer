@@ -170,10 +170,10 @@ namespace Overlayer.Views
                 }
                 GUI.color = new Color(1f, 0.8f, 0.8f);
                 if(Drawer.Button(Main.Lang.Get("DESTROY", "Destroy"))) {
-                    if(Object.FindAnyObjectByType<DeletePopup>() == null) {
-                        if(Input.GetKey(KeyCode.LeftShift)) {
-                            TextManager.DestroyText(text);
-                        } else {
+                    if(Input.GetKey(KeyCode.LeftShift)) {
+                        TextManager.DestroyText(text);
+                    } else {
+                        if(Object.FindAnyObjectByType<DeletePopup>() == null) {
                             var popup = new GameObject().AddComponent<DeletePopup>();
                             UnityEngine.Object.DontDestroyOnLoad(popup);
                             popup.Initialize(text);
