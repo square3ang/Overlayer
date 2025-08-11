@@ -312,6 +312,31 @@ namespace Overlayer.Core
             ali_Unknown = CreateTextureFromByte(new byte[] {137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,12,0,0,0,12,8,6,0,0,0,86,117,92,231,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,52,73,68,65,84,40,21,99,96,160,20,252,71,3,120,205,3,169,69,87,128,77,12,174,6,155,36,54,49,58,106,128,91,5,101,224,117,14,69,138,65,154,73,50,29,221,54,162,248,84,179,1,0,31,60,63,193,68,133,15,100,0,0,0,0,73,69,78,68,174,66,96,130});
         }
 
+        public static void UninitializeImages() {
+            if(dulgray != null) { Object.Destroy(dulgray); dulgray = null; }
+            if(gray != null) { Object.Destroy(gray); gray = null; }
+            if(jittengray != null) { Object.Destroy(jittengray); jittengray = null; }
+            if(tfgray != null) { Object.Destroy(tfgray); tfgray = null; }
+            if(veryjittengray != null) { Object.Destroy(veryjittengray); veryjittengray = null; }
+            if(outlineimg != null) { Object.Destroy(outlineimg); outlineimg = null; }
+            if(black != null) { Object.Destroy(black); black = null; }
+            if(textureSelected != null) { Object.Destroy(textureSelected); textureSelected = null; }
+            if(textureUnselected != null) { Object.Destroy(textureUnselected); textureUnselected = null; }
+            if(ali_Left != null) { Object.Destroy(ali_Left); ali_Left = null; }
+            if(ali_Right != null) { Object.Destroy(ali_Right); ali_Right = null; }
+            if(ali_Center != null) { Object.Destroy(ali_Center); ali_Center = null; }
+            if(ali_Justified != null) { Object.Destroy(ali_Justified); ali_Justified = null; }
+            if(ali_Flush != null) { Object.Destroy(ali_Flush); ali_Flush = null; }
+            if(ali_Geometry_Center != null) { Object.Destroy(ali_Geometry_Center); ali_Geometry_Center = null; }
+            if(ali_Top != null) { Object.Destroy(ali_Top); ali_Top = null; }
+            if(ali_Middle != null) { Object.Destroy(ali_Middle); ali_Middle = null; }
+            if(ali_Bottom != null) { Object.Destroy(ali_Bottom); ali_Bottom = null; }
+            if(ali_Baseline != null) { Object.Destroy(ali_Baseline); ali_Baseline = null; }
+            if(ali_Midline != null) { Object.Destroy(ali_Midline); ali_Midline = null; }
+            if(ali_Capline != null) { Object.Destroy(ali_Capline); ali_Capline = null; }
+            if(ali_Unknown != null) { Object.Destroy(ali_Unknown); ali_Unknown = null; }
+        }
+
         public static Texture2D Base64ToTexture(string base64) {
             byte[] imageBytes = System.Convert.FromBase64String(base64);
 
@@ -851,9 +876,6 @@ namespace Overlayer.Core
 
                 return str;
             };
-
-            InitializeImages();
-
 
             myButton = new GUIStyle(GUI.skin.button);
             myButton.normal.background = gray;
