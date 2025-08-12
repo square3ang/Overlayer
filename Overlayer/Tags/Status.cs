@@ -14,11 +14,11 @@ namespace Overlayer.Tags
         public static bool IsOldAutoEnabled => ADOFAI.RDC?.useOldAuto ?? false;
         [Tag]
         public static bool IsNoFailEnabled => ADOFAI.Controller?.noFail ?? GCS.useNoFail;
-        [Tag]
-        public static double Progress(int digits = -1) => (scrController.instance?.percentComplete * 100 ?? 0).Round(digits);
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double Progress() => scrController.instance?.percentComplete * 100 ?? 0;
 
-        [Tag]
-        public static double ActualProgress(int digits = -1)
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double ActualProgress()
         {
             var listFloors = scrLevelMaker.instance?.listFloors;
             if (listFloors == null || listFloors.
@@ -28,16 +28,16 @@ namespace Overlayer.Tags
             var lastFloorTime = listFloors[listFloors.Count - 1].entryTime;
             var actualProgress = (scrController.instance?.currFloor.entryTime - firstFloorTime) / (lastFloorTime - firstFloorTime) * 100;
             if (actualProgress == null) return 0;
-            return (Mathf.Clamp((float)actualProgress, 0, 100)).Round(digits);
+            return Mathf.Clamp((float)actualProgress, 0, 100);
         }
-        [Tag]
-        public static double Accuracy(int digits = -1) => (scrController.instance?.mistakesManager?.percentAcc * 100 ?? 0).Round(digits);
-        [Tag]
-        public static double XAccuracy(int digits = -1) => (scrController.instance?.mistakesManager?.percentXAcc * 100 ?? 0).Round(digits);
-        [Tag]
-        public static double Pitch(int digits = -1) => GCS.currentSpeedTrial.Round(digits);
-        [Tag]
-        public static double EditorPitch(int digits = -1) => ((ADOFAI.LevelData?.pitch ?? 0) / 100.0).Round(digits);
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double Accuracy() => (scrController.instance?.mistakesManager?.percentAcc * 100 ?? 0);
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double XAccuracy() => (scrController.instance?.mistakesManager?.percentXAcc * 100 ?? 0);
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double Pitch() => GCS.currentSpeedTrial;
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double EditorPitch() => ((ADOFAI.LevelData?.pitch ?? 0) / 100.0);
         [Tag]
         public static int CheckPointUsed() => scrController.checkpointsUsed;
         [Tag]
