@@ -16,6 +16,7 @@ using Overlayer.Core.Patches;
 using Overlayer.Tags.Patches;
 using static Overlayer.Patches.HitFixPatch;
 using Newtonsoft.Json;
+using Overlayer.Core.Translation;
 
 namespace Overlayer.Views
 {
@@ -67,7 +68,7 @@ namespace Overlayer.Views
                 Main.Lang.CurrentLanguage = languageNames[index];
                 model.Lang = Main.Lang.CurrentLanguage;
             }
-            if(Drawer.Button(Main.Lang.GetFail() ? Main.Lang.FailString() : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
+            if(Drawer.Button(Main.Lang.GetFail() ? TranslatorHelper.FailString(Main.Lang) : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
             {
                 _ = Main.Lang.LoadTranslationsAsync(Path.Combine(Main.Mod.Path,"lang"));
                 Main.Lang.CurrentLanguage = model.Lang;
