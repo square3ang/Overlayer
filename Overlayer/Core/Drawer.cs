@@ -247,6 +247,8 @@ namespace Overlayer.Core
             return result;
         }
 
+        private static bool isImageInited = false; 
+
         public static Texture2D textureSelected;
         public static Texture2D textureUnselected;
 
@@ -266,6 +268,10 @@ namespace Overlayer.Core
         public static Texture2D ali_Unknown;
 
         public static void InitializeImages() {
+            if(isImageInited) {
+                return;
+            }
+
             dulgray = new Texture2D(1, 1);
             dulgray.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
             dulgray.Apply();
@@ -310,6 +316,39 @@ namespace Overlayer.Core
             ali_Midline = CreateTextureFromByte(new byte[] {137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,12,0,0,0,12,8,6,0,0,0,86,117,92,231,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,83,73,68,65,84,40,21,181,141,65,14,192,32,16,2,249,255,167,107,104,132,80,106,140,61,148,203,178,131,172,184,62,10,45,246,79,152,223,172,10,14,219,232,177,166,242,222,197,161,64,83,65,239,226,119,129,33,101,8,248,80,178,23,204,82,122,151,26,230,158,222,133,157,249,175,192,203,212,227,247,201,142,199,0,137,188,187,69,126,37,21,114,0,0,0,0,73,69,78,68,174,66,96,130});
             ali_Capline = CreateTextureFromByte(new byte[] {137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,12,0,0,0,12,8,6,0,0,0,86,117,92,231,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,87,73,68,65,84,40,21,157,142,219,14,128,48,12,66,249,255,159,118,193,4,130,104,118,177,47,165,156,209,14,215,97,161,139,249,29,207,111,190,2,134,45,244,88,93,188,103,249,16,80,23,232,89,254,29,32,100,217,4,188,40,189,151,153,161,212,14,181,153,115,234,199,55,8,86,229,11,51,193,37,51,110,166,107,54,254,136,1,140,25,183,73,53,167,3,97,0,0,0,0,73,69,78,68,174,66,96,130});
             ali_Unknown = CreateTextureFromByte(new byte[] {137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,12,0,0,0,12,8,6,0,0,0,86,117,92,231,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,52,73,68,65,84,40,21,99,96,160,20,252,71,3,120,205,3,169,69,87,128,77,12,174,6,155,36,54,49,58,106,128,91,5,101,224,117,14,69,138,65,154,73,50,29,221,54,162,248,84,179,1,0,31,60,63,193,68,133,15,100,0,0,0,0,73,69,78,68,174,66,96,130});
+
+            isImageInited = true;
+        }
+
+        public static void UninitializeImages() {
+            if(!isImageInited) {
+                return;
+            }
+
+            if(dulgray != null) { dulgray = null; }
+            if(gray != null) { gray = null; }
+            if(jittengray != null) { jittengray = null; }
+            if(tfgray != null) { tfgray = null; }
+            if(veryjittengray != null) { veryjittengray = null; }
+            if(outlineimg != null) { outlineimg = null; }
+            if(black != null) { black = null; }
+            if(textureSelected != null) { textureSelected = null; }
+            if(textureUnselected != null) { textureUnselected = null; }
+            if(ali_Left != null) { ali_Left = null; }
+            if(ali_Right != null) { ali_Right = null; }
+            if(ali_Center != null) { ali_Center = null; }
+            if(ali_Justified != null) { ali_Justified = null; }
+            if(ali_Flush != null) { ali_Flush = null; }
+            if(ali_Geometry_Center != null) { ali_Geometry_Center = null; }
+            if(ali_Top != null) { ali_Top = null; }
+            if(ali_Middle != null) { ali_Middle = null; }
+            if(ali_Bottom != null) { ali_Bottom = null; }
+            if(ali_Baseline != null) { ali_Baseline = null; }
+            if(ali_Midline != null) { ali_Midline = null; }
+            if(ali_Capline != null) { ali_Capline = null; }
+            if(ali_Unknown != null) { ali_Unknown = null; }
+
+            isImageInited = false;
         }
 
         public static Texture2D Base64ToTexture(string base64) {
@@ -851,9 +890,6 @@ namespace Overlayer.Core
 
                 return str;
             };
-
-            InitializeImages();
-
 
             myButton = new GUIStyle(GUI.skin.button);
             myButton.normal.background = gray;
