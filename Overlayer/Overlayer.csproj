@@ -387,6 +387,7 @@
     <Compile Include="Core\Interfaces\IModel.cs" />
     <Compile Include="Core\MethodDrawable.cs" />
     <Compile Include="Core\ModelDrawable.cs" />
+    <Compile Include="Core\Translation\TranslatorHelper.cs" />
     <Compile Include="Patches\HitFixPatch.cs" />
     <Compile Include="Core\Patches\LazyPatch.cs" />
     <Compile Include="Core\Patches\LazyPatchAttribute.cs" />
