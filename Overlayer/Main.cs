@@ -14,17 +14,13 @@ using System.Collections;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
-using Newtonsoft.Json.Linq;
 using RapidGUI;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
 using Time = UnityEngine.Time;
-using System.Linq;
 using System.Threading.Tasks;
-using static ffxMDEnemy;
 
 namespace Overlayer
 {
