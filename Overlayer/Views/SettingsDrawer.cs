@@ -32,6 +32,9 @@ namespace Overlayer.Views
                 GUILayout.Label("<size=62>Overlayer v3</size>");
                 GUILayout.Label($"<size=26>{Main.Lang.Get("SLOGAN_TEXT", "Display everything as you wish.")}</size>");
                 GUILayout.Label($"<size=16>{Main.ModVersion}, by <color=#{Tags.Effect.Rainbow()}>Square & Kkitut</color></size>");
+                if(Main.egEnabled) {
+                    GUILayout.Label("you found something");
+                }
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
             }
@@ -46,6 +49,7 @@ namespace Overlayer.Views
             {
                 selectedIndex = (selectedIndex - 1 + languageNames.Length) % languageNames.Length;
                 UpdateLanguageSetting(selectedIndex);
+                egHandle();
             }
             
             if(Drawer.SelectionPopup(ref selectedIndex,languageNames, "", GUILayout.Width(400)))
@@ -186,6 +190,29 @@ namespace Overlayer.Views
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
+            }
+        }
+
+        private int egClickCount = 0;
+        private DateTime egFirstClickTime = DateTime.MinValue;
+
+        private void egHandle() {
+            DateTime now = DateTime.UtcNow;
+
+            if(egClickCount == 0) {
+                egFirstClickTime = now;
+            }
+
+            egClickCount++;
+
+            if((now - egFirstClickTime).TotalSeconds > 1.0) {
+                egClickCount = 1;
+                egFirstClickTime = now;
+            }
+
+            if(egClickCount >= 10 && !Main.egEnabled) {
+                Main.egEnabled = true;
+                egClickCount = 0;
             }
         }
     }

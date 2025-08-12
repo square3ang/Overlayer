@@ -52,6 +52,8 @@ namespace Overlayer
 
         public static Texture2D Logo;
 
+        public static bool egEnabled = false;
+
         public static void Load(ModEntry modEntry)
         {
             Logger = modEntry.Logger;
