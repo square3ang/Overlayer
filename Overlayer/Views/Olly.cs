@@ -287,7 +287,7 @@ namespace Overlayer.Views {
         public static void InitLanguage() {
             isKorean = Main.Lang.CurrentLanguage == "한국어";
             if(!isKorean) {
-                textSpeed = textSpeed * 1.5f;
+                textSpeed = textSpeed * 1.8f;
             }
         }
         private static bool isKorean = false;
