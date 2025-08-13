@@ -1,3 +1,4 @@
 ﻿[Add]
-Add Tag OTE,OVE,OEP,OP,OLP,OVL,OTL,OA,OPP
-O is Official, OA: Auto, OPP: Only user Perfect
+Add Tag DefaultTextColor, DefaultTextShadowColor
+[Fix]
+Optimize Level Tags
