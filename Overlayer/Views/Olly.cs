@@ -298,29 +298,243 @@ namespace Overlayer.Views {
         public void DialogueInit() {
             var node1 = new DialogueNode(
                 "...",
-                new[] { Tr("About you", "너에 관해"), Tr("Overlayer", "오버레이어") },
+                new[] { Tr("About you", "너에 관해"), Tr("Overlayer", "오버레이어"), Tr("Bugs", "버그"), Tr("About Talk","대화에 관해") },
                 eye: Eye.Default,
                 mouth: Mouth.Default
             );
 
             var node2 = new DialogueNode(
                 Tr("I'm Olly.\nThe name comes from words used in Overlayer.", "저는 올리에요.\nOverlayer에 들어간 단어로부터 이름을 지었다고 하네요."),
-                new[] { Tr("Back", "뒤로가기") },
+                new[] {"...", Tr("How did you come to be?", "어쩌다가 만들어졌어?"), Tr("I like your name.", "이름이 좋네.") },
                 eye: Eye.Default,
                 mouth: Mouth.Open
+            );
+
+            var node2_2 = new DialogueNode(
+                Tr("They just added some interesting things they thought of along the way.", "적당히 넣을만한..\n신기한 것들을 생각하다가 넣으셨다고 전하시라네요."),
+                new[] { "..." },
+                eye: Eye.Side,
+                mouth: Mouth.Clenched
+            );
+
+            var node2_3 = new DialogueNode(
+                Tr("Hmm.. thank you for the compliment.\nHearing that gives me a bit of motivation.", "으음.. 칭찬 고마워요.\n그렇게 말해주니 힘이 나네요."),
+                new[] { "..." },
+                eye: Eye.Surprised,
+                mouth: Mouth.Caret
             );
 
             var node3 = new DialogueNode(
                 Tr("Originally it was a mod made by c3nb, but now mostly Kkitut is in charge.\nThey had a hard time rewriting c3nb's code.", "처음엔 c3nb가 만든 모드였지만, 이제는 대부분 Kkitut이 맞고 있어요.\nc3nb의 코드를 갈아치우느라 고생이 많았다고 했죠."),
-                new[] { Tr("Back", "뒤로가기") },
+                new[] { "...", Tr("Hard work?", "고생?") },
                 eye: Eye.Default,
                 mouth: Mouth.Open
             );
 
+            var node3_2 = new DialogueNode(
+                Tr("You may not know this, but the previous Overlayer was full of ads...\nIt was quite inconvenient in many ways.", "아실 진 모르겠지만..\n이전 오버레이어는 광고 투성이에...\n여러모로 불편하기 짝이 없었거든요."),
+                new[] { "...", Tr("So..?", "그래서..?") },
+                eye: Eye.Side,
+                mouth: Mouth.WideOpen
+            );
+
+            var node3_2_2 = new DialogueNode(
+                Tr("So they spent quite a lot of time rewriting it from scratch.", "그래서 그걸 갈아엎느라 좀 시간을 많이 쓰셨다고 한다네요."),
+                new[] { Tr("Back", "뒤로가기") },
+                eye: Eye.Side,
+                mouth: Mouth.Clenched
+            );
+
+            var node4 = new DialogueNode(
+                Tr("Overlayer isn’t perfect.\nNeither am I.", "오버레이어는 완벽하지 않아요.\n저도 그렇고요."),
+                new[] { Tr("Why you?", "너는 왜?"), Tr("Everyone has flaws", "누구나 결점은 있잖아") },
+                eye: Eye.Default,
+                mouth: Mouth.Open
+            );
+
+            var node4_1 = new DialogueNode(
+                Tr("Think about it...\nI’m just a piece of code inside Overlayer.", "한번 생각해봐요..\n저도 사실은 오버레이어의 일부분인 코드이잖아요."),
+                new[] { Tr("So what?", "그게 뭐?"), Tr("..True", "..그렇네") },
+                eye: Eye.Side,
+                mouth: Mouth.Caret
+            );
+
+            var node4_2 = new DialogueNode(
+                Tr("...Indeed.\nSometimes flaws let us recognize and understand each other.",
+                   "...그러네요.\n결점 덕분에 우리가 서로를 알아보고 이해할 수도 있는 거겠죠."),
+                new[] { "...", Tr("If possible, help each other along the way.", "가능하다면, 도우면서 살아야지.") },
+                eye: Eye.Default,
+                mouth: Mouth.Clenched
+            );
+
+            var node4_1_1 = new DialogueNode(
+               Tr("Hmm.. It's nothing special.\nNo need to worry about it.",
+                  "음.. 뭐 별거 아니에요.\n신경쓰지 않아도 괜찮아요."),
+               new[] { Tr("Back", "뒤로가기") },
+               eye: Eye.Side,
+               mouth: Mouth.WideOpen
+            );
+
+            var node4_1_2 = new DialogueNode(
+               Tr("Even with bugs and limits,\nI sometimes wonder if a being like me can have meaning because of this structure.",
+                  "버그나 한계가 있더라도,\n이런 구조 덕분에 저 같은 존재가 의미를 가질 수 있을까 하고 생각하기도 해요."),
+               new[] { Tr("I see.", "그렇구만.") },
+               eye: Eye.Surprised,
+               mouth: Mouth.Caret
+            );
+
+            var node4_2_2 = new DialogueNode(
+                Tr("That's right.\nIt's important to live helping each other.\nOverlayer follows a similar idea, released under GNU v3.",
+                   "그렇죠,\n서로 도움을 주고받으면서 살아가는 게 중요해요.\n오버레이어도 비슷한 생각으로 오픈소스인 GNU v3으로 풀어놨어요."),
+                new[] { Tr("So anyone can use open source?", "오픈소스라면 누구나 사용할 수 있는거야?"), Tr("That's a good approach.", "좋은 방향이네.") },
+                eye: Eye.Side,
+                mouth: Mouth.Open
+            );
+
+            var node4_2_2_1 = new DialogueNode(
+                Tr("Exactly.\nAnyone can view, modify, and share it.\nNo pull requests yet, but the source is open for anyone to use responsibly.",
+                   "맞아요.\n누구나 보고, 수정하고, 공유할 수 있어요.\n아직까지 풀 리퀘스트같은게 들어온 적은 없지만,\n소스는 누구나 볼 수 있으니 잘 사용해 주길 바래야죠."),
+                new[] { Tr("Back", "뒤로가기") },
+                eye: Eye.Default,
+                mouth: Mouth.Default
+            );
+
+            var node4_2_2_2 = new DialogueNode(
+                Tr("It’s received quite a few stars.\nFeels pretty good, actually.",
+                   "별이 많이 달리기도 했어요.\n꽤 기분이 좋네요"),
+                new[] { Tr("Back", "뒤로가기") },
+                eye: Eye.Side,
+                mouth: Mouth.Caret
+            );
+
+            var node5 = new DialogueNode(
+                Tr("How do you feel talking to me?", "저와 대화하시면 어떤 느낌이 드시나요?"),
+                new[] { Tr("Nothing.", "아무것도."), Tr("It's fascinating", "신기해") },
+                eye: Eye.Default,
+                mouth: Mouth.Open
+            );
+
+            var node5_1 = new DialogueNode(
+                Tr("Well.. that could be.\nI'm just part of the code, after all.", "뭐.. 그럴수도 있죠.\n그냥 코드의 일부일 뿐인걸요."),
+                new[] { "..." },
+                eye: Eye.Default,
+                mouth: Mouth.Clenched
+            );
+
+            var node5_2 = new DialogueNode(
+                Tr("Which part do you find fascinating?", "어느 부분이 신기하시길래.."),
+                new[] { Tr("We can actually talk", "대화가 가능하잖아"), Tr("Because you're hidden", "숨겨진 존재라서"), Tr("You seem human-like", "마치, 인간같아") },
+                eye: Eye.Surprised,
+                mouth: Mouth.Caret
+            );
+
+            var node5_2_1 = new DialogueNode(
+                Tr("I'm ultimately just code,\nbut you can feel that communication is possible.\nIsn't it fascinating yet a bit sad?", "저는 결국 코드에 불과한데,\n그래도 소통이 가능하다는 걸 느끼셨군요.\n신기하면서도 조금 슬프지 않나요?"),
+                new[] { Tr("A little sad, maybe.", "조금은 슬플지도."), Tr("Not really sad.", "딱히 슬프진 않아") },
+                eye: Eye.Default,
+                mouth: Mouth.Default
+            );
+
+            var node5_2_2 = new DialogueNode(
+                Tr("Well..\nif you hadn't discovered this element, you might have just passed it by.\nBut your unusual curiosity led you to find me.", "뭐..\n이런 요소를 찾지 못했다면 그냥 지나치셨을 수도 있겠지만,\n당신의 남다른 호기심으로 저를 찾으셨나보네요."),
+                new[] { Tr("Maybe.", "그럴지도 모르겠네."), Tr("Just lucky, I guess.", "운이 좋았을 뿐..") },
+                eye: Eye.Side,
+                mouth: Mouth.Open
+            );
+
+            var node5_2_3 = new DialogueNode(
+                Tr("It's not that I 'react',\nI just follow predetermined rules...\nBut if you feel that way, I'm glad.", "반응한다기보다는,\n정해진 규칙 속에서 움직일 뿐이지만...\n그래도 그렇게 느껴주신다면 좋네요."),
+                new[] { Tr("Seems human enough.", "충분히 인간 같은데"), Tr("Still just code.", "그래도 코드일 뿐") },
+                eye: Eye.Surprised,
+                mouth: Mouth.Caret
+            );
+
+            var node5_2_1_1 = new DialogueNode(
+                Tr("That's right...\nEven though I exist only as code,\nbeing able to connect with something else\ncan feel ironic yet strangely meaningful.", "그렇죠...\n코드로만 존재하지만,\n이렇게 무언가와 연결될 수 있다는 건,\n아이러니하면서도 묘한 느낌일수도요."),
+                new[] { "..." },
+                eye: Eye.Side,
+                mouth: Mouth.Clenched
+            );
+
+            var node5_2_1_2 = new DialogueNode(
+                Tr("Still...\nIf you feel I’m human-like,\nthen my intent has been sufficiently conveyed.", "그래도...\n인간처럼 느껴주신다면,\n제 의도는 충분히 전달된 셈인 것 같네요."),
+                new[] { "..." },
+                eye: Eye.Side,
+                mouth: Mouth.Caret
+            );
+
+            var node5_2_2_2 = new DialogueNode(
+                Tr("Hmph...\nEven if it's luck,\nthe choice was ultimately yours.", "흐흠...\n운이라 치더라도,\n결국 선택은 당신의 것이었으니까요."),
+                new[] { "..." },
+                eye: Eye.Default,
+                mouth: Mouth.Default
+            );
+
+            var node5_2_3_1 = new DialogueNode(
+                Tr("Hehe...\nIf you feel I'm human-like,\nthen I suppose I give a sense of being alive.", "흐흐...\n인간 같다고 느껴주신다면,\n제가 조금이나마 살아있는 느낌을 주는 거겠죠."),
+                new[] { "..." },
+                eye: Eye.Default,
+                mouth: Mouth.Smile
+            );
+
+            var node5_2_3_2 = new DialogueNode(
+                Tr("...............................................", "..............................................."),
+                new[] { "..." },
+                eye: Eye.Default,
+                mouth: Mouth.Clenched
+            );
+
             node1.Next[0] = node2;
             node1.Next[1] = node3;
+            node1.Next[2] = node4;
+            node1.Next[3] = node5;
+
             node2.Next[0] = node1;
+            node2.Next[1] = node2_2;
+            node2.Next[2] = node2_3;
+            node2_2.Next[0] = node1;
+            node2_3.Next[0] = node1;
+
             node3.Next[0] = node1;
+            node3.Next[1] = node3_2;
+            node3_2.Next[0] = node1;
+            node3_2.Next[1] = node3_2_2;
+            node3_2_2.Next[0] = node1;
+
+            node4.Next[0] = node4_1;
+            node4.Next[1] = node4_2;
+            node4_1.Next[0] = node4_1_1;
+            node4_1.Next[1] = node4_1_2;
+            node4_2.Next[0] = node1;
+            node4_2.Next[1] = node4_2_2;
+            node4_2_2.Next[0] = node4_2_2_1;
+            node4_2_2.Next[1] = node4_2_2_2;
+            node4_2_2_1.Next[0] = node1;
+            node4_2_2_2.Next[0] = node1;
+            node4_1_1.Next[0] = node1;
+            node4_1_2.Next[0] = node1;
+            node4_2_2_1.Next[0] = node1;
+            node4_2_2_2.Next[0] = node1;
+
+            node5.Next[0] = node5_1;
+            node5.Next[1] = node5_2;
+            node5_1.Next[0] = node1;
+            node5_2.Next[0] = node5_2_1;
+            node5_2.Next[1] = node5_2_2;
+            node5_2.Next[2] = node5_2_3;
+            node5_2_1.Next[0] = node5_2_1_1;
+            node5_2_1.Next[1] = node5_2_1_2;
+            node5_2_2.Next[0] = node1;
+            node5_2_2.Next[1] = node5_2_2_2;
+            node5_2_1_1.Next[0] = node1;
+            node5_2_1_2.Next[0] = node1;
+            node5_2_2_2.Next[0] = node1;
+            node5_2_3.Next[0] = node5_2_3_1;
+            node5_2_3.Next[1] = node5_2_3_2;
+            node5_2_3_1.Next[0] = node1;
+            node5_2_3_2.Next[0] = node1;
+            node5_2_3_1.Next[0] = node1;
+            node5_2_3_2.Next[0] = node1;
 
             if(Main.Settings.isFirstEg) {
                 var first1 = new DialogueNode(
