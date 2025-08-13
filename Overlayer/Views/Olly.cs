@@ -333,7 +333,7 @@ namespace Overlayer.Views {
 
             var node3 = new DialogueNode(
                 Tr("Originally it was a mod made by c3nb,\nbut now mostly Kkitut is in charge.\nThey had a hard time rewriting c3nb's code.", "처음엔 c3nb가 만든 모드였지만,\n이제는 대부분 Kkitut이 맞고 있어요.\nc3nb의 코드를 갈아치우느라 고생이 많았다고 했죠."),
-                new[] { "...", Tr("Hard work?", "고생?") },
+                new[] { "...", Tr("Hard time?", "고생?") },
                 eye: Eye.Default,
                 mouth: Mouth.Open
             );
