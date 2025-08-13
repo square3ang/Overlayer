@@ -116,11 +116,12 @@ namespace Overlayer.Views {
             }
         }
 
+        private static float textSpeed = 20f;
+
         private DialogueNode currentNode;
         private string displayedText = "";
         private int charIndex = 0;
         private float textTimer = 0f;
-        private float textSpeed = 20f;
         private float newlineWait = 0f;
 
         private Eye currentEye = Eye.Default;
@@ -285,6 +286,9 @@ namespace Overlayer.Views {
 
         public static void InitLanguage() {
             isKorean = Main.Lang.CurrentLanguage == "한국어";
+            if(!isKorean) {
+                textSpeed = textSpeed * 1.5f;
+            }
         }
         private static bool isKorean = false;
         public string Tr(string en, string ko) {
