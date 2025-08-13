@@ -324,7 +324,7 @@ namespace Overlayer.Views {
 
             if(Main.Settings.isFirstEg) {
                 var first1 = new DialogueNode(
-                    Tr("..oh you found me?", "..날 찾았구나?"),
+                    Tr("..oh you found me?", "..절 찾았군요?"),
                     new[] { Tr("What is this??", "이게 뭐야??") },
                     eye: Eye.Default,
                     mouth: Mouth.Default
