@@ -9,18 +9,18 @@ using Overlayer.Tags.Attributes;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using Overlayer.Views;
+using RapidGUI;
 using System;
 using System.Collections;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
-using RapidGUI;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
 using Time = UnityEngine.Time;
-using System.Threading.Tasks;
 
 namespace Overlayer
 {
@@ -157,7 +157,10 @@ namespace Overlayer
 
                 if(elapsedTime >= 0.05f)
                 {
-                    preparingsymbolIndex = (preparingsymbolIndex + 1) % preparingsymbols.Length;
+                    preparingsymbolIndex++;
+                    if(preparingsymbolIndex >= preparingsymbols.Length) {
+                        preparingsymbolIndex = 0;
+                    }
                     preparinglastUpdateTime = Time.time;
                 }
 
