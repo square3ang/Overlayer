@@ -10,29 +10,25 @@ namespace Overlayer.Tags {
         private static string _titleRaw;
         private static string _authorRaw;
         private static string _artistRaw;
+        private static string _defaultTextColor;
+        private static string _defaultTextShadowColor;
         public static void LevelInit() {
             if(scnGame.instance != null) {
                 _titleRaw = ADOFAI.LevelData?.song;
-            } else {
-                _titleRaw = ADOBase.sceneName;
-            }
-            _title = _titleRaw.BreakRichTag();
-
-            if(scnGame.instance != null) {
                 _authorRaw = ADOFAI.LevelData?.author;
                 _author = _authorRaw.BreakRichTag();
-            } else {
-                _authorRaw = string.Empty;
-                _author = string.Empty;
-            }
-
-            if(scnGame.instance != null) {
                 _artistRaw = ADOFAI.LevelData?.artist;
                 _artist = _artistRaw.BreakRichTag();
             } else {
+                _titleRaw = ADOBase.sceneName;
+                _authorRaw = string.Empty;
+                _author = string.Empty;
                 _artistRaw = string.Empty;
                 _artist = string.Empty;
             }
+            _defaultTextColor = ADOFAI.LevelData?.defaultTextColor.ToHex() ?? "#ffffff";
+            _defaultTextShadowColor = ADOFAI.LevelData?.defaultTextShadowColor.ToHex() ?? "#000000";
+            _title = _titleRaw.BreakRichTag();
         }
         [Tag]
         public static string Title(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _title.Trim(maxLength, afterTrimStr);
@@ -46,5 +42,9 @@ namespace Overlayer.Tags {
         public static string AuthorRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _authorRaw.Trim(maxLength, afterTrimStr);
         [Tag]
         public static string ArtistRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _artistRaw.Trim(maxLength, afterTrimStr);
+        [Tag]
+        public static string DefaultTextColor() => _defaultTextColor;
+        [Tag]
+        public static string DefaultTextShadowColor() => _defaultTextShadowColor;
     }
 }
