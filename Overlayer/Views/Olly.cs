@@ -119,7 +119,7 @@ namespace Overlayer.Views {
             }
         }
 
-        private static float textSpeed = 20f;
+        public static float TextSpeed = 40f;
 
         private DialogueNode currentNode;
         private string displayedText = "";
@@ -162,13 +162,13 @@ namespace Overlayer.Views {
 
             if(charIndex < currentNode.Text.Length) {
                 if(currentNode.Text[charIndex] == '\n') {
-                    newlineWait = 4f / textSpeed;
+                    newlineWait = 4f / TextSpeed;
                     displayedText = currentNode.Text.Substring(0, charIndex + 1);
                     charIndex++;
                     return;
                 }
 
-                textTimer += Time.deltaTime * textSpeed;
+                textTimer += Time.deltaTime * TextSpeed;
                 int advance = (int)textTimer;
                 if(advance > 0) {
                     charIndex = Mathf.Min(charIndex + advance, currentNode.Text.Length);
@@ -289,9 +289,6 @@ namespace Overlayer.Views {
 
         public static void InitLanguage() {
             isKorean = Main.Lang.CurrentLanguage == "한국어";
-            if(!isKorean) {
-                textSpeed = textSpeed * 1.8f;
-            }
         }
         private static bool isKorean = false;
         public string Tr(string en, string ko) {
