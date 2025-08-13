@@ -94,6 +94,14 @@ namespace Overlayer
                 FontManager.Initialize();
                 TagResetter.Postfix();
                 Tags.System.Init();
+                string logopath = Path.Combine(modEntry.Path, "ov3_logo.png");
+                if(System.IO.File.Exists(logopath)) {
+                    byte[] fileData = System.IO.File.ReadAllBytes(logopath);
+                    Logo = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                    Logo.LoadImage(fileData);
+                } else {
+                    Logger.Log("Logo image not found!");
+                }
                 _ = AutoUpdater.InitAndUpdate(modEntry, Settings.useAutoUpdate, Settings.useAutoUpdateBeta, 
                     async () => {
                         UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Sucess!");
@@ -105,13 +113,15 @@ namespace Overlayer
                         UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
                     }
                 );
+                if (!Olly.Inited) {
+                    Olly.Init(modEntry);
+                }
             }
             else
             {
                 if(Logo != null) {
                     Logo = null;
                 }
-                Drawer.UninitializeImages();
                 Tags.System.Free();
                 TextManager.Release();
                 FontManager.Release();
@@ -128,15 +138,6 @@ namespace Overlayer
 
         public static void OnShowGUI(ModEntry modEntry)
         {
-            Drawer.InitializeImages();
-            string logopath = Path.Combine(modEntry.Path, "ov3_logo.png");
-            if(System.IO.File.Exists(logopath)) {
-                byte[] fileData = System.IO.File.ReadAllBytes(logopath);
-                Logo = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-                Logo.LoadImage(fileData);
-            } else {
-                Logger.Log("Logo image not found!");
-            }
             popup = new GameObject().AddComponent<UpdatePopup>();
             UnityEngine.Object.DontDestroyOnLoad(popup);
             popup.Initialize();
@@ -243,9 +244,10 @@ namespace Overlayer
                 }
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
-                if (showTooltip && !RGUI.PopupWindow.isOpen)
-                {
-                    Drawer.Tooltip(tooltip);
+                if(!RGUI.PopupWindow.isOpen) {
+                    if(showTooltip) {
+                        Drawer.Tooltip(tooltip);
+                    }
                 }
             }
         }
