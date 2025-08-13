@@ -216,7 +216,7 @@ namespace Overlayer.Views
                 egFirstClickTime = now;
             }
 
-            if(egClickCount >= 4 && !Main.EgEnabled) {
+            if(egClickCount >= 7 && !Main.EgEnabled) {
                 Main.EgEnabled = true;
                 egClickCount = 0;
             }
