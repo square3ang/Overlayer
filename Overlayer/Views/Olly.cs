@@ -187,7 +187,7 @@ namespace Overlayer.Views {
             );
         }
         private void OnGUI() {
-            if(!Inited || currentNode == null) {
+            if(!Inited || currentNode == null || !Main.IsShowGUI) {
                 return;
             }
 
@@ -294,7 +294,7 @@ namespace Overlayer.Views {
         public string Tr(string en, string ko) {
             return isKorean ? ko : en;
         }
-
+        
         public void DialogueInit() {
             var node1 = new DialogueNode(
                 "...",
@@ -331,7 +331,7 @@ namespace Overlayer.Views {
                 );
 
                 var first2 = new DialogueNode(
-                    Tr("I’m Olly, a hidden little helper in Overlayer.", "저는 올리에요,\n그리고 숨겨진 요소이죠."),
+                    Tr("I’m Olly, a hidden little in Overlayer.", "저는 올리에요,\n그리고 숨겨진 요소이죠."),
                     new[] { Tr("Oh, I see...", "..그렇군") },
                     eye: Eye.Default,
                     mouth: Mouth.Open

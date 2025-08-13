@@ -38,6 +38,7 @@ namespace Overlayer
         [Tag(NotPlaying = true)] public static Scene ActiveScene { get; private set; }
         [Tag(NotPlaying = true)] public static Translator Lang { get; internal set; }
         [Tag(NotPlaying = true)] public static Version ModVersion { get; private set; }
+        public static bool IsShowGUI { get; private set; } = false;
         private static UpdatePopup popup;
 
         public static bool showTooltip = false;
@@ -154,6 +155,7 @@ namespace Overlayer
 
         public static void OnShowGUI(ModEntry modEntry)
         {
+            IsShowGUI = true;
             popup = new GameObject().AddComponent<UpdatePopup>();
             UnityEngine.Object.DontDestroyOnLoad(popup);
             popup.Initialize();
@@ -273,6 +275,7 @@ namespace Overlayer
 
         public static void OnHideGUI(ModEntry modEntry)
         {
+            IsShowGUI = false;
             //CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
             Drawer.codeEditor.undoRedoManagers.Clear();
             GUI.Flush();
