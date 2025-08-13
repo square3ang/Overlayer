@@ -46,7 +46,26 @@ namespace Overlayer
 
         public static Texture2D Logo;
 
-        public static bool egEnabled = false;
+        internal static Olly Eg;
+        private static bool _egEnabled = false;
+        internal static bool EgEnabled {
+            get => _egEnabled;
+            set {
+                if(_egEnabled != value) {
+                    _egEnabled = value;
+                    if(_egEnabled) {
+                        Olly.Init(Mod);
+                        Eg = new GameObject().AddComponent<Olly>();
+                        UnityEngine.Object.DontDestroyOnLoad(Eg);
+                        Eg.DialogueInit();
+                    } else {
+                        UnityEngine.Object.Destroy(Eg.gameObject);
+                        Eg = null;
+                        Olly.Deinit();
+                    }
+                }
+            }
+        }
 
         public static void Load(ModEntry modEntry)
         {
@@ -113,6 +132,9 @@ namespace Overlayer
             }
             else
             {
+                if(EgEnabled) {
+                    EgEnabled = false;
+                }
                 if(Logo != null) {
                     Logo = null;
                 }
@@ -135,7 +157,7 @@ namespace Overlayer
             popup = new GameObject().AddComponent<UpdatePopup>();
             UnityEngine.Object.DontDestroyOnLoad(popup);
             popup.Initialize();
-            
+
             //CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
 
             GUI.Flush();
