@@ -305,7 +305,7 @@ namespace Overlayer.Views {
 
             var node2 = new DialogueNode(
                 Tr("I'm Olly.\nThe name comes from words used in Overlayer.", "저는 올리에요.\nOverlayer에 들어간 단어로부터 이름을 지었다고 하네요."),
-                new[] {"...", Tr("How did you come to be?", "어쩌다가 만들어졌어?"), Tr("I like your name.", "이름이 좋네.") },
+                new[] {"...", Tr("How did you come to be?", "어쩌다가 만들어졌어?"), Tr("I like your name.", "이름이 좋네."), Tr("Who drew you?", "널 누가 그려준거야?") },
                 eye: Eye.Default,
                 mouth: Mouth.Open
             );
@@ -324,8 +324,15 @@ namespace Overlayer.Views {
                 mouth: Mouth.Caret
             );
 
+            var node2_4 = new DialogueNode(
+                Tr("Kkitut drew me.\nThat’s how I ended up looking like this.", "Kkitut님이 저를 그려주셨어요.\n덕분에 이렇게 생기게 되었네요"),
+                new[] { Tr("Back", "뒤로가기") },
+                eye: Eye.Default,
+                mouth: Mouth.Default
+            );
+
             var node3 = new DialogueNode(
-                Tr("Originally it was a mod made by c3nb, but now mostly Kkitut is in charge.\nThey had a hard time rewriting c3nb's code.", "처음엔 c3nb가 만든 모드였지만, 이제는 대부분 Kkitut이 맞고 있어요.\nc3nb의 코드를 갈아치우느라 고생이 많았다고 했죠."),
+                Tr("Originally it was a mod made by c3nb,\nbut now mostly Kkitut is in charge.\nThey had a hard time rewriting c3nb's code.", "처음엔 c3nb가 만든 모드였지만,\n이제는 대부분 Kkitut이 맞고 있어요.\nc3nb의 코드를 갈아치우느라 고생이 많았다고 했죠."),
                 new[] { "...", Tr("Hard work?", "고생?") },
                 eye: Eye.Default,
                 mouth: Mouth.Open
@@ -492,8 +499,10 @@ namespace Overlayer.Views {
             node2.Next[0] = node1;
             node2.Next[1] = node2_2;
             node2.Next[2] = node2_3;
+            node2.Next[3] = node2_4;
             node2_2.Next[0] = node1;
             node2_3.Next[0] = node1;
+            node2_4.Next[0] = node1;
 
             node3.Next[0] = node1;
             node3.Next[1] = node3_2;
