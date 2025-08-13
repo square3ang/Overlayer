@@ -113,9 +113,6 @@ namespace Overlayer
                         UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
                     }
                 );
-                if (!Olly.Inited) {
-                    Olly.Init(modEntry);
-                }
             }
             else
             {
