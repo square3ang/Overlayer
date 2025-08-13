@@ -13,7 +13,6 @@ using RapidGUI;
 using System;
 using System.Collections;
 using System.IO;
-using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -37,8 +36,7 @@ namespace Overlayer
         [Tag(NotPlaying = true)] public static Settings Settings { get; private set; }
         public static GUIController GUI { get; private set; }
         [Tag(NotPlaying = true)] public static Scene ActiveScene { get; private set; }
-        public static HttpClient HttpClient { get; private set; }
-        public static Translator Lang { get; internal set; }
+        [Tag(NotPlaying = true)] public static Translator Lang { get; internal set; }
         [Tag(NotPlaying = true)] public static Version ModVersion { get; private set; }
         private static UpdatePopup popup;
 
@@ -56,7 +54,6 @@ namespace Overlayer
             Ass = Assembly.GetExecutingAssembly();
             Mod = modEntry;
             GUI = new GUIController();
-            HttpClient = new HttpClient();
             ModVersion = modEntry.Version;
             Lang = new Translator();
             modEntry.OnToggle = OnToggle;
