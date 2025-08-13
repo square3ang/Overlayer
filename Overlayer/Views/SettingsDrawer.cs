@@ -32,7 +32,7 @@ namespace Overlayer.Views
                 GUILayout.BeginVertical();
                 Rect v3labelRect = GUILayoutUtility.GetRect(new GUIContent("Overlayer v3"), GUI.skin.label, GUILayout.Height(62));
                 GUI.Label(v3labelRect, "<size=62>Overlayer v3</size>");
-                if(Event.current.type == EventType.MouseDown && v3labelRect.Contains(Event.current.mousePosition)) {
+                if(Event.current.type == EventType.MouseDown && v3labelRect.Contains(Event.current.mousePosition) && !Main.EgEnabled) {
                     egHandle();
                     Event.current.Use();
                 }

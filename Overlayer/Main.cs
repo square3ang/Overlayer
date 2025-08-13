@@ -53,16 +53,21 @@ namespace Overlayer
             get => _egEnabled;
             set {
                 if(_egEnabled != value) {
-                    _egEnabled = value;
-                    if(_egEnabled) {
+                    if(value) {
                         Olly.Init(Mod);
-                        Eg = new GameObject().AddComponent<Olly>();
-                        UnityEngine.Object.DontDestroyOnLoad(Eg);
-                        Eg.DialogueInit();
+                        if(Olly.Inited) {
+                            Eg = new GameObject().AddComponent<Olly>();
+                            UnityEngine.Object.DontDestroyOnLoad(Eg);
+                            Eg.DialogueInit();
+                            _egEnabled = value;
+                        }
                     } else {
-                        UnityEngine.Object.Destroy(Eg.gameObject);
-                        Eg = null;
-                        Olly.Deinit();
+                        if(Olly.Inited) {
+                            UnityEngine.Object.Destroy(Eg.gameObject);
+                            Eg = null;
+                            Olly.Deinit();
+                        }
+                        _egEnabled = value;
                     }
                 }
             }

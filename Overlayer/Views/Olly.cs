@@ -27,7 +27,7 @@ namespace Overlayer.Views {
             string path = Path.Combine(modEntry.Path, "eg.res");
 
             if(!File.Exists(path)) {
-                throw new FileNotFoundException(path);
+                return;
             }
 
             using var zip = ZipFile.OpenRead(path);
@@ -70,6 +70,9 @@ namespace Overlayer.Views {
 
             InitLanguage();
             Inited = Base != null && Eyes.Count > 0 && Mouths.Count > 0;
+            if(!Inited) {
+                Deinit();
+            }
         }
 
         public static void Deinit() {
