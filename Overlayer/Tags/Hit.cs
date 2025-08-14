@@ -73,6 +73,24 @@ namespace Overlayer.Tags
         [Tag]
         public static int CT() => CTE + CTL;
         [Tag]
+        public static int OTE() => scrMistakesManager.hitMarginsCount[0];
+        [Tag]
+        public static int OVE() => scrMistakesManager.hitMarginsCount[1];
+        [Tag]
+        public static int OEP() => scrMistakesManager.hitMarginsCount[2];
+        [Tag]
+        public static int OP() => scrMistakesManager.hitMarginsCount[3] + scrMistakesManager.hitMarginsCount[10];
+        [Tag]
+        public static int OLP() => scrMistakesManager.hitMarginsCount[4];
+        [Tag]
+        public static int OVL() => scrMistakesManager.hitMarginsCount[5];
+        [Tag]
+        public static int OTL() => scrMistakesManager.hitMarginsCount[6];
+        [Tag]
+        public static int OA() => scrMistakesManager.hitMarginsCount[10];
+        [Tag]
+        public static int OPP() => scrMistakesManager.hitMarginsCount[3];
+        [Tag]
         public static int MissCount() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
         [Tag]
         public static int Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;

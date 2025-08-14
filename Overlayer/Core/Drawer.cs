@@ -320,37 +320,6 @@ namespace Overlayer.Core
             isImageInited = true;
         }
 
-        public static void UninitializeImages() {
-            if(!isImageInited) {
-                return;
-            }
-
-            if(dulgray != null) { dulgray = null; }
-            if(gray != null) { gray = null; }
-            if(jittengray != null) { jittengray = null; }
-            if(tfgray != null) { tfgray = null; }
-            if(veryjittengray != null) { veryjittengray = null; }
-            if(outlineimg != null) { outlineimg = null; }
-            if(black != null) { black = null; }
-            if(textureSelected != null) { textureSelected = null; }
-            if(textureUnselected != null) { textureUnselected = null; }
-            if(ali_Left != null) { ali_Left = null; }
-            if(ali_Right != null) { ali_Right = null; }
-            if(ali_Center != null) { ali_Center = null; }
-            if(ali_Justified != null) { ali_Justified = null; }
-            if(ali_Flush != null) { ali_Flush = null; }
-            if(ali_Geometry_Center != null) { ali_Geometry_Center = null; }
-            if(ali_Top != null) { ali_Top = null; }
-            if(ali_Middle != null) { ali_Middle = null; }
-            if(ali_Bottom != null) { ali_Bottom = null; }
-            if(ali_Baseline != null) { ali_Baseline = null; }
-            if(ali_Midline != null) { ali_Midline = null; }
-            if(ali_Capline != null) { ali_Capline = null; }
-            if(ali_Unknown != null) { ali_Unknown = null; }
-
-            isImageInited = false;
-        }
-
         public static Texture2D Base64ToTexture(string base64) {
             byte[] imageBytes = System.Convert.FromBase64String(base64);
 
@@ -890,6 +859,8 @@ namespace Overlayer.Core
 
                 return str;
             };
+
+            InitializeImages();
 
             myButton = new GUIStyle(GUI.skin.button);
             myButton.normal.background = gray;

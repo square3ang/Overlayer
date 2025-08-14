@@ -16,6 +16,7 @@ using Overlayer.Core.Patches;
 using Overlayer.Tags.Patches;
 using static Overlayer.Patches.HitFixPatch;
 using Newtonsoft.Json;
+using Overlayer.Core.Translation;
 
 namespace Overlayer.Views
 {
@@ -29,12 +30,18 @@ namespace Overlayer.Views
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(Main.Logo, GUILayout.Width(Main.Logo.width), GUILayout.Height(Main.Logo.height));
                 GUILayout.BeginVertical();
-                GUILayout.Label("<size=62>Overlayer v3</size>");
+                Rect v3labelRect = GUILayoutUtility.GetRect(new GUIContent("Overlayer v3"), GUI.skin.label, GUILayout.Height(62));
+                GUI.Label(v3labelRect, "<size=62>Overlayer v3</size>");
+                if(Event.current.type == EventType.MouseDown && v3labelRect.Contains(Event.current.mousePosition) && !Main.EgEnabled) {
+                    egHandle();
+                    Event.current.Use();
+                }
                 GUILayout.Label($"<size=26>{Main.Lang.Get("SLOGAN_TEXT", "Display everything as you wish.")}</size>");
                 GUILayout.Label($"<size=16>{Main.ModVersion}, by <color=#{Tags.Effect.Rainbow()}>Square & Kkitut</color></size>");
-                if(Main.egEnabled) {
-                    GUILayout.Label("you found something");
+                if(Main.EgEnabled) {
+                    Main.Eg.DrawChoices();
                 }
+
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
             }
@@ -49,7 +56,6 @@ namespace Overlayer.Views
             {
                 selectedIndex = (selectedIndex - 1 + languageNames.Length) % languageNames.Length;
                 UpdateLanguageSetting(selectedIndex);
-                egHandle();
             }
             
             if(Drawer.SelectionPopup(ref selectedIndex,languageNames, "", GUILayout.Width(400)))
@@ -67,7 +73,7 @@ namespace Overlayer.Views
                 Main.Lang.CurrentLanguage = languageNames[index];
                 model.Lang = Main.Lang.CurrentLanguage;
             }
-            if(Drawer.Button(Main.Lang.GetFail() ? Main.Lang.FailString() : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
+            if(Drawer.Button(Main.Lang.GetFail() ? TranslatorHelper.FailString(Main.Lang) : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
             {
                 _ = Main.Lang.LoadTranslationsAsync(Path.Combine(Main.Mod.Path,"lang"));
                 Main.Lang.CurrentLanguage = model.Lang;
@@ -210,8 +216,8 @@ namespace Overlayer.Views
                 egFirstClickTime = now;
             }
 
-            if(egClickCount >= 10 && !Main.egEnabled) {
-                Main.egEnabled = true;
+            if(egClickCount >= 7 && !Main.EgEnabled) {
+                Main.EgEnabled = true;
                 egClickCount = 0;
             }
         }

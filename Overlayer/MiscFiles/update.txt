@@ -1,2 +1,4 @@
 ﻿[Add]
-aDd mAGicAutOupDaTe
+Add Tag DefaultTextColor, DefaultTextShadowColor
+[Fix]
+Optimize Level Tags

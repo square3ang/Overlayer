@@ -9,22 +9,17 @@ using Overlayer.Tags.Attributes;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using Overlayer.Views;
+using RapidGUI;
 using System;
 using System.Collections;
 using System.IO;
-using System.Net.Http;
 using System.Reflection;
-using Newtonsoft.Json.Linq;
-using RapidGUI;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
 using Time = UnityEngine.Time;
-using System.Linq;
-using System.Threading.Tasks;
-using static ffxMDEnemy;
 
 namespace Overlayer
 {
@@ -41,9 +36,9 @@ namespace Overlayer
         [Tag(NotPlaying = true)] public static Settings Settings { get; private set; }
         public static GUIController GUI { get; private set; }
         [Tag(NotPlaying = true)] public static Scene ActiveScene { get; private set; }
-        public static HttpClient HttpClient { get; private set; }
-        public static Translator Lang { get; internal set; }
+        [Tag(NotPlaying = true)] public static Translator Lang { get; internal set; }
         [Tag(NotPlaying = true)] public static Version ModVersion { get; private set; }
+        public static bool IsShowGUI { get; private set; } = false;
         private static UpdatePopup popup;
 
         public static bool showTooltip = false;
@@ -52,7 +47,31 @@ namespace Overlayer
 
         public static Texture2D Logo;
 
-        public static bool egEnabled = false;
+        internal static Olly Eg;
+        private static bool _egEnabled = false;
+        internal static bool EgEnabled {
+            get => _egEnabled;
+            set {
+                if(_egEnabled != value) {
+                    if(value) {
+                        Olly.Init(Mod);
+                        if(Olly.Inited) {
+                            Eg = new GameObject().AddComponent<Olly>();
+                            UnityEngine.Object.DontDestroyOnLoad(Eg);
+                            Eg.DialogueInit();
+                            _egEnabled = value;
+                        }
+                    } else {
+                        if(Olly.Inited) {
+                            UnityEngine.Object.Destroy(Eg.gameObject);
+                            Eg = null;
+                            Olly.Deinit();
+                        }
+                        _egEnabled = value;
+                    }
+                }
+            }
+        }
 
         public static void Load(ModEntry modEntry)
         {
@@ -60,7 +79,6 @@ namespace Overlayer
             Ass = Assembly.GetExecutingAssembly();
             Mod = modEntry;
             GUI = new GUIController();
-            HttpClient = new HttpClient();
             ModVersion = modEntry.Version;
             Lang = new Translator();
             modEntry.OnToggle = OnToggle;
@@ -98,6 +116,14 @@ namespace Overlayer
                 FontManager.Initialize();
                 TagResetter.Postfix();
                 Tags.System.Init();
+                string logopath = Path.Combine(modEntry.Path, "ov3_logo.png");
+                if(System.IO.File.Exists(logopath)) {
+                    byte[] fileData = System.IO.File.ReadAllBytes(logopath);
+                    Logo = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                    Logo.LoadImage(fileData);
+                } else {
+                    Logger.Log("Logo image not found!");
+                }
                 _ = AutoUpdater.InitAndUpdate(modEntry, Settings.useAutoUpdate, Settings.useAutoUpdateBeta, 
                     async () => {
                         UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Sucess!");
@@ -112,10 +138,12 @@ namespace Overlayer
             }
             else
             {
+                if(EgEnabled) {
+                    EgEnabled = false;
+                }
                 if(Logo != null) {
                     Logo = null;
                 }
-                Drawer.UninitializeImages();
                 Tags.System.Free();
                 TextManager.Release();
                 FontManager.Release();
@@ -132,19 +160,11 @@ namespace Overlayer
 
         public static void OnShowGUI(ModEntry modEntry)
         {
-            Drawer.InitializeImages();
-            string logopath = Path.Combine(modEntry.Path, "ov3_logo.png");
-            if(System.IO.File.Exists(logopath)) {
-                byte[] fileData = System.IO.File.ReadAllBytes(logopath);
-                Logo = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-                Logo.LoadImage(fileData);
-            } else {
-                Logger.Log("Logo image not found!");
-            }
+            IsShowGUI = true;
             popup = new GameObject().AddComponent<UpdatePopup>();
             UnityEngine.Object.DontDestroyOnLoad(popup);
             popup.Initialize();
-            
+
             //CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
 
             GUI.Flush();
@@ -163,7 +183,10 @@ namespace Overlayer
 
                 if(elapsedTime >= 0.05f)
                 {
-                    preparingsymbolIndex = (preparingsymbolIndex + 1) % preparingsymbols.Length;
+                    preparingsymbolIndex++;
+                    if(preparingsymbolIndex >= preparingsymbols.Length) {
+                        preparingsymbolIndex = 0;
+                    }
                     preparinglastUpdateTime = Time.time;
                 }
 
@@ -247,15 +270,17 @@ namespace Overlayer
                 }
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
-                if (showTooltip && !RGUI.PopupWindow.isOpen)
-                {
-                    Drawer.Tooltip(tooltip);
+                if(!RGUI.PopupWindow.isOpen) {
+                    if(showTooltip) {
+                        Drawer.Tooltip(tooltip);
+                    }
                 }
             }
         }
 
         public static void OnHideGUI(ModEntry modEntry)
         {
+            IsShowGUI = false;
             //CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
             Drawer.codeEditor.undoRedoManagers.Clear();
             GUI.Flush();

@@ -21,6 +21,7 @@ namespace Overlayer
         public bool useColorRangeEditor = true;
         public bool useAutoUpdate = false;
         public bool useAutoUpdateBeta = false;
+        public bool isFirstEg = true;
         public JsonNode Serialize()
         {
             var node = JsonNode.Empty;
@@ -34,6 +35,9 @@ namespace Overlayer
             node[nameof(useShowTrueAutoJudgment)] = useShowTrueAutoJudgment;
             node[nameof(useMovingManEditor)] = useMovingManEditor;
             node[nameof(useColorRangeEditor)] = useColorRangeEditor;
+            node[nameof(useAutoUpdate)] = useAutoUpdate;
+            node[nameof(useAutoUpdateBeta)] = useAutoUpdateBeta;
+            node[nameof(isFirstEg)] = isFirstEg;
             return node;
         }
         public void Deserialize(JsonNode node)
@@ -48,6 +52,9 @@ namespace Overlayer
             useShowTrueAutoJudgment = node[nameof(useShowTrueAutoJudgment)];
             useMovingManEditor = node[nameof(useMovingManEditor)];
             useColorRangeEditor = node[nameof(useColorRangeEditor)];
+            useAutoUpdate = node[nameof(useAutoUpdate)];
+            useAutoUpdateBeta = node[nameof(useAutoUpdateBeta)];
+            isFirstEg = node[nameof(isFirstEg)];
         }
         public Settings Copy()
         {
@@ -62,6 +69,9 @@ namespace Overlayer
             newSettings.useShowTrueAutoJudgment = useShowTrueAutoJudgment;
             newSettings.useMovingManEditor = useMovingManEditor;
             newSettings.useColorRangeEditor = useColorRangeEditor;
+            newSettings.useAutoUpdate = useAutoUpdate;
+            newSettings.useAutoUpdateBeta = useAutoUpdateBeta;
+            newSettings.isFirstEg = isFirstEg;
             return newSettings;
         }
     }
