@@ -47,18 +47,18 @@ namespace Overlayer.Views
                 GUILayout.EndHorizontal();
             }
             if(model != null)
-            Main.Lang.CurrentLanguage = model.Lang;
+                Main.Lang.CurrentLanguage = model.Lang;
             GUILayout.Label(Main.Lang.Get("SELECTLANGUAGE","Select Language"));
             GUILayout.BeginHorizontal();
             string[] languageNames = Main.Lang.GetLanguages();
             int selectedIndex = Array.IndexOf(languageNames,Main.Lang.CurrentLanguage);
-            
+
             if(Drawer.Button("◀",GUILayout.Width(40)))
             {
                 selectedIndex = (selectedIndex - 1 + languageNames.Length) % languageNames.Length;
                 UpdateLanguageSetting(selectedIndex);
             }
-            
+
             if(Drawer.SelectionPopup(ref selectedIndex,languageNames, "", GUILayout.Width(400)))
             {
                 UpdateLanguageSetting(selectedIndex);
@@ -88,70 +88,70 @@ namespace Overlayer.Views
             GUILayout.EndHorizontal();
             if(isOpenedExtraMenu) {
                 Drawer.DrawBool(Main.Lang.Get("DISABLE", "Disable Logo"), ref model.disableLogo);
-            if (Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT","Change Font"), ref model.ChangeFont))
-            {
-                if (!model.ChangeFont)
+                if (Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT","Change Font"), ref model.ChangeFont))
                 {
-                    model.AdofaiFont.name = "Default";
-                    if (model.AdofaiFont.Apply(out var font))
+                    if (!model.ChangeFont)
                     {
-                        FontManager.SetFont(model.AdofaiFont.name, font);
-                        RDString.initialized = false;
-                        RDString.Setup();
-                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        model.AdofaiFont.name = "Default";
+                        if (model.AdofaiFont.Apply(out var font))
+                        {
+                            FontManager.SetFont(model.AdofaiFont.name, font);
+                            RDString.initialized = false;
+                            RDString.Setup();
+                            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        }
                     }
                 }
-            }
-            if (model.ChangeFont)
-            {
-                GUILayoutEx.BeginIndent();
-                Drawer.DrawString(Main.Lang.Get("FONT","Font"), ref model.AdofaiFont.name);
-                Drawer.DrawSingle(Main.Lang.Get("FONT_SCALE","Font Scale"), ref model.AdofaiFont.fontScale);
-                Drawer.DrawSingle(Main.Lang.Get("LINE_SPACING","Font Line Spacing"), ref model.AdofaiFont.lineSpacing);
-                GUILayout.BeginHorizontal();
-                if (Drawer.Button(Main.Lang.Get("APPLY","Apply")))
+                if (model.ChangeFont)
                 {
-                    if (model.AdofaiFont.Apply(out var font))
+                    GUILayoutEx.BeginIndent();
+                    Drawer.DrawString(Main.Lang.Get("FONT","Font"), ref model.AdofaiFont.name);
+                    Drawer.DrawSingle(Main.Lang.Get("FONT_SCALE","Font Scale"), ref model.AdofaiFont.fontScale);
+                    Drawer.DrawSingle(Main.Lang.Get("LINE_SPACING","Font Line Spacing"), ref model.AdofaiFont.lineSpacing);
+                    GUILayout.BeginHorizontal();
+                    if (Drawer.Button(Main.Lang.Get("APPLY","Apply")))
                     {
-                        FontManager.SetFont(model.AdofaiFont.name, font);
-                        RDString.initialized = false;
-                        RDString.Setup();
-                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        if (model.AdofaiFont.Apply(out var font))
+                        {
+                            FontManager.SetFont(model.AdofaiFont.name, font);
+                            RDString.initialized = false;
+                            RDString.Setup();
+                            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        }
                     }
+                    if (Drawer.Button(Main.Lang.Get("LOG_FONT_LIST","Log Font List")))
+                    {
+                        foreach (var font in FontManager.OSFonts)
+                            Main.Logger.Log(font);
+                    }
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+                    GUILayoutEx.EndIndent();
                 }
-                if (Drawer.Button(Main.Lang.Get("LOG_FONT_LIST","Log Font List")))
-                {
-                    foreach (var font in FontManager.OSFonts)
-                        Main.Logger.Log(font);
-                }
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-                GUILayoutEx.EndIndent();
-            }
 
-            Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("AUTO_UPDATE","Auto Update")), ref model.useAutoUpdate);
-            if (model.useAutoUpdate) {
-                GUILayoutEx.BeginIndent();
-                Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA", "Beta")), ref model.useAutoUpdateBeta);
-                GUILayoutEx.EndIndent();
-            }
-            if (Drawer.DrawBool(
-                    string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
-                    ref model.useLegacyTheme))
-            {
-                RGUIStyle.CreateStyles();
-            }
-            if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
-                LazyPatchManager.Unpatch(typeof(ChangeAddHit));
-                LazyPatchManager.Patch(typeof(ChangeAddHit));
-            }
-            Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan")), ref model.useMovingManEditor);
-            Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("AUTO_UPDATE","Auto Update")), ref model.useAutoUpdate);
+                if (model.useAutoUpdate) {
+                    GUILayoutEx.BeginIndent();
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA", "Beta")), ref model.useAutoUpdateBeta);
+                    GUILayoutEx.EndIndent();
+                }
+                if (Drawer.DrawBool(
+                        string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
+                        ref model.useLegacyTheme))
+                {
+                    RGUIStyle.CreateStyles();
+                }
+                if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
+                    LazyPatchManager.Unpatch(typeof(ChangeAddHit));
+                    LazyPatchManager.Patch(typeof(ChangeAddHit));
+                }
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan")), ref model.useMovingManEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "EasedValue")), ref model.useEasedValueEditor);
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("AUTO_TEXT_PIVOT", "Auto text Pivot")), ref model.autoPivot);
-            Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
-            Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE","FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
-            Drawer.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE","System Tag Update Rate"), ref model.SystemTagUpdateRate);
+                Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
+                Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE","FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
+                Drawer.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE","System Tag Update Rate"), ref model.SystemTagUpdateRate);
             }
             GUILayout.BeginHorizontal();
             if (Drawer.Button(Main.Lang.Get("NEW_TEXT","Create New Text")))
@@ -192,7 +192,7 @@ namespace Overlayer.Views
                 }
                 GUI.color = new Color(1f, 0.8f, 0.8f);
                 if(Drawer.Button(Main.Lang.Get("DESTROY", "Destroy"))) {
-                    if(Input.GetKey(KeyCode.LeftShift)) {
+                    if(Event.current.shift) {
                         TextManager.DestroyText(text);
                     } else {
                         if(Object.FindAnyObjectByType<DeletePopup>() == null) {
