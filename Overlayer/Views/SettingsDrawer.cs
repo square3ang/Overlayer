@@ -132,7 +132,7 @@ namespace Overlayer.Views
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("UPDATE", "Update"))), ref model.useAutoUpdate);
                 if (model.useAutoUpdate) {
                     GUILayoutEx.BeginIndent();
-                    Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA", "Beta")), ref model.useAutoUpdateBeta);
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.useAutoUpdateBeta);
                     GUILayoutEx.EndIndent();
                 }
                 if (Drawer.DrawBool(

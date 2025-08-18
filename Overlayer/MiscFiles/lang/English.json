@@ -2,6 +2,7 @@
   "English": {
     "ACTIVE": "Active",
     "ALIGNMENT": "Alignment",
+    "ALLOW_THIS": "Allow {0}",
     "APPLY": "Apply",
     "AUTO_THIS": "Auto {0}",
     "AVAILABLE_TAGS": "Available Tags",

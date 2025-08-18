@@ -2,6 +2,7 @@
   "한국어": {
     "ACTIVE": "활성화",
     "ALIGNMENT": "정렬",
+    "ALLOW_THIS": "{0} 허용",
     "APPLY": "적용",
     "AVAILABLE_TAGS": "사용 가능한 태그",
     "AUTO_THIS": "자동 {0}",

@@ -2,6 +2,7 @@
   "Français Canadien": {
     "ACTIVE": "Activer",
     "ALIGNMENT": "Alignment",
+    "ALLOW_THIS": "Autoriser {0}",
     "APPLY": "Appliquer",
     "AUTO_THIS": "Auto {0}",
     "AVAILABLE_TAGS": "Tags Disponible",
@@ -29,7 +30,7 @@
     "CENTER": "Centre",
     "CENTER_GEO_ALIGNED": "Allignement Geo Du Centre",
     "CHANGE_FONT": "Changer La Police D'Écriture",
-    "CLONE": "Clone",
+    "CLONE": "Cloner",
     "COLOR_MAX": "Max Color",
     "COLOR_MIN": "Min Color",
     "CONVERTED": "Convertie",

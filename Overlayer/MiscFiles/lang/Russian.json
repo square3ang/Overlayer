@@ -2,6 +2,7 @@
   "Русский": {
     "ACTIVE": "Активный",
     "ALIGNMENT": "Выравнивание",
+    "ALLOW_THIS": "Разрешить {0}",
     "APPLY": "Применить",
     "AUTO_THIS": "Авто {0}",
     "AVAILABLE_TAGS": "Доступные Теги",
@@ -29,7 +30,7 @@
     "CENTER": "Центр",
     "CENTER_GEO_ALIGNED": "Центр по Геометрии",
     "CHANGE_FONT": "Поменять шрифт",
-    "CLONE": "Clone",
+    "CLONE": "Клонировать",
     "COLOR_MAX": "Максимальный цвет",
     "COLOR_MIN": "Минимальный цвет",
     "CONVERTED": "Сконвертирован",

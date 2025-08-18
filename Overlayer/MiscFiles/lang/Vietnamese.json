@@ -2,6 +2,7 @@
   "Tiếng Việt": {
     "ACTIVE": "Kích hoạt",
     "ALIGNMENT": "Căn chỉnh",
+    "ALLOW_THIS": "Cho phép {0}",
     "APPLY": "Áp dụng",
     "AUTO_THIS": "Tự động {0}",
     "AVAILABLE_TAGS": "Thẻ có sẵn",
@@ -29,7 +30,7 @@
     "CENTER": "Giữa",
     "CENTER_GEO_ALIGNED": "Căn chỉnh địa lý giữa",
     "CHANGE_FONT": "Thay đổi phông chữ",
-    "CLONE": "Clone",
+    "CLONE": "Nhân bản",
     "COLOR_MAX": "Max Color",
     "COLOR_MIN": "Min Color",
     "CONVERTED": "Đã chuyển đổi",

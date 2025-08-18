@@ -175,7 +175,7 @@ namespace Overlayer.Utils
                       ((int)alignment & (1 << 2)) != 0 ? 1f : 0.5f;
 
             float y = ((int)alignment & (1 << 8)) != 0 ? 0f :
-                      ((int)alignment & (1 << 10)) != 0 ? 1f : 0.5f;
+                      ((int)alignment & (1 << 10)) != 1f ? 0 : 0.5f;
 
             return new Vector2(x, y);
         }
