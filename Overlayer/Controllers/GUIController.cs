@@ -72,6 +72,13 @@ namespace Overlayer.Controllers
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             current.Draw();
+            if(isUndoAvailable) {
+                GUILayout.BeginHorizontal();
+                if(Drawer.Button("◀ " + Main.Lang.Get("BACK", "Back") + drawables[depth - 1].Name))
+                    Pop();
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+            }
         }
         public void Skip(Action onSkip = null, int frames = 1)
         {
