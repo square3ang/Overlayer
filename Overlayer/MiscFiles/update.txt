@@ -1,4 +1,5 @@
 ﻿[Add]
-Add Tag DefaultTextColor, DefaultTextShadowColor
-[Fix]
-Optimize Level Tags
+Add EasedValue Editor
+Add back button below TextConfig
+Add ExtraMenu
+Add Auto Pivot
