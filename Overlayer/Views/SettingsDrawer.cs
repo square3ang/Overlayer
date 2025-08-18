@@ -24,9 +24,10 @@ namespace Overlayer.Views
     {
         public SettingsDrawer(Settings settings) : base(settings) { }
 
+        private bool isOpenedExtraMenu = false;
         public override void Draw()
         {
-            if(Main.Logo != null) {
+            if(Main.Logo != null && !model.disableLogo) {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(Main.Logo, GUILayout.Width(Main.Logo.width), GUILayout.Height(Main.Logo.height));
                 GUILayout.BeginVertical();
@@ -79,6 +80,14 @@ namespace Overlayer.Views
                 Main.Lang.CurrentLanguage = model.Lang;
             }
             GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if(Drawer.Button(Main.Lang.Get("EXTRA_MENU","Extra Menu") + " " + (isOpenedExtraMenu ? "▼" : "▲"))) {
+                isOpenedExtraMenu = !isOpenedExtraMenu;
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            if(isOpenedExtraMenu) {
+                Drawer.DrawBool(Main.Lang.Get("DISABLE", "Disable Logo"), ref model.disableLogo);
             if (Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT","Change Font"), ref model.ChangeFont))
             {
                 if (!model.ChangeFont)
@@ -143,6 +152,7 @@ namespace Overlayer.Views
             Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
             Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE","FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
             Drawer.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE","System Tag Update Rate"), ref model.SystemTagUpdateRate);
+            }
             GUILayout.BeginHorizontal();
             if (Drawer.Button(Main.Lang.Get("NEW_TEXT","Create New Text")))
             {

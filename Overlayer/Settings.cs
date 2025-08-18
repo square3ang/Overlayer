@@ -9,6 +9,7 @@ namespace Overlayer
 {
     public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
     {
+        public bool disableLogo = false;
         public bool ChangeFont = false;
         public FontMeta AdofaiFont = new FontMeta();
         public string Lang = "Default";
@@ -27,6 +28,7 @@ namespace Overlayer
         public JsonNode Serialize()
         {
             var node = JsonNode.Empty;
+            node[nameof(disableLogo)] = disableLogo;
             node[nameof(ChangeFont)] = ChangeFont;
             node[nameof(AdofaiFont)] = AdofaiFont.Serialize();
             node[nameof(Lang)] = Lang;
@@ -46,6 +48,7 @@ namespace Overlayer
         }
         public void Deserialize(JsonNode node)
         {
+            disableLogo = node[nameof(disableLogo)];
             ChangeFont = node[nameof(ChangeFont)];
             AdofaiFont = ModelUtils.Unbox<FontMeta>(node[nameof(AdofaiFont)]);
             Lang = node[nameof(Lang)];
@@ -65,6 +68,7 @@ namespace Overlayer
         public Settings Copy()
         {
             var newSettings = new Settings();
+            newSettings.disableLogo = disableLogo;
             newSettings.ChangeFont = ChangeFont;
             newSettings.AdofaiFont = AdofaiFont.Copy();
             newSettings.Lang = Lang;
