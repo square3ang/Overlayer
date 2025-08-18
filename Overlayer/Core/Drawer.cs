@@ -193,7 +193,7 @@ namespace Overlayer.Core
                 string cache = array[i];
                 GUILayout.BeginHorizontal();
                 GUILayout.Label($"{i}: ");
-                cache = GUILayout.TextField(cache, Main.Settings.useLegacyTheme ? GUI.skin.textField : myTextField);
+                cache = GUILayout.TextField(cache, myTextField);
                 elementRightGUI?.Invoke(i);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
@@ -564,8 +564,8 @@ namespace Overlayer.Core
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
             if (!textArea)
-                value = GUILayout.TextField(value, Main.Settings.useLegacyTheme ? GUI.skin.textField : myTextField);
-            else value = GUILayout.TextArea(value, Main.Settings.useLegacyTheme ? GUI.skin.textField : myTextField);
+                value = GUILayout.TextField(value, myTextField);
+            else value = GUILayout.TextArea(value, myTextField);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             return prev != value;
@@ -787,6 +787,34 @@ namespace Overlayer.Core
         public static Regex color = new Regex("<<b></b>color=(.*?)>", RegexOptions.Compiled);
         public static GUIStyle myButton;
         public static GUIStyle myTextField;
+        public static GUIStyle mySlider;
+        public static GUIStyle myThumb;
+
+        public static void SetStyle(bool legacy) {
+            if(legacy) {
+                myButton.normal.background = GUI.skin.button.normal.background;
+                myButton.active.background = GUI.skin.button.active.background;
+                myButton.hover.background = GUI.skin.button.hover.background;
+                myTextField.normal.background = GUI.skin.textField.normal.background;
+                myTextField.focused.background = GUI.skin.textField.focused.background;
+                myTextField.hover.background = GUI.skin.textField.hover.background;
+                mySlider.normal.background = GUI.skin.horizontalSlider.normal.background;
+                myThumb.normal.background = GUI.skin.horizontalSliderThumb.normal.background;
+                myThumb.active.background = GUI.skin.horizontalSliderThumb.active.background;
+                myThumb.hover.background = GUI.skin.horizontalSliderThumb.hover.background;
+            } else if(isImageInited) {
+                myButton.normal.background = gray;
+                myButton.active.background = dulgray;
+                myButton.hover.background = dulgray;
+                myTextField.normal.background = tfgray;
+                myTextField.focused.background = tfgray;
+                myTextField.hover.background = tfgray;
+                mySlider.normal.background = jittengray;
+                myThumb.normal.background = gray;
+                myThumb.active.background = dulgray;
+                myThumb.hover.background = dulgray;
+            }
+        }
 
         public static Texture2D veryjittengray;
         public static Texture2D gray;
@@ -868,20 +896,19 @@ namespace Overlayer.Core
             myButton.hover.background = dulgray;
 
             myTextField = new GUIStyle(GUI.skin.textField);
-            myTextField.normal.background = tfgray;
-            myTextField.focused.background = tfgray;
-            myTextField.hover.background = tfgray;
+            mySlider = new GUIStyle(GUI.skin.horizontalSlider);
+            myThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);
+            SetStyle(Main.Settings.useLegacyTheme);
         }
 
 
         public static bool Button(string str, params GUILayoutOption[] options)
         {
-            return GUILayout.Button(str, Main.Settings.useLegacyTheme ? GUI.skin.button : myButton, options);
+            return GUILayout.Button(str, myButton, options);
         }
 
         public static bool ButtonImage(Texture2D texture, params GUILayoutOption[] options) {
-            GUIStyle style = Main.Settings.useLegacyTheme ? GUI.skin.button : myButton;
-            return GUILayout.Button(texture, style, options);
+            return GUILayout.Button(texture, myButton, options);
         }
     }
 }

@@ -139,6 +139,7 @@ namespace Overlayer.Views
                         string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
                         ref model.useLegacyTheme))
                 {
+                    Drawer.SetStyle(model.useLegacyTheme);
                     RGUIStyle.CreateStyles();
                 }
                 if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
