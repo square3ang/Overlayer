@@ -1,22 +1,23 @@
 ﻿using JSON;
+using Newtonsoft.Json;
 using Overlayer.Core;
+using Overlayer.Core.Patches;
+using Overlayer.Core.Translation;
 using Overlayer.Core.Translatior;
 using Overlayer.Models;
+using Overlayer.Tags.Patches;
 using Overlayer.Utils;
+using RapidGUI;
 using SA.GoogleDoc;
 using SFB;
 using System;
 using System.IO;
-using RapidGUI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.TextCore.Text;
+using static Overlayer.Patches.HitFixPatch;
 using static UnityModManagerNet.UnityModManager;
 using Object = UnityEngine.Object;
-using Overlayer.Core.Patches;
-using Overlayer.Tags.Patches;
-using static Overlayer.Patches.HitFixPatch;
-using Newtonsoft.Json;
-using Overlayer.Core.Translation;
 
 namespace Overlayer.Views
 {
@@ -142,6 +143,9 @@ namespace Overlayer.Views
                     Drawer.SetStyle(model.useLegacyTheme);
                     RGUIStyle.CreateStyles();
                 }
+                Drawer.DrawBool(
+                        string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_NUMBER_FIELD", "Legacy Number Field")),
+                        ref model.useLegacyNumberField);
                 if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
                     LazyPatchManager.Unpatch(typeof(ChangeAddHit));
                     LazyPatchManager.Patch(typeof(ChangeAddHit));
@@ -185,7 +189,9 @@ namespace Overlayer.Views
                 GUILayout.BeginHorizontal();
                 GUI.color = new Color(0.8f, 0.8f, 1f);
                 if(Drawer.Button(Main.Lang.Get("EDIT", "Edit"))) {
-                    Main.GUI.Push(new TextConfigDrawer(text.Config));
+                    TextConfigDrawer config = new TextConfigDrawer(text.Config);
+                    config.strInit();
+                    Main.GUI.Push(config);
                 }
                 GUI.color = new Color(0.8f, 1f, 0.8f);
                 if(Drawer.Button(Main.Lang.Get("CLONE", "Clone"))) {

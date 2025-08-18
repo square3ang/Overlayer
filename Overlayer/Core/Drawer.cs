@@ -30,6 +30,14 @@ namespace Overlayer.Core
             return changed;
         }
 
+        public static bool NeoDrawVector2(string label, ref Vector2 vec2, float lValue, float rValue, ref string[] field, ref int error, int errorBit) {
+            bool changed = false;
+            GUILayout.Label($"<b>{label}</b>");
+            changed |= NeoDrawSingleWithSlider("X", ref vec2.x, lValue, rValue, 300f, ref field[0], ref error, errorBit);
+            changed |= NeoDrawSingleWithSlider("Y", ref vec2.y, lValue, rValue, 300f, ref field[1], ref error, errorBit + 1);
+            return changed;
+        }
+
         public static bool DrawVector3(string label, ref Vector3 vec3, float lValue, float rValue)
         {
             bool changed = false;
@@ -37,6 +45,15 @@ namespace Overlayer.Core
             changed |= DrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f);
             changed |= DrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f);
             changed |= DrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f);
+            return changed;
+        }
+
+        public static bool NeoDrawVector3(string label, ref Vector3 vec3, float lValue, float rValue, ref string[] field, ref int error, int errorBit) {
+            bool changed = false;
+            GUILayout.Label($"<b>{label}</b>");
+            changed |= NeoDrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f, ref field[0], ref error, errorBit);
+            changed |= NeoDrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f, ref field[1], ref error, errorBit + 1);
+            changed |= NeoDrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f, ref field[2], ref error, errorBit + 2);
             return changed;
         }
 
@@ -165,6 +182,49 @@ namespace Overlayer.Core
             bool result = newValue != value;
             value = newValue;
             return result;
+        }
+
+        public static bool NeoDrawSingleWithSlider(string label, ref float value, float lValue, float rValue, float width, ref string field, ref int error, int errorBit) {
+            bool hasError = (error & (1 << errorBit)) != 0;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+            GUILayout.Space(4f);
+
+            bool changed = false;
+            float currentValue = value;
+            float sliderValue = GUILayout.HorizontalSlider(currentValue, lValue, rValue, mySlider, myThumb, GUILayout.Width(width));
+            if(sliderValue != currentValue) {
+                currentValue = sliderValue;
+                field = currentValue.ToString();
+                changed = true;
+            }
+            GUILayout.Space(8f);
+            if(hasError) {
+                GUI.color = new Color(1f, 0.5f, 0.5f);
+            }
+            string newField = GUILayout.TextField(field, 9, myTextField, GUILayout.Width(100f));
+            if(newField != field) {
+                field = newField;
+                if(float.TryParse(field, out float parsedValue)) {
+                    currentValue = parsedValue;
+                    changed = true;
+                    error &= ~(1 << errorBit);
+                } else {
+                    error |= (1 << errorBit);
+                }
+            }
+            if(hasError) {
+                GUI.color = Color.white;
+                GUILayout.Space(8f);
+                GUILayout.Label("<color=#FF8888>!!</color>");
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            value = currentValue;
+
+            return changed;
         }
 
         public static bool DrawStringArray(ref string[] array, Action<int> arrayResized = null,
@@ -891,10 +951,6 @@ namespace Overlayer.Core
             InitializeImages();
 
             myButton = new GUIStyle(GUI.skin.button);
-            myButton.normal.background = gray;
-            myButton.active.background = dulgray;
-            myButton.hover.background = dulgray;
-
             myTextField = new GUIStyle(GUI.skin.textField);
             mySlider = new GUIStyle(GUI.skin.horizontalSlider);
             myThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);

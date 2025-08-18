@@ -18,6 +18,31 @@ namespace Overlayer.Views
         public OverlayerText text;
         private bool[] colorsExpanded = new bool[4];
         public TextConfigDrawer(TextConfig config) : base(config) => text = TextManager.Find(config);
+
+        int strErrors = 0;
+        string[] strPosition = new string[2];
+        string[] strScale = new string[2];
+        string[] strPivot = new string[2];
+        string[] strRotation = new string[3];
+        string[] strShadowOffset = new string[2];
+        string strFontSize;
+        string strShadowDilate;
+        string strShadowSoftness;
+        string strOutlineWidth;
+
+        public void strInit() {
+            strErrors = 0;
+            strPosition = new string[2] { model.Position.x.ToString(), model.Position.y.ToString() };
+            strScale = new string[2] { model.Scale.x.ToString(), model.Scale.y.ToString() };
+            strPivot = new string[2] { model.Pivot.x.ToString(), model.Pivot.y.ToString() };
+            strRotation = new string[3] { model.Rotation.x.ToString(), model.Rotation.y.ToString(), model.Rotation.z.ToString() };
+            strShadowOffset = new string[2] { model.ShadowOffset.x.ToString(), model.ShadowOffset.y.ToString() };
+            strFontSize = model.FontSize.ToString();
+            strShadowDilate = model.ShadowDilate.ToString();
+            strShadowSoftness = model.ShadowSoftness.ToString();
+            strOutlineWidth = model.OutlineWidth.ToString();
+        }
+
         public override void Draw()
         {
             if (Drawer.DrawBool(Main.Lang.Get("ACTIVE","Active"), ref model.Active))
@@ -30,23 +55,38 @@ namespace Overlayer.Views
             bool changed = false;
             GUILayout.Label($"{Main.Lang.Get("AVAILABLE_TAGS","Available Tags")}: {TagManager.Count}");
             Drawer.DrawString(Main.Lang.Get("NAME","Name"), ref model.Name);
-            changed |= Drawer.DrawVector2(Main.Lang.Get("POSITION","Position"), ref model.Position, 0, 1);
-            changed |= Drawer.DrawVector2(Main.Lang.Get("SCALE","Scale"), ref model.Scale, 0, 2);
-            changed |= Drawer.DrawVector2(Main.Lang.Get("PIVOT","Pivot"), ref model.Pivot, 0, 1);
-            changed |= Drawer.DrawVector3(Main.Lang.Get("ROTATION","Rotation"), ref model.Rotation, -180, 180);
-            changed |= Drawer.DrawVector2(Main.Lang.Get("SHADOW_OFFSET","Shadow Offset"), ref model.ShadowOffset, -1, 1);
-            changed |= Drawer.DrawString(Main.Lang.Get("FONT","Font"), ref model.Font);
-            changed |= Drawer.DrawBool(Main.Lang.Get("FALLBACK_FONTS","Enable Fallback Fonts"), ref model.EnableFallbackFonts);
+            if (Main.Settings.useLegacyNumberField) {
+                changed |= Drawer.DrawVector2(Main.Lang.Get("POSITION", "Position"), ref model.Position, 0, 1);
+                changed |= Drawer.DrawVector2(Main.Lang.Get("SCALE", "Scale"), ref model.Scale, 0, 2);
+                changed |= Drawer.DrawVector2(Main.Lang.Get("PIVOT", "Pivot"), ref model.Pivot, 0, 1);
+                changed |= Drawer.DrawVector3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180);
+                changed |= Drawer.DrawVector2(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), ref model.ShadowOffset, -1, 1);
+            } else {
+                changed |= Drawer.NeoDrawVector2(Main.Lang.Get("POSITION", "Position"), ref model.Position, 0, 1, ref strPosition, ref strErrors, 0);
+                changed |= Drawer.NeoDrawVector2(Main.Lang.Get("SCALE", "Scale"), ref model.Scale, 0, 2, ref strScale, ref strErrors, 2);
+                changed |= Drawer.NeoDrawVector2(Main.Lang.Get("PIVOT", "Pivot"), ref model.Pivot, 0, 1, ref strPivot, ref strErrors, 4);
+                changed |= Drawer.NeoDrawVector3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180, ref strRotation, ref strErrors, 6);
+                changed |= Drawer.NeoDrawVector2(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), ref model.ShadowOffset, -1, 1, ref strShadowOffset, ref strErrors, 9);
+            }
+            changed |= Drawer.DrawString(Main.Lang.Get("FONT", "Font"), ref model.Font);
+            changed |= Drawer.DrawBool(Main.Lang.Get("FALLBACK_FONTS", "Enable Fallback Fonts"), ref model.EnableFallbackFonts);
+
             if (model.EnableFallbackFonts)
             {
                 if (model.FallbackFonts == null) model.FallbackFonts = new string[0];
                 changed |= Drawer.DrawStringArray(ref model.FallbackFonts);
             }
             changed |= Drawer.DrawString(Main.Lang.Get("LEX_OPTION","Text interpreter settings"), ref model.LexOption);
-            changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("FONT_SIZE","Font Size"), ref model.FontSize, 0, 100, 300f);
-            changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE","Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
-            changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS","Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
-            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS","Edit {0}"),Main.Lang.Get("TEXT_COLOR","Text Color")), ref colorsExpanded[0]);
+            if(Main.Settings.useLegacyNumberField) {
+                changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f);
+                changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
+                changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
+            } else {
+                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f, ref strFontSize, ref strErrors, 11);
+                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f, ref strShadowDilate, ref strErrors, 12);
+                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f, ref strShadowSoftness, ref strErrors, 13);
+            }
+                Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref colorsExpanded[0]);
             if (colorsExpanded[0])
             {
                 GUILayoutEx.BeginIndent();
@@ -67,8 +107,11 @@ namespace Overlayer.Views
                 changed |= Drawer.DrawGColor(ref model.OutlineColor, false);
                 GUILayoutEx.EndIndent();
             }
-            changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("OUTLINE_WIDTH","Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
-
+            if(Main.Settings.useLegacyNumberField) {
+                changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
+            } else {
+                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f, ref strOutlineWidth, ref strErrors, 14);
+            }
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("ALIGNMENT","Alignment"));
             if (Drawer.DrawEnumPlus("Text Alignment", ref model.Alignment, TranslateTextAlignment)) {
