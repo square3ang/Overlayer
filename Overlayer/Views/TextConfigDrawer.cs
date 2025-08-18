@@ -3,6 +3,7 @@ using Overlayer.Core;
 using Overlayer.Models;
 using Overlayer.Tags;
 using Overlayer.Unity;
+using Overlayer.Utils;
 using SFB;
 using System;
 using System.Collections.Generic;
@@ -70,11 +71,21 @@ namespace Overlayer.Views
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("ALIGNMENT","Alignment"));
-            changed |= Drawer.DrawEnumPlus("Text Alignment",ref model.Alignment,TranslateTextAlignment);
+            if (Drawer.DrawEnumPlus("Text Alignment", ref model.Alignment, TranslateTextAlignment)) {
+                changed = true;
+                if(Main.Settings.autoPivot) {
+                    model.Pivot = MiscUtils.AlignmentToPivot(model.Alignment);
+                }
+            }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            changed |= Drawer.DrawAlignment(ref model.Alignment);
+            if (Drawer.DrawAlignment(ref model.Alignment)) {
+                changed = true;
+                if(Main.Settings.autoPivot) {
+                    model.Pivot = MiscUtils.AlignmentToPivot(model.Alignment);
+                }
+            }
 
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("PLAYING_TEXT","Playing Text"), model.Name + "PlayingText", ref model.PlayingText);
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("NOT_PLAYING_TEXT","Not Playing Text"), model.Name + "NotPlayingText", ref model.NotPlayingText);

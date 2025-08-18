@@ -23,6 +23,7 @@ namespace Overlayer
         public bool useAutoUpdate = false;
         public bool useAutoUpdateBeta = false;
         public bool isFirstEg = true;
+        public bool autoPivot = true;
         public JsonNode Serialize()
         {
             var node = JsonNode.Empty;
@@ -40,6 +41,7 @@ namespace Overlayer
             node[nameof(useAutoUpdate)] = useAutoUpdate;
             node[nameof(useAutoUpdateBeta)] = useAutoUpdateBeta;
             node[nameof(isFirstEg)] = isFirstEg;
+            node[nameof(autoPivot)] = autoPivot;
             return node;
         }
         public void Deserialize(JsonNode node)
@@ -58,6 +60,7 @@ namespace Overlayer
             useAutoUpdate = node[nameof(useAutoUpdate)];
             useAutoUpdateBeta = node[nameof(useAutoUpdateBeta)];
             isFirstEg = node[nameof(isFirstEg)];
+            autoPivot = node[nameof(autoPivot)];
         }
         public Settings Copy()
         {
@@ -76,6 +79,7 @@ namespace Overlayer
             newSettings.useAutoUpdate = useAutoUpdate;
             newSettings.useAutoUpdateBeta = useAutoUpdateBeta;
             newSettings.isFirstEg = isFirstEg;
+            newSettings.autoPivot = autoPivot;
             return newSettings;
         }
     }
