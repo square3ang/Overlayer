@@ -87,7 +87,7 @@ namespace Overlayer.Views
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             if(isOpenedExtraMenu) {
-                Drawer.DrawBool(Main.Lang.Get("DISABLE", "Disable Logo"), ref model.disableLogo);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("DISABLE_THIS","Disable {0}"), Main.Lang.Get("LOGO","Logo")), ref model.disableLogo);
                 if (Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT","Change Font"), ref model.ChangeFont))
                 {
                     if (!model.ChangeFont)
