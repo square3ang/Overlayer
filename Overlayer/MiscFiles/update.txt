@@ -1,5 +1,2 @@
 ﻿[Add]
-Add EasedValue Editor
-Add back button below TextConfig
-Add ExtraMenu
-Add Auto Pivot
+Add new Number Field
