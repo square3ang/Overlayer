@@ -101,7 +101,7 @@ namespace Overlayer.Tags
             double c = 1;
             double x = 1 - Math.Abs(hue / 60 % 2 - 1);
             double m = 0;
-            double r = 0, g = 0, b = 0;
+            double r, g = 0, b;
 
             if(hue < 60) { r = c; g = x; b = 0; } 
             else if(hue < 120) { r = x; g = c; b = 0; } 
