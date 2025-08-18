@@ -19,6 +19,7 @@ namespace Overlayer
         public bool useShowTrueAutoJudgment = false;
         public bool useMovingManEditor = true;
         public bool useColorRangeEditor = true;
+        public bool useEasedValueEditor = true;
         public bool useAutoUpdate = false;
         public bool useAutoUpdateBeta = false;
         public bool isFirstEg = true;
@@ -35,6 +36,7 @@ namespace Overlayer
             node[nameof(useShowTrueAutoJudgment)] = useShowTrueAutoJudgment;
             node[nameof(useMovingManEditor)] = useMovingManEditor;
             node[nameof(useColorRangeEditor)] = useColorRangeEditor;
+            node[nameof(useEasedValueEditor)] = useEasedValueEditor;
             node[nameof(useAutoUpdate)] = useAutoUpdate;
             node[nameof(useAutoUpdateBeta)] = useAutoUpdateBeta;
             node[nameof(isFirstEg)] = isFirstEg;
@@ -52,6 +54,7 @@ namespace Overlayer
             useShowTrueAutoJudgment = node[nameof(useShowTrueAutoJudgment)];
             useMovingManEditor = node[nameof(useMovingManEditor)];
             useColorRangeEditor = node[nameof(useColorRangeEditor)];
+            useEasedValueEditor = node[nameof(useEasedValueEditor)];
             useAutoUpdate = node[nameof(useAutoUpdate)];
             useAutoUpdateBeta = node[nameof(useAutoUpdateBeta)];
             isFirstEg = node[nameof(isFirstEg)];
@@ -69,6 +72,7 @@ namespace Overlayer
             newSettings.useShowTrueAutoJudgment = useShowTrueAutoJudgment;
             newSettings.useMovingManEditor = useMovingManEditor;
             newSettings.useColorRangeEditor = useColorRangeEditor;
+            newSettings.useEasedValueEditor = useEasedValueEditor;
             newSettings.useAutoUpdate = useAutoUpdate;
             newSettings.useAutoUpdateBeta = useAutoUpdateBeta;
             newSettings.isFirstEg = isFirstEg;

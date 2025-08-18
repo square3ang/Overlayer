@@ -32,6 +32,7 @@ public class CodeEditor
 
     private MovingManEditor movingManEditor;
     private ColorRangeEditor colorRangeEditor;
+    private EasedValueEditor easedValueEditor;
     private int editingHash;
 
     private static Regex tagRegex = new(@"{(.*?)}", RegexOptions.Compiled);
@@ -87,6 +88,16 @@ public class CodeEditor
                        ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMax) + "," +
                        colorRangeEditor.ease + "," + colorRangeEditor.maxLength +
                        ")" + colorRangeEditor.codesAfter;
+                editingHash = code.GetHashCode();
+            }
+        }
+
+        if (easedValueEditor) {
+            if (editingHash == code.GetHashCode())
+            {
+                code = easedValueEditor.codesBefore + "EasedValue(" + easedValueEditor.targetTag + "," +
+                       easedValueEditor.digits + "," + easedValueEditor.speed + "," +
+                       easedValueEditor.ease + ")" + easedValueEditor.codesAfter;
                 editingHash = code.GetHashCode();
             }
         }
@@ -171,7 +182,7 @@ public class CodeEditor
                         if (tx != null) code = tx;
                     }
                 }
-                else if (Event.current.keyCode == KeyCode.Y && Event.current.control)
+                else if ((Event.current.keyCode == KeyCode.Y && Event.current.control) || (Event.current.shift && Event.current.keyCode == KeyCode.Z))
                 {
                     var tx = undoRedoManagers[id].Redo();
                     if (tx != null) code = tx;
@@ -184,7 +195,7 @@ public class CodeEditor
             }
         }
 
-        if (!movingManEditor && !colorRangeEditor)
+        if (!movingManEditor && !colorRangeEditor && !easedValueEditor)
         {
             GUI.SetNextControlName(id);
             string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true),
@@ -237,7 +248,7 @@ public class CodeEditor
         var bak = Event.current;
         Event.current = oldEvent;
 
-        if (!movingManEditor && !colorRangeEditor)
+        if (!movingManEditor && !colorRangeEditor && !easedValueEditor)
         {
             // Get Tags
             foreach (Match match in tagRegex.Matches(code))
@@ -294,10 +305,13 @@ public class CodeEditor
 
                 var cr = match.Groups[1].Value.StartsWith("ColorRange");
 
-                var special = mvm || cr;
+                var ev = match.Groups[1].Value.StartsWith("EasedValue");
+
+                var special = mvm || cr || ev;
 
                 if (mvm && !Main.Settings.useMovingManEditor) special = false;
                 if (cr && !Main.Settings.useColorRangeEditor) special = false;
+                if (ev && !Main.Settings.useEasedValueEditor) special = false;
 
                 if (rect.Contains(Event.current.mousePosition))
                 {
@@ -331,6 +345,12 @@ public class CodeEditor
                             movingManEditor = new GameObject().AddComponent<MovingManEditor>();
                             Object.DontDestroyOnLoad(movingManEditor);
                             movingManEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                        }
+                        else if (ev)
+                        {
+                            easedValueEditor = new GameObject().AddComponent<EasedValueEditor>();
+                            Object.DontDestroyOnLoad(easedValueEditor);
+                            easedValueEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
                         }
 
                         editingHash = code.GetHashCode();
