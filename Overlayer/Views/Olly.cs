@@ -16,8 +16,6 @@ namespace Overlayer.Views {
         public static Dictionary<Eye, Texture2D> Eyes = new();
         public static Dictionary<Mouth, Texture2D> Mouths = new();
 
-        public Action<int> OnChoice;
-
         public static bool Inited { get; private set; } = false;
         public static void Init(UnityModManager.ModEntry modEntry) {
             if (Inited) {
@@ -141,7 +139,6 @@ namespace Overlayer.Views {
 
         public void EndDialogue() {
             currentNode = null;
-            OnChoice = null;
         }
 
         private void Update() {
@@ -273,7 +270,6 @@ namespace Overlayer.Views {
                         } else {
                             currentNode = null;
                         }
-                        OnChoice?.Invoke(i);
 
                         displayedText = "";
                         charIndex = 0;
@@ -298,7 +294,7 @@ namespace Overlayer.Views {
         public void DialogueInit() {
             var node1 = new DialogueNode(
                 "...",
-                new[] { Tr("About you", "너에 관해"), Tr("Overlayer", "오버레이어"), Tr("Bugs", "버그"), Tr("About Talk","대화에 관해"), Tr("<color=#008888>" + "[ Mod help ]", "[ 모드 도움 ]")+ "</color>" },
+                new[] { Tr("About you", "너에 관해"), Tr("Overlayer", "오버레이어"), Tr("Bugs", "버그"), Tr("About Talk","대화에 관해") },
                 eye: Eye.Default,
                 mouth: Mouth.Default
             );
@@ -491,18 +487,10 @@ namespace Overlayer.Views {
                 mouth: Mouth.Clenched
             );
 
-            var help1 = new DialogueNode(
-                "...",
-                new[] { Tr("Basic", "기본"), "<color=#880088>"+Tr("[ Back to Talk ]", "[ 대화로 돌아가기 ]")+"</color>", },
-                eye: Eye.Default,
-                mouth: Mouth.Default
-            );
-
             node1.Next[0] = node2;
             node1.Next[1] = node3;
             node1.Next[2] = node4;
             node1.Next[3] = node5;
-            node1.Next[4] = help1;
 
             node2.Next[0] = node1;
             node2.Next[1] = node2_2;
@@ -552,8 +540,6 @@ namespace Overlayer.Views {
             node5_2_3_2.Next[0] = node1;
             node5_2_3_1.Next[0] = node1;
             node5_2_3_2.Next[0] = node1;
-
-            help1.Next[1] = node1;
 
             if(Main.Settings.isFirstEg) {
                 var first1 = new DialogueNode(
