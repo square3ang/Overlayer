@@ -21,10 +21,10 @@ namespace Overlayer.Utils {
         private float testvalue;
 
         public string targetTag = "XAccuracy";
-        public int digits = 2;
-        public double speed = 250;
+        public int digits = 6;
+        public double speed = 1000;
 
-        public Ease ease = Ease.OutExpo;
+        public Ease ease = Ease.OutQuad;
 
 
         public void Initialize(string tag, string codesBefore, string codesAfter) {
