@@ -174,8 +174,8 @@ namespace Overlayer.Utils
             float x = ((int)alignment & (1 << 0)) != 0 ? 0f :
                       ((int)alignment & (1 << 2)) != 0 ? 1f : 0.5f;
 
-            float y = ((int)alignment & (1 << 8)) != 0 ? 0f :
-                      ((int)alignment & (1 << 10)) != 1f ? 0 : 0.5f;
+            float y = ((int)alignment & (1 << 8)) != 0 ? 1f :
+                      ((int)alignment & (1 << 10)) != 0f ? 0 : 0.5f;
 
             return new Vector2(x, y);
         }
