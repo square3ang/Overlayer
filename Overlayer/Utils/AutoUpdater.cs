@@ -61,17 +61,15 @@ namespace Overlayer.Utils {
             }
 
             try {
-                JObject latestRelease = releases
-                    .Where(r => r["target_commitish"]?.ToString() == "v3" && r["prerelease"]?.ToObject<bool>() == false)
-                    .OrderByDescending(r => new Version(r["tag_name"].ToString()))
-                    .FirstOrDefault() as JObject;
-
                 JObject latestBetaRelease = releases
                     .Where(r => r["target_commitish"]?.ToString() == "v3" && r["prerelease"]?.ToObject<bool>() == true)
                     .OrderByDescending(r => new Version(r["tag_name"].ToString()))
                     .FirstOrDefault() as JObject;
 
-                if(latestRelease != null) {
+                if(releases
+                    .Where(r => r["target_commitish"]?.ToString() == "v3" && r["prerelease"]?.ToObject<bool>() == false)
+                    .OrderByDescending(r => new Version(r["tag_name"].ToString()))
+                    .FirstOrDefault() is JObject latestRelease) {
                     var latestVer = new Version(latestRelease["tag_name"].ToString());
                     if(latestVer > currentVersion)
                         isLatest = false;
