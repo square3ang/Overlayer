@@ -240,6 +240,9 @@ namespace Overlayer
                         if(Drawer.Button("<size=30>Square Mod Server</size>")) {
                             Application.OpenURL("https://square.lrl.kr/");
                         }
+                        if(Drawer.Button("<size=30>GitHub</size>")) {
+                            Application.OpenURL("https://github.com/modlist-org/Overlayer");
+                        }
                     }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
@@ -262,14 +265,17 @@ namespace Overlayer
                 helptime = 0f;
                 GUI.Draw();
                 GUILayout.Space(30);
-                GUILayout.BeginHorizontal();
                 if(AutoUpdater.isLatest || AutoUpdater.isBeta) {
+                    GUILayout.BeginHorizontal();
                     if(Drawer.Button("Square Mod Server")) {
                         Application.OpenURL("https://square.lrl.kr/");
                     }
+                    if(Drawer.Button("GitHub")) {
+                        Application.OpenURL("https://github.com/modlist-org/Overlayer");
+                    }
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
                 }
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
                 if(!RGUI.PopupWindow.isOpen) {
                     if(showTooltip) {
                         Drawer.Tooltip(tooltip);
