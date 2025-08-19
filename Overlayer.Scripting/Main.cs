@@ -42,7 +42,6 @@ namespace Overlayer.Scripting
         public static Api JSApi { get; private set; }
         public static bool PatchesLocked { get; private set; }
 
-        public static bool allowUnsafe { get; private set; }
         public static void Load(ModEntry modEntry)
         {
             Mod = modEntry;
@@ -55,9 +54,6 @@ namespace Overlayer.Scripting
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
             if(toggle) {
-                if(File.Exists(Path.Combine(modEntry.Path, "allowUnsafe.txt"))) {
-                    allowUnsafe = true;
-                }
                 Settings = ModSettings.Load<Settings>(modEntry);
                 TagManager.Load(typeof(Expression));
                 TagManager.Load(typeof(PerformanceTags));

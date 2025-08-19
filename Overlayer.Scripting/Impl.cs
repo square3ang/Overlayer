@@ -153,33 +153,18 @@ namespace Overlayer.Scripting
         [Api("resolveClrType")]
         public static Type ResolveType(Engine engine, string clrType)
         {
-            if (!Main.allowUnsafe)
-            {
-                Main.Logger.Log("<color=red>Script uses unsafe API. to enable it, create a file named 'allowUnsafe.txt' in the mod folder.</color>");
-                return null;
-            }
             return MiscUtils.TypeByName(clrType);
         }
         [RawReturn]
         [Api("resolveClrMethod")]
         public static MethodInfo ResolveMethod(Engine engine, string clrType, string name)
         {
-            if (!Main.allowUnsafe)
-            {
-                Main.Logger.Log("<color=red>Script uses unsafe API. to enable it, create a file named 'allowUnsafe.txt' in the mod folder.</color>");
-                return null;
-            }
             return MiscUtils.TypeByName(clrType)?.GetMethod(name, (BindingFlags)15420);
         }
         
         [Api("resolve")]
         public static TypeReference Resolve(Engine engine, string clrType)
         {
-            if (!Main.allowUnsafe)
-            {
-                Main.Logger.Log("<color=red>Script uses unsafe API. to enable it, create a file named 'allowUnsafe.txt' in the mod folder.</color>");
-                return null;
-            }
             if (jsTypes.TryGetValue(engine, out var dict))
                 if (dict.TryGetValue(clrType, out var t))
                     return t;
@@ -190,21 +175,11 @@ namespace Overlayer.Scripting
         [Api("getAttr")]
         public static object GetAttr(object obj, string accessor = "")
         {
-            if (!Main.allowUnsafe)
-            {
-                Main.Logger.Log("<color=red>Script uses unsafe API. to enable it, create a file named 'allowUnsafe.txt' in the mod folder.</color>");
-                return null;
-            }
             return OverlayerTag.RuntimeAccess(obj, accessor);
         }
         [Api("setAttr")]
         public static bool SetAttr(object obj, string accessor = "",  object value = null)
         {
-            if (!Main.allowUnsafe)
-            {
-                Main.Logger.Log("<color=red>Script uses unsafe API. to enable it, create a file named 'allowUnsafe.txt' in the mod folder.</color>");
-                return false;
-            }
             if (obj == null) return false;
             Type objType = obj is Type t ? t : obj.GetType();
             accessor = accessor.TrimEnd('.');
@@ -257,12 +232,6 @@ namespace Overlayer.Scripting
         [Api("getClrGenericTypeName")]
         public static string GetGenericClrTypeString(Engine engine, string genericType, string[] genericArgs)
         {
-            if (!Main.allowUnsafe)
-            {
-                Main.Logger.Log("<color=red>Script uses unsafe API. to enable it, create a file named 'allowUnsafe.txt' in the mod folder.</color>");
-                return null;
-            }
-            
             string AggregateGenericArgs(Type[] types)
             {
                 StringBuilder sb = new StringBuilder();
