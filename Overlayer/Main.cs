@@ -116,13 +116,8 @@ namespace Overlayer
                 FontManager.Initialize();
                 TagResetter.Postfix();
                 Tags.System.Init();
-                string logopath = Path.Combine(modEntry.Path, "ov3_logo.png");
-                if(System.IO.File.Exists(logopath)) {
-                    byte[] fileData = System.IO.File.ReadAllBytes(logopath);
-                    Logo = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-                    Logo.LoadImage(fileData);
-                } else {
-                    Logger.Log("Logo image not found!");
+                if(!Settings.disableLogo) {
+                    LogoInit(modEntry.Path);
                 }
                 _ = AutoUpdater.InitAndUpdate(modEntry, Settings.useAutoUpdate, Settings.useAutoUpdateBeta, 
                     async () => {
@@ -314,6 +309,23 @@ namespace Overlayer
         {
             GUI.Flush();
             GUI.Init(new SettingsDrawer(Settings));
+        }
+
+        public static void LogoInit(string path) {
+            string logopath = Path.Combine(path, "ov3_logo.png");
+            if(System.IO.File.Exists(logopath)) {
+                byte[] fileData = System.IO.File.ReadAllBytes(logopath);
+                Logo = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                Logo.LoadImage(fileData);
+            } else {
+                Logger.Log("Logo image not found!");
+            }
+        }
+        public static void LogoRelease() {
+            if(Logo != null) {
+                UnityEngine.Object.Destroy(Logo);
+                Logo = null;
+            }
         }
     }
 }

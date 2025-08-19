@@ -88,7 +88,13 @@ namespace Overlayer.Views
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             if(isOpenedExtraMenu) {
-                Drawer.DrawBool(string.Format(Main.Lang.Get("DISABLE_THIS","Disable {0}"), Main.Lang.Get("LOGO","Logo")), ref model.disableLogo);
+                if(Drawer.DrawBool(string.Format(Main.Lang.Get("DISABLE_THIS","Disable {0}"), Main.Lang.Get("LOGO","Logo")), ref model.disableLogo)) {
+                    if (model.disableLogo) {
+                        Main.LogoRelease();
+                    } else {
+                        Main.LogoInit(Main.Mod.Path);
+                    }
+                }
                 if (Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT","Change Font"), ref model.ChangeFont))
                 {
                     if (!model.ChangeFont)
