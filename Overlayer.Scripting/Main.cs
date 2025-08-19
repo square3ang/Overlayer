@@ -150,13 +150,13 @@ namespace Overlayer.Scripting
             Logger.Log("Generating Script Implementations..");
             File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSApi.Generate());
             Logger.Log("Generating Script System Implementations..");
-            File.WriteAllText(Path.Combine(ScriptProxyPath, "System.js"), GenerateJSProxy("c3nb", systemTypes.Select(t => (t.Name == "File" ? "IOFile" : t.Name, t)), null, new Version(1, 0, 0)));
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "System.js"), GenerateJSProxy("Square & Kkitut", systemTypes.Select(t => (t.Name == "File" ? "IOFile" : t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Generating Script System Implementations..");
-            File.WriteAllText(Path.Combine(ScriptProxyPath, "Reflection.js"), GenerateJSProxy("c3nb", reflectionTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "Reflection.js"), GenerateJSProxy("Square & Kkitut", reflectionTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Generating Script Harmony Implementations..");
-            File.WriteAllText(Path.Combine(ScriptProxyPath, "Harmony.js"), GenerateJSProxy("c3nb", harmonyTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "Harmony.js"), GenerateJSProxy("Square & Kkitut", harmonyTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Generating Script Unity Implementations..");
-            File.WriteAllText(Path.Combine(ScriptProxyPath, "Unity.js"), GenerateJSProxy("c3nb", unityTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
+            File.WriteAllText(Path.Combine(ScriptProxyPath, "Unity.js"), GenerateJSProxy("Square & Kkitut", unityTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
             Logger.Log("Preparing Executing Scripts..");
             Impl.Reload();
             foreach (string script in Directory.GetFiles(ScriptPath, "*.js"))
