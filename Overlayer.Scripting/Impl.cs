@@ -553,9 +553,6 @@ namespace Overlayer.Scripting
             "Set Audio(UnityEngine.AudioClip) With Callback (.mp3, .ogg, .aiff, .wav)"
         }, RequireTypes = new Type[] { typeof(AudioSource) })]
         public static void SetAudio(string path, AudioSource source) => AudioPlayer.LoadAudio(path, clip => source.clip = clip);
-        [Api("httpGet")]
-        public static string HttpGet(string url) => Overlayer.Main.HttpClient.GetStringAsync(url).GetAwaiter().GetResult();
-        [Api(RequireTypes = new[] { typeof(KeyCode) })]
         public class On
         {
             [Api("rewind", Comment = new[]
