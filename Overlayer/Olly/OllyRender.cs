@@ -48,9 +48,9 @@ namespace Overlayer.Olly {
                 new Vector2(115, 152), // OpenSmallHarf
                 new Vector2(116, 154), // OpenMicro
                 new Vector2(113, 150), // OpenCaret
-                new Vector2(107, 149), // OpenDisgust
                 new Vector2(111, 150), // Open
                 new Vector2(113, 150), // Disgust
+                new Vector2(107, 149), // OpenDisgust
                 new Vector2(109, 151), // Joker
                 new Vector2(121, 153), // SadSmall
                 new Vector2(122, 153), // Caret
@@ -149,13 +149,13 @@ namespace Overlayer.Olly {
                 Vector2 delta = new Vector2(mousePos.x - pivot.x, mousePos.y - pivot.y);
                 float distance = delta.magnitude;
                 float maxDistance = 100f;
-                float maxOffset = 2.1f;
+                float maxOffset = 3.6f;
 
                 float t = Mathf.Clamp01(distance / maxDistance);
                 float eased = Mathf.Sin(t * Mathf.PI * 0.5f);
 
                 Vector2 targetOffset = delta.normalized * (eased * maxOffset);
-                targetOffset.x = targetOffset.x < 0 ? targetOffset.x * (touching ? 3.0f : 1.8f) : targetOffset.x * 0.8f;
+                targetOffset.x = targetOffset.x < 0 ? targetOffset.x * (touching ? 2.6f : 1.8f) : targetOffset.x * 0.8f;
                 targetOffset.y = targetOffset.y < 0 ? targetOffset.y * 0.8f : targetOffset.y * 2.0f;
                 if(touching && eyeBlinkTimer > eyeBlinkInterval + 0.3f) {
                     targetOffset *= 3f;
@@ -175,7 +175,7 @@ namespace Overlayer.Olly {
                 Vector2 delta = new Vector2(mousePos.x - xPivot, mousePos.y - yPivot);
                 float distance = delta.magnitude;
                 float maxDistance = 100f;
-                float maxOffset = 1.2f;
+                float maxOffset = 1.7f;
 
                 float t = Mathf.Clamp01(distance / maxDistance);
                 float eased = Mathf.Sin(t * Mathf.PI * 0.5f);
@@ -194,7 +194,7 @@ namespace Overlayer.Olly {
             GUI.DrawTexture(new Rect(imageX, 20, Base.width, Base.height), Base);
             Vector2 faceOffset = Vector2.zero;
             if(followMouse) {
-                faceOffset = eyeOffset * 0.4f;
+                faceOffset = eyeOffset * 0.5f;
             }
             GUI.DrawTexture(new Rect(imageX + Anchor.MouthAnchor[(int)face.Mouth].x + faceOffset.x,
                 20 + Anchor.MouthAnchor[(int)face.Mouth].y + faceOffset.y,
@@ -216,7 +216,7 @@ namespace Overlayer.Olly {
             if(face.EyeSpecial == EyeSpecial.None) {
                 Vector2 eyelidOffset = Vector2.zero;
                 if(followMouse) {
-                    eyelidOffset = eyeOffset * 0.2f;
+                    eyelidOffset = eyeOffset * 0.4f;
                 }
                 if(eyeBlinkTimer > eyeBlinkInterval) {
                     eyelidOffset.y += (eyeBlinkInterval - eyeBlinkTimer) * 6f;
@@ -245,7 +245,7 @@ namespace Overlayer.Olly {
                 leftEyeOffset += eyeOffset;
                 rightEyeOffset += eyeOffset;
                 if(followMouse) {
-                    eyelidOffset = eyeOffset * 0.2f;
+                    eyelidOffset = eyeOffset * 0.4f;
                 }
                 if(eyeBlinkTimer > eyeBlinkInterval) {
                     eyelidOffset.y += (eyeBlinkTimer - eyeBlinkInterval) * 22f;
@@ -266,7 +266,7 @@ namespace Overlayer.Olly {
             } else {
                 Vector2 eyeSpacialOffset = Vector2.zero;
                 if(followMouse) {
-                    eyeSpacialOffset = eyeOffset * 0.4f;
+                    eyeSpacialOffset = eyeOffset * 0.5f;
                 }
                 GUI.DrawTexture(new Rect(imageX + Anchor.EyeSpecialAnchor[(int)face.EyeSpecial - 1].x + eyeSpacialOffset.x,
                     20 + Anchor.EyeSpecialAnchor[(int)face.EyeSpecial - 1].y + eyeSpacialOffset.y,
@@ -274,7 +274,7 @@ namespace Overlayer.Olly {
             }
             Vector2 eyebrowOffset = Vector2.zero;
             if(followMouse) {
-                eyebrowOffset = eyeOffset * 0.16f;
+                eyebrowOffset = eyeOffset * 0.23f;
             }
             GUI.DrawTexture(new Rect(imageX + Anchor.EyebrowAnchor[(int)face.Eyebrow - 1].x + eyebrowOffset.x,
                 20 + Anchor.EyebrowAnchor[(int)face.Eyebrow - 1].y + eyebrowOffset.y,
