@@ -47,26 +47,24 @@ namespace Overlayer
 
         public static Texture2D Logo;
 
-        internal static Olly Eg;
+        internal static Olly.Olly Eg;
         private static bool _egEnabled = false;
         internal static bool EgEnabled {
             get => _egEnabled;
             set {
                 if(_egEnabled != value) {
                     if(value) {
-                        Olly.Init(Mod);
-                        if(Olly.Inited) {
-                            Eg = new GameObject().AddComponent<Olly>();
+                        if(Olly.OllyResources.LoadAll(Mod)) {
+                            Eg = new GameObject().AddComponent<Olly.Olly>();
                             UnityEngine.Object.DontDestroyOnLoad(Eg);
-                            Eg.DialogueInit();
+                            Eg.Init();
                             _egEnabled = value;
                         }
                     } else {
-                        if(Olly.Inited) {
-                            UnityEngine.Object.Destroy(Eg.gameObject);
-                            Eg = null;
-                            Olly.Deinit();
-                        }
+                        UnityEngine.Object.Destroy(Eg.gameObject);
+                        Eg.Release();
+                        Eg = null;
+                        Olly.OllyResources.UnloadAll();
                         _egEnabled = value;
                     }
                 }

@@ -404,6 +404,12 @@
     <Compile Include="Core\MethodDrawable.cs" />
     <Compile Include="Core\ModelDrawable.cs" />
     <Compile Include="Core\Translation\TranslatorHelper.cs" />
+    <Compile Include="Olly\OllyDialogue.cs" />
+    <Compile Include="Olly\OllyDialogueLines.cs" />
+    <Compile Include="Olly\OllyRender.cs" />
+    <Compile Include="Olly\OllyResources.cs" />
+    <Compile Include="Olly\OllyState.cs" />
+    <Compile Include="Olly\OllyUtils.cs" />
     <Compile Include="Patches\HitFixPatch.cs" />
     <Compile Include="Core\Patches\LazyPatch.cs" />
     <Compile Include="Core\Patches\LazyPatchAttribute.cs" />
@@ -532,7 +538,7 @@
     <Compile Include="Utils\StringConverter.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\TextWriter.cs" />
-    <Compile Include="Views\Olly.cs" />
+    <Compile Include="Olly\Olly.cs" />
     <Compile Include="Views\SettingsDrawer.cs" />
     <Compile Include="Views\TextConfigDrawer.cs" />
   </ItemGroup>
