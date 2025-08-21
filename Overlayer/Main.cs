@@ -23,6 +23,9 @@ using Time = UnityEngine.Time;
 
 namespace Overlayer
 {
+#if DEBUG
+[UnityModManagerNet.EnableReloading]
+#endif
     public static class Main
     {
         [Tag(NotPlaying = true)]
