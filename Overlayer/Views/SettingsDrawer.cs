@@ -85,6 +85,13 @@ namespace Overlayer.Views
             if(Drawer.Button(Main.Lang.Get("EXTRA_MENU","Extra Menu") + " " + (isOpenedExtraMenu ? "▼" : "▲"))) {
                 isOpenedExtraMenu = !isOpenedExtraMenu;
             }
+            /*
+            if(Drawer.Button(Main.Lang.Get("OPEN_WIKI_MENU","Open Wiki Menu"))) {
+                if(Main.Wiki == null) {
+                    Main.Wiki = new GameObject().AddComponent<Wiki.Wiki>();
+                }
+            }
+            */
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             if(isOpenedExtraMenu) {
@@ -153,7 +160,7 @@ namespace Overlayer.Views
                         string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_NUMBER_FIELD", "Legacy Number Field")),
                         ref model.useLegacyNumberField);
                 if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
-                    LazyPatchManager.Unpatch(typeof(ChangeAddHit));
+                    LazyPatchManager.Unpatch(typeof(ChangeAddHit), true);
                     LazyPatchManager.Patch(typeof(ChangeAddHit));
                 }
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan")), ref model.useMovingManEditor);
