@@ -541,6 +541,7 @@
     <Compile Include="Olly\Olly.cs" />
     <Compile Include="Views\SettingsDrawer.cs" />
     <Compile Include="Views\TextConfigDrawer.cs" />
+    <Compile Include="Wiki\Wiki.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

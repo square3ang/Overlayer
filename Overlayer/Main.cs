@@ -50,6 +50,8 @@ namespace Overlayer
 
         public static Texture2D Logo;
 
+        internal static Wiki.Wiki Wiki;
+
         internal static Olly.Olly Eg;
         private static bool _egEnabled = false;
         internal static bool EgEnabled {

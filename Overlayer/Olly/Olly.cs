@@ -115,7 +115,6 @@ namespace Overlayer.Olly {
         }
 
         private void DrawWindow(int windowID) {
-            if(OllyResources.Loaded)
             GUI.BringWindowToFront(windowID);
 
             string[] lines = string.IsNullOrEmpty(displayedText) ? Array.Empty<string>() : displayedText.Split('\n');
