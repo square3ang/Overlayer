@@ -70,7 +70,7 @@ namespace Overlayer.Olly {
                 eye: Eye.Small,
                 mouth: Mouth.Shift,
                 eyebrow: Eyebrow.Sad,
-                effect: Effect.Tear
+                effectBit: EffectBit.Tear
             );
 
             var node2_4_3 = new Node(
@@ -79,7 +79,7 @@ namespace Overlayer.Olly {
                 eye: Eye.Small,
                 mouth: Mouth.Caret,
                 eyebrow: Eyebrow.NormalHigh,
-                effectForward: EffectForward.BlushBig
+                effectForwardBit: EffectForwardBit.BlushBig
             );
 
             var node3 = new Node(
@@ -205,7 +205,7 @@ namespace Overlayer.Olly {
                 new[] { Tr("A little sad, maybe.", "조금은 슬플지도."), Tr("Not really sad.", "딱히 슬프진 않아") },
                 eye: Eye.Normal,
                 mouth: Mouth.OpenMicro,
-                eyebrow: Eyebrow.Curious
+                eyebrow: Eyebrow.NormalHigh
             );
 
             var node5_2_2 = new Node(
@@ -262,7 +262,7 @@ namespace Overlayer.Olly {
                 eye: Eye.Normal,
                 mouth: Mouth.Clenched,
                 eyebrow: Eyebrow.Angry,
-                effectForward: EffectForward.Tendon
+                effectForwardBit: EffectForwardBit.Tendon
             );
 
             node1.Next[0] = node2;

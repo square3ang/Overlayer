@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using static Overlayer.Olly.OllyResources;
 using static Overlayer.Olly.OllyState;
@@ -79,8 +79,8 @@ namespace Overlayer.Olly {
             public Eye Eye;
             public EyeSpecial EyeSpecial;
             public Mouth Mouth;
-            public Effect Effect;
-            public EffectForward EffectForward;
+            public EffectBit EffectBit;
+            public EffectForwardBit EffectForwardBit;
         }
         public bool touching;
         public float eyeBlinkTimer;
@@ -155,7 +155,7 @@ namespace Overlayer.Olly {
                 float eased = Mathf.Sin(t * Mathf.PI * 0.5f);
 
                 Vector2 targetOffset = delta.normalized * (eased * maxOffset);
-                targetOffset.x = targetOffset.x < 0 ? targetOffset.x * (touching ? 2.6f : 1.8f) : targetOffset.x * 0.8f;
+                targetOffset.x = targetOffset.x < 0 ? targetOffset.x * (touching ? 1.2f : 2.6f) : targetOffset.x * 0.8f;
                 targetOffset.y = targetOffset.y < 0 ? targetOffset.y * 0.8f : targetOffset.y * 2.0f;
                 if(touching && eyeBlinkTimer > eyeBlinkInterval + 0.3f) {
                     targetOffset *= 3f;
@@ -196,9 +196,11 @@ namespace Overlayer.Olly {
             if(followMouse) {
                 faceOffset = eyeOffset * 0.5f;
             }
-            GUI.DrawTexture(new Rect(imageX + Anchor.MouthAnchor[(int)face.Mouth].x + faceOffset.x,
-                20 + Anchor.MouthAnchor[(int)face.Mouth].y + faceOffset.y,
-                Mouths[(int)face.Mouth].width, Mouths[(int)face.Mouth].height), Mouths[(int)face.Mouth]);
+            if (face.Mouth  != Mouth.None) {
+                GUI.DrawTexture(new Rect(imageX + Anchor.MouthAnchor[(int)face.Mouth - 1].x + faceOffset.x,
+                    20 + Anchor.MouthAnchor[(int)face.Mouth - 1].y + faceOffset.y,
+                    Mouths[(int)face.Mouth - 1].width, Mouths[(int)face.Mouth - 1].height), Mouths[(int)face.Mouth - 1]);
+            }
             GUI.DrawTexture(new Rect(imageX + Anchor.NoseAnchor.x + faceOffset.x,
                 20 + Anchor.NoseAnchor.y + faceOffset.y,
                 Nose.width, Nose.height), Nose);
@@ -225,14 +227,25 @@ namespace Overlayer.Olly {
                     20 + Anchor.EyelidDownAnchor.y + eyelidOffset.y,
                     EyelidDown.width, EyelidDown.height), EyelidDown);
             }
-            if(face.Effect != Effect.None) {
-                float effectOffsetY = 0f;
-                if(face.Effect == Effect.Tear && eyeBlinkTimer > eyeBlinkInterval) {
-                    effectOffsetY += (eyeBlinkInterval - eyeBlinkTimer) * 6f;
+            if(face.EffectBit != EffectBit.None) {
+                foreach(EffectBit effect in Enum.GetValues(typeof(EffectBit))) {
+                    if((face.EffectBit & effect) == 0)
+                        continue;
+
+                    float effectOffsetY = 0f;
+                    if(effect == EffectBit.Tear && eyeBlinkTimer > eyeBlinkInterval) {
+                        effectOffsetY += (eyeBlinkInterval - eyeBlinkTimer) * 6f;
+                    }
+
+                    int idx = OllyUtils.BitIndex((int)effect) - 1;
+                    var anchor = Anchor.EffectAnchor[idx];
+                    var tex = Effects[idx];
+
+                    GUI.DrawTexture(
+                        new Rect(imageX + anchor.x, 20 + anchor.y,
+                        tex.width, tex.height), tex
+                    );
                 }
-                GUI.DrawTexture(new Rect(imageX + Anchor.EffectAnchor[(int)face.Effect - 1].x,
-                    20 + Anchor.EffectAnchor[(int)face.Effect - 1].y + effectOffsetY,
-                    Effects[(int)face.Effect - 1].width, Effects[(int)face.Effect - 1].height), Effects[(int)face.Effect - 1]);
             }
             if(face.EyeSpecial == EyeSpecial.None) {
                 Vector2 leftEyeOffset = Vector2.zero;
@@ -272,18 +285,32 @@ namespace Overlayer.Olly {
                     20 + Anchor.EyeSpecialAnchor[(int)face.EyeSpecial - 1].y + eyeSpacialOffset.y,
                     EyeSpecials[(int)face.EyeSpecial - 1].width, EyeSpecials[(int)face.EyeSpecial - 1].height), EyeSpecials[(int)face.EyeSpecial - 1]);
             }
-            Vector2 eyebrowOffset = Vector2.zero;
-            if(followMouse) {
-                eyebrowOffset = eyeOffset * 0.23f;
-            }
-            GUI.DrawTexture(new Rect(imageX + Anchor.EyebrowAnchor[(int)face.Eyebrow - 1].x + eyebrowOffset.x,
+            if(face.Eyebrow != Eyebrow.None) {
+                Vector2 eyebrowOffset = Vector2.zero;
+                if(followMouse) {
+                    eyebrowOffset = eyeOffset * 0.23f;
+                }
+            
+                GUI.DrawTexture(new Rect(imageX + Anchor.EyebrowAnchor[(int)face.Eyebrow - 1].x + eyebrowOffset.x,
                 20 + Anchor.EyebrowAnchor[(int)face.Eyebrow - 1].y + eyebrowOffset.y,
                 Eyebrows[(int)face.Eyebrow - 1].width, Eyebrows[(int)face.Eyebrow - 1].height), Eyebrows[(int)face.Eyebrow - 1]);
 
-            if(face.EffectForward != EffectForward.None) {
-                GUI.DrawTexture(new Rect(imageX + Anchor.EffectForwardAnchor[(int)face.EffectForward - 1].x,
-                    20 + Anchor.EffectForwardAnchor[(int)face.EffectForward - 1].y,
-                    EffectForwards[(int)face.EffectForward - 1].width, EffectForwards[(int)face.EffectForward - 1].height), EffectForwards[(int)face.EffectForward - 1]);
+            }
+
+            if(face.EffectForwardBit != EffectForwardBit.None) {
+                foreach(EffectForwardBit effect in Enum.GetValues(typeof(EffectBit))) {
+                    if((face.EffectForwardBit & effect) == 0)
+                        continue;
+
+                    int idx = OllyUtils.BitIndex((int)effect) - 1;
+                    var anchor = Anchor.EffectForwardAnchor[idx];
+                    var tex = EffectForwards[idx];
+
+                    GUI.DrawTexture(
+                        new Rect(imageX + anchor.x, 20 + anchor.y,
+                        tex.width, tex.height), tex
+                    );
+                }
             }
             GUI.DrawTexture(new Rect(
                 imageX + Anchor.HairAnchor.x + hairOffset.x,

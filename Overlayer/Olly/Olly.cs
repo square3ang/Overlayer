@@ -28,8 +28,8 @@ namespace Overlayer.Olly {
             face.Mouth = currentNode.Mouth;
             face.Eyebrow = currentNode.Eyebrow;
             face.EyeSpecial = currentNode.EyeSpecial;
-            face.Effect = currentNode.Effect;
-            face.EffectForward = currentNode.EffectForward;
+            face.EffectBit = currentNode.EffectBit;
+            face.EffectForwardBit = currentNode.EffectForwardBit;
 
             displayedText = "";
             charIndex = 0;
@@ -184,8 +184,8 @@ namespace Overlayer.Olly {
                             face.Mouth = currentNode.Mouth;
                             face.Eyebrow = currentNode.Eyebrow;
                             face.EyeSpecial = currentNode.EyeSpecial;
-                            face.Effect = currentNode.Effect;
-                            face.EffectForward = currentNode.EffectForward;
+                            face.EffectBit = currentNode.EffectBit;
+                            face.EffectForwardBit = currentNode.EffectForwardBit;
                         } else {
                             currentNode = null;
                         }

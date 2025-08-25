@@ -100,7 +100,7 @@ namespace Overlayer.Olly {
                         } else if(fileNameWithoutExt.StartsWith("M_", StringComparison.OrdinalIgnoreCase)) {
                             var enumName = fileNameWithoutExt.Substring(2);
                             if(Enum.TryParse(enumName, true, out Mouth mouth)) {
-                                Mouths[(int)mouth] = tex;
+                                Mouths[(int)mouth - 1] = tex;
                             } else {
                                 DestroyImmediate(tex);
                             }

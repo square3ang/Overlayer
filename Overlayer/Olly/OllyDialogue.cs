@@ -13,11 +13,12 @@ namespace Overlayer.Olly {
             public Eye Eye;
             public EyeSpecial EyeSpecial;
             public Mouth Mouth;
-            public Effect Effect;
-            public EffectForward EffectForward;
+            public EffectBit EffectBit;
+            public EffectForwardBit EffectForwardBit;
 
             public Node(string text, string[] choices = null, Action<int> onChoice = null,
-                                Eye eye = Eye.Normal, Mouth mouth = Mouth.Normal, Eyebrow eyebrow = default, EyeSpecial eyeSpecial = default, Effect effect = default, EffectForward effectForward = default) {
+                                Eye eye = Eye.Normal, Mouth mouth = Mouth.Normal, Eyebrow eyebrow = default,
+                                EyeSpecial eyeSpecial = default, EffectBit effectBit = EffectBit.None, EffectForwardBit effectForwardBit = EffectForwardBit.None) {
                 Text = text;
                 Choices = choices;
                 OnChoice = onChoice;
@@ -25,8 +26,8 @@ namespace Overlayer.Olly {
                 Mouth = mouth;
                 Eyebrow = eyebrow;
                 EyeSpecial = eyeSpecial;
-                Effect = effect;
-                EffectForward = effectForward;
+                EffectBit = effectBit;
+                EffectForwardBit = effectForwardBit;
             }
         }
     }
