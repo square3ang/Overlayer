@@ -64,16 +64,16 @@ namespace Overlayer.Olly {
         public enum EffectBit {
             None = 0,
             Tear = 1 << 0,
-            Sweat = 2 << 0,
-            Blush = 3 << 0,
+            Sweat = 1 << 1,
+            Blush = 1 << 2,
         }
         [Flags]
         public enum EffectForwardBit {
             None = 0,
             Cloud = 1 << 0,
-            Tremble = 2 << 0,
-            Tendon = 3 << 0,
-            BlushBig = 4 << 0,
+            Tremble = 1 << 1,
+            Tendon = 1 << 2,
+            BlushBig = 1 << 3,
         }
     }
 }
