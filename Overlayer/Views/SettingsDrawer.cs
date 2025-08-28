@@ -49,7 +49,7 @@ namespace Overlayer.Views
             }
             if(model != null)
                 Main.Lang.CurrentLanguage = model.Lang;
-            GUILayout.Label(Main.Lang.Get("SELECTLANGUAGE","Select Language"));
+            GUILayout.Label($"{Main.Lang.Get("SELECTLANGUAGE","Select Language")} | {Main.Lang.CurrentLanguage} by {Main.Lang.Get("0TRANSLATOR", "[UNKNOWN]")}");
             GUILayout.BeginHorizontal();
             string[] languageNames = Main.Lang.GetLanguages();
             int selectedIndex = Array.IndexOf(languageNames,Main.Lang.CurrentLanguage);
