@@ -85,13 +85,14 @@ namespace Overlayer.Views
             if(Drawer.Button(Main.Lang.Get("EXTRA_MENU","Extra Menu") + " " + (isOpenedExtraMenu ? "▼" : "▲"))) {
                 isOpenedExtraMenu = !isOpenedExtraMenu;
             }
-            /*
             if(Drawer.Button(Main.Lang.Get("OPEN_WIKI_MENU","Open Wiki Menu"))) {
                 if(Main.Wiki == null) {
                     Main.Wiki = new GameObject().AddComponent<Wiki.Wiki>();
+                    UnityEngine.Object.DontDestroyOnLoad(Main.Wiki);
+                } else {
+                    Main.Wiki.BringToFrontOnce();
                 }
             }
-            */
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             if(isOpenedExtraMenu) {
@@ -235,6 +236,9 @@ namespace Overlayer.Views
         private DateTime egFirstClickTime = DateTime.MinValue;
 
         private void egHandle() {
+            if(Main.EgEnabled) {
+                return;
+            }
             DateTime now = DateTime.UtcNow;
 
             if(egClickCount == 0) {
@@ -248,7 +252,7 @@ namespace Overlayer.Views
                 egFirstClickTime = now;
             }
 
-            if(egClickCount >= 7 && !Main.EgEnabled) {
+            if(egClickCount >= 7) {
                 Main.EgEnabled = true;
                 egClickCount = 0;
             }
