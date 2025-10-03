@@ -542,6 +542,10 @@
     <Compile Include="Views\SettingsDrawer.cs" />
     <Compile Include="Views\TextConfigDrawer.cs" />
     <Compile Include="Wiki\Wiki.cs" />
+    <Compile Include="Wiki\WikiData.cs" />
+    <Compile Include="Wiki\WikiIcons.cs" />
+    <Compile Include="Wiki\WikiLoader.cs" />
+    <Compile Include="Wiki\WikiParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -552,6 +556,8 @@
     <None Include="MiscFiles\lang\Korean.json" />
     <None Include="MiscFiles\lang\Russian.json" />
     <None Include="MiscFiles\lang\Vietnamese.json" />
+    <None Include="MiscFiles\wikidocs\basics.json" />
+    <None Include="MiscFiles\wikidocs\extramenu.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -579,6 +585,7 @@
 xcopy /Y /I /S /E "$(ProjectDir)MiscFiles\lang\*" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\lang\"
 xcopy /Y /I "$(ProjectDir)MiscFiles\info.json" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\"
 xcopy /Y /I "$(ProjectDir)MiscFiles\update.txt" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\"
-xcopy /Y /I "$(ProjectDir)MiscFiles\ov3_logo.png" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\"</PostBuildEvent>
+xcopy /Y /I "$(ProjectDir)MiscFiles\ov3_logo.png" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\"
+xcopy /Y /I /S /E "$(ProjectDir)MiscFiles\wikidocs\*" "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\wikidocs\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

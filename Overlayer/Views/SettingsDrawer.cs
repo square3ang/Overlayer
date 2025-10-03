@@ -28,6 +28,8 @@ namespace Overlayer.Views
         private bool isOpenedExtraMenu = false;
         public override void Draw()
         {
+            GUILayout.BeginHorizontal();
+            GUILayout.EndHorizontal();
             if(Main.Logo != null && !model.disableLogo) {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(Main.Logo, GUILayout.Width(Main.Logo.width), GUILayout.Height(Main.Logo.height));
@@ -85,6 +87,7 @@ namespace Overlayer.Views
             if(Drawer.Button(Main.Lang.Get("EXTRA_MENU","Extra Menu") + " " + (isOpenedExtraMenu ? "▼" : "▲"))) {
                 isOpenedExtraMenu = !isOpenedExtraMenu;
             }
+            /*
             if(Drawer.Button(Main.Lang.Get("OPEN_WIKI_MENU","Open Wiki Menu"))) {
                 if(Main.Wiki == null) {
                     Main.Wiki = new GameObject().AddComponent<Wiki.Wiki>();
@@ -93,6 +96,7 @@ namespace Overlayer.Views
                     Main.Wiki.BringToFrontOnce();
                 }
             }
+            */
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             if(isOpenedExtraMenu) {

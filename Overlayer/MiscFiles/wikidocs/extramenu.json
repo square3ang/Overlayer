@@ -1,0 +1,14 @@
+{
+  "title": "Extra Menu",
+  "language": "en",
+  "body": [
+    {
+      "title": "Overview",
+      "content": "This document provides information about the Extra Menu feature in Overlayer."
+    },
+    {
+      "title": "Various settings",
+      "content": "The Extra Menu allows you to access various settings and features of Overlayer. You can customize your experience by enabling or disabling specific options.\nThe following pages explain each function."
+    }
+  ]
+}
