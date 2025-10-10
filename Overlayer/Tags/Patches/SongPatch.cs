@@ -20,9 +20,15 @@ namespace Overlayer.Tags.Patches
                 if (!song.clip) return;
                 TimeSpan nowt = TimeSpan.FromSeconds(song.time);
                 TimeSpan tott = TimeSpan.FromSeconds(song.clip.length);
+
+                Song.CurDay = nowt.Days;
+                Song.CurHour = nowt.Hours;
                 Song.CurMinute = nowt.Minutes;
                 Song.CurSecond = nowt.Seconds;
                 Song.CurMilliSecond = nowt.Milliseconds;
+
+                Song.TotalDay = tott.Days;
+                Song.TotalHour = tott.Hours;
                 Song.TotalMinute = tott.Minutes;
                 Song.TotalSecond = tott.Seconds;
                 Song.TotalMilliSecond = tott.Milliseconds;
