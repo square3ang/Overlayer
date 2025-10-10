@@ -16,6 +16,10 @@ namespace Overlayer.Tags
         public static bool IsNoFailEnabled => ADOFAI.Controller?.noFail ?? GCS.useNoFail;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double Progress() => scrController.instance?.percentComplete * 100 ?? 0;
+        //[Tag]
+        //public static int Deaths() => scrController.deaths;
+        //[Tag]
+        //public static int Attempts() => 0;
 
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double ActualProgress()
