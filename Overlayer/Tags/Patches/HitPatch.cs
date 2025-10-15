@@ -196,5 +196,21 @@ namespace Overlayer.Tags.Patches
                 }
             }
         }
+        [LazyPatch("Tags.Hit.AbsXAccuracyCalculator", "scrMistakesManager", "CalculatePercentAcc",
+        Triggers = new string[] { nameof(Status.AbsXAccuracy) })]
+        public static class AbsXAccuracyCalculator {
+            public static void Postfix(scrMistakesManager __instance) {
+                Status.AbsXAccuracy = 100.0 * (
+                         __instance.GetHits(HitMargin.Perfect)
+                + __instance.GetHits(HitMargin.Auto)
+                + 0.75 * __instance.GetHits(HitMargin.EarlyPerfect)
+                + 0.75 * __instance.GetHits(HitMargin.LatePerfect)
+                + 0.4 * __instance.GetHits(HitMargin.VeryEarly)
+                + 0.4 * __instance.GetHits(HitMargin.VeryLate)
+                + 0.2 * __instance.GetHits(HitMargin.TooEarly)
+                + 0.2 * __instance.GetHits(HitMargin.TooLate))
+                / scrMistakesManager.hitMargins.Count;
+            }
+        }
     }
 }

@@ -39,6 +39,8 @@ namespace Overlayer.Tags
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double XAccuracy() => (scrController.instance?.mistakesManager?.percentXAcc * 100 ?? 0);
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double AbsXAccuracy;
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double Pitch() => GCS.currentSpeedTrial;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double EditorPitch() => ((ADOFAI.LevelData?.pitch ?? 0) / 100.0);
