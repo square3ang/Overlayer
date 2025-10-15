@@ -26,6 +26,7 @@ namespace Overlayer.Views
         string[] strRotation = new string[3];
         string[] strShadowOffset = new string[2];
         string strFontSize;
+        string strLineSpacing;
         string strShadowDilate;
         string strShadowSoftness;
         string strOutlineWidth;
@@ -38,6 +39,7 @@ namespace Overlayer.Views
             strRotation = new string[3] { model.Rotation.x.ToString(), model.Rotation.y.ToString(), model.Rotation.z.ToString() };
             strShadowOffset = new string[2] { model.ShadowOffset.x.ToString(), model.ShadowOffset.y.ToString() };
             strFontSize = model.FontSize.ToString();
+            strLineSpacing = model.LineSpacing.ToString();
             strShadowDilate = model.ShadowDilate.ToString();
             strShadowSoftness = model.ShadowSoftness.ToString();
             strOutlineWidth = model.OutlineWidth.ToString();
@@ -98,10 +100,12 @@ namespace Overlayer.Views
             changed |= Drawer.DrawString(Main.Lang.Get("LEX_OPTION","Text interpreter settings"), ref model.LexOption);
             if(Main.Settings.useLegacyNumberField) {
                 changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f);
+                changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f);
                 changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
                 changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
             } else {
                 changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f, ref strFontSize, ref strErrors, 11);
+                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f, ref strLineSpacing, ref strErrors, 16);
                 changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f, ref strShadowDilate, ref strErrors, 12);
                 changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f, ref strShadowSoftness, ref strErrors, 13);
             }
