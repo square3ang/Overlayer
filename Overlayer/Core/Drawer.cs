@@ -13,10 +13,7 @@ using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityModManagerNet;
-using static PauseMenu;
-using Extensions = UnityModManagerNet.Extensions;
 using IDrawable = Overlayer.Core.Interfaces.IDrawable;
-using Object = UnityEngine.Object;
 
 namespace Overlayer.Core
 {
