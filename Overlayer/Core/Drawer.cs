@@ -1,21 +1,22 @@
-﻿using Overlayer.Models;
+﻿using HarmonyLib;
+using Overlayer.CodeEditor;
+using Overlayer.Models;
+using Overlayer.Tags;
 using Overlayer.Utils;
+using RapidGUI;
+using SFB;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using HarmonyLib;
-using Overlayer.CodeEditor;
-using Overlayer.Tags;
-using RapidGUI;
+using TMPro;
 using UnityEngine;
 using UnityModManagerNet;
+using static PauseMenu;
 using Extensions = UnityModManagerNet.Extensions;
 using IDrawable = Overlayer.Core.Interfaces.IDrawable;
 using Object = UnityEngine.Object;
-using TMPro;
-using static PauseMenu;
 
 namespace Overlayer.Core
 {
@@ -327,6 +328,8 @@ namespace Overlayer.Core
 
         public static Texture2D ali_Unknown;
 
+        public static Texture2D openFolder;
+
         public static void InitializeImages() {
             if(isImageInited) {
                 return;
@@ -376,7 +379,8 @@ namespace Overlayer.Core
             ali_Midline = CreateTextureFromByte(new byte[] {137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,12,0,0,0,12,8,6,0,0,0,86,117,92,231,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,83,73,68,65,84,40,21,181,141,65,14,192,32,16,2,249,255,167,107,104,132,80,106,140,61,148,203,178,131,172,184,62,10,45,246,79,152,223,172,10,14,219,232,177,166,242,222,197,161,64,83,65,239,226,119,129,33,101,8,248,80,178,23,204,82,122,151,26,230,158,222,133,157,249,175,192,203,212,227,247,201,142,199,0,137,188,187,69,126,37,21,114,0,0,0,0,73,69,78,68,174,66,96,130});
             ali_Capline = CreateTextureFromByte(new byte[] {137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,12,0,0,0,12,8,6,0,0,0,86,117,92,231,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,87,73,68,65,84,40,21,157,142,219,14,128,48,12,66,249,255,159,118,193,4,130,104,118,177,47,165,156,209,14,215,97,161,139,249,29,207,111,190,2,134,45,244,88,93,188,103,249,16,80,23,232,89,254,29,32,100,217,4,188,40,189,151,153,161,212,14,181,153,115,234,199,55,8,86,229,11,51,193,37,51,110,166,107,54,254,136,1,140,25,183,73,53,167,3,97,0,0,0,0,73,69,78,68,174,66,96,130});
             ali_Unknown = CreateTextureFromByte(new byte[] {137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,12,0,0,0,12,8,6,0,0,0,86,117,92,231,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,52,73,68,65,84,40,21,99,96,160,20,252,71,3,120,205,3,169,69,87,128,77,12,174,6,155,36,54,49,58,106,128,91,5,101,224,117,14,69,138,65,154,73,50,29,221,54,162,248,84,179,1,0,31,60,63,193,68,133,15,100,0,0,0,0,73,69,78,68,174,66,96,130});
-
+            openFolder = CreateTextureFromByte(new byte[] {137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,11,0,0,0,11,8,6,0,0,0,169,172,119,38,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,0,0,9,112,72,89,115,0,0,14,195,0,0,14,195,1,199,111,168,100,0,0,0,58,73,68,65,84,40,83,99,248,143,5,48,224,2,216,36,177,137,129,1,46,9,116,219,64,0,167,98,116,48,0,138,145,221,9,147,39,168,24,93,28,167,98,172,114,112,187,144,76,67,86,132,161,129,16,128,105,0,0,113,215,151,105,21,154,86,237,0,0,0,0,73,69,78,68,174,66,96,130});
+            
             isImageInited = true;
         }
 
@@ -631,6 +635,16 @@ namespace Overlayer.Core
             return prev != value;
         }
 
+        public static bool DrawOnlyString(ref string value, bool textArea = false) {
+            string prev = value;
+            if(!textArea)
+                value = GUILayout.TextField(value, myTextField);
+            else
+                value = GUILayout.TextArea(value, myTextField);
+            GUILayout.FlexibleSpace();
+            return prev != value;
+        }
+
         public static bool DrawCodeEditor(string label, string id, ref string value)
         {
             string prev = value;
@@ -792,6 +806,42 @@ namespace Overlayer.Core
             }
 
             return false;
+        }
+
+        public static bool DrawSelectFont(ref string fontPath) {
+            bool result = false;
+            GUILayout.BeginHorizontal();
+            if(ButtonImage(openFolder, GUILayout.Width(40))) {
+                var extensions = new[]
+                {
+                    new ExtensionFilter("Font Files", "ttf", "otf"),
+                    new ExtensionFilter("All Files", "*")
+                };
+
+                string baseDir = Path.Combine(Main.Mod.Path, "Overlayer");
+                string[] paths = StandaloneFileBrowser.OpenFilePanel(
+                    Main.Lang.Get("SELECT_FONT_FILE", "Select Font File"),
+                    baseDir,
+                    extensions,
+                    false
+                );
+
+                if(paths.Length > 0) {
+                    string path = paths[0];
+
+                    if(path.StartsWith(Main.Mod.Path, StringComparison.OrdinalIgnoreCase)) {
+                        path = path.Replace(Main.Mod.Path, "{ModDir}")
+                                   .Replace("\\", "/");
+                    }
+
+                    fontPath = path;
+                    result = true;
+                }
+            }
+
+            result |= Drawer.DrawOnlyString(ref fontPath);
+            GUILayout.EndHorizontal();
+            return result;
         }
 
         public static void Tooltip(string text, bool ignoreWidth = false)

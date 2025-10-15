@@ -68,13 +68,32 @@ namespace Overlayer.Views
                 changed |= Drawer.NeoDrawVector3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180, ref strRotation, ref strErrors, 6);
                 changed |= Drawer.NeoDrawVector2(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), ref model.ShadowOffset, -1, 1, ref strShadowOffset, ref strErrors, 9);
             }
-            changed |= Drawer.DrawString(Main.Lang.Get("FONT", "Font"), ref model.Font);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Main.Lang.Get("FONT","Font"));
+            changed |= Drawer.DrawSelectFont(ref model.Font);
+            GUILayout.EndHorizontal();
+
             changed |= Drawer.DrawBool(Main.Lang.Get("FALLBACK_FONTS", "Enable Fallback Fonts"), ref model.EnableFallbackFonts);
 
-            if (model.EnableFallbackFonts)
-            {
-                if (model.FallbackFonts == null) model.FallbackFonts = new string[0];
-                changed |= Drawer.DrawStringArray(ref model.FallbackFonts);
+            if(model.EnableFallbackFonts) {
+                model.FallbackFonts ??= new string[0];
+
+                GUILayout.BeginHorizontal();
+
+                if(Drawer.Button("+", GUILayout.Width(50))) {
+                    Array.Resize(ref model.FallbackFonts, model.FallbackFonts.Length + 1);
+                    changed = true;
+                }
+
+                if(Drawer.Button("-", GUILayout.Width(50)) && model.FallbackFonts.Length > 0) {
+                    Array.Resize(ref model.FallbackFonts, model.FallbackFonts.Length - 1);
+                    changed = true;
+                }
+
+                GUILayout.EndHorizontal();
+                for(int i = 0; i < model.FallbackFonts.Length; i++) {
+                    changed |= Drawer.DrawSelectFont(ref model.FallbackFonts[i]);
+                }
             }
             changed |= Drawer.DrawString(Main.Lang.Get("LEX_OPTION","Text interpreter settings"), ref model.LexOption);
             if(Main.Settings.useLegacyNumberField) {
