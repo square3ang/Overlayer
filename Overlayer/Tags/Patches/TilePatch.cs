@@ -9,19 +9,6 @@ namespace Overlayer.Tags.Patches
 {
     public class TilePatch : PatchBase<TilePatch>
     {
-        [LazyPatch("Tags.Tile.TileCountPatch_Update", "scnGame", "Update", Triggers = new string[]
-        {
-            nameof(Tile.LeftTile), nameof(Tile.CurTile), nameof(Tile.TotalTile)
-        })]
-        public static class TileCountPatch
-        {
-            public static void Postfix()
-            {
-                Tile.CurTile = scrController.instance.currentSeqID + 1;
-                Tile.TotalTile = ADOBase.lm.listFloors.Count;
-                Tile.LeftTile = Tile.TotalTile - Tile.CurTile;
-            }
-        }
         [LazyPatch("Tags.Tile.StartTile&ProgressPatch", "MonsterLove.StateMachine.StateBehaviour", "ChangeState", new string[] { "System.Enum" }, Triggers = new string[]
         {
             nameof(Tile.StartTile), nameof(Tile.StartProgress), nameof(Tile.IsStarted)

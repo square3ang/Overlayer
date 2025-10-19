@@ -35,11 +35,17 @@ namespace Overlayer.Tags
             return Mathf.Clamp((float)actualProgress, 0, 100);
         }
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double Accuracy() => (scrController.instance?.mistakesManager?.percentAcc * 100 ?? 0);
+        public static double Accuracy;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double XAccuracy() => (scrController.instance?.mistakesManager?.percentXAcc * 100 ?? 0);
+        public static double XAccuracy;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double AbsXAccuracy;
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double MaxAccuracy;
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double MaxXAccuracy;
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double AbsMaxXAccuracy;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double Pitch() => GCS.currentSpeedTrial;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
@@ -95,6 +101,7 @@ namespace Overlayer.Tags
                 Combos[i] = new int[margins];
             for (int i = 0; i < MaxCombos.Length; i++)
                 MaxCombos[i] = new int[margins];
+            Accuracy = XAccuracy = MaxAccuracy = AbsXAccuracy = MaxXAccuracy = AbsMaxXAccuracy = double.NaN;
         }
     }
 }
