@@ -31,17 +31,23 @@ namespace Overlayer.Tags {
             _title = _titleRaw.BreakRichTag();
         }
         [Tag]
-        public static string Title(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _title.Trim(maxLength, afterTrimStr);
+        public static string Title(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
+            => string.IsNullOrEmpty(_title) ? "" : _title.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string Author(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _author.Trim(maxLength, afterTrimStr);
+        public static string Author(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
+            => string.IsNullOrEmpty(_author) ? "" : _author.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string Artist(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _artist.Trim(maxLength, afterTrimStr);
+        public static string Artist(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
+            => string.IsNullOrEmpty(_artist) ? "" : _artist.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string TitleRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _titleRaw.Trim(maxLength, afterTrimStr);
+        public static string TitleRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
+            => string.IsNullOrEmpty(_titleRaw) ? "" : _titleRaw.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string AuthorRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _authorRaw.Trim(maxLength, afterTrimStr);
+        public static string AuthorRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
+            => string.IsNullOrEmpty(_authorRaw) ? "" : _authorRaw.Trim(maxLength, afterTrimStr);
         [Tag]
-        public static string ArtistRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => _artistRaw.Trim(maxLength, afterTrimStr);
+        public static string ArtistRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
+            => string.IsNullOrEmpty(_artistRaw) ? "" : _artistRaw.Trim(maxLength, afterTrimStr);
         [Tag]
         public static string DefaultTextColor() => _defaultTextColor;
         [Tag]
