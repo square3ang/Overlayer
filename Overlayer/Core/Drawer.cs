@@ -519,7 +519,7 @@ namespace Overlayer.Core
             if(hasError) {
                 GUI.color = new Color(1f, 0.5f, 0.5f);
             }
-            string newField = GUILayout.TextField(field, 9, myTextField, GUILayout.Width(100f));
+            string newField = GUILayout.TextField(field, 11, myTextField, GUILayout.Width(100f));
             if(newField != field) {
                 field = newField;
                 if(int.TryParse(field, out int parsedValue)) {
