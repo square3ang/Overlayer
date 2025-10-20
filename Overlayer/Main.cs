@@ -40,7 +40,7 @@ namespace Overlayer
         public static GUIController GUI { get; private set; }
         [Tag(NotPlaying = true)] public static Scene ActiveScene { get; private set; }
         [Tag(NotPlaying = true)] public static Translator Lang { get; internal set; }
-        [Tag(NotPlaying = true)] public static Version ModVersion { get; private set; }
+        [Tag(NotPlaying = true)] public static Version ModVersion() => Mod.Version;
         public static bool IsShowGUI { get; private set; } = false;
         private static UpdatePopup popup;
 
@@ -81,7 +81,6 @@ namespace Overlayer
             Ass = Assembly.GetExecutingAssembly();
             Mod = modEntry;
             GUI = new GUIController();
-            ModVersion = modEntry.Version;
             Lang = new Translator();
             modEntry.OnToggle = OnToggle;
             modEntry.OnShowGUI = OnShowGUI;

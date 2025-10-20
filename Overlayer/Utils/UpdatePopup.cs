@@ -19,7 +19,7 @@ namespace Overlayer.Utils
 
         public void Initialize()
         {
-            version = Main.ModVersion.ToString();
+            version = Main.Mod.Version.ToString();
 
             string filePath = Path.Combine(Main.Mod.Path,"update.txt");
             if(File.Exists(filePath))
