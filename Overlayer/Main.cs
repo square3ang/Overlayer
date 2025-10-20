@@ -258,7 +258,6 @@ namespace Overlayer
                     GUILayout.Space(30);
                 }
 
-                showTooltip = false;
                 helptime = 0f;
                 tooltip = "";
                 GUI.Draw();
@@ -274,6 +273,32 @@ namespace Overlayer
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                 }
+                if(AutoUpdater.CurrentVersionType != AutoUpdater.VersionType.Unknown) {
+                    if(AutoUpdater.LatestVersion != null) {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("STABLE", GUILayout.Width(60));
+                        GUILayout.Label($":  {AutoUpdater.LatestVersion}");
+                        if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.Stable) {
+                            GUILayout.Label(" <<");
+                        }
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
+                    }
+                    if(AutoUpdater.BetaVersion != null) {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("BETA", GUILayout.Width(60));
+                        GUILayout.Label($":  {AutoUpdater.BetaVersion}");
+                        if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.Beta) {
+                            GUILayout.Label(" <<");
+                        }
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
+                    }
+                    if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.UnknownBeta) {
+                        GUILayout.Label($"You are using an <color=#{Tags.Effect.Rainbow(12)}>SPESIAL BETA!</color>");
+                    }
+                }
+
                 if(!RGUI.PopupWindow.isOpen) {
                     if(Settings.useTooltip) {
                         Drawer.Tooltip(tooltip);

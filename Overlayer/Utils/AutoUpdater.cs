@@ -11,10 +11,22 @@ using System.Reflection;
 
 namespace Overlayer.Utils {
     public static class AutoUpdater {
+        public enum VersionType {
+            Unknown,
+            Old,
+            Stable,
+            Beta,
+            OldBeta,
+            UnknownBeta,
+        }
+
         public static bool isLatest = true;
         public static bool isBeta = false;
         public static string LatestUrl;
         public static string BetaUrl;
+        public static Version LatestVersion;
+        public static Version BetaVersion;
+        public static VersionType CurrentVersionType = VersionType.Unknown;
         public static bool IsUpdating { get; private set; } = false;
         public static bool RequireRestart { get; private set; }
         public static readonly string OverlayerGithubApiLink = "https://api.github.com/repos/modlist-org/Overlayer/releases";
@@ -70,24 +82,36 @@ namespace Overlayer.Utils {
                     .Where(r => r["target_commitish"]?.ToString() == "v3" && r["prerelease"]?.ToObject<bool>() == false)
                     .OrderByDescending(r => new Version(r["tag_name"].ToString()))
                     .FirstOrDefault() is JObject latestRelease) {
-                    var latestVer = new Version(latestRelease["tag_name"].ToString());
-                    if(latestVer > currentVersion)
+                    LatestVersion = new Version(latestRelease["tag_name"].ToString());
+                    if(LatestVersion > currentVersion) {
                         isLatest = false;
-                    if(latestVer < currentVersion)
+                        CurrentVersionType = VersionType.Old;
+                    } else if(LatestVersion < currentVersion) {
                         isBeta = true;
+                        CurrentVersionType = VersionType.Beta;
+                    } else {
+                        CurrentVersionType = VersionType.Stable;
+                    }
 
                     var asset = latestRelease["assets"]?.FirstOrDefault();
                     LatestUrl = asset?["browser_download_url"]?.ToString();
-                    newVersion = latestVer;
+                    newVersion = LatestVersion;
                 } else {
                     LatestUrl = null;
                 }
 
                 if(latestBetaRelease != null) {
-                    var latestBetaVer = new Version(latestBetaRelease["tag_name"].ToString());
+                    BetaVersion = new Version(latestBetaRelease["tag_name"].ToString());
                     var asset = latestBetaRelease["assets"]?.FirstOrDefault();
                     BetaUrl = asset?["browser_download_url"]?.ToString();
-                    newVersion = latestBetaVer;
+                    newVersion = BetaVersion;
+                    if(currentVersion > BetaVersion) {
+                        CurrentVersionType = VersionType.UnknownBeta;
+                    } else if(currentVersion < BetaVersion) {
+                        CurrentVersionType = VersionType.OldBeta;
+                    } else if(currentVersion == BetaVersion) {
+                        CurrentVersionType = VersionType.Beta;
+                    }
                 } else {
                     BetaUrl = null;
                 }
@@ -100,6 +124,11 @@ namespace Overlayer.Utils {
         public static async Task CheckAndUpdate(ModEntry modEntry, bool allowBeta = false, Action ok = null, Action<string> err = null) {
             if(IsUpdating) {
                 err?.Invoke(Main.Lang.Get("ALEADY_UPDATING", "Already Updating"));
+                return;
+            }
+
+            if(isLatest && (!allowBeta || CurrentVersionType == VersionType.OldBeta)) {
+                err?.Invoke(Main.Lang.Get("ALREADY_LATEST", "Already the latest version"));
                 return;
             }
 
