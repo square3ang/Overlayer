@@ -27,6 +27,18 @@ namespace Overlayer.Views
         public SettingsDrawer(Settings settings) : base(settings) { }
 
         private bool isOpenedExtraMenu = false;
+
+        int strErrors = 0;
+        string strFPSUpdateRate;
+        string strFrameTimeUpdateRate;
+        string strSystemTagUpdateRate;
+
+        public override void OnceCall() {
+            strErrors = 0;
+            strFPSUpdateRate = model.FPSUpdateRate.ToString();
+            strFrameTimeUpdateRate = model.FrameTimeUpdateRate.ToString();
+            strSystemTagUpdateRate = model.SystemTagUpdateRate.ToString();
+        }
         public override void Draw()
         {
             GUILayout.BeginHorizontal();
@@ -185,9 +197,15 @@ namespace Overlayer.Views
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "EasedValue")), ref model.useEasedValueEditor);
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot"))), ref model.autoPivot);
-                Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE","Fps Update Rate"), ref model.FPSUpdateRate);
-                Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE","FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
-                Drawer.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE","System Tag Update Rate"), ref model.SystemTagUpdateRate);
+                if(Main.Settings.useLegacyNumberField) {
+                    Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
+                    Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
+                    Drawer.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
+                } else {
+                    Drawer.NeoDrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate, ref strFPSUpdateRate, ref strErrors, 0);
+                    Drawer.NeoDrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate, ref strFrameTimeUpdateRate, ref strErrors, 1);
+                    Drawer.NeoDrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate, ref strSystemTagUpdateRate, ref strErrors, 2);
+                }
             }
             GUILayout.BeginHorizontal();
             if (Drawer.Button(Main.Lang.Get("NEW_TEXT","Create New Text")))
@@ -221,7 +239,6 @@ namespace Overlayer.Views
                 GUI.color = new Color(0.8f, 0.8f, 1f);
                 if(Drawer.Button(Main.Lang.Get("EDIT", "Edit"))) {
                     TextConfigDrawer config = new TextConfigDrawer(text.Config);
-                    config.strInit();
                     Main.GUI.Push(config);
                 }
                 GUI.color = new Color(0.8f, 1f, 0.8f);
