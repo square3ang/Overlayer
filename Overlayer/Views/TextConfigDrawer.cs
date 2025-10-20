@@ -133,7 +133,7 @@ namespace Overlayer.Views
             if(Main.Settings.useLegacyNumberField) {
                 changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
             } else {
-                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f, ref strOutlineWidth, ref strErrors, 14);
+                changed |= NeoDrawer.DrawSingleWithSlider(Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
             }
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("ALIGNMENT","Alignment"));
