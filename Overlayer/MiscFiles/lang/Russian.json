@@ -1,6 +1,6 @@
 {
   "Русский": {
-    "0TRANSLATOR": "coyami-ke",
+    "0TRANSLATORS": ["coyami-ke"],
     "ACTIVE": "Активный",
     "ALIGNMENT": "Выравнивание",
     "ALLOW_THIS": "Разрешить {0}",

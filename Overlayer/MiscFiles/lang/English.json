@@ -1,6 +1,6 @@
 {
   "English": {
-    "0TRANSLATOR": "OVERLAYER",
+    "0TRANSLATORS": ["OVERLAYER"],
     "ACTIVE": "Active",
     "ALIGNMENT": "Alignment",
     "ALLOW_THIS": "Allow {0}",
@@ -120,7 +120,7 @@
     "TEXT_COLOR": "Text Color",
     "TEXT_CONFIG": "Text Config",
     "THIS_EDITOR": "{0} Editor",
-    "TOOLTIP" : "Tooltip",
+    "TOOLTIP": "Tooltip",
     "TOOLTIP_ACCURACY": "Accuracy(when perfect: 100+0.01%)",
     "TOOLTIP_ACTUALPROGRESS": "Current Actual Progress based on time",
     "TOOLTIP_ARTIST": "Composer of the song",

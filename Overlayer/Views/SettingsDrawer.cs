@@ -11,6 +11,7 @@ using RapidGUI;
 using SA.GoogleDoc;
 using SFB;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -51,7 +52,18 @@ namespace Overlayer.Views
             }
             if(model != null)
                 Main.Lang.CurrentLanguage = model.Lang;
-            GUILayout.Label($"{Main.Lang.Get("SELECTLANGUAGE","Select Language")} | {Main.Lang.CurrentLanguage} by {Main.Lang.Get("0TRANSLATOR", "[UNKNOWN]")}");
+            int translatorsCount = Main.Lang.GetsCount("0TRANSLATORS");
+            string translatorsText = "[UNKNOWN]";
+
+            if(translatorsCount > 0) {
+                var names = new List<string>();
+                for(int i = 0; i < translatorsCount; i++) {
+                    names.Add(Main.Lang.Gets("0TRANSLATORS", i, "[UNKNOWN]"));
+                }
+                translatorsText = string.Join(" & ", names);
+            }
+
+            GUILayout.Label($"{Main.Lang.Get("SELECTLANGUAGE", "Select Language")} | {Main.Lang.CurrentLanguage} by {translatorsText}");
             GUILayout.BeginHorizontal();
             string[] languageNames = Main.Lang.GetLanguages();
             int selectedIndex = Array.IndexOf(languageNames,Main.Lang.CurrentLanguage);

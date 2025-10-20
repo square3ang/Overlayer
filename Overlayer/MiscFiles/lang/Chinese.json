@@ -1,6 +1,6 @@
 {
   "中文": {
-    "0TRANSLATOR": "a6.",
+    "0TRANSLATORS": ["a6."],
     "ACTIVE": "启用",
     "ALIGNMENT": "对齐方式",
     "ALLOW_THIS": "允许{0}",

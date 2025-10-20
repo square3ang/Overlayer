@@ -28,10 +28,11 @@ namespace Overlayer.Core.Translatior {
         private readonly string ExpectedKTLValue;
 
         private Dictionary<string, Dictionary<string, string>> translations = new Dictionary<string, Dictionary<string, string>>();
+        private Dictionary<string, Dictionary<string, string[]>> translationsArr = new Dictionary<string, Dictionary<string, string[]>>();
 
         // Private backing field for current language.
         private string currentLanguage = "Default";
-        /// <summary>
+        /// <summary>   
         /// Gets or sets the current language.
         /// </summary>
         public string CurrentLanguage {
@@ -75,7 +76,7 @@ namespace Overlayer.Core.Translatior {
                     failState = TranslationFailState.ErrorReadingDirectory;
                     return;
                 }
-                if(files.Count() == 0) {
+                if(files.Length == 0) {
                     // No files found, set failure state.
                     failState = TranslationFailState.FileDoesNotExist;
                     return;
@@ -83,10 +84,11 @@ namespace Overlayer.Core.Translatior {
                 foreach(var file in files) {
                     try {
                         using var reader = new StreamReader(file);
-                        // Read the JSON content asynchronously.
                         var jsonString = await reader.ReadToEndAsync();
                         var jsonObject = JObject.Parse(jsonString);
                         var validTranslations = new Dictionary<string, Dictionary<string, string>>();
+                        var validTranslationsArr = new Dictionary<string, Dictionary<string, string[]>>();
+
                         // Iterate through each property in the JSON object.
                         foreach(var property in jsonObject.Properties()) {
                             string blockName = property.Name;
@@ -97,34 +99,53 @@ namespace Overlayer.Core.Translatior {
                                 string ktValue = blockValue[KTLKey].ToString();
                                 // Verify if the KTL value matches the expected value.
                                 if(ktValue == ExpectedKTLValue) {
-                                    // Add valid translations to the dictionary.
-                                    validTranslations[blockName] = blockValue.ToObject<Dictionary<string, string>>();
+                                    // Convert block to dictionary for strings and arrays separately.
+                                    var dict = new Dictionary<string, string>();
+                                    var dictArr = new Dictionary<string, string[]>();
+
+                                    foreach(var kv in (JObject)blockValue) {
+                                        if(kv.Key == KTLKey)
+                                            continue; // Skip validation key
+
+                                        if(kv.Value is JArray arr)
+                                            dictArr[kv.Key] = arr.Select(v => v.ToString()).ToArray();
+                                        else
+                                            dict[kv.Key] = kv.Value?.ToString() ?? "";
+                                    }
+
+                                    if(dict.Count > 0)
+                                        validTranslations[blockName] = dict;
+                                    if(dictArr.Count > 0)
+                                        validTranslationsArr[blockName] = dictArr;
                                 }
                             }
                         }
-                        // Add the valid translations to the main translations dictionary.
-                        foreach(var validTranslation in validTranslations) {
-                            translations[validTranslation.Key] = validTranslation.Value;
-                        }
+
+                        // Merge valid translations into main dictionaries.
+                        foreach(var vt in validTranslations)
+                            translations[vt.Key] = vt.Value;
+
+                        foreach(var vta in validTranslationsArr)
+                            translationsArr[vta.Key] = vta.Value;
                     } catch {
                         // If there's an error loading the file, set failure state.
                         failState = TranslationFailState.ErrorLoadingFile;
                     }
                 }
 
-                // Determine the overall failure state after processing all files.
-                if(translations.Count == 0) {
+                // Determine overall state after processing.
+                if(translations.Count == 0 && translationsArr.Count == 0)
                     failState = TranslationFailState.NoValidTranslationFound;
-                } else {
+                else
                     failState = TranslationFailState.Success;
-                }
             } catch {
-                // Reset translations on an unknown failure and set failure state.
+                // Reset translations on unknown failure.
                 translations = new Dictionary<string, Dictionary<string, string>>();
+                translationsArr = new Dictionary<string, Dictionary<string, string[]>>();
                 failState = TranslationFailState.UnknownCause;
             } finally {
-                IsLoading = false; // Set loading state to false when finished.
-                OnInitialize?.Invoke(); // Trigger the OnInitialize event when loading is complete.
+                IsLoading = false;
+                OnInitialize?.Invoke();
             }
         }
 
@@ -172,16 +193,59 @@ namespace Overlayer.Core.Translatior {
                 return defaultValue;
             }
 
-            string languageCode = CurrentLanguage;
-
             // Check if the translations contain the current language.
-            if(translations.TryGetValue(languageCode, out var languageTranslations)) {
+            if(translations.TryGetValue(CurrentLanguage, out var languageTranslations)) {
                 // Attempt to retrieve the translated value using the provided key.
                 if(languageTranslations.TryGetValue(key, out var translatedValue)) {
                     return translatedValue; // Return the translated value if found.
                 }
             }
             return defaultValue; // Return the default value if translation is not found.
+        }
+
+        /// <summary>
+        /// Retrieves a specific element from a translation array for the current language.
+        /// </summary>
+        /// <param name="key">The key for the translation.</param>
+        /// <param name="index">The index of the element to retrieve.</param>
+        /// <param name="defaultValue">The default value to return if translation is not found.</param>
+        /// <returns>The translated value or the default value if not found.</returns>
+        public string Gets(string key, int index, string defaultValue) {
+            // Return default if translations are not ready or in fail state
+            if(failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default")
+                return defaultValue;
+
+            // Try to get the array dictionary for the current language
+            if(translationsArr.TryGetValue(CurrentLanguage, out var lang)) {
+                // Try to get the string array for the given key
+                if(lang.TryGetValue(key, out var values)) {
+                    // Return the requested element if index is valid
+                    if(index >= 0 && index < values.Length) {
+                        return values[index];
+                    }
+                }
+            }
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Retrieves the number of elements in a translation array for a given key in the current language.
+        /// </summary>
+        /// <param name="key">The key for the translation.</param>
+        /// <returns>The count of elements for the key, or 0 if not found or translations are not ready.</returns>
+        public int GetsCount(string key) {
+            // Return 0 if translations are not ready or in fail state
+            if(failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default")
+                return 0;
+
+            // Try to get the array dictionary for the current language
+            if(translationsArr.TryGetValue(CurrentLanguage, out var lang)) {
+                // Return the length of the array if key exists
+                if(lang.TryGetValue(key, out var values)) {
+                    return values.Length;
+                }
+            }
+            return 0;
         }
     }
 }

@@ -1,6 +1,6 @@
 {
   "Français Canadien": {
-    "0TRANSLATOR": "Jaynøx",
+    "0TRANSLATORS": ["Jaynøx"],
     "ACTIVE": "Activer",
     "ALIGNMENT": "Alignment",
     "ALLOW_THIS": "Autoriser {0}",
