@@ -120,6 +120,7 @@
     "TEXT_COLOR": "Цвет Текста",
     "TEXT_CONFIG": "Текстовый Конфиг",
     "THIS_EDITOR": "{0} Редактор",
+    "TOOLTIP": "Подсказка",
     "TOOLTIP_ACCURACY": "Accuracy(when perfect: 100+0.01%)",
     "TOOLTIP_ACTUALPROGRESS": "Current Actual Progress based on time",
     "TOOLTIP_ARTIST": "Composer of the song",

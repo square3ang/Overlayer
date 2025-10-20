@@ -154,6 +154,7 @@ namespace Overlayer.Views
                     Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.useAutoUpdateBeta);
                     GUILayoutEx.EndIndent();
                 }
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("TOOLTIP", "Tooltip")), ref model.useTooltip);
                 if (Drawer.DrawBool(
                         string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
                         ref model.useLegacyTheme))

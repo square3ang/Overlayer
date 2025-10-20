@@ -120,6 +120,7 @@
     "TEXT_COLOR": "文本颜色",
     "TEXT_CONFIG": "文本设置",
     "THIS_EDITOR": "{0} 编辑器",
+    "TOOLTIP": "提示",
     "TOOLTIP_ACCURACY": "精准度 (每当有一个完美时他应该是 100%+0.01%)",
     "TOOLTIP_ACTUALPROGRESS": "基于音乐文件时间的进度",
     "TOOLTIP_ARTIST": "谱面的曲师",

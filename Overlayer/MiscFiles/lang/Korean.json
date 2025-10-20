@@ -120,6 +120,7 @@
     "TEXT_COLOR": "글자 색",
     "TEXT_CONFIG": "텍스트 설정",
     "THIS_EDITOR": "{0} 편집기",
+    "TOOLTIP": "툴팁",
     "TOOLTIP_ACCURACY": "정확도(정확일때 100+0.01%)",
     "TOOLTIP_ACTUALPROGRESS": "시간 기반의 실제 현재 진행도",
     "TOOLTIP_ARTIST": "작곡가",

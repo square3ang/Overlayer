@@ -120,6 +120,7 @@
     "TEXT_COLOR": "Màu văn bản",
     "TEXT_CONFIG": "Cấu hình văn bản",
     "THIS_EDITOR": "{0} Editor",
+    "TOOLTIP": "Chú giải công cụ",
     "TOOLTIP_ACCURACY": "Accuracy(when perfect: 100+0.01%)",
     "TOOLTIP_ACTUALPROGRESS": "Current Actual Progress based on time",
     "TOOLTIP_ARTIST": "Composer of the song",

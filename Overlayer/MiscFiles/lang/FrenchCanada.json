@@ -120,6 +120,7 @@
     "TEXT_COLOR": "Couleur Du Texte",
     "TEXT_CONFIG": "Configuration Du Texte",
     "THIS_EDITOR": "{0} Editor",
+    "TOOLTIP": "Tooltip",
     "TOOLTIP_ACCURACY": "Accuracy(when perfect: 100+0.01%)",
     "TOOLTIP_ACTUALPROGRESS": "Current Actual Progress based on time",
     "TOOLTIP_ARTIST": "Composer of the song",
