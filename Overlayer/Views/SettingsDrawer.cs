@@ -69,7 +69,7 @@ namespace Overlayer.Views
             if(translatorsCount > 0) {
                 var names = new List<string>();
                 for(int i = 0; i < translatorsCount; i++) {
-                    names.Add(Main.Lang.Gets("0TRANSLATORS", i, "[UNKNOWN]"));
+                    names.Add(Main.Lang.GetArr("0TRANSLATORS", i, "[UNKNOWN]"));
                 }
                 translatorsText = string.Join(" & ", names);
             }

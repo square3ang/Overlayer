@@ -210,7 +210,7 @@ namespace Overlayer.Core.Translatior {
         /// <param name="index">The index of the element to retrieve.</param>
         /// <param name="defaultValue">The default value to return if translation is not found.</param>
         /// <returns>The translated value or the default value if not found.</returns>
-        public string Gets(string key, int index, string defaultValue) {
+        public string GetArr(string key, int index, string defaultValue) {
             // Return default if translations are not ready or in fail state
             if(failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default")
                 return defaultValue;
