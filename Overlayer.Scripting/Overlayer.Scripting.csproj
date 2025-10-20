@@ -361,8 +361,8 @@
     <Reference Include="UnityModManager">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
     </Reference>
-    <Reference Include="Vostok">
-      <HintPath>..\Lib\Vostok.dll</HintPath>
+    <Reference Include="Vostok.Sys.Metrics.PerfCounters, Version=0.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Vostok.Sys.Metrics.PerfCounters.0.0.8\lib\netstandard2.0\Vostok.Sys.Metrics.PerfCounters.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -387,6 +387,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
