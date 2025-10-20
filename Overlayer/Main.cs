@@ -44,7 +44,6 @@ namespace Overlayer
         public static bool IsShowGUI { get; private set; } = false;
         private static UpdatePopup popup;
 
-        public static bool showTooltip = false;
         public static string tooltip = "";
         public static string UpdateInfo = "";
 
@@ -261,6 +260,7 @@ namespace Overlayer
 
                 showTooltip = false;
                 helptime = 0f;
+                tooltip = "";
                 GUI.Draw();
                 GUILayout.Space(30);
                 if(AutoUpdater.isLatest || AutoUpdater.isBeta) {
@@ -275,7 +275,7 @@ namespace Overlayer
                     GUILayout.EndHorizontal();
                 }
                 if(!RGUI.PopupWindow.isOpen) {
-                    if(showTooltip) {
+                    if(Settings.useTooltip) {
                         Drawer.Tooltip(tooltip);
                     }
                 }

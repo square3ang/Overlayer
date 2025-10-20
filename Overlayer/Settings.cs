@@ -24,6 +24,7 @@ namespace Overlayer
         public bool useEasedValueEditor = true;
         public bool useAutoUpdate = false;
         public bool useAutoUpdateBeta = false;
+        public bool useTooltip = true;
         public bool isFirstEg = true;
         public bool autoPivot = true;
         public JsonNode Serialize()

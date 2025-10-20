@@ -319,12 +319,10 @@ public class CodeEditor
                     var contains = TagManager.tags.ContainsKey(pars);
                     if (contains && tooltip.TryGetValue(pars, out var tooltipp))
                     {
-                        Main.showTooltip = true;
                         Main.tooltip = tooltipp;
                     }
                     else if (!contains)
                     {
-                        Main.showTooltip = true;
                         Main.tooltip = Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
                     }
                 }
