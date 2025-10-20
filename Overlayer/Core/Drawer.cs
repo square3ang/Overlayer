@@ -412,18 +412,15 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static bool DrawTags(ref string value)
-        {
+        public static bool DrawTags(ref string value) {
             var tags = TagManager.tags.Keys.ToList();
             tags.Sort();
             var selected = tags.IndexOf(value);
 
             var tooltip = new Dictionary<string, string>();
-            foreach (var toolt in Tags.Tooltip.tooltip)
-            {
-                tooltip[toolt.Key] = Main.Lang.Get("TOOLTIP_" + toolt.Key.ToUpper(), toolt.Value);
+            foreach(var tag in tags) {
+                tooltip[tag] = Tags.Tooltip.GetTooltip(tag);
             }
-
 
             SelectionPopupWithTooltip(ref selected, tags.ToArray(), "", tooltip);
             value = tags[selected];

@@ -237,14 +237,6 @@ public class CodeEditor
 
 
         var i = 0;
-
-
-        var tooltip = new Dictionary<string, string>();
-        foreach (var toolt in Tags.Tooltip.tooltip)
-        {
-            tooltip[toolt.Key] = Main.Lang.Get("TOOLTIP_" + toolt.Key.ToUpper(), toolt.Value);
-        }
-
         var bak = Event.current;
         Event.current = oldEvent;
 
@@ -313,22 +305,18 @@ public class CodeEditor
                 if (cr && !Main.Settings.useColorRangeEditor) special = false;
                 if (ev && !Main.Settings.useEasedValueEditor) special = false;
 
-                if (rect.Contains(Event.current.mousePosition))
-                {
+                if(rect.Contains(Event.current.mousePosition)) {
                     var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                    var contains = TagManager.tags.ContainsKey(pars);
-                    if (contains && tooltip.TryGetValue(pars, out var tooltipp))
-                    {
-                        Main.tooltip = tooltipp;
-                    }
-                    else if (!contains)
-                    {
+                    if(TagManager.tags.ContainsKey(pars)) {
+                        Main.tooltip = Tags.Tooltip.GetTooltip(pars);
+                    } else {
                         Main.tooltip = Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
                     }
                 }
 
 
-                if (special)
+
+                if(special)
                 {
                     if (GUI.Button(rect, ""))
                     {
