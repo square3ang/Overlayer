@@ -19,6 +19,7 @@ namespace Overlayer.Controllers
         public void Init(IDrawable drawable)
         {
             first = current = drawable;
+            hasOnceCalled = false;
         }
         public void Push(IDrawable drawable)
         {
@@ -38,6 +39,7 @@ namespace Overlayer.Controllers
                 else drawables[depth++] = current;
             }
             current = drawable;
+            hasOnceCalled = false;
         }
         public void Pop()
         {
@@ -45,7 +47,11 @@ namespace Overlayer.Controllers
             var cache = current;
             current = drawables[--depth];
             drawables[depth] = cache;
+            hasOnceCalled = false;
         }
+
+        private bool hasOnceCalled = false;
+
         public void Draw()
         {
             if (skipFrames > 0)
@@ -71,6 +77,12 @@ namespace Overlayer.Controllers
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+
+            if(!hasOnceCalled) {
+                current?.OnceCall();
+                hasOnceCalled = true;
+            }
+
             current.Draw();
             if(isUndoAvailable) {
                 GUILayout.BeginHorizontal();

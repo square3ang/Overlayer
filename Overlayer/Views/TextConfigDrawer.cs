@@ -31,7 +31,7 @@ namespace Overlayer.Views
         string strShadowSoftness;
         string strOutlineWidth;
 
-        public void strInit() {
+        public override void OnceCall() {
             strErrors = 0;
             strPosition = new string[2] { model.Position.x.ToString(), model.Position.y.ToString() };
             strScale = new string[2] { model.Scale.x.ToString(), model.Scale.y.ToString() };

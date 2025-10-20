@@ -4,5 +4,6 @@
     {
         string Name { get; }
         void Draw();
+        void OnceCall();
     }
 }

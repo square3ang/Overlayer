@@ -11,5 +11,6 @@ namespace Overlayer.Core
             this.model = model;
         }
         public abstract void Draw();
+        public virtual void OnceCall() { }
     }
 }
