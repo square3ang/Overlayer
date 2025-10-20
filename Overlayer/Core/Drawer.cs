@@ -506,6 +506,43 @@ namespace Overlayer.Core
             return result;
         }
 
+        public static bool NeoDrawInt32(string label, ref int value, ref string field, ref int error, int errorBit) {
+            bool hasError = (error & (1 << errorBit)) != 0;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+            GUILayout.Space(4f);
+
+            bool changed = false;
+            int currentValue = value;
+            GUILayout.Space(8f);
+            if(hasError) {
+                GUI.color = new Color(1f, 0.5f, 0.5f);
+            }
+            string newField = GUILayout.TextField(field, 9, myTextField, GUILayout.Width(100f));
+            if(newField != field) {
+                field = newField;
+                if(int.TryParse(field, out int parsedValue)) {
+                    currentValue = parsedValue;
+                    changed = true;
+                    error &= ~(1 << errorBit);
+                } else {
+                    error |= (1 << errorBit);
+                }
+            }
+            if(hasError) {
+                GUI.color = Color.white;
+                GUILayout.Space(8f);
+                GUILayout.Label("<color=#FF8888>!!</color>");
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            value = currentValue;
+
+            return changed;
+        }
+
         public static bool DrawInt64(string label, ref long value)
         {
             string str = value.ToString();
@@ -617,6 +654,44 @@ namespace Overlayer.Core
             bool result = DrawString(label, ref str);
             value = StringConverter.ToFloat(str);
             return result;
+        }
+
+        public static bool NeoDrawSingle(string label, ref float value, ref string field, ref int error, int errorBit)
+        {
+            bool hasError = (error & (1 << errorBit)) != 0;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+            GUILayout.Space(4f);
+
+            bool changed = false;
+            float currentValue = value;
+            GUILayout.Space(8f);
+            if(hasError) {
+                GUI.color = new Color(1f, 0.5f, 0.5f);
+            }
+            string newField = GUILayout.TextField(field, 9, myTextField, GUILayout.Width(100f));
+            if(newField != field) {
+                field = newField;
+                if(float.TryParse(field, out float parsedValue)) {
+                    currentValue = parsedValue;
+                    changed = true;
+                    error &= ~(1 << errorBit);
+                } else {
+                    error |= (1 << errorBit);
+                }
+            }
+            if(hasError) {
+                GUI.color = Color.white;
+                GUILayout.Space(8f);
+                GUILayout.Label("<color=#FF8888>!!</color>");
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            value = currentValue;
+
+            return changed;
         }
 
         public static bool DrawString(string label, ref string value, bool textArea = false)
