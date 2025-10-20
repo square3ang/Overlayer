@@ -4,6 +4,7 @@ using Overlayer.Patches;
 using Overlayer.Tags;
 using RapidGUI;
 using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using Time = UnityEngine.Time;
 
@@ -26,7 +27,7 @@ namespace Overlayer.Utils {
 
         public Ease ease = Ease.OutQuad;
 
-
+        private NeoDrawer neoDrawer;
         public void Initialize(string tag, string codesBefore, string codesAfter) {
             if(tag.Contains("(")) {
                 var arr = tag.Split('(')[1].Split(')')[0].Split(',');
@@ -43,6 +44,8 @@ namespace Overlayer.Utils {
             this.codesAfter = codesAfter;
             BlockUMMClosing.Block = true;
             TagManager.testerValue = "100";
+
+            neoDrawer = new NeoDrawer();
         }
 
         public void Update() {
@@ -75,7 +78,11 @@ namespace Overlayer.Utils {
         private void PreviewWindow(int windowID) {
             GUI.BringWindowToFront(windowID);
             GUILayout.Label("<size=40>"+Effect.EasedValue("INTERNAL_TESTER_TAG_1234512345", digits, speed, ease).ToString()+"</size>");
-            Drawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100);
+            if(Main.Settings.useLegacyNumberField) {
+                Drawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100);
+            } else {
+                neoDrawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100);
+            }
         }
 
         private void DrawWindow(int windowID) {
@@ -89,8 +96,13 @@ namespace Overlayer.Utils {
             Drawer.DrawTags(ref targetTag);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            Drawer.DrawInt32(Main.Lang.Get("DIGITS", "Digits"), ref digits);
-            Drawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
+            if(Main.Settings.useLegacyNumberField) {
+                Drawer.DrawInt32(Main.Lang.Get("DIGITS", "Digits"), ref digits);
+                Drawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
+            } else {
+                neoDrawer.DrawInt32(Main.Lang.Get("DIGITS", "Digits"), ref digits);
+                neoDrawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
+            }
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("EASE", "Ease"));
             Drawer.DrawEnumPlus("", ref ease, a => a);
@@ -98,6 +110,7 @@ namespace Overlayer.Utils {
             GUILayout.EndHorizontal();
 
             if(Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
+                neoDrawer = null;
                 BlockUMMClosing.Block = false;
                 Destroy(gameObject);
             }

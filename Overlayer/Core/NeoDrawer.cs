@@ -1,0 +1,701 @@
+﻿using NCalc;
+using Overlayer.Models;
+using RapidGUI;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+namespace Overlayer.Core {
+    public class NeoDrawer {
+        public static NeoDrawer StaticInstance = new NeoDrawer();
+        public class NeoField {
+            public enum StateType {
+                OK = 0,
+                ERROR = 1,
+                WARNING = 2,
+                COMPUTE = 3,
+            }
+
+            public bool StrInitialized = false;
+            public string Str;
+            public StateType State;
+            public object ComputedValue;
+            
+        }
+        public string LastFocused;
+
+        private uint id = 0;
+        private Dictionary<string, NeoField> fields = new();
+
+        public bool StrInitialize(ref NeoField field, string str) {
+            if(!field.StrInitialized) {
+                field.Str = str;
+                field.StrInitialized = true;
+                return true;
+            }
+            return false;
+        }
+        
+        public uint FieldGetId() {
+            return id;
+        }
+        public void FieldSetId(uint value) {
+            id = value;
+        }
+        public void FieldIncId() {
+            id++;
+        }
+
+        public void FieldResetId() {
+            id = 0;
+        }
+        public void FieldResetDictById() {
+            var keysToRemove = fields.Keys
+                .Where(k => uint.TryParse(k, out _))
+                .ToList();
+
+            foreach(var key in keysToRemove) {
+                fields.Remove(key);
+            }
+        }
+        public void FieldClear() {
+            id = 0;
+            fields.Clear();
+        }
+
+        public NeoField FieldGet(string uniqueID = null) {
+            string key = uniqueID ?? id++.ToString();
+            if(!fields.TryGetValue(key, out NeoField field)) {
+                field = new NeoField();
+                fields[key] = field;
+            }
+            return field;
+        }
+
+        public  string FieldGetName(string uniqueID = null) {
+            return $"Field_{uniqueID ?? (id - 1).ToString()}";
+        }
+
+        public void FieldsRemove(params string[] keys) {
+            foreach(var key in keys) {
+                fields.Remove(key);
+            }
+        }
+
+        public object Calc(string exprStr) {
+            var expr = new Expression(exprStr);
+
+            expr.EvaluateParameter += (name, args) => {
+                switch(name.ToUpperInvariant()) {
+                    case "PI":
+                        args.Result = Math.PI;
+                        break;
+                    case "E":
+                        args.Result = Math.E;
+                        break;
+                }
+            };
+
+            try {
+                return expr.Evaluate();
+            } catch {
+                return null;
+            }
+        }
+
+        private bool ApplyFieldValueOnEvent(ref NeoField field, string fieldName, ref object value, Type type) {
+            string focused = GUI.GetNameOfFocusedControl();
+
+            bool shouldApply =
+                ((focused == fieldName && Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Return)
+                || (LastFocused == fieldName && focused != fieldName))
+                && (field.State == NeoField.StateType.COMPUTE || field.State == NeoField.StateType.WARNING);
+
+            LastFocused = focused;
+
+            if(shouldApply) {
+                try {
+                    switch(Type.GetTypeCode(type)) {
+                        case TypeCode.Boolean:
+                            value = Convert.ToBoolean(field.ComputedValue);
+                            break;
+                        case TypeCode.Char:
+                            value = Convert.ToChar(field.ComputedValue);
+                            break;
+                        case TypeCode.SByte:
+                            value = Convert.ToSByte(field.ComputedValue);
+                            break;
+                        case TypeCode.Byte:
+                            value = Convert.ToByte(field.ComputedValue);
+                            break;
+                        case TypeCode.Int16:
+                            value = Convert.ToInt16(field.ComputedValue);
+                            break;
+                        case TypeCode.UInt16:
+                            value = Convert.ToUInt16(field.ComputedValue);
+                            break;
+                        case TypeCode.Int32:
+                            value = Convert.ToInt32(field.ComputedValue);
+                            break;
+                        case TypeCode.UInt32:
+                            value = Convert.ToUInt32(field.ComputedValue);
+                            break;
+                        case TypeCode.Int64:
+                            value = Convert.ToInt64(field.ComputedValue);
+                            break;
+                        case TypeCode.UInt64:
+                            value = Convert.ToUInt64(field.ComputedValue);
+                            break;
+                        case TypeCode.Single:
+                            value = Convert.ToSingle(field.ComputedValue);
+                            break;
+                        case TypeCode.Double:
+                            value = Convert.ToDouble(field.ComputedValue);
+                            break;
+                        case TypeCode.Decimal:
+                            value = Convert.ToDecimal(field.ComputedValue);
+                            break;
+                        case TypeCode.String:
+                            if(float.TryParse(Convert.ToString(field.ComputedValue), out float parsed))
+                                value = parsed;
+                            else
+                                field.State = NeoField.StateType.ERROR;
+                            break;
+                        default:
+                            field.State = NeoField.StateType.ERROR;
+                            return false;
+                    }
+
+                    field.Str = value.ToString();
+                    field.State = NeoField.StateType.OK;
+                    return true;
+                } catch {
+                    field.State = NeoField.StateType.ERROR;
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        public void ColorbyState(NeoField.StateType state) {
+            switch(state) {
+                case NeoField.StateType.ERROR:
+                    GUI.color = new Color(1f, 0.5f, 0.5f);
+                    break;
+                case NeoField.StateType.WARNING:
+                    GUI.color = new Color(1f, 1f, 0.5f);
+                    break;
+                case NeoField.StateType.COMPUTE:
+                    GUI.color = new Color(0.5f, 1f, 0.5f);
+                    break;
+                default:
+                    GUI.color = Color.white;
+                    break;
+            }
+        }
+
+        public string StatebyState(NeoField.StateType state) {
+            switch(state) {
+                case NeoField.StateType.ERROR:
+                    return "<color=#FF8888>!!</color>";
+                case NeoField.StateType.WARNING:
+                    return "<color=#FFFF88>!</color>";
+                case NeoField.StateType.COMPUTE:
+                    return "<color=#88FF88>✓</color>";
+                default:
+                    return "";
+            }
+        }
+
+        public bool DrawVector3(string label, ref Vector3 vec3, float lValue, float rValue, string uniqueID = null) {
+            bool changed = false;
+            GUILayout.Label($"<b>{label}</b>");
+            if(uniqueID == null) {
+                changed |= DrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f);
+                changed |= DrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f);
+                changed |= DrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f);
+            } else {
+                changed |= DrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f, uniqueID + "_0");
+                changed |= DrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f, uniqueID + "_1");
+                changed |= DrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f, uniqueID + "_2");
+            } 
+            return changed;
+        }
+
+        public bool DrawVector2(string label, ref Vector2 vec2, float lValue, float rValue, string uniqueID = null) {
+            bool changed = false;
+            GUILayout.Label($"<b>{label}</b>");
+            if(uniqueID == null) {
+                changed |= DrawSingleWithSlider("X", ref vec2.x, lValue, rValue, 300f);
+                changed |= DrawSingleWithSlider("Y", ref vec2.y, lValue, rValue, 300f);
+            } else {
+                changed |= DrawSingleWithSlider("X", ref vec2.x, lValue, rValue, 300f, uniqueID + "_0");
+                changed |= DrawSingleWithSlider("Y", ref vec2.y, lValue, rValue, 300f, uniqueID + "_1");
+            }
+            return changed;
+        }
+
+        public bool DrawColor(string label, ref Color color, float cWidth = 460f, string uniqueID = null) {
+            bool changed = false;
+
+            NeoField field = FieldGet(uniqueID);
+            StrInitialize(ref field, ColorUtility.ToHtmlStringRGBA(color));
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+            GUILayout.Space(4f);
+
+            if(field.State == NeoField.StateType.ERROR) {
+                GUI.color = new Color(1f, 0.5f, 0.5f);
+            } else {
+                GUI.color = Color.white;
+            }
+
+            GUI.SetNextControlName(FieldGetName(uniqueID));
+            string newHex = GUILayout.TextField(field.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
+
+            if(newHex != field.Str) {
+                field.Str = newHex;
+                changed = true;
+
+                if(ColorUtility.TryParseHtmlString("#" + field.Str, out Color parsed)) {
+                    color = parsed;
+                    field.State = NeoField.StateType.OK;
+                } else {
+                    field.State = NeoField.StateType.ERROR;
+                }
+            }
+
+            GUI.color = Color.white;
+            GUILayout.Space(2f);
+
+            GUILayout.Label(StatebyState(field.State), GUILayout.Width(10));
+
+            Color newColor = RGUI.Field(color, "", GUILayout.Width(cWidth));
+            
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            if(newColor != color) {
+                color = newColor;
+                changed = true;
+                field.Str = ColorUtility.ToHtmlStringRGBA(color);
+                field.State = NeoField.StateType.OK;
+            }
+
+            return changed;
+        }
+
+        public bool DrawGColor(ref GColor color, bool canEnableGradient, float cWidth = 220f, string uniqueID = null) {
+            bool prevGe = color.gradientEnabled;
+            bool ge = prevGe;
+
+            if(canEnableGradient && Drawer.DrawBool(Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge)) {
+                color = color with { gradientEnabled = ge };
+            }
+
+            color = color with { gradientEnabled = color.gradientEnabled && canEnableGradient };
+
+            bool changed = ge != prevGe;
+
+            if(color.gradientEnabled) {
+                NeoField fieldTL = FieldGet(uniqueID);
+                NeoField fieldTR;
+                NeoField fieldBL;
+                NeoField fieldBR;
+                if(string.IsNullOrEmpty(uniqueID)) {
+                    fieldTR = FieldGet();
+                    fieldBL = FieldGet();
+                    fieldBR = FieldGet();
+                } else {
+                   fieldTR = FieldGet(uniqueID + "_1");
+                   fieldBL = FieldGet(uniqueID + "_2");
+                   fieldBR = FieldGet(uniqueID + "_3");
+                }
+
+                StrInitialize(ref fieldTL, ColorUtility.ToHtmlStringRGBA(color.topLeft));
+                StrInitialize(ref fieldTR, ColorUtility.ToHtmlStringRGBA(color.topRight));
+                StrInitialize(ref fieldBL, ColorUtility.ToHtmlStringRGBA(color.bottomLeft));
+                StrInitialize(ref fieldBR, ColorUtility.ToHtmlStringRGBA(color.bottomRight));
+
+                GUILayout.BeginHorizontal();
+                Color newColorTL = RGUI.Field(color.topLeft, "", GUILayout.Width(cWidth));
+                GUILayout.Space(2f);
+                if(fieldTL.State == NeoField.StateType.ERROR) {
+                    GUI.color = new Color(1f, 0.5f, 0.5f);
+                }
+                GUI.SetNextControlName(FieldGetName(uniqueID));
+                string newHexTL = GUILayout.TextField(fieldTL.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
+                if(newHexTL != fieldTL.Str) {
+                    fieldTL.Str = newHexTL;
+                    changed = true;
+
+                    if(ColorUtility.TryParseHtmlString("#" + fieldTL.Str, out Color parsed)) {
+                        color.topLeft = parsed;
+                        fieldTL.State = NeoField.StateType.OK;
+                    } else {
+                        fieldTL.State = NeoField.StateType.ERROR;
+                    }
+                }
+                if(newColorTL != color.topLeft) {
+                    color.topLeft = newColorTL;
+                    changed = true;
+                    fieldTR.Str = ColorUtility.ToHtmlStringRGBA(color.topLeft);
+                    fieldTR.State = NeoField.StateType.OK;
+                }
+
+                GUILayout.Space(4f);
+                GUILayout.Label("↖", GUILayout.Width(16));
+                GUI.color = Color.white;
+
+                if(fieldTR.State == NeoField.StateType.ERROR) {
+                    GUI.color = new Color(1f, 0.5f, 0.5f);
+                }
+                GUILayout.Label("↗", GUILayout.Width(16));
+                GUI.SetNextControlName(FieldGetName(uniqueID));
+                string newHexTR = GUILayout.TextField(fieldTR.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
+                GUI.color = Color.white;
+                if(newHexTR != fieldTR.Str) {
+                    fieldTR.Str = newHexTR;
+                    changed = true;
+
+                    if(ColorUtility.TryParseHtmlString("#" + fieldTR.Str, out Color parsed)) {
+                        color.topRight = parsed;
+                        fieldTR.State = NeoField.StateType.OK;
+                    } else {
+                        fieldTR.State = NeoField.StateType.ERROR;
+                    }
+                }
+                Color newColorTR = RGUI.Field(color.topRight, "", GUILayout.Width(cWidth));
+                if(newColorTR != color.topRight) {
+                    color.topRight = newColorTR;
+                    changed = true;
+                    fieldTR.Str = ColorUtility.ToHtmlStringRGBA(color.topRight);
+                    fieldTR.State = NeoField.StateType.OK;
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.FlexibleSpace();
+
+
+                GUILayout.BeginHorizontal();
+                Color newColorBL = RGUI.Field(color.bottomLeft, "", GUILayout.Width(cWidth));
+                GUILayout.Space(2f);
+                if(fieldBL.State == NeoField.StateType.ERROR) {
+                    GUI.color = new Color(1f, 0.5f, 0.5f);
+                }
+                GUI.SetNextControlName(FieldGetName(uniqueID));
+                string newHexBL = GUILayout.TextField(fieldBL.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
+                if(newHexBL != fieldBL.Str) {
+                    fieldBL.Str = newHexBL;
+                    changed = true;
+
+                    if(ColorUtility.TryParseHtmlString("#" + fieldBL.Str, out Color parsed)) {
+                        color.bottomLeft = parsed;
+                        fieldBL.State = NeoField.StateType.OK;
+                    } else {
+                        fieldBL.State = NeoField.StateType.ERROR;
+                    }
+                }
+                if(newColorBL != color.bottomLeft) {
+                    color.bottomLeft = newColorTL;
+                    changed = true;
+                    fieldBL.Str = ColorUtility.ToHtmlStringRGBA(color.bottomLeft);
+                    fieldBL.State = NeoField.StateType.OK;
+                }
+
+                GUILayout.Space(4f);
+                GUILayout.Label("↙", GUILayout.Width(16));
+                GUI.color = Color.white;
+
+                if(fieldBR.State == NeoField.StateType.ERROR) {
+                    GUI.color = new Color(1f, 0.5f, 0.5f);
+                }
+                GUILayout.Label("↘", GUILayout.Width(16));
+                GUI.SetNextControlName(FieldGetName(uniqueID));
+                string newHexBR = GUILayout.TextField(fieldBR.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
+                GUI.color = Color.white;
+                if(newHexBR != fieldBR.Str) {
+                    fieldBR.Str = newHexBR;
+                    changed = true;
+
+                    if(ColorUtility.TryParseHtmlString("#" + fieldBR.Str, out Color parsed)) {
+                        color.bottomRight = parsed;
+                        fieldBR.State = NeoField.StateType.OK;
+                    } else {
+                        fieldBR.State = NeoField.StateType.ERROR;
+                    }
+                }
+                Color newColorBR = RGUI.Field(color.bottomRight, "", GUILayout.Width(cWidth));
+                if(newColorBR != color.bottomRight) {
+                    color.bottomRight = newColorBR;
+                    changed = true;
+                    fieldBR.Str = ColorUtility.ToHtmlStringRGBA(color.bottomRight);
+                    fieldBR.State = NeoField.StateType.OK;
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.FlexibleSpace();
+            } else {
+                Color all = color.topLeft;
+                if(changed = DrawColor(Main.Lang.Get("TEXT_COLOR", "Text Color"), ref all, cWidth, uniqueID)) {
+                    color = all;
+                }
+            }
+            return changed;
+        }
+
+        public bool DrawSingle(string label, ref float value, string uniqueID = null) {
+            NeoField field = FieldGet(uniqueID);
+            StrInitialize(ref field, value.ToString());
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+            GUILayout.Space(4f);
+
+            bool changed = false;
+
+            ColorbyState(field.State);
+
+            string fieldName = FieldGetName(uniqueID);
+            GUI.SetNextControlName(fieldName);
+            string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
+            GUI.color = Color.white;
+
+            if(newField != field.Str) {
+                field.Str = newField;
+                if(string.IsNullOrEmpty(field.Str)) {
+                    field.State = NeoField.StateType.ERROR;
+                } else {
+                    if(float.TryParse(newField, out float parsed)) {
+                        value = parsed;
+                        field.ComputedValue = parsed;
+                        field.State = NeoField.StateType.OK;
+                        changed = true;
+                    } else {
+                        var result = Calc(field.Str);
+                        if(result == null) {
+                            field.State = NeoField.StateType.ERROR;
+                        } else {
+                            float computed = Convert.ToSingle(result);
+                            field.ComputedValue = computed;
+                            field.State = (float.IsNaN(computed) || float.IsInfinity(computed))
+                                ? NeoField.StateType.WARNING
+                                : NeoField.StateType.COMPUTE;
+                        }
+                    }
+                }
+            }
+
+            object objValue = value;
+            if(ApplyFieldValueOnEvent(ref field, fieldName, ref objValue, typeof(float))) {
+                value = (float)objValue;
+                changed = true;
+            }
+
+            GUILayout.Space(2f);
+            GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            return changed;
+        }
+
+        public bool DrawSingleWithSlider(string label, ref float value, float lValue, float rValue, float width, string uniqueID = null) {
+            NeoField field = FieldGet(uniqueID);
+            StrInitialize(ref field, value.ToString());
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+            GUILayout.Space(4f);
+
+            bool changed = false;
+
+            float sliderValue = GUILayout.HorizontalSlider(value, lValue, rValue, Drawer.mySlider, Drawer.myThumb, GUILayout.Width(width));
+            if(sliderValue != value) {
+                value = sliderValue;
+                field.Str = value.ToString();
+                field.State = NeoField.StateType.OK;
+                changed = true;
+            }
+
+            GUILayout.Space(8f);
+
+            ColorbyState(field.State);
+
+            string fieldName = FieldGetName(uniqueID);
+            GUI.SetNextControlName(fieldName);
+            string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
+            GUI.color = Color.white;
+
+            if(newField != field.Str) {
+                field.Str = newField;
+                if(string.IsNullOrEmpty(field.Str)) {
+                    field.State = NeoField.StateType.ERROR;
+                } else {
+                    if(float.TryParse(newField, out float parsed)) {
+                        value = parsed;
+                        field.ComputedValue = parsed;
+                        field.State = NeoField.StateType.OK;
+                        changed = true;
+                    } else {
+                        var result = Calc(field.Str);
+                        if(result == null) {
+                            field.State = NeoField.StateType.ERROR;
+                        } else {
+                            float computed = Convert.ToSingle(result);
+                            field.ComputedValue = computed;
+                            field.State = (float.IsNaN(computed) || float.IsInfinity(computed))
+                                ? NeoField.StateType.WARNING
+                                : NeoField.StateType.COMPUTE;
+                        }
+                    }
+                }
+            }
+
+            object objValue = value;
+            if(ApplyFieldValueOnEvent(ref field, fieldName, ref objValue, typeof(float))) {
+                value = (float)objValue;
+                changed = true;
+            }
+
+            GUILayout.Space(2f);
+            GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            return changed;
+        }
+
+        public bool DrawDouble(string label, ref double value, string uniqueID = null) {
+            NeoField field = FieldGet(uniqueID);
+            StrInitialize(ref field, value.ToString());
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+            GUILayout.Space(4f);
+
+            bool changed = false;
+
+            ColorbyState(field.State);
+
+            string fieldName = FieldGetName(uniqueID);
+            GUI.SetNextControlName(fieldName);
+            string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
+            GUI.color = Color.white;
+
+            if(newField != field.Str) {
+                field.Str = newField;
+                if(string.IsNullOrEmpty(field.Str)) {
+                    field.State = NeoField.StateType.ERROR;
+                } else {
+                    if(double.TryParse(newField, out double parsed)) {
+                        value = parsed;
+                        field.ComputedValue = parsed;
+                        field.State = NeoField.StateType.OK;
+                        changed = true;
+                    } else {
+                        var result = Calc(field.Str);
+                        if(result == null) {
+                            field.State = NeoField.StateType.ERROR;
+                        } else {
+                            double computed = Convert.ToSingle(result);
+                            field.ComputedValue = computed;
+                            field.State = (double.IsNaN(computed) || double.IsInfinity(computed))
+                                ? NeoField.StateType.WARNING
+                                : NeoField.StateType.COMPUTE;
+                        }
+                    }
+                }
+            }
+
+            object objValue = value;
+            if(ApplyFieldValueOnEvent(ref field, fieldName, ref objValue, typeof(double))) {
+                value = (double)objValue;
+                changed = true;
+            }
+
+            GUILayout.Space(2f);
+            GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            return changed;
+        }
+
+        public bool DrawInt32(string label, ref int value, string uniqueID = null) {
+            NeoField field = FieldGet(uniqueID);
+            StrInitialize(ref field, value.ToString());
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+            GUILayout.Space(4f);
+
+            bool changed = false;
+
+            ColorbyState(field.State);
+
+            string fieldName = FieldGetName(uniqueID);
+            GUI.SetNextControlName(fieldName);
+            string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
+            GUI.color = Color.white;
+
+            if(newField != field.Str) {
+                field.Str = newField;
+                if(string.IsNullOrEmpty(field.Str)) {
+                    field.State = NeoField.StateType.ERROR;
+                } else {
+                    if(int.TryParse(newField, out int parsed)) {
+                        value = parsed;
+                        field.ComputedValue = parsed;
+                        field.State = NeoField.StateType.OK;
+                        changed = true;
+                    } else {
+                        var result = Calc(field.Str);
+                        if(result == null) {
+                            field.State = NeoField.StateType.ERROR;
+                        } else {
+                            double computed = Convert.ToDouble(result);
+                            if(double.IsNaN(computed) || double.IsInfinity(computed)) {
+                                field.State = NeoField.StateType.ERROR;
+                            } else if(computed > int.MaxValue) {
+                                field.State = NeoField.StateType.WARNING;
+                                field.ComputedValue = int.MaxValue;
+                            } else if(computed < int.MinValue) {
+                                field.State = NeoField.StateType.WARNING;
+                                field.ComputedValue = int.MinValue;
+                            } else {
+                                int computedInt = (int)Math.Round(computed);
+                                field.ComputedValue = computedInt;
+                                field.State = NeoField.StateType.COMPUTE;
+                            }
+                        }
+                    }
+                }
+            }
+
+            object objValue = value;
+            if(ApplyFieldValueOnEvent(ref field, fieldName, ref objValue, typeof(int))) {
+                value = (int)objValue;
+                changed = true;
+            }
+
+            GUILayout.Space(2f);
+            GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            return changed;
+        }
+    }
+}

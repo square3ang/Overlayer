@@ -32,6 +32,7 @@ namespace Overlayer.Utils
         public Ease ease = Ease.OutExpo;
         public int maxLength = -1;
 
+        private NeoDrawer neoDrawer;
 
         public void Initialize(string tag, string codesBefore, string codesAfter)
         {
@@ -51,11 +52,13 @@ namespace Overlayer.Utils
             }
 
             testvalue = (float)valueMax;
-            windowRect.width = 300;
+            windowRect.width = 400;
             isInitaialize = true;
             this.codesBefore = codesBefore;
             this.codesAfter = codesAfter;
             BlockUMMClosing.Block = true;
+
+            neoDrawer = new NeoDrawer();
         }
 
         public void OnGUI()
@@ -79,7 +82,7 @@ namespace Overlayer.Utils
                 //var sz = GUI.skin.label.CalcSize(new GUIContent("<size=40>Test</size>"));
                 previewWindowRect.x = windowRect.x + windowRect.width + 10;
                 previewWindowRect.y = windowRect.y;
-                previewWindowRect.width = 250;
+                previewWindowRect.width = 280;
                 previewWindowRect.height = 150;
                 previewWindowRect = GUI.Window(1123, previewWindowRect, PreviewWindow, "",
                     RGUIStyle.darkWindow);
@@ -94,13 +97,19 @@ namespace Overlayer.Utils
                 ColorUtility.ToHtmlStringRGBA(colorMin), ColorUtility.ToHtmlStringRGBA(colorMax), ease.ToString(),
                 maxLength);
             col = col.Replace(".", "F").Replace("(", "F").Replace(")", "F");
-            Drawer.DrawSingleWithSlider("Value", ref testvalue, (float)valueMin, (float)valueMax, 100);
+            if(Main.Settings.useLegacyNumberField) {
+                Drawer.DrawSingleWithSlider("Value", ref testvalue, (float)valueMin, (float)valueMax, 100);
+            } else {
+                neoDrawer.DrawSingleWithSlider("Value", ref testvalue, (float)valueMin, (float)valueMax, 100, "Pre");
+            }
             GUILayout.Label("<size=40><color=#" + col +
-                            ">Test</color></size>");
+                           ">Test</color></size>");
         }
 
         private void DrawWindow(int windowID)
         {
+            neoDrawer.FieldResetId();
+
             GUI.BringWindowToFront(windowID);
             GUILayout.BeginVertical();
             GUILayout.Space(10);
@@ -110,13 +119,19 @@ namespace Overlayer.Utils
             Drawer.DrawTags(ref targetTag);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            Drawer.DrawDouble(Main.Lang.Get("VALUE_MIN", "Min Value"), ref valueMin);
-            Drawer.DrawDouble(Main.Lang.Get("VALUE_MAX", "Max Value"), ref valueMax);
-
-            GUILayout.Label(Main.Lang.Get("COLOR_MIN", "Min Color"));
-            Drawer.DrawColor(ref colorMin);
-            GUILayout.Label(Main.Lang.Get("COLOR_MAX", "Max Color"));
-            Drawer.DrawColor(ref colorMax);
+            if(Main.Settings.useLegacyNumberField) {
+                Drawer.DrawDouble(Main.Lang.Get("VALUE_MIN", "Min Value"), ref valueMin);
+                Drawer.DrawDouble(Main.Lang.Get("VALUE_MAX", "Max Value"), ref valueMax);
+                GUILayout.Label(Main.Lang.Get("COLOR_MIN", "Min Color"));
+                Drawer.DrawColor(ref colorMin);
+                GUILayout.Label(Main.Lang.Get("COLOR_MAX", "Max Color"));
+                Drawer.DrawColor(ref colorMax);
+            } else {
+                neoDrawer.DrawDouble(Main.Lang.Get("VALUE_MIN", "Min Value"), ref valueMin);
+                neoDrawer.DrawDouble(Main.Lang.Get("VALUE_MAX", "Max Value"), ref valueMax);
+                neoDrawer.DrawColor(Main.Lang.Get("COLOR_MIN", "Min Color"), ref colorMin, 180f);
+                neoDrawer.DrawColor(Main.Lang.Get("COLOR_MAX", "Max Color"), ref colorMax, 180f);
+            }
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("EASE", "Ease"));
@@ -125,10 +140,14 @@ namespace Overlayer.Utils
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            Drawer.DrawInt32("maxLength", ref maxLength);
+            if(Main.Settings.useLegacyNumberField) {
+                Drawer.DrawInt32("maxLength", ref maxLength);
+            } else {
+                neoDrawer.DrawInt32("maxLength", ref maxLength);
+            }
 
-            if (Drawer.Button(Main.Lang.Get("DONE", "Done")))
-            {
+            if(Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
+                neoDrawer = null;
                 BlockUMMClosing.Block = false;
                 Destroy(gameObject);
             }

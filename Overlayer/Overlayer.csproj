@@ -52,8 +52,11 @@
     <Reference Include="DOTweenPro">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\DOTweenPro.dll</HintPath>
     </Reference>
+    <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
+      <HintPath>..\packages\ncalc.1.3.8\lib\NCalc.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RDTools">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\RDTools.dll</HintPath>
@@ -393,6 +396,7 @@
     <Compile Include="CodeEditor\CodeEditor.cs" />
     <Compile Include="CodeEditor\CodeTheme.cs" />
     <Compile Include="Controllers\GUIController.cs" />
+    <Compile Include="Core\DllImporter.cs" />
     <Compile Include="Core\Drawer.cs" />
     <Compile Include="Core\EventEase.cs" />
     <Compile Include="Core\FastDateTime.cs" />
@@ -403,6 +407,7 @@
     <Compile Include="Core\Interfaces\IModel.cs" />
     <Compile Include="Core\MethodDrawable.cs" />
     <Compile Include="Core\ModelDrawable.cs" />
+    <Compile Include="Core\NeoDrawer.cs" />
     <Compile Include="Core\Translation\TranslatorHelper.cs" />
     <Compile Include="Olly\OllyDialogue.cs" />
     <Compile Include="Olly\OllyDialogueLines.cs" />

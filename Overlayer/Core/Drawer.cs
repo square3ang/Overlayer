@@ -28,14 +28,6 @@ namespace Overlayer.Core
             return changed;
         }
 
-        public static bool NeoDrawVector2(string label, ref Vector2 vec2, float lValue, float rValue, ref string[] field, ref int error, int errorBit) {
-            bool changed = false;
-            GUILayout.Label($"<b>{label}</b>");
-            changed |= NeoDrawSingleWithSlider("X", ref vec2.x, lValue, rValue, 300f, ref field[0], ref error, errorBit);
-            changed |= NeoDrawSingleWithSlider("Y", ref vec2.y, lValue, rValue, 300f, ref field[1], ref error, errorBit + 1);
-            return changed;
-        }
-
         public static bool DrawVector3(string label, ref Vector3 vec3, float lValue, float rValue)
         {
             bool changed = false;
@@ -43,15 +35,6 @@ namespace Overlayer.Core
             changed |= DrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f);
             changed |= DrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f);
             changed |= DrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f);
-            return changed;
-        }
-
-        public static bool NeoDrawVector3(string label, ref Vector3 vec3, float lValue, float rValue, ref string[] field, ref int error, int errorBit) {
-            bool changed = false;
-            GUILayout.Label($"<b>{label}</b>");
-            changed |= NeoDrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f, ref field[0], ref error, errorBit);
-            changed |= NeoDrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f, ref field[1], ref error, errorBit + 1);
-            changed |= NeoDrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f, ref field[2], ref error, errorBit + 2);
             return changed;
         }
 
@@ -180,49 +163,6 @@ namespace Overlayer.Core
             bool result = newValue != value;
             value = newValue;
             return result;
-        }
-
-        public static bool NeoDrawSingleWithSlider(string label, ref float value, float lValue, float rValue, float width, ref string field, ref int error, int errorBit) {
-            bool hasError = (error & (1 << errorBit)) != 0;
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
-            GUILayout.Space(4f);
-
-            bool changed = false;
-            float currentValue = value;
-            float sliderValue = GUILayout.HorizontalSlider(currentValue, lValue, rValue, mySlider, myThumb, GUILayout.Width(width));
-            if(sliderValue != currentValue) {
-                currentValue = sliderValue;
-                field = currentValue.ToString();
-                changed = true;
-            }
-            GUILayout.Space(8f);
-            if(hasError) {
-                GUI.color = new Color(1f, 0.5f, 0.5f);
-            }
-            string newField = GUILayout.TextField(field, 9, myTextField, GUILayout.Width(100f));
-            if(newField != field) {
-                field = newField;
-                if(float.TryParse(field, out float parsedValue)) {
-                    currentValue = parsedValue;
-                    changed = true;
-                    error &= ~(1 << errorBit);
-                } else {
-                    error |= (1 << errorBit);
-                }
-            }
-            if(hasError) {
-                GUI.color = Color.white;
-                GUILayout.Space(8f);
-                GUILayout.Label("<color=#FF8888>!!</color>");
-            }
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            value = currentValue;
-
-            return changed;
         }
 
         public static bool DrawStringArray(ref string[] array, Action<int> arrayResized = null,
@@ -506,43 +446,6 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static bool NeoDrawInt32(string label, ref int value, ref string field, ref int error, int errorBit) {
-            bool hasError = (error & (1 << errorBit)) != 0;
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
-            GUILayout.Space(4f);
-
-            bool changed = false;
-            int currentValue = value;
-            GUILayout.Space(8f);
-            if(hasError) {
-                GUI.color = new Color(1f, 0.5f, 0.5f);
-            }
-            string newField = GUILayout.TextField(field, 11, myTextField, GUILayout.Width(100f));
-            if(newField != field) {
-                field = newField;
-                if(int.TryParse(field, out int parsedValue)) {
-                    currentValue = parsedValue;
-                    changed = true;
-                    error &= ~(1 << errorBit);
-                } else {
-                    error |= (1 << errorBit);
-                }
-            }
-            if(hasError) {
-                GUI.color = Color.white;
-                GUILayout.Space(8f);
-                GUILayout.Label("<color=#FF8888>!!</color>");
-            }
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            value = currentValue;
-
-            return changed;
-        }
-
         public static bool DrawInt64(string label, ref long value)
         {
             string str = value.ToString();
@@ -654,44 +557,6 @@ namespace Overlayer.Core
             bool result = DrawString(label, ref str);
             value = StringConverter.ToFloat(str);
             return result;
-        }
-
-        public static bool NeoDrawSingle(string label, ref float value, ref string field, ref int error, int errorBit)
-        {
-            bool hasError = (error & (1 << errorBit)) != 0;
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
-            GUILayout.Space(4f);
-
-            bool changed = false;
-            float currentValue = value;
-            GUILayout.Space(8f);
-            if(hasError) {
-                GUI.color = new Color(1f, 0.5f, 0.5f);
-            }
-            string newField = GUILayout.TextField(field, 9, myTextField, GUILayout.Width(100f));
-            if(newField != field) {
-                field = newField;
-                if(float.TryParse(field, out float parsedValue)) {
-                    currentValue = parsedValue;
-                    changed = true;
-                    error &= ~(1 << errorBit);
-                } else {
-                    error |= (1 << errorBit);
-                }
-            }
-            if(hasError) {
-                GUI.color = Color.white;
-                GUILayout.Space(8f);
-                GUILayout.Label("<color=#FF8888>!!</color>");
-            }
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            value = currentValue;
-
-            return changed;
         }
 
         public static bool DrawString(string label, ref string value, bool textArea = false)
@@ -969,6 +834,7 @@ namespace Overlayer.Core
         public static Regex color = new Regex("<<b></b>color=(.*?)>", RegexOptions.Compiled);
         public static GUIStyle myButton;
         public static GUIStyle myTextField;
+        public static GUIStyle myTextFieldNoPad;
         public static GUIStyle mySlider;
         public static GUIStyle myThumb;
 
@@ -980,6 +846,9 @@ namespace Overlayer.Core
                 myTextField.normal.background = GUI.skin.textField.normal.background;
                 myTextField.focused.background = GUI.skin.textField.focused.background;
                 myTextField.hover.background = GUI.skin.textField.hover.background;
+                myTextFieldNoPad.normal.background = GUI.skin.textField.normal.background;
+                myTextFieldNoPad.focused.background = GUI.skin.textField.focused.background;
+                myTextFieldNoPad.hover.background = GUI.skin.textField.hover.background;
                 mySlider.normal.background = GUI.skin.horizontalSlider.normal.background;
                 myThumb.normal.background = GUI.skin.horizontalSliderThumb.normal.background;
                 myThumb.active.background = GUI.skin.horizontalSliderThumb.active.background;
@@ -991,6 +860,9 @@ namespace Overlayer.Core
                 myTextField.normal.background = tfgray;
                 myTextField.focused.background = tfgray;
                 myTextField.hover.background = tfgray;
+                myTextFieldNoPad.normal.background = tfgray;
+                myTextFieldNoPad.focused.background = tfgray;
+                myTextFieldNoPad.hover.background = tfgray;
                 mySlider.normal.background = jittengray;
                 myThumb.normal.background = gray;
                 myThumb.active.background = dulgray;
@@ -1074,11 +946,12 @@ namespace Overlayer.Core
 
             myButton = new GUIStyle(GUI.skin.button);
             myTextField = new GUIStyle(GUI.skin.textField);
+            myTextFieldNoPad = new GUIStyle(myTextField);
+            myTextField.padding.right = 40;
             mySlider = new GUIStyle(GUI.skin.horizontalSlider);
             myThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);
             SetStyle(Main.Settings.useLegacyTheme);
         }
-
 
         public static bool Button(string str, params GUILayoutOption[] options)
         {

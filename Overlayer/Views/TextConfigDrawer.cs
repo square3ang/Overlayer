@@ -43,10 +43,14 @@ namespace Overlayer.Views
             strShadowDilate = model.ShadowDilate.ToString();
             strShadowSoftness = model.ShadowSoftness.ToString();
             strOutlineWidth = model.OutlineWidth.ToString();
+
+            NeoDrawer.StaticInstance.FieldResetDictById();
         }
 
         public override void Draw()
         {
+            NeoDrawer.StaticInstance.FieldResetId();
+
             if (Drawer.DrawBool(Main.Lang.Get("ACTIVE","Active"), ref model.Active))
                 text.gameObject.SetActive(model.Active);
             bool _drag = model.Drag;
@@ -64,11 +68,11 @@ namespace Overlayer.Views
                 changed |= Drawer.DrawVector3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180);
                 changed |= Drawer.DrawVector2(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), ref model.ShadowOffset, -1, 1);
             } else {
-                changed |= Drawer.NeoDrawVector2(Main.Lang.Get("POSITION", "Position"), ref model.Position, 0, 1, ref strPosition, ref strErrors, 0);
-                changed |= Drawer.NeoDrawVector2(Main.Lang.Get("SCALE", "Scale"), ref model.Scale, 0, 2, ref strScale, ref strErrors, 2);
-                changed |= Drawer.NeoDrawVector2(Main.Lang.Get("PIVOT", "Pivot"), ref model.Pivot, 0, 1, ref strPivot, ref strErrors, 4);
-                changed |= Drawer.NeoDrawVector3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180, ref strRotation, ref strErrors, 6);
-                changed |= Drawer.NeoDrawVector2(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), ref model.ShadowOffset, -1, 1, ref strShadowOffset, ref strErrors, 9);
+                changed |= NeoDrawer.StaticInstance.DrawVector2(Main.Lang.Get("POSITION", "Position"), ref model.Position, 0, 1);
+                changed |= NeoDrawer.StaticInstance.DrawVector2(Main.Lang.Get("SCALE", "Scale"), ref model.Scale, 0, 2);
+                changed |= NeoDrawer.StaticInstance.DrawVector2(Main.Lang.Get("PIVOT", "Pivot"), ref model.Pivot, 0, 1);
+                changed |= NeoDrawer.StaticInstance.DrawVector3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180);
+                changed |= NeoDrawer.StaticInstance.DrawVector2(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), ref model.ShadowOffset, -1, 1);
             }
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("FONT","Font"));
@@ -104,36 +108,55 @@ namespace Overlayer.Views
                 changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
                 changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
             } else {
-                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f, ref strFontSize, ref strErrors, 11);
-                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f, ref strLineSpacing, ref strErrors, 16);
-                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f, ref strShadowDilate, ref strErrors, 12);
-                changed |= Drawer.NeoDrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f, ref strShadowSoftness, ref strErrors, 13);
+                changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f);
+                changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f);
+                changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
+                changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
             }
-                Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref colorsExpanded[0]);
+            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref colorsExpanded[0]);
             if (colorsExpanded[0])
             {
-                GUILayoutEx.BeginIndent();
-                changed |= Drawer.DrawGColor(ref model.TextColor, true);
-                GUILayoutEx.EndIndent();
+                if(Main.Settings.useLegacyNumberField) {
+                    GUILayoutEx.BeginIndent();
+                    changed |= Drawer.DrawGColor(ref model.TextColor, true);
+                    GUILayoutEx.EndIndent();
+                } else {
+                    changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.TextColor, true);
+                }
+            } else {
+                NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
             }
-            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS","Edit {0}"),Main.Lang.Get("SHADOW_COLOR","Shadow Color")), ref colorsExpanded[1]);
+            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("SHADOW_COLOR", "Shadow Color")), ref colorsExpanded[1]);
             if (colorsExpanded[1])
             {
-                GUILayoutEx.BeginIndent();
-                changed |= Drawer.DrawGColor(ref model.ShadowColor, false);
-                GUILayoutEx.EndIndent();
+                if(Main.Settings.useLegacyNumberField) {
+                    GUILayoutEx.BeginIndent();
+                    changed |= Drawer.DrawGColor(ref model.ShadowColor, false);
+                    GUILayoutEx.EndIndent();
+                } else {
+                    changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.ShadowColor, true);
+                }
+                
+            } else {
+                NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
             }
             Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS","Edit {0}"),Main.Lang.Get("OUTLINE_COLOR","Outline Color")), ref colorsExpanded[2]);
             if (colorsExpanded[2])
             {
-                GUILayoutEx.BeginIndent();
-                changed |= Drawer.DrawGColor(ref model.OutlineColor, false);
-                GUILayoutEx.EndIndent();
+                if(Main.Settings.useLegacyNumberField) {
+                    GUILayoutEx.BeginIndent();
+                    changed |= Drawer.DrawGColor(ref model.OutlineColor, false);
+                    GUILayoutEx.EndIndent();
+                } else {
+                    changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.OutlineColor, false);
+                }
+            } else {
+                NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
             }
             if(Main.Settings.useLegacyNumberField) {
                 changed |= Drawer.DrawSingleWithSlider(Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
             } else {
-                changed |= NeoDrawer.DrawSingleWithSlider(Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
+                changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
             }
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("ALIGNMENT","Alignment"));

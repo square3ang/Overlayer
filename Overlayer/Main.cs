@@ -117,6 +117,7 @@ namespace Overlayer
                 FontManager.Initialize();
                 TagResetter.Postfix();
                 Tags.System.Init();
+                DllImporter.NCalcInitialize();
                 if(!Settings.disableLogo) {
                     LogoInit(modEntry.Path);
                 }

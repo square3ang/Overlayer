@@ -37,6 +37,11 @@ namespace Overlayer.Utils
         public bool invert = false;
         public Ease ease = Ease.OutExpo;
 
+        private int strErrors = 0;
+        private string strstartSize;
+        private string strendSize;
+        private string strdefaultSize;
+        private string strspeed;
 
         public void Initialize(string tag, string codesBefore, string codesAfter)
         {
@@ -59,6 +64,12 @@ namespace Overlayer.Utils
             this.codesAfter = codesAfter;
             BlockUMMClosing.Block = true;
             TagManager.testerValue = "0";
+
+            strErrors = 0;
+            strstartSize = startSize.ToString();
+            strendSize = endSize.ToString();
+            strdefaultSize = defaultSize.ToString();
+            strspeed = speed.ToString();
         }
 
         public void Update()
@@ -121,10 +132,18 @@ namespace Overlayer.Utils
             Drawer.DrawTags(ref targetTag);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            Drawer.DrawDouble(Main.Lang.Get("START_SIZE", "Start Size"), ref startSize);
-            Drawer.DrawDouble(Main.Lang.Get("END_SIZE", "End Size"), ref endSize);
-            Drawer.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
-            Drawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
+            if(Main.Settings.useLegacyNumberField) {
+                Drawer.DrawDouble(Main.Lang.Get("START_SIZE", "Start Size"), ref startSize);
+                Drawer.DrawDouble(Main.Lang.Get("END_SIZE", "End Size"), ref endSize);
+                Drawer.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
+                Drawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
+            } else {
+                NeoDrawer.StaticInstance.DrawDouble(Main.Lang.Get("START_SIZE", "Start Size"), ref startSize);
+                NeoDrawer.StaticInstance.DrawDouble(Main.Lang.Get("END_SIZE", "End Size"), ref endSize);
+                NeoDrawer.StaticInstance.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
+                NeoDrawer.StaticInstance.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
+            }
+
             Drawer.DrawBool(Main.Lang.Get("INVERT", "Invert"), ref invert);
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("EASE", "Ease"));

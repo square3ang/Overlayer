@@ -29,18 +29,17 @@ namespace Overlayer.Views
         private bool isOpenedExtraMenu = false;
 
         int strErrors = 0;
-        string strFPSUpdateRate;
-        string strFrameTimeUpdateRate;
         string strSystemTagUpdateRate;
 
         public override void OnceCall() {
             strErrors = 0;
-            strFPSUpdateRate = model.FPSUpdateRate.ToString();
-            strFrameTimeUpdateRate = model.FrameTimeUpdateRate.ToString();
             strSystemTagUpdateRate = model.SystemTagUpdateRate.ToString();
+            NeoDrawer.StaticInstance.FieldResetDictById();
         }
         public override void Draw()
         {
+            NeoDrawer.StaticInstance.FieldResetId();
+
             GUILayout.BeginHorizontal();
             GUILayout.EndHorizontal();
             if(Main.Logo != null && !model.disableLogo) {
@@ -54,7 +53,7 @@ namespace Overlayer.Views
                     Event.current.Use();
                 }
                 GUILayout.Label($"<size=26>{Main.Lang.Get("SLOGAN_TEXT", "Display everything as you wish.")}</size>");
-                GUILayout.Label($"<size=16>{Main.ModVersion}, by <color=#{Tags.Effect.Rainbow()}>Square & Kkitut</color></size>");
+                GUILayout.Label($"<size=16>{Main.Mod.Version}, by <color=#{Tags.Effect.Rainbow()}>Square & Kkitut</color></size>");
                 if(Main.EgEnabled) {
                     Main.Eg.DrawChoices();
                 }
@@ -187,8 +186,8 @@ namespace Overlayer.Views
                     RGUIStyle.CreateStyles();
                 }
                 Drawer.DrawBool(
-                        string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_NUMBER_FIELD", "Legacy Number Field")),
-                        ref model.useLegacyNumberField);
+                    string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_NUMBER_FIELD", "Legacy Number Field")),
+                    ref model.useLegacyNumberField);
                 if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
                     LazyPatchManager.Unpatch(typeof(ChangeAddHit), true);
                     LazyPatchManager.Patch(typeof(ChangeAddHit));
@@ -202,9 +201,9 @@ namespace Overlayer.Views
                     Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
                     Drawer.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
                 } else {
-                    Drawer.NeoDrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate, ref strFPSUpdateRate, ref strErrors, 0);
-                    Drawer.NeoDrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate, ref strFrameTimeUpdateRate, ref strErrors, 1);
-                    Drawer.NeoDrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate, ref strSystemTagUpdateRate, ref strErrors, 2);
+                    NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
+                    NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
+                    NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
                 }
             }
             GUILayout.BeginHorizontal();
