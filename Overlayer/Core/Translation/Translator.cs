@@ -51,9 +51,9 @@ namespace Overlayer.Core.Translatior {
         /// <summary>
         /// Initializes a new instance of the Translator class and starts loading translations asynchronously.
         /// </summary>
-        /// <param name="ktlKey">The key for the KTL value (default: "KTL").</param>
-        /// <param name="expectedKtlValue">The expected value for the KTL key (default: "For translation file verification").</param>
-        public Translator(string ktlKey = "KTL", string expectedKtlValue = "For translation file verification") {
+        /// <param name="ktlKey">The key for the KTL value (default: "0KTL").</param>
+        /// <param name="expectedKtlValue">The expected value for the 0KTL key (default: "DO_NOT_TRANSLATE_THIS").</param>
+        public Translator(string ktlKey = "0KTL", string expectedKtlValue = "DO_NOT_TRANSLATE_THIS") {
             KTLKey = ktlKey; // Assign the KTL key.
             ExpectedKTLValue = expectedKtlValue; // Assign the expected KTL value.
         }
