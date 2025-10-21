@@ -28,12 +28,7 @@ namespace Overlayer.Views
 
         private bool isOpenedExtraMenu = false;
 
-        int strErrors = 0;
-        string strSystemTagUpdateRate;
-
         public override void OnceCall() {
-            strErrors = 0;
-            strSystemTagUpdateRate = model.SystemTagUpdateRate.ToString();
             NeoDrawer.StaticInstance.FieldResetDictById();
         }
         public override void Draw()

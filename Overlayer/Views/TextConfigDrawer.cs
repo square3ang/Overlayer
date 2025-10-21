@@ -19,31 +19,7 @@ namespace Overlayer.Views
         private bool[] colorsExpanded = new bool[4];
         public TextConfigDrawer(TextConfig config) : base(config) => text = TextManager.Find(config);
 
-        int strErrors = 0;
-        string[] strPosition = new string[2];
-        string[] strScale = new string[2];
-        string[] strPivot = new string[2];
-        string[] strRotation = new string[3];
-        string[] strShadowOffset = new string[2];
-        string strFontSize;
-        string strLineSpacing;
-        string strShadowDilate;
-        string strShadowSoftness;
-        string strOutlineWidth;
-
         public override void OnceCall() {
-            strErrors = 0;
-            strPosition = new string[2] { model.Position.x.ToString(), model.Position.y.ToString() };
-            strScale = new string[2] { model.Scale.x.ToString(), model.Scale.y.ToString() };
-            strPivot = new string[2] { model.Pivot.x.ToString(), model.Pivot.y.ToString() };
-            strRotation = new string[3] { model.Rotation.x.ToString(), model.Rotation.y.ToString(), model.Rotation.z.ToString() };
-            strShadowOffset = new string[2] { model.ShadowOffset.x.ToString(), model.ShadowOffset.y.ToString() };
-            strFontSize = model.FontSize.ToString();
-            strLineSpacing = model.LineSpacing.ToString();
-            strShadowDilate = model.ShadowDilate.ToString();
-            strShadowSoftness = model.ShadowSoftness.ToString();
-            strOutlineWidth = model.OutlineWidth.ToString();
-
             NeoDrawer.StaticInstance.FieldResetDictById();
         }
 

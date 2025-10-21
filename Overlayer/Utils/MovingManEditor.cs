@@ -37,12 +37,6 @@ namespace Overlayer.Utils
         public bool invert = false;
         public Ease ease = Ease.OutExpo;
 
-        private int strErrors = 0;
-        private string strstartSize;
-        private string strendSize;
-        private string strdefaultSize;
-        private string strspeed;
-
         public void Initialize(string tag, string codesBefore, string codesAfter)
         {
             if (tag.Contains("("))
@@ -64,12 +58,6 @@ namespace Overlayer.Utils
             this.codesAfter = codesAfter;
             BlockUMMClosing.Block = true;
             TagManager.testerValue = "0";
-
-            strErrors = 0;
-            strstartSize = startSize.ToString();
-            strendSize = endSize.ToString();
-            strdefaultSize = defaultSize.ToString();
-            strspeed = speed.ToString();
         }
 
         public void Update()
