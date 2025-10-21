@@ -11,7 +11,8 @@ namespace Overlayer.Tags.Patches
     {
         [LazyPatch("Tags.Tile.StartTile&ProgressPatch", "MonsterLove.StateMachine.StateBehaviour", "ChangeState", new string[] { "System.Enum" }, Triggers = new string[]
         {
-            nameof(Tile.StartTile), nameof(Tile.StartProgress), nameof(Tile.IsStarted)
+            nameof(Tile.StartTile), nameof(Tile.StartProgress), nameof(Tile.IsStarted),
+            nameof(Status.MaxXAccuracy), nameof(Status.AbsMaxXAccuracy),
         })]
         public static class StartTileAndProgressPatch
         {
