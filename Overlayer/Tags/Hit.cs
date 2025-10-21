@@ -91,6 +91,12 @@ namespace Overlayer.Tags
         [Tag]
         public static int OPP() => scrMistakesManager.hitMarginsCount[3];
         [Tag]
+        public static int OELP() => OEP() + OLP();
+        [Tag]
+        public static int OV() => OVE() + OVL();
+        [Tag]
+        public static int OT() => OTE() + OTL();
+        [Tag]
         public static int MissCount() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
         [Tag]
         public static int Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
