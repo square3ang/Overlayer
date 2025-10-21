@@ -105,12 +105,12 @@ namespace Overlayer.Utils {
                     var asset = latestBetaRelease["assets"]?.FirstOrDefault();
                     BetaUrl = asset?["browser_download_url"]?.ToString();
                     newVersion = BetaVersion;
-                    if(currentVersion > BetaVersion) {
-                        CurrentVersionType = VersionType.UnknownBeta;
-                    } else if(currentVersion < BetaVersion) {
-                        CurrentVersionType = VersionType.OldBeta;
-                    } else if(currentVersion == BetaVersion) {
-                        CurrentVersionType = VersionType.Beta;
+                    if(CurrentVersionType == VersionType.Beta) {
+                        if(currentVersion > BetaVersion) {
+                            CurrentVersionType = VersionType.UnknownBeta;
+                        } else if(currentVersion < BetaVersion) {
+                            CurrentVersionType = VersionType.OldBeta;
+                        }
                     }
                 } else {
                     BetaUrl = null;
