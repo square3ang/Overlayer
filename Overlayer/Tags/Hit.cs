@@ -91,6 +91,10 @@ namespace Overlayer.Tags
         [Tag]
         public static int OPP() => scrMistakesManager.hitMarginsCount[3];
         [Tag]
+        public static int OFast() => OTE() + OVE() + OEP();
+        [Tag]
+        public static int OSlow() => OTL() + OVL() + OLP();
+        [Tag]
         public static int OELP() => OEP() + OLP();
         [Tag]
         public static int OV() => OVE() + OVL();
