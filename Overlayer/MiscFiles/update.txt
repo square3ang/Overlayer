@@ -1,5 +1,21 @@
-﻿[Add]
-Add LineSpacing
-Add Tag AbsXAccuracy
-[Change]
-Change Font Selector
+﻿From 3.19.7 to 3.27.0
+
+[ Add ]
+Logo, Slogan, Adjusted text, Clone Button
+hold 'Shift' to Fast Destroy, Autoupdate
+EasedValue Editor, Back button below TextConfig
+ExtraMenu, Auto Pivot
+New Number Field: Error handling, Simple calculator
+Translator list, LineSpacing, Click FontSelector, VersionInfo
+
+{ TAG }
+Fail, (O is Offisial) OTE, OVE, OEP, OP, OLP, OVL, OTL, OA(Auto Perfect), OPP(User Perfect), OFast, OSlow, OELP, OV, OT
+DefaultTextColor, DefaultTextShadowColor, CurHour, CurDay, AbsXAccuracy, MaxAccuracy, MaxXAccuracy, AbsMaxXAccuracy
+
+[ Change ]
+Accuracy Tag: ToDouble
+Translator verification
+
+[ Fix ]
+Pos & Size issue: Users ≠ 1920×1080 may need to reposition
+Drag, Some Translation, Level Tag Optimize
