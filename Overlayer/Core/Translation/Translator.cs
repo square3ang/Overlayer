@@ -233,7 +233,7 @@ namespace Overlayer.Core.Translatior {
         /// </summary>
         /// <param name="key">The key for the translation.</param>
         /// <returns>The count of elements for the key, or 0 if not found or translations are not ready.</returns>
-        public int GetsCount(string key) {
+        public int GetArrCount(string key) {
             // Return 0 if translations are not ready or in fail state
             if(failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default")
                 return 0;
