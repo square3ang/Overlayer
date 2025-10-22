@@ -321,6 +321,7 @@
     "TOP_RIGHT": "오른쪽 위",
     "UPDATE": "업데이트",
     "UPDATE_FAIL": "업데이트 실패",
+    "UPDATE_NEED_TO_RESTART": "재시작이 필요합니다!",
     "UPDATE_SUCESS": "업데이트 성공!",
     "UPDATER_ALREADY_LATEST": "이미 최신 버전입니다",
     "UPDATER_ALREADY_UPDATING": "이미 업데이트 중입니다",

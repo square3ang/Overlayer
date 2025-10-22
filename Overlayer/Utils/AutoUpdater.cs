@@ -30,7 +30,6 @@ namespace Overlayer.Utils {
         public static bool IsUpdating { get; private set; } = false;
         public static bool RequireRestart { get; private set; }
         public static readonly string OverlayerGithubApiLink = "https://api.github.com/repos/modlist-org/Overlayer/releases";
-        private static Version newVersion = new();
 
         public static void Reload(ModEntry modEntry) {
             Type entryType = typeof(ModEntry);
@@ -45,7 +44,7 @@ namespace Overlayer.Utils {
         public static async Task InitAndUpdate(ModEntry modEntry, bool update = false, bool allowBeta = false, Action ok = null, Action<string> err = null) {
             await InitUpdate(modEntry.Version, async () => {
                 if(update) {
-                    await CheckAndUpdate(modEntry, allowBeta, ok, err);
+                    await CheckAndPrepareUpdate(modEntry, allowBeta, ok, err);
                 }
             }, err);
         }
@@ -95,7 +94,6 @@ namespace Overlayer.Utils {
 
                     var asset = latestRelease["assets"]?.FirstOrDefault();
                     LatestUrl = asset?["browser_download_url"]?.ToString();
-                    newVersion = LatestVersion;
                 } else {
                     LatestUrl = null;
                 }
@@ -107,7 +105,6 @@ namespace Overlayer.Utils {
                     } else {
                         var asset = latestBetaRelease["assets"]?.FirstOrDefault();
                         BetaUrl = asset?["browser_download_url"]?.ToString();
-                        newVersion = BetaVersion;
                     }
 
                     if(CurrentVersionType == VersionType.Beta) {
@@ -126,7 +123,7 @@ namespace Overlayer.Utils {
                 return;
             }
         }
-        public static async Task CheckAndUpdate(ModEntry modEntry, bool allowBeta = false, Action ok = null, Action<string> err = null) {
+        public static async Task CheckAndPrepareUpdate(ModEntry modEntry, bool allowBeta = false, Action ok = null, Action<string> err = null) {
             if(IsUpdating) {
                 err?.Invoke(Main.Lang.Get("UPDATER_LEADY_UPDATING", "Already Updating"));
                 return;
@@ -151,7 +148,7 @@ namespace Overlayer.Utils {
 
             IsUpdating = true;
 
-            string tempDir = Path.Combine(Path.GetTempPath(), "OverlayerUpdate");
+            string tempDir = Path.Combine(modEntry.Path,"updatetemp");
             string zipPath = Path.Combine(tempDir, "Overlayer.zip");
 
             try {
@@ -181,21 +178,7 @@ namespace Overlayer.Utils {
                 } else {
                     err?.Invoke(Main.Lang.Get("UPDATER_INFO_JSON_NOT_FOUND", "info.json not found in the update package"));
                 }
-
-                foreach(var file in Directory.GetFiles(tempDir, "*", SearchOption.AllDirectories)) {
-                    string relativePath = file.Substring(tempDir.Length + 1);
-                    string destPath = Path.Combine(modEntry.Path, relativePath);
-
-                    string destDir = Path.GetDirectoryName(destPath);
-                    if(!Directory.Exists(destDir))
-                        Directory.CreateDirectory(destDir);
-
-                    File.Copy(file, destPath, true);
-                }
-
-                FieldInfo versionField = typeof(ModEntry).GetField("Version", BindingFlags.Instance | BindingFlags.Public);
-                versionField.SetValue(modEntry, newVersion);
-                modEntry.Info.Version = newVersion.ToString();
+                RequireRestart = true;
                 ok?.Invoke();
             } catch(Exception ex) {
                 err?.Invoke(ex.Message);
@@ -204,6 +187,57 @@ namespace Overlayer.Utils {
                     File.Delete(zipPath);
                 IsUpdating = false;
             }
+        }
+        public static Version UpdateBeforeLoad(ModEntry modEntry) {
+            string tempDir = Path.Combine(modEntry.Path, "updatetemp");
+
+            if(!Directory.Exists(tempDir)) {
+                return null;
+            }
+
+            string infoPath = Path.Combine(tempDir, "info.json");
+
+            Version extractedVersion = null;
+
+            try {
+                var infoJson = JObject.Parse(File.ReadAllText(infoPath));
+                string versionStr = infoJson["Version"]?.ToString();
+
+                if(string.IsNullOrEmpty(versionStr)) {
+                    string errPkg = "Failed to get version from info.json.";
+                    Main.Logger.Log(errPkg);
+                    Main.UpdateInfo = errPkg;
+                    return null;
+                } else {
+                    extractedVersion = new Version(versionStr);
+                }
+            } catch(Exception e) {
+                string errParse = "Failed to parse info.json: " + e.Message;
+                Main.Logger.Error(errParse);
+                Main.UpdateInfo = errParse;
+                return null;
+            }
+
+            try {
+                foreach(var file in Directory.GetFiles(tempDir, "*", SearchOption.AllDirectories)) {
+                    string relativePath = file.Substring(tempDir.Length + 1);
+                    string destPath = Path.Combine(modEntry.Path, relativePath);
+
+                    string destDir = Path.GetDirectoryName(destPath);
+                    if(!Directory.Exists(destDir)) {
+                        Directory.CreateDirectory(destDir);
+                    }
+
+                    File.Copy(file, destPath, true);
+                }
+
+                Directory.Delete(tempDir, true);
+            } catch(Exception ex) {
+                Main.Logger.Error(ex.Message);
+                return null;
+            }
+            
+            return extractedVersion;
         }
     }
 }

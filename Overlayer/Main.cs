@@ -80,6 +80,16 @@ namespace Overlayer
             Logger = modEntry.Logger;
             Ass = Assembly.GetExecutingAssembly();
             Mod = modEntry;
+
+            Version needReload = AutoUpdater.UpdateBeforeLoad(modEntry);
+            if(needReload != null) {
+                FieldInfo versionField = typeof(ModEntry).GetField("Version", BindingFlags.Instance | BindingFlags.Public);
+                versionField?.SetValue(modEntry, needReload);
+                modEntry.Info.Version = needReload.ToString();
+
+                AutoUpdater.Reload(modEntry);
+            }
+
             GUI = new GUIController();
             Lang = new Translator();
             modEntry.OnToggle = OnToggle;
@@ -122,17 +132,6 @@ namespace Overlayer
                 if(!Settings.disableLogo) {
                     LogoInit(modEntry.Path);
                 }
-                _ = AutoUpdater.InitAndUpdate(modEntry, Settings.useAutoUpdate, Settings.useAutoUpdateBeta, 
-                    async () => {
-                        UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Sucess!");
-                        await Task.Delay(1000);
-                        AutoUpdater.Reload(modEntry);
-                    },
-                    (err) => {
-                        Logger.Error("Update Fail: "+err);
-                        UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
-                    }
-                );
             }
             else
             {
@@ -209,30 +208,30 @@ namespace Overlayer
                     if(AutoUpdater.IsUpdating) {
                         UpdateInfo = Lang.Get("UPDATING", "Updating...");
                     } else {
-                        if(Drawer.Button($"<size=30>{Lang.Get("UPDATE", "Update")}</size>")) {
-                            _ = AutoUpdater.CheckAndUpdate(modEntry, false,
-                                () => {
-                                    UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Sucess!");
-                                    AutoUpdater.Reload(modEntry);
-                                },
-                                (err) => {
-                                    Logger.Error("Update Fail: " + err);
-                                    UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
-                                }
-                            );
-                        }
-                        if(AutoUpdater.BetaUrl != null) {
-                            if(Drawer.Button($"<size=30>{Lang.Get("BETA", "Beta")}</size>")) {
-                                _ = AutoUpdater.CheckAndUpdate(modEntry, true,
+                        if(!AutoUpdater.RequireRestart) {
+                            if(Drawer.Button($"<size=30>{Lang.Get("UPDATE", "Update")}</size>")) {
+                                _ = AutoUpdater.CheckAndPrepareUpdate(modEntry, false,
                                     () => {
-                                        UpdateInfo = Lang.Get("BETA_UPDATE_SUCESS", "Beta Update Sucess!");
-                                        AutoUpdater.Reload(modEntry);
+                                        UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Sucess!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!");
                                     },
                                     (err) => {
-                                        Logger.Error("Update Fail: "+err);
+                                        Logger.Error("Update Fail: " + err);
                                         UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
                                     }
                                 );
+                            }
+                            if(AutoUpdater.BetaUrl != null) {
+                                if(Drawer.Button($"<size=30>{Lang.Get("BETA", "Beta")}</size>")) {
+                                    _ = AutoUpdater.CheckAndPrepareUpdate(modEntry, true,
+                                        () => {
+                                            UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Sucess!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!");
+                                        },
+                                        (err) => {
+                                            Logger.Error("Update Fail: " + err);
+                                            UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
+                                        }
+                                    );
+                                }
                             }
                         }
                         if(Drawer.Button("<size=30>Square Mod Server</size>")) {
@@ -245,9 +244,6 @@ namespace Overlayer
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                     GUILayout.Label(UpdateInfo);
-                    if(AutoUpdater.RequireRestart) {
-                        GUILayout.Label(Lang.Get("NEED_RESTART","You need restart a game!"));
-                    }
                     
                     GUILayout.Space(30);
                 }
@@ -336,6 +332,19 @@ namespace Overlayer
 
         public static void OnLanguageInitialize()
         {
+            _ = AutoUpdater.InitAndUpdate(
+                Mod,
+                Settings.useAutoUpdate,
+                Settings.useAutoUpdateBeta,
+                () => {
+                    UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Success!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!");
+                },
+                (err) => {
+                    Logger.Error("Update Fail: " + err);
+                    UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
+                }
+            );
+
             GUI.Flush();
             GUI.Init(new SettingsDrawer(Settings));
         }
