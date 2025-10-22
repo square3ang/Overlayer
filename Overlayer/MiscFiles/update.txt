@@ -1,3 +1,2 @@
 ﻿[ Fix ]
-Accuracy Tag issue
-(Sorry)
+Update Loop Issues when AutoUpdate 'Beta' is allowed
