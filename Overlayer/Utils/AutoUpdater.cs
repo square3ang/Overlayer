@@ -102,9 +102,14 @@ namespace Overlayer.Utils {
 
                 if(latestBetaRelease != null) {
                     BetaVersion = new Version(latestBetaRelease["tag_name"].ToString());
-                    var asset = latestBetaRelease["assets"]?.FirstOrDefault();
-                    BetaUrl = asset?["browser_download_url"]?.ToString();
-                    newVersion = BetaVersion;
+                    if(BetaVersion <= LatestVersion) {
+                        BetaUrl = null;
+                    } else {
+                        var asset = latestBetaRelease["assets"]?.FirstOrDefault();
+                        BetaUrl = asset?["browser_download_url"]?.ToString();
+                        newVersion = BetaVersion;
+                    }
+
                     if(CurrentVersionType == VersionType.Beta) {
                         if(currentVersion > BetaVersion) {
                             CurrentVersionType = VersionType.UnknownBeta;
@@ -133,12 +138,8 @@ namespace Overlayer.Utils {
             }
 
             string url;
-            if(allowBeta) {
-                if (BetaVersion > LatestVersion) {
-                    url = BetaUrl;
-                } else {
-                    url = LatestUrl;
-                }
+            if(allowBeta && !string.IsNullOrEmpty(BetaUrl) && BetaVersion > LatestVersion) {
+                url = BetaUrl;
             } else {
                 url = LatestUrl;
             }
