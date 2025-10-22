@@ -1,2 +1,2 @@
 ﻿[ Fix ]
-Update Loop Issues when AutoUpdate 'Beta' is allowed
+AutoUpdate Issue
