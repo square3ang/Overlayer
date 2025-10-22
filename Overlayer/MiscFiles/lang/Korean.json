@@ -1,7 +1,9 @@
 {
   "한국어": {
     "0KTL": "DO_NOT_TRANSLATE_THIS",
-    "0TRANSLATORS": ["OVERLAYER"],
+    "0TRANSLATORS": [
+      "OVERLAYER"
+    ],
     "ACTIVE": "활성화",
     "ALIGNMENT": "정렬",
     "ALLOW_THIS": "{0} 허용",
@@ -17,6 +19,7 @@
     "BASELINE_RIGHT": "기준선 오른쪽",
     "BETA_DESCRIPTION": "배타 버전은 불안정할 수 있습니다",
     "BETA_TEXT": "배타 버전",
+    "BETA_UPDATE_SUCESS": "Beta Update Sucess!",
     "BOTTOM": "아래",
     "BOTTOM_FLUSH": "아래 플러시",
     "BOTTOM_GEO_ALIGNED": "아래 지리 정렬",
@@ -317,6 +320,18 @@
     "TOP_LEFT": "왼쪽 위",
     "TOP_RIGHT": "오른쪽 위",
     "UPDATE": "업데이트",
+    "UPDATE_FAIL": "업데이트 실패",
+    "UPDATE_SUCESS": "업데이트 성공!",
+    "UPDATER_ALREADY_LATEST": "이미 최신 버전입니다",
+    "UPDATER_ALREADY_UPDATING": "이미 업데이트 중입니다",
+    "UPDATER_DOWNLOAD_URL_EMPTY": "다운로드 URL이 비어 있습니다",
+    "UPDATER_FAILED_FEATCH_INFO": "업데이트 정보를 가져오지 못했습니다",
+    "UPDATER_INFO_JSON_NOT_FOUND": "업데이트 패키지에서 info.json을 찾을 수 없습니다",
+    "UPDATER_INFO_JSON_PARSE_FAILED": "info.json 파싱에 실패했습니다",
+    "UPDATER_INVALID_JSON": "잘못된 JSON 형식입니다",
+    "UPDATER_SAME_VERSION_DETECTED": "업데이트할 버전이 현재 버전과 동일합니다",
+    "UPDATER_VERSION_CHECK_ERROR": "버전 확인 또는 에셋 가져오기에 실패했습니다",
+    "UPDATING": "업데이트 중...",
     "USE_THIS": "{0} 사용",
     "VALUE_MAX": "최대 값",
     "VALUE_MIN": "최소 값",

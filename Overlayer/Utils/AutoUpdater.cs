@@ -60,7 +60,7 @@ namespace Overlayer.Utils {
                     json = await response.Content.ReadAsStringAsync();
                 }
             } catch(Exception ex) {
-                err?.Invoke("Failed to fetch update info: " + ex.Message);
+                err?.Invoke(Main.Lang.Get("UPDATER_FAILED_FEATCH_INFO", "Failed to fetch update info") + ": " + ex.Message);
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace Overlayer.Utils {
             try {
                 releases = JArray.Parse(json);
             } catch(Exception ex) {
-                err?.Invoke("Invalid JSON: " + ex.Message);
+                err?.Invoke(Main.Lang.Get("UPDATER_INVALID_JSON", "Invalid JSON") + ": " + ex.Message);
                 return;
             }
 
@@ -117,25 +117,34 @@ namespace Overlayer.Utils {
                 }
                 ok?.Invoke();
             } catch(Exception ex) {
-                err?.Invoke("Version parse or asset fetch failed: " + ex.Message);
+                err?.Invoke(Main.Lang.Get("UPDATER_VERSION_CHECK_ERROR", "Version parse or asset fetch failed") + ": " + ex.Message);
                 return;
             }
         }
         public static async Task CheckAndUpdate(ModEntry modEntry, bool allowBeta = false, Action ok = null, Action<string> err = null) {
             if(IsUpdating) {
-                err?.Invoke(Main.Lang.Get("ALEADY_UPDATING", "Already Updating"));
+                err?.Invoke(Main.Lang.Get("UPDATER_LEADY_UPDATING", "Already Updating"));
                 return;
             }
 
             if(isLatest && (!allowBeta || CurrentVersionType == VersionType.OldBeta)) {
-                err?.Invoke(Main.Lang.Get("ALREADY_LATEST", "Already the latest version"));
+                err?.Invoke(Main.Lang.Get("UPDATER_ALREADY_LATEST", "Already the latest version"));
                 return;
             }
 
-            string url = allowBeta ? BetaUrl : LatestUrl;
+            string url;
+            if(allowBeta) {
+                if (BetaVersion > LatestVersion) {
+                    url = BetaUrl;
+                } else {
+                    url = LatestUrl;
+                }
+            } else {
+                url = LatestUrl;
+            }
 
             if(string.IsNullOrEmpty(url)) {
-                err?.Invoke(Main.Lang.Get("DOWNLOAD_URL_EMPTY", "Download URL is empty"));
+                err?.Invoke(Main.Lang.Get("UPDATER_DOWNLOAD_URL_EMPTY", "Download URL is empty"));
                 return;
             }
 
@@ -155,6 +164,23 @@ namespace Overlayer.Utils {
 
                 ZipFile.ExtractToDirectory(zipPath, tempDir);
 
+                string infoPath = Path.Combine(tempDir, "info.json");
+                if(File.Exists(infoPath)) {
+                    try {
+                        var infoJson = JObject.Parse(File.ReadAllText(infoPath));
+                        string extractedVersion = infoJson["Version"]?.ToString();
+                        if(!string.IsNullOrEmpty(extractedVersion) && extractedVersion == modEntry.Version.ToString()) {
+                            err?.Invoke(Main.Lang.Get("UPDATER_SAME_VERSION_DETECTED", "Update package version matches the current version") + ": " + extractedVersion);
+                            return;
+                        }
+                    } catch(Exception e) {
+                        err?.Invoke(Main.Lang.Get("UPDATER_INFO_JSON_PARSE_FAILED", $"Failed to parse info.json") + ": " + e.Message);
+                        return;
+                    }
+                } else {
+                    err?.Invoke(Main.Lang.Get("UPDATER_INFO_JSON_NOT_FOUND", "info.json not found in the update package"));
+                }
+
                 foreach(var file in Directory.GetFiles(tempDir, "*", SearchOption.AllDirectories)) {
                     string relativePath = file.Substring(tempDir.Length + 1);
                     string destPath = Path.Combine(modEntry.Path, relativePath);
@@ -165,6 +191,7 @@ namespace Overlayer.Utils {
 
                     File.Copy(file, destPath, true);
                 }
+
                 FieldInfo versionField = typeof(ModEntry).GetField("Version", BindingFlags.Instance | BindingFlags.Public);
                 versionField.SetValue(modEntry, newVersion);
                 modEntry.Info.Version = newVersion.ToString();

@@ -1,7 +1,9 @@
 {
   "Русский": {
     "0KTL": "DO_NOT_TRANSLATE_THIS",
-    "0TRANSLATORS": ["coyami-ke"],
+    "0TRANSLATORS": [
+      "coyami-ke"
+    ],
     "ACTIVE": "Активный",
     "ALIGNMENT": "Выравнивание",
     "ALLOW_THIS": "Разрешить {0}",
@@ -17,6 +19,7 @@
     "BASELINE_RIGHT": "Базовая Линия Вправо",
     "BETA_DESCRIPTION": "Beta version May Be unstable",
     "BETA_TEXT": "Beta version",
+    "BETA_UPDATE_SUCESS": "Beta Update Sucess!",
     "BOTTOM": "Снизу",
     "BOTTOM_FLUSH": "Выровненный по Нижней Части",
     "BOTTOM_GEO_ALIGNED": "Выровненный по Геометрии Снизу",
@@ -317,6 +320,18 @@
     "TOP_LEFT": "Сверху Влево",
     "TOP_RIGHT": "Сверху Справа",
     "UPDATE": "Обновление",
+    "UPDATE_FAIL": "Update Fail",
+    "UPDATE_SUCESS": "Update Sucess!",
+    "UPDATER_ALREADY_LATEST": "Already the latest version",
+    "UPDATER_ALREADY_UPDATING": "Already updating",
+    "UPDATER_DOWNLOAD_URL_EMPTY": "Download URL is empty",
+    "UPDATER_FAILED_FEATCH_INFO": "Failed to fetch update info",
+    "UPDATER_INFO_JSON_NOT_FOUND": "info.json not found in the update package",
+    "UPDATER_INFO_JSON_PARSE_FAILED": "Failed to parse info.json",
+    "UPDATER_INVALID_JSON": "Invalid JSON",
+    "UPDATER_SAME_VERSION_DETECTED": "Update package version matches the current version",
+    "UPDATER_VERSION_CHECK_ERROR": "Version parse or asset fetch failed",
+    "UPDATING": "Updating...",
     "USE_THIS": "Использовать {0}",
     "VALUE_MAX": "Максимальное значение",
     "VALUE_MIN": "Минимальное значение",

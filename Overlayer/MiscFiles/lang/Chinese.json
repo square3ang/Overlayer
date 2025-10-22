@@ -1,7 +1,9 @@
 {
   "中文": {
     "0KTL": "DO_NOT_TRANSLATE_THIS",
-    "0TRANSLATORS": ["a6."],
+    "0TRANSLATORS": [
+      "a6."
+    ],
     "ACTIVE": "启用",
     "ALIGNMENT": "对齐方式",
     "ALLOW_THIS": "允许{0}",
@@ -17,6 +19,7 @@
     "BASELINE_RIGHT": "对齐右侧基线 (一般不用)",
     "BETA_DESCRIPTION": "测试版可能会不稳定",
     "BETA_TEXT": "测试版本",
+    "BETA_UPDATE_SUCESS": "Beta Update Sucess!",
     "BOTTOM": "对齐正下方",
     "BOTTOM_FLUSH": "齐平底部 (一般不用)",
     "BOTTOM_GEO_ALIGNED": "对齐地理底部 (一般不用)",
@@ -317,6 +320,18 @@
     "TOP_LEFT": "对齐左上角",
     "TOP_RIGHT": "对齐右上角",
     "UPDATE": "更新内容",
+    "UPDATE_FAIL": "Update Fail",
+    "UPDATE_SUCESS": "Update Sucess!",
+    "UPDATER_ALREADY_LATEST": "Already the latest version",
+    "UPDATER_ALREADY_UPDATING": "Already updating",
+    "UPDATER_DOWNLOAD_URL_EMPTY": "Download URL is empty",
+    "UPDATER_FAILED_FEATCH_INFO": "Failed to fetch update info",
+    "UPDATER_INFO_JSON_NOT_FOUND": "info.json not found in the update package",
+    "UPDATER_INFO_JSON_PARSE_FAILED": "Failed to parse info.json",
+    "UPDATER_INVALID_JSON": "Invalid JSON",
+    "UPDATER_SAME_VERSION_DETECTED": "Update package version matches the current version",
+    "UPDATER_VERSION_CHECK_ERROR": "Version parse or asset fetch failed",
+    "UPDATING": "Updating...",
     "USE_THIS": "使用 {0}",
     "VALUE_MAX": "最大数值",
     "VALUE_MIN": "最小数值",

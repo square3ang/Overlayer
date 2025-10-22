@@ -1,7 +1,9 @@
 {
   "Tiếng Việt": {
     "0KTL": "DO_NOT_TRANSLATE_THIS",
-    "0TRANSLATORS": ["Zeheyu"],
+    "0TRANSLATORS": [
+      "Zeheyu"
+    ],
     "ACTIVE": "Kích hoạt",
     "ALIGNMENT": "Căn chỉnh",
     "ALLOW_THIS": "Cho phép {0}",
@@ -17,6 +19,7 @@
     "BASELINE_RIGHT": "Cạnh cơ sở phải",
     "BETA_DESCRIPTION": "Beta version May Be unstable",
     "BETA_TEXT": "Beta version",
+    "BETA_UPDATE_SUCESS": "Beta Update Sucess!",
     "BOTTOM": "Dưới cùng",
     "BOTTOM_FLUSH": "Làm phẳng dưới cùng",
     "BOTTOM_GEO_ALIGNED": "Căn chỉnh địa lý dưới cùng",
@@ -317,6 +320,18 @@
     "TOP_LEFT": "Trên cùng bên trái",
     "TOP_RIGHT": "Trên cùng bên phải",
     "UPDATE": "Cập nhật",
+    "UPDATE_FAIL": "Update Fail",
+    "UPDATE_SUCESS": "Update Sucess!",
+    "UPDATER_ALREADY_LATEST": "Already the latest version",
+    "UPDATER_ALREADY_UPDATING": "Already updating",
+    "UPDATER_DOWNLOAD_URL_EMPTY": "Download URL is empty",
+    "UPDATER_FAILED_FEATCH_INFO": "Failed to fetch update info",
+    "UPDATER_INFO_JSON_NOT_FOUND": "info.json not found in the update package",
+    "UPDATER_INFO_JSON_PARSE_FAILED": "Failed to parse info.json",
+    "UPDATER_INVALID_JSON": "Invalid JSON",
+    "UPDATER_SAME_VERSION_DETECTED": "Update package version matches the current version",
+    "UPDATER_VERSION_CHECK_ERROR": "Version parse or asset fetch failed",
+    "UPDATING": "Updating...",
     "USE_THIS": "Sử dụng {0}",
     "VALUE_MAX": "Max Value",
     "VALUE_MIN": "Min Value",
