@@ -107,6 +107,7 @@ namespace Overlayer
                 StaticCoroutine.Run(null);
                 StaticCoroutine.Run(LoadCoroutine(modEntry));
                 Settings = ModSettings.Load<Settings>(modEntry);
+                Lang.CurrentLanguage = Settings.Lang;
                 _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path, "lang"));
                 LazyPatchManager.Load(Ass);
                 LazyPatchManager.PatchInternal();

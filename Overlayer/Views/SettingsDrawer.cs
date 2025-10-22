@@ -56,8 +56,7 @@ namespace Overlayer.Views
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
             }
-            if(model != null)
-                Main.Lang.CurrentLanguage = model.Lang;
+
             int translatorsCount = Main.Lang.GetArrCount("0TRANSLATORS");
             string translatorsText = "[UNKNOWN]";
 
