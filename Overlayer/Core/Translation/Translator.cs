@@ -162,6 +162,12 @@ namespace Overlayer.Core.Translatior {
         public bool GetFail() => failState != TranslationFailState.Success;
 
         /// <summary>
+        /// Determines if the default language should be used.
+        /// </summary>
+        /// <returns>True if default language should be used; otherwise, false.</returns>
+        public bool GetWillDefault() => failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default";
+
+        /// <summary>
         /// Retrieves the current failure state code as an integer.
         /// </summary>
         /// <returns>The integer value of the current failure state.</returns>
@@ -174,7 +180,7 @@ namespace Overlayer.Core.Translatior {
         public string[] GetLanguages() {
             var languages = translations.Keys.ToList();
             // If no languages are found, or in failure/loading state, add "Default".
-            if(languages.Count <= 0 || failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default") {
+            if(languages.Count <= 0 || GetWillDefault()) {
                 languages.Add("Default");
             }
 
@@ -189,7 +195,7 @@ namespace Overlayer.Core.Translatior {
         /// <returns>The translated value or the default value if not found.</returns>
         public string Get(string key, string defaultValue) {
             // If loading is in progress or there's a failure, return the default value.
-            if(failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default") {
+            if(GetWillDefault()) {
                 return defaultValue;
             }
 
@@ -211,9 +217,9 @@ namespace Overlayer.Core.Translatior {
         /// <param name="defaultValue">The default value to return if translation is not found.</param>
         /// <returns>The translated value or the default value if not found.</returns>
         public string GetArr(string key, int index, string defaultValue) {
-            // Return default if translations are not ready or in fail state
-            if(failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default")
+            if(GetWillDefault()) {
                 return defaultValue;
+            }
 
             // Try to get the array dictionary for the current language
             if(translationsArr.TryGetValue(CurrentLanguage, out var lang)) {
@@ -234,9 +240,9 @@ namespace Overlayer.Core.Translatior {
         /// <param name="key">The key for the translation.</param>
         /// <returns>The count of elements for the key, or 0 if not found or translations are not ready.</returns>
         public int GetArrCount(string key) {
-            // Return 0 if translations are not ready or in fail state
-            if(failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default")
+            if(GetWillDefault()) {
                 return 0;
+            }
 
             // Try to get the array dictionary for the current language
             if(translationsArr.TryGetValue(CurrentLanguage, out var lang)) {
