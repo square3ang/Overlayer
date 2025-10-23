@@ -220,7 +220,7 @@ namespace Overlayer.Tags.Patches
                 double ratio = (success == total) ? 1.0 : ((double)success / total);
                 double bonus = (perfect + auto) * 0.0001;
 
-                Status.Accuracy = 100.0 * ratio + bonus;
+                Status.Accuracy = 100.0 * (ratio + bonus);
 
                 double totalHits = scrMistakesManager.hitMargins.Count;
                 double weightedHits =
@@ -244,7 +244,7 @@ namespace Overlayer.Tags.Patches
                     double mxratio = (mxsucess == mxtotal) ? 1.0 : ((double)mxsucess / mxtotal);
                     double mxbonus = (lefttile + perfect + auto) * 0.0001;
 
-                    Status.MaxAccuracy = 100.0 * mxratio + mxbonus;
+                    Status.MaxAccuracy = 100.0 * (mxratio + mxbonus);
 
                     double possibleHitsX =
                         lefttile + perfect + auto + Tile.StartTile - 1 +
