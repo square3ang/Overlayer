@@ -217,7 +217,8 @@ namespace Overlayer
                                     (err) => {
                                         Logger.Error("Update Fail: " + err);
                                         UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
-                                    }
+                                    },
+                                    true
                                 );
                             }
                             if(AutoUpdater.BetaUrl != null) {
@@ -229,7 +230,8 @@ namespace Overlayer
                                         (err) => {
                                             Logger.Error("Update Fail: " + err);
                                             UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
-                                        }
+                                        },
+                                        true
                                     );
                                 }
                             }
