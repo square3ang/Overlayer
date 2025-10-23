@@ -1,5 +1,2 @@
 ﻿[ Fix ]
-AutoUpdate Log
-Some Judgment Tags
-Gradient Bottom Left not working
-Shadows cannot be gradients but are selectable Issue
+New number field unfocus calculation not working
