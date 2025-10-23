@@ -256,6 +256,8 @@ namespace Overlayer.Views
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
+
+                NeoDrawer.StaticInstance.UpdateFocused();
             }
         }
 

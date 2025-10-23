@@ -182,6 +182,8 @@ namespace Overlayer.Views
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             if (changed) text.ApplyConfig();
+
+            NeoDrawer.StaticInstance.UpdateFocused();
         }
 
         private string TranslateTextAlignment(string alignmentName)

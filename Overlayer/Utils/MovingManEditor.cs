@@ -145,6 +145,8 @@ namespace Overlayer.Utils
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
+            neoDrawer.UpdateFocused();
+
             if (Drawer.Button(Main.Lang.Get("DONE", "Done")))
             {
                 neoDrawer = null;
@@ -154,8 +156,6 @@ namespace Overlayer.Utils
 
             GUILayout.Space(10);
             GUILayout.EndVertical();
-
-            //
         }
     }
 }

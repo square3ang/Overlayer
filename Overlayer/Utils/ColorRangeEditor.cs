@@ -146,6 +146,8 @@ namespace Overlayer.Utils
                 neoDrawer.DrawInt32("maxLength", ref maxLength);
             }
 
+            neoDrawer.UpdateFocused();
+
             if(Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
                 neoDrawer = null;
                 BlockUMMClosing.Block = false;
@@ -154,9 +156,6 @@ namespace Overlayer.Utils
 
             GUILayout.Space(10);
             GUILayout.EndVertical();
-
-
-            //GUI.DragWindow();
         }
     }
 }

@@ -29,7 +29,8 @@ namespace Overlayer.Core {
             public object ComputedValue;
             
         }
-        public string LastFocused;
+
+        private string LastFocused;
 
         private uint id = 0;
         private Dictionary<string, NeoField> fields = new();
@@ -89,6 +90,10 @@ namespace Overlayer.Core {
             }
         }
 
+        public void UpdateFocused() {
+            LastFocused = GUI.GetNameOfFocusedControl();
+        }
+
         public object Calc(string exprStr) {
             var expr = new Expression(exprStr);
 
@@ -115,10 +120,8 @@ namespace Overlayer.Core {
 
             bool shouldApply =
                 ((focused == fieldName && Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Return)
-                || (LastFocused == fieldName && focused != fieldName))
+                || (LastFocused != fieldName))
                 && (field.State == NeoField.StateType.COMPUTE || field.State == NeoField.StateType.WARNING);
-
-            LastFocused = focused;
 
             if(shouldApply) {
                 try {
