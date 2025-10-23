@@ -306,7 +306,7 @@ namespace Overlayer.Core {
 
             bool changed = ge != prevGe;
 
-            if(color.gradientEnabled || !canEnableGradient) {
+            if(color.gradientEnabled && canEnableGradient) {
                 NeoField fieldTL = FieldGet(uniqueID);
                 NeoField fieldTR;
                 NeoField fieldBL;
