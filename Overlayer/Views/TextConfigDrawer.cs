@@ -110,7 +110,7 @@ namespace Overlayer.Views
                     changed |= Drawer.DrawGColor(ref model.ShadowColor, false);
                     GUILayoutEx.EndIndent();
                 } else {
-                    changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.ShadowColor, true);
+                    changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.ShadowColor, false);
                 }
                 
             } else {
