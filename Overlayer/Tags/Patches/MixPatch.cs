@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Overlayer.Tags.Patches {
-    public class MixPatch {
+    public class MixPatch : PatchBase<MixPatch> {
         [LazyPatch("Tags.MixPatch.PatchSwitchChosen", "scrPlanet", "SwitchChosen", Triggers = new string[] {
             nameof(HitTiming.Timing), nameof(HitTiming.TimingAvg),
             nameof(Tile.CurTile), nameof(Tile.LeftTile), nameof(Tile.TotalTile),
