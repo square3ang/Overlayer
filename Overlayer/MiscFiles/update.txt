@@ -1,2 +1,5 @@
 ﻿[ Fix ]
-{Accuracy} {MaxAccuracy} Tag incorrect calculation
+AutoUpdate Log
+Some Judgment Tags
+Gradient Bottom Left not working
+Shadows cannot be gradients but are selectable Issue
