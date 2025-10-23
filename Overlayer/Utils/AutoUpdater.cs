@@ -41,10 +41,10 @@ namespace Overlayer.Utils {
             setMethod?.Invoke(modEntry, new object[] { false });
         }
 
-        public static async Task InitAndUpdate(ModEntry modEntry, bool update = false, bool allowBeta = false, Action ok = null, Action<string> err = null) {
+        public static async Task InitAndUpdate(ModEntry modEntry, bool update = false, bool allowBeta = false, Action ok = null, Action<string> err = null, bool latestIsError = false) {
             await InitUpdate(modEntry.Version, async () => {
                 if(update) {
-                    await CheckAndPrepareUpdate(modEntry, allowBeta, ok, err);
+                    await CheckAndPrepareUpdate(modEntry, allowBeta, ok, err, latestIsError);
                 }
             }, err);
         }
@@ -123,14 +123,19 @@ namespace Overlayer.Utils {
                 return;
             }
         }
-        public static async Task CheckAndPrepareUpdate(ModEntry modEntry, bool allowBeta = false, Action ok = null, Action<string> err = null) {
+        public static async Task CheckAndPrepareUpdate(ModEntry modEntry, bool allowBeta = false, Action ok = null, Action<string> err = null, bool latestPassIsError = false) {
             if(IsUpdating) {
                 err?.Invoke(Main.Lang.Get("UPDATER_LEADY_UPDATING", "Already Updating"));
                 return;
             }
 
             if(isLatest && (!allowBeta || CurrentVersionType == VersionType.OldBeta)) {
-                err?.Invoke(Main.Lang.Get("UPDATER_ALREADY_LATEST", "Already the latest version"));
+                string msg = Main.Lang.Get("UPDATER_ALREADY_LATEST", "Already the latest version");
+                if(latestPassIsError) {
+                    err?.Invoke(msg);
+                    return;
+                }
+                Main.Logger.Log(msg);
                 return;
             }
 
