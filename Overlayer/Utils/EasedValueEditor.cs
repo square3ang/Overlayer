@@ -86,6 +86,8 @@ namespace Overlayer.Utils {
         }
 
         private void DrawWindow(int windowID) {
+            neoDrawer.FieldResetId();
+
             GUI.BringWindowToFront(windowID);
 
             GUILayout.BeginVertical();

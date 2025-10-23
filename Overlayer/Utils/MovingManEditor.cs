@@ -37,6 +37,8 @@ namespace Overlayer.Utils
         public bool invert = false;
         public Ease ease = Ease.OutExpo;
 
+        private NeoDrawer neoDrawer;
+
         public void Initialize(string tag, string codesBefore, string codesAfter)
         {
             if (tag.Contains("("))
@@ -58,6 +60,8 @@ namespace Overlayer.Utils
             this.codesAfter = codesAfter;
             BlockUMMClosing.Block = true;
             TagManager.testerValue = "0";
+
+            neoDrawer = new NeoDrawer();
         }
 
         public void Update()
@@ -110,6 +114,8 @@ namespace Overlayer.Utils
 
         private void DrawWindow(int windowID)
         {
+            neoDrawer.FieldResetId();
+
             GUI.BringWindowToFront(windowID);
 
             GUILayout.BeginVertical();
@@ -126,10 +132,10 @@ namespace Overlayer.Utils
                 Drawer.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
                 Drawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
             } else {
-                NeoDrawer.StaticInstance.DrawDouble(Main.Lang.Get("START_SIZE", "Start Size"), ref startSize);
-                NeoDrawer.StaticInstance.DrawDouble(Main.Lang.Get("END_SIZE", "End Size"), ref endSize);
-                NeoDrawer.StaticInstance.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
-                NeoDrawer.StaticInstance.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
+                neoDrawer.DrawDouble(Main.Lang.Get("START_SIZE", "Start Size"), ref startSize);
+                neoDrawer.DrawDouble(Main.Lang.Get("END_SIZE", "End Size"), ref endSize);
+                neoDrawer.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
+                neoDrawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
             }
 
             Drawer.DrawBool(Main.Lang.Get("INVERT", "Invert"), ref invert);
@@ -141,6 +147,7 @@ namespace Overlayer.Utils
 
             if (Drawer.Button(Main.Lang.Get("DONE", "Done")))
             {
+                neoDrawer = null;
                 BlockUMMClosing.Block = false;
                 Destroy(gameObject);
             }
