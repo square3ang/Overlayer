@@ -405,7 +405,7 @@ namespace Overlayer.Core {
                     }
                 }
                 if(newColorBL != color.bottomLeft) {
-                    color.bottomLeft = newColorTL;
+                    color.bottomLeft = newColorBL;
                     changed = true;
                     fieldBL.Str = ColorUtility.ToHtmlStringRGBA(color.bottomLeft);
                     fieldBL.State = NeoField.StateType.OK;
