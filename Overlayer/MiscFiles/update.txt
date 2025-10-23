@@ -1,2 +1,2 @@
 ﻿[ Fix ]
-I hate AutoUpdate
+{Accuracy} {MaxAccuracy} Tag incorrect calculation
