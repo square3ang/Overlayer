@@ -31,11 +31,15 @@ namespace Overlayer.Tags
                     Attempts = 0;
                 }
             } else {
-                var level = ADOFAI.LevelData;
-                if(level != null) {
-                    Attempts = Persistence.GetCustomWorldAttempts(
-                        MD5Hash.GetHash(level.author + level.artist + level.song)
-                    );
+                if(scnEditor.instance == null) {
+                    var level = ADOFAI.LevelData;
+                    if(level != null) {
+                        Attempts = Persistence.GetCustomWorldAttempts(
+                            MD5Hash.GetHash(level.author + level.artist + level.song)
+                        );
+                    } else {
+                        Attempts = 0;
+                    }
                 } else {
                     Attempts = 0;
                 }
