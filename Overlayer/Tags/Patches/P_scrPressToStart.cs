@@ -14,7 +14,9 @@ namespace Overlayer.Tags.Patches {
         }
 
         [LazyPatch("Tags.P_scrPressToStart.Level__ShowText", "scrPressToStart", "ShowText", Triggers = new string[] {
-            nameof(Level.Title), nameof(Level.Author), nameof(Level.Artist), nameof(Level.TitleRaw), nameof(Level.AuthorRaw), nameof(Level.ArtistRaw),
+            nameof(Level.Title), nameof(Level.Author), nameof(Level.Artist),
+            nameof(Level.TitleRaw), nameof(Level.AuthorRaw), nameof(Level.ArtistRaw),
+            nameof(Level.DefaultTextColor), nameof(Level.DefaultTextShadowColor),
         })]
         public static class Level__ShowText {
             public static void Postfix() {
