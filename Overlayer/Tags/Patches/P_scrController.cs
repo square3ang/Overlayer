@@ -13,12 +13,12 @@ namespace Overlayer.Tags.Patches {
             }
         }
 
-        [LazyPatch("Tags.P_scrController.Status__FailAction", "scrController", "FailAction", Triggers = new string[] {
-            nameof(Status.BestProgress)
+        [LazyPatch("Tags.P_scrController.ProgressStats__FailAction", "scrController", "FailAction", Triggers = new string[] {
+            nameof(ProgressStats.BestProgress)
         })]
-        public static class Status__FailAction {
+        public static class ProgressStats__FailAction {
             public static void Postfix() {
-                Status.BestProgress_Update();
+                ProgressStats.BestProgress_Update();
             }
         }
 
@@ -35,12 +35,12 @@ namespace Overlayer.Tags.Patches {
             }
         }
 
-        [LazyPatch("Tags.P_scrController.Status__OnLandOnPortal", "scrController", "OnLandOnPortal", Triggers = new string[] {
-            nameof(Status.BestProgress)
+        [LazyPatch("Tags.P_scrController.ProgressStats__OnLandOnPortal", "scrController", "OnLandOnPortal", Triggers = new string[] {
+            nameof(ProgressStats.BestProgress)
         })]
-        public static class Status__OnLandOnPortal {
+        public static class ProgressStats__OnLandOnPortal {
             public static void Postfix() {
-                Status.BestProgress_Fix();
+                ProgressStats.BestProgress_Fix();
             }
         }
     }

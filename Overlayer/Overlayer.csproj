@@ -524,6 +524,7 @@
     <Compile Include="Tags\Patches\P_scrPressToStart.cs" />
     <Compile Include="Tags\Patches\P_scrUIController.cs" />
     <Compile Include="Tags\Patches\P_scrMistakeManager.cs" />
+    <Compile Include="Tags\ProgressStats.cs" />
     <Compile Include="Tags\Scores.cs" />
     <Compile Include="Tags\Song.cs" />
     <Compile Include="Tags\Status.cs" />

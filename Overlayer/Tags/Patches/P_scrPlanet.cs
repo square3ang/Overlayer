@@ -26,12 +26,12 @@ namespace Overlayer.Tags.Patches {
             }
         }
 
-        [LazyPatch("Tags.P_scrPlanet.Status__MoveToNextFloor", "scrPlanet", "MoveToNextFloor", Triggers = new string[] {
-            nameof(Status.BestProgress)
+        [LazyPatch("Tags.P_scrPlanet.ProgressStats__MoveToNextFloor", "scrPlanet", "MoveToNextFloor", Triggers = new string[] {
+            nameof(ProgressStats.BestProgress)
         })]
-        public static class Status__MoveToNextFloor {
+        public static class ProgressStats__MoveToNextFloor {
             public static void Postfix() {
-                Status.BestProgress_Update();
+                ProgressStats.BestProgress_Update();
             }
         }
 

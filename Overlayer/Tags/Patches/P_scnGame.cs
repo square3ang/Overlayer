@@ -3,12 +3,12 @@ using System.Linq;
 
 namespace Overlayer.Tags.Patches {
     public class P_scnGame : PatchBase<P_scnGame> {
-        [LazyPatch("Tags.P_scnGame.Status.LoadLevel", "scnGame", "LoadLevel", Triggers = new string[] {
-            nameof(Status.BestProgress)
+        [LazyPatch("Tags.P_scnGame.ProgressStats__LoadLevel", "scnGame", "LoadLevel", Triggers = new string[] {
+            nameof(ProgressStats.BestProgress)
         })]
-        public static class Status__LoadLevel {
+        public static class ProgressStats__LoadLevel {
             public static void Postfix() {
-                Status.BestProgress_Reset();
+                ProgressStats.BestProgress_Reset();
             }
         }
 

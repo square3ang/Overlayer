@@ -2,12 +2,12 @@
 
 namespace Overlayer.Tags.Patches {
     public class P_scnEditor : PatchBase<P_scnEditor> {
-        [LazyPatch("Tags.P_scnEditor.Status__OpenLevelCo", "scnEditor", "OpenLevelCo", Triggers = new string[] {
-            nameof(Status.BestProgress)
+        [LazyPatch("Tags.P_scnEditor.ProgressStats__OpenLevelCo", "scnEditor", "OpenLevelCo", Triggers = new string[] {
+            nameof(ProgressStats.BestProgress)
         })]
-        public static class Status__OpenLevelCo {
+        public static class ProgressStats__OpenLevelCo {
             public static void Postfix() {
-                Status.BestProgress_Reset();
+                ProgressStats.BestProgress_Reset();
             }
         }
 
