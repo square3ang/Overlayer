@@ -1,5 +1,8 @@
 ﻿using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Overlayer.Tags
@@ -16,22 +19,46 @@ namespace Overlayer.Tags
         public static bool IsNoFailEnabled => ADOFAI.Controller?.noFail ?? GCS.useNoFail;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double Progress() => scrController.instance?.percentComplete * 100 ?? 0;
-        //[Tag]
-        //public static int Deaths() => scrController.deaths;
-        //[Tag]
-        //public static int Attempts() => 0;
+        [Tag(NotPlaying = true)]
+        public static int Deaths() => scrController.deaths;
+        [Tag]
+        public static int Attempts;
 
+        public static void Attempts_Update() {
+            if(scnGame.instance == null) {
+                if(scrController.instance != null && scrConductor.instance != null) {
+                    if(ADOBase.sceneName.Contains("-") && !scrController.instance.noFail && scrConductor.instance.isGameWorld) {
+                        Attempts = Persistence.GetWorldAttempts(scrController.currentWorld);
+                    } else {
+                        Attempts = 0;
+                    }
+                } else {
+                    Attempts = 0;
+                }
+            } else {
+                var level = ADOFAI.LevelData;
+                if(level != null) {
+                    Attempts = Persistence.GetCustomWorldAttempts(
+                        MD5Hash.GetHash(level.author + level.artist + level.song)
+                    );
+                } else {
+                    Attempts = 0;
+                }
+            }
+        }
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double ActualProgress()
         {
             var listFloors = scrLevelMaker.instance?.listFloors;
-            if (listFloors == null || listFloors.
-                    Count == 0)
+            if(listFloors == null || listFloors.Count == 0) {
                 return 0;
+            }
             var firstFloorTime = listFloors[1].entryTime;
             var lastFloorTime = listFloors[listFloors.Count - 1].entryTime;
             var actualProgress = (scrController.instance?.currFloor.entryTime - firstFloorTime) / (lastFloorTime - firstFloorTime) * 100;
-            if (actualProgress == null) return 0;
+            if(actualProgress == null) {
+                return 0;
+            }
             return Mathf.Clamp((float)actualProgress, 0, 100);
         }
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
@@ -56,6 +83,36 @@ namespace Overlayer.Tags
         public static int CurCheckPoint;
         [Tag]
         public static int TotalCheckPoints;
+
+        public static void TotalCheckPoients_Update() {
+            TotalCheckPoints = scrLevelMaker.instance.listFloors.Count(f => f.GetComponent<ffxCheckpoint>() != null);
+        }
+
+        public static List<scrFloor> AllCheckPoints;
+
+        public static void AllCheckPoints_Set() {
+            AllCheckPoints = scrLevelMaker.instance.listFloors.FindAll(f => f.GetComponent<ffxCheckpoint>() != null);
+        }
+
+        public static void InterCheckPoints_Update() {
+            AllCheckPoints = scrLevelMaker.instance.listFloors.FindAll(f => f.GetComponent<ffxCheckpoint>() != null);
+            TotalCheckPoints = AllCheckPoints.Count;
+        }
+
+        public static int GetCheckPointIndex(scrFloor floor) {
+            if(floor == null) {
+                return 0;
+            }
+            int i = 0;
+            foreach(var chkPt in AllCheckPoints) {
+                if(floor.seqID + 1 <= chkPt.seqID) {
+                    return i;
+                }
+                i++;
+            }
+            return i;
+        }
+
         [Tag]
         public static int Combo;
         [Tag]
@@ -70,6 +127,24 @@ namespace Overlayer.Tags
         public static int Score;
         [Tag]
         public static double BestProgress;
+
+        public static void BestProgress_Reset() {
+            BestProgress = 0;
+        }
+
+        public static void BestProgress_Update() {
+            if(scrLevelMaker.instance == null) {
+                return;
+            }
+            BestProgress = Math.Max(BestProgress, scrController.instance.percentComplete * 100);
+        }
+
+        public static void BestProgress_Fix() {
+            if(scrController.instance.gameworld) {
+                BestProgress = 100;
+            }
+        }
+
         #region MarginCombo
         [Tag]
         public static int LMarginCombo(HitMargin margin) => Combos[(int)Difficulty.Lenient][(int)margin];
@@ -92,8 +167,7 @@ namespace Overlayer.Tags
         #endregion
         public static int[][] Combos = new int[EnumHelper<Difficulty>.GetValues().Length][];
         public static int[][] MaxCombos = new int[EnumHelper<Difficulty>.GetValues().Length][];
-        public static void Reset()
-        {
+        public static void Reset() {
             CurCheckPoint = TotalCheckPoints = Combo = MaxCombo = LScore = NScore = SScore = Score = 0;
             //BestProgress = 0;
             int margins = EnumHelper<HitMargin>.GetValues().Length;

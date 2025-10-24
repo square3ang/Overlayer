@@ -1,4 +1,5 @@
 ﻿using Overlayer.Tags.Attributes;
+using System.Collections.Generic;
 
 namespace Overlayer.Tags
 {
@@ -8,6 +9,9 @@ namespace Overlayer.Tags
         public static double Timing;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double TimingAvg;
+
+        public static List<double> Timings = new List<double>();
+
         public static void Reset()
         {
             Timing = TimingAvg = 0;

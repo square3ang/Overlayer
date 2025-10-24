@@ -25,6 +25,7 @@ namespace Overlayer.Tags
         public static int TotalSecond;
         [Tag]
         public static int TotalMilliSecond;
+
         public static void Reset() {
             CurDay = CurHour = CurMinute = CurSecond = CurMilliSecond = 0;
             TotalDay = TotalHour = TotalMinute = TotalSecond = TotalMilliSecond = 0;

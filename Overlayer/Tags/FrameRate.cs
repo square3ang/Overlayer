@@ -12,10 +12,12 @@ namespace Overlayer.Tags
 
         [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double TargetFps => Application.targetFrameRate;
-        
-        
-        public static void Reset()
-        {
+
+        public static float LastDeltaTime;
+        public static float FpsTimer;
+        public static float FpsTimeTimer;
+
+        public static void Reset() {
             Fps = FrameTime = 0;
         }
     }

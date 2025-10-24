@@ -12,7 +12,8 @@ namespace Overlayer.Tags {
         private static string _artistRaw;
         private static string _defaultTextColor;
         private static string _defaultTextShadowColor;
-        public static void LevelInit() {
+
+        public static void Update() {
             if(scnGame.instance != null) {
                 _titleRaw = ADOFAI.LevelData?.song;
                 _authorRaw = ADOFAI.LevelData?.author;
@@ -30,6 +31,7 @@ namespace Overlayer.Tags {
             _defaultTextShadowColor = ADOFAI.LevelData?.defaultTextShadowColor.ToHex() ?? "#000000";
             _title = _titleRaw.BreakRichTag();
         }
+
         [Tag]
         public static string Title(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
             => string.IsNullOrEmpty(_title) ? "" : _title.Trim(maxLength, afterTrimStr);

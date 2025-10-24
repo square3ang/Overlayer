@@ -16,10 +16,24 @@ namespace Overlayer.Tags
         public static double StartProgress;
         [Tag]
         public static bool IsStarted;
+
+        public static void Started_Reset(scrController controller) {
+            IsStarted = false;
+        }
+
+        public static void Start_Init(scrController controller) {
+            if(!IsStarted) {
+                IsStarted = true;
+                if(controller.gameworld) {
+                    StartProgress = controller.percentComplete * 100;
+                    StartTile = controller.currentSeqID + 1;
+                }
+            }
+        }
+
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double MarginScale() => scrController.instance?.currFloor?.marginScale ?? 0;
-        public static void Reset()
-        {
+        public static void Reset() {
             LeftTile = CurTile = TotalTile = StartTile = 0;
             StartProgress = 0;
             IsStarted = false;

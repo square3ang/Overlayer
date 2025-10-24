@@ -1,10 +1,7 @@
 ﻿using Overlayer.Tags.Attributes;
 using System;
-using System.Diagnostics;
 using System.Threading;
-using UnityEngine;
 using UnityEngine.Profiling;
-using static Overlayer.Tags.Patches.BpmPatch;
 
 namespace Overlayer.Tags {
     public static class System {

@@ -2,22 +2,21 @@
 using System;
 using UnityEngine;
 
-namespace Overlayer.Tags.Patches
-{
-    public class SongPatch : PatchBase<SongPatch>
-    {
-        [LazyPatch("Tags.Song.SongTimePatch", "scrConductor", "Update", Triggers = new string[]
-        {
+namespace Overlayer.Tags.Patches {
+    public class P_scrConductor : PatchBase<P_scrConductor> {
+        [LazyPatch("Tags.P_scrConductor.Song__Update", "scrConductor", "Update", Triggers = new string[] {
             nameof(Song.CurMinute), nameof(Song.CurSecond),nameof(Song.CurMilliSecond),
             nameof(Song.TotalMinute), nameof(Song.TotalSecond),nameof(Song.TotalMilliSecond),
         })]
-        public static class SongTimePatch
-        {
-            public static void Postfix(scrConductor __instance)
-            {
-                if (scrController.instance.paused || !__instance.isGameWorld) return;
+        public static class Song__Update {
+            public static void Postfix(scrConductor __instance) {
+                if(scrController.instance.paused || !__instance.isGameWorld) {
+                    return;
+                }
                 AudioSource song = __instance.song;
-                if (!song.clip) return;
+                if(!song.clip) {
+                    return;
+                }
                 TimeSpan nowt = TimeSpan.FromSeconds(song.time);
                 TimeSpan tott = TimeSpan.FromSeconds(song.clip.length);
 

@@ -3,6 +3,7 @@ using Overlayer.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Overlayer.Tags
 {
@@ -122,28 +123,228 @@ namespace Overlayer.Tags
         [Tag]
         public static int MarginCombos(string margins) => MarginCombos_Internal(GCS.difficulty, margins);
         [Tag]
-        public static string SpecialPlayMark(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
-        {
+        public static string SpecialPlayMark(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
             var seqID = scrController.instance.currentSeqID;
             var ppCombo = MarginCombos_Internal(GCS.difficulty, "Perfect");
             var noMiss = MarginCombos_Internal(GCS.difficulty, "VeryEarly|EarlyPerfect|Perfect|LatePerfect|VeryLate");
             string result = "XX";
-            if (ppCombo == seqID) result = "PP";
-            else if (noMiss == seqID) result = "FC+";
-            else if (MissCount() + Overloads() <= 0) result = "FC";
+            if(ppCombo == seqID) {
+                result = "PP";
+            } else if(noMiss == seqID) {
+                result = "FC+";
+            } else if(MissCount() + Overloads() <= 0) {
+                result = "FC";
+            }
             return result.Trim(maxLength, afterTrimStr);
         }
-        public static int MarginCombos_Internal(Difficulty diff, string margins)
-        {
+
+        public static int MarginCombos_Internal(Difficulty diff, string margins) {
             var hms = margins.SplitParse<HitMargin>('|');
             int hash = ADOUtils.HashMargins(hms);
-            if (!MMaxComboCache.TryGetValue(hash, out _))
+            if(!MMaxComboCache.TryGetValue(hash, out _)) {
                 MMaxComboCache[hash] = new int[EnumHelper<Difficulty>.GetValues().Length];
-            if (!MComboCache.TryGetValue(hash, out int[] combos))
+            }
+            if(!MComboCache.TryGetValue(hash, out int[] combos)) {
                 combos = MComboCache[hash] = new int[EnumHelper<Difficulty>.GetValues().Length];
+            }
             return combos[(int)diff];
         }
         #endregion
+
+        public static bool ControllerIsSafe(scrController ctrl) => ctrl.currFloor?.isSafe ?? false;
+
+        public static void FixMargin(scrController ctrl, ref HitMargin hitMargin) {
+            if(ctrl.gameworld) {
+                if(ctrl.noFailInfiniteMargin) {
+                    hitMargin = HitMargin.FailMiss;
+                }
+                if(ctrl.midspinInfiniteMargin || (RDC.auto && !RDC.useOldAuto)) {
+                    hitMargin = HitMargin.Perfect;
+                }
+            }
+        }
+
+        public static void IncreaseCount(Difficulty diff, HitMargin hit) {
+            switch(hit) {
+                case HitMargin.TooEarly:
+                    switch(diff) {
+                        case global::Difficulty.Lenient:
+                            LTE++;
+                            break;
+                        case global::Difficulty.Normal:
+                            NTE++;
+                            break;
+                        case global::Difficulty.Strict:
+                            STE++;
+                            break;
+                    }
+                    break;
+                case HitMargin.VeryEarly:
+                    switch(diff) {
+                        case global::Difficulty.Lenient:
+                            LVE++;
+                            break;
+                        case global::Difficulty.Normal:
+                            NVE++;
+                            break;
+                        case global::Difficulty.Strict:
+                            SVE++;
+                            break;
+                    }
+                    break;
+                case HitMargin.EarlyPerfect:
+                    switch(diff) {
+                        case global::Difficulty.Lenient:
+                            LEP++;
+                            break;
+                        case global::Difficulty.Normal:
+                            NEP++;
+                            break;
+                        case global::Difficulty.Strict:
+                            SEP++;
+                            break;
+                    }
+                    break;
+                case HitMargin.Perfect:
+                    switch(diff) {
+                        case global::Difficulty.Lenient:
+                            LP++;
+                            break;
+                        case global::Difficulty.Normal:
+                            NP++;
+                            break;
+                        case global::Difficulty.Strict:
+                            SP++;
+                            break;
+                    }
+                    break;
+                case HitMargin.LatePerfect:
+                    switch(diff) {
+                        case global::Difficulty.Lenient:
+                            LLP++;
+                            break;
+                        case global::Difficulty.Normal:
+                            NLP++;
+                            break;
+                        case global::Difficulty.Strict:
+                            SLP++;
+                            break;
+                    }
+                    break;
+                case HitMargin.VeryLate:
+                    switch(diff) {
+                        case global::Difficulty.Lenient:
+                            LVL++;
+                            break;
+                        case global::Difficulty.Normal:
+                            NVL++;
+                            break;
+                        case global::Difficulty.Strict:
+                            SVL++;
+                            break;
+                    }
+                    break;
+                case HitMargin.TooLate:
+                    switch(diff) {
+                        case global::Difficulty.Lenient:
+                            LTL++;
+                            break;
+                        case global::Difficulty.Normal:
+                            NTL++;
+                            break;
+                        case global::Difficulty.Strict:
+                            STL++;
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        public static void IncreaseCCount(HitMargin hit) {
+            switch(hit) {
+                case HitMargin.TooEarly:
+                    CTE++;
+                    break;
+                case HitMargin.VeryEarly:
+                    CVE++;
+                    break;
+                case HitMargin.EarlyPerfect:
+                    CEP++;
+                    break;
+                case HitMargin.Perfect:
+                    CP++;
+                    break;
+                case HitMargin.LatePerfect:
+                    CLP++;
+                    break;
+                case HitMargin.VeryLate:
+                    CVL++;
+                    break;
+                case HitMargin.TooLate:
+                    CTL++;
+                    break;
+            }
+        }
+
+        public static double GetAdjustedAngleBoundaryInDeg(Difficulty diff, HitMarginGeneral marginType, double bpmTimesSpeed, double conductorPitch, double marginMult = 1.0) {
+            float num = 0.065f;
+            switch(diff) {
+                case global::Difficulty.Lenient:
+                    num = 0.091f; break;
+                case global::Difficulty.Normal:
+                    num = 0.065f; break;
+                case global::Difficulty.Strict:
+                    num = 0.04f; break;
+            }
+            bool isMobile = ADOBase.isMobile;
+            num = isMobile ? 0.09f : (num / GCS.currentSpeedTrial);
+            float num2 = isMobile ? 0.07f : (0.03f / GCS.currentSpeedTrial);
+            float a = isMobile ? 0.05f : (0.02f / GCS.currentSpeedTrial);
+            num = Mathf.Max(num, 0.025f);
+            num2 = Mathf.Max(num2, 0.025f);
+            double num3 = (double)Mathf.Max(a, 0.025f);
+            double val = scrMisc.TimeToAngleInRad((double)num, bpmTimesSpeed, conductorPitch, false) * 57.295780181884766;
+            double val2 = scrMisc.TimeToAngleInRad((double)num2, bpmTimesSpeed, conductorPitch, false) * 57.295780181884766;
+            double val3 = scrMisc.TimeToAngleInRad(num3, bpmTimesSpeed, conductorPitch, false) * 57.295780181884766;
+            double result = Math.Max(GCS.HITMARGIN_COUNTED * marginMult, val);
+            double result2 = Math.Max(45.0 * marginMult, val2);
+            double result3 = Math.Max(30.0 * marginMult, val3);
+            switch(marginType) {
+                case HitMarginGeneral.Counted: return result;
+                case HitMarginGeneral.Perfect: return result2;
+                case HitMarginGeneral.Pure: return result3;
+            }
+            return result;
+        }
+
+        public static HitMargin GetHitMargin(Difficulty diff, float hitangle, float refangle, bool isCW, float bpmTimesSpeed, float conductorPitch, double marginScale) {
+            float angleDeg = 57.29578f * (hitangle - refangle) * (isCW ? 1 : -1);
+
+            double countedDeg = GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Counted, bpmTimesSpeed, conductorPitch, marginScale);
+            double perfectDeg = GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Perfect, bpmTimesSpeed, conductorPitch, marginScale);
+            double pureDeg = GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Pure, bpmTimesSpeed, conductorPitch, marginScale);
+
+            if(angleDeg < -countedDeg) {
+                return HitMargin.TooEarly;
+            }
+            if(angleDeg < -perfectDeg) {
+                return HitMargin.VeryEarly;
+            }
+            if(angleDeg < -pureDeg) {
+                return HitMargin.EarlyPerfect;
+            }
+            if(angleDeg <= pureDeg) {
+                return HitMargin.Perfect;
+            }
+            if(angleDeg <= perfectDeg) {
+                return HitMargin.LatePerfect;
+            }
+            if(angleDeg <= countedDeg) {
+                return HitMargin.VeryLate;
+            }
+            return HitMargin.TooLate;
+        }
+
         #region MarginMaxCombos
         [Tag]
         public static int LMarginMaxCombos(string margins) => MarginMaxCombos_Internal(global::Difficulty.Lenient, margins);
@@ -153,21 +354,24 @@ namespace Overlayer.Tags
         public static int SMarginMaxCombos(string margins) => MarginMaxCombos_Internal(global::Difficulty.Strict, margins);
         [Tag]
         public static int MarginMaxCombos(string margins) => MarginMaxCombos_Internal(GCS.difficulty, margins);
-        public static int MarginMaxCombos_Internal(Difficulty diff, string margins)
-        {
+
+        public static int MarginMaxCombos_Internal(Difficulty diff, string margins) {
             var hms = margins.SplitParse<HitMargin>('|');
             int hash = ADOUtils.HashMargins(hms);
-            if (!MComboCache.TryGetValue(hash, out _))
+            if(!MComboCache.TryGetValue(hash, out _)) {
                 MComboCache[hash] = new int[EnumHelper<Difficulty>.GetValues().Length];
-            if (!MMaxComboCache.TryGetValue(hash, out int[] combos))
+            }
+            if(!MMaxComboCache.TryGetValue(hash, out int[] combos)) {
                 combos = MMaxComboCache[hash] = new int[EnumHelper<Difficulty>.GetValues().Length];
+            }
             return combos[(int)diff];
         }
+
         #endregion
         public static Dictionary<int, int[]> MComboCache = new Dictionary<int, int[]>();
         public static Dictionary<int, int[]> MMaxComboCache = new Dictionary<int, int[]>();
-        public static void Reset()
-        {
+
+        public static void Reset() {
             Lenient = Normal = Strict = Current = HitMargin.Perfect;
             LTE = LVE = LEP = LP = LLP = LVL = LTL = 0;
             NTE = NVE = NEP = NP = NLP = NVL = NTL = 0;
@@ -177,39 +381,36 @@ namespace Overlayer.Tags
             MComboCache.Clear();
             MMaxComboCache.Clear();
         }
-        public static void SetMarginCombos()
-        {
-            foreach (int hash in MComboCache.Keys.ToList())
-            {
+
+        public static void SetMarginCombos() {
+            foreach (int hash in MComboCache.Keys.ToList()) {
                 var hms = ADOUtils.UnboxMarginHash(hash);
                 var combos = MComboCache[hash];
                 var maxCombos = MMaxComboCache[hash];
-                foreach (var diff in EnumHelper<Difficulty>.GetValues())
-                {
+                foreach (var diff in EnumHelper<Difficulty>.GetValues()) {
                     var difference = GetCHit(diff);
-                    if (Array.IndexOf(hms, difference) >= 0)
+                    if(Array.IndexOf(hms, difference) >= 0) {
                         maxCombos[(int)diff] = Math.Max(maxCombos[(int)diff], ++combos[(int)diff]);
-                    else combos[(int)diff] = 0;
+                    } else {
+                        combos[(int)diff] = 0;
+                    }
                 }
             }
         }
-        public static HitMargin GetCHit(Difficulty diff)
-        {
-            switch (diff)
-            {
+
+        public static HitMargin GetCHit(Difficulty diff) {
+            switch (diff) {
                 case global::Difficulty.Lenient: return Lenient;
                 case global::Difficulty.Normal: return Normal;
                 case global::Difficulty.Strict: return Strict;
                 default: return Strict;
             }
         }
-        public static int GetHitCount(Difficulty diff, HitMargin margin)
-        {
-            switch (diff)
-            {
+
+        public static int GetHitCount(Difficulty diff, HitMargin margin) {
+            switch (diff) {
                 case global::Difficulty.Lenient:
-                    switch (margin)
-                    {
+                    switch (margin) {
                         case HitMargin.TooEarly: return LTE;
                         case HitMargin.VeryEarly: return LVE;
                         case HitMargin.EarlyPerfect: return LEP;
@@ -220,8 +421,7 @@ namespace Overlayer.Tags
                         default: return 0;
                     }
                 case global::Difficulty.Normal:
-                    switch (margin)
-                    {
+                    switch (margin) {
                         case HitMargin.TooEarly: return NTE;
                         case HitMargin.VeryEarly: return NVE;
                         case HitMargin.EarlyPerfect: return NEP;
@@ -232,8 +432,7 @@ namespace Overlayer.Tags
                         default: return 0;
                     }
                 case global::Difficulty.Strict:
-                    switch (margin)
-                    {
+                    switch (margin) {
                         case HitMargin.TooEarly: return STE;
                         case HitMargin.VeryEarly: return SVE;
                         case HitMargin.EarlyPerfect: return SEP;
@@ -244,6 +443,76 @@ namespace Overlayer.Tags
                         default: return 0;
                     }
                 default: return 0;
+            }
+        }
+
+        public static void SetScores(HitMargin l, HitMargin n, HitMargin s, HitMargin c) {
+            switch(c) {
+                case HitMargin.VeryEarly:
+                case HitMargin.VeryLate:
+                    Status.Score += 91;
+                    break;
+                case HitMargin.EarlyPerfect:
+                case HitMargin.LatePerfect:
+                    Status.Score += 150;
+                    break;
+                case HitMargin.Perfect:
+                    Status.Score += 300;
+                    break;
+            }
+            switch(l) {
+                case HitMargin.VeryEarly:
+                case HitMargin.VeryLate:
+                    Status.LScore += 91;
+                    break;
+                case HitMargin.EarlyPerfect:
+                case HitMargin.LatePerfect:
+                    Status.LScore += 150;
+                    break;
+                case HitMargin.Perfect:
+                    Status.LScore += 300;
+                    break;
+            }
+            switch(n) {
+                case HitMargin.VeryEarly:
+                case HitMargin.VeryLate:
+                    Status.NScore += 91;
+                    break;
+                case HitMargin.EarlyPerfect:
+                case HitMargin.LatePerfect:
+                    Status.NScore += 150;
+                    break;
+                case HitMargin.Perfect:
+                    Status.NScore += 300;
+                    break;
+            }
+            switch(s) {
+                case HitMargin.VeryEarly:
+                case HitMargin.VeryLate:
+                    Status.SScore += 91;
+                    break;
+                case HitMargin.EarlyPerfect:
+                case HitMargin.LatePerfect:
+                    Status.SScore += 150;
+                    break;
+                case HitMargin.Perfect:
+                    Status.SScore += 300;
+                    break;
+            }
+        }
+
+        public static void SetCombos(Difficulty diff, HitMargin hit) {
+            int iHit = (int)hit;
+            int[] combos = Status.Combos[(int)diff];
+            int[] maxCombos = Status.MaxCombos[(int)diff];
+            combos[iHit]++;
+            for(int i = 0; i < combos.Length; i++) {
+                if(i != iHit) {
+                    combos[i] = 0;
+                }
+            }
+            for(int i = 0; i < maxCombos.Length; i++) {
+                maxCombos[i] = Math.Max(maxCombos[i], combos[i]);
             }
         }
     }
