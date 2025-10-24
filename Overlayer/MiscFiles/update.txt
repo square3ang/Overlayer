@@ -1,11 +1,2 @@
-﻿[ Add ]
-{ Tag }
-Attempts: Only works on Official levels and CLS
-Deaths: The total number of planet explosions on the current map
-
-[ Change ]
-Internal logic modifications and optimizations
-( ! ! Some tags may not work or may cause errors ! ! )
-
-[ Fix ]
-DefaultTextColor, DefaultTextShadowColor Issue
+﻿[ Fix ]
+Combo value doubled issue
