@@ -45,7 +45,22 @@ namespace Overlayer.Tags
                 }
             }
         }
-        
+
+        public static void Attempts_UpdateGame() {
+            var level = ADOFAI.LevelData;
+            Attempts = Persistence.GetCustomWorldAttempts(
+                MD5Hash.GetHash(level.author + level.artist + level.song)
+            );
+        }
+
+        public static void Attempts_UpdateOfficial() {
+            if(ADOBase.sceneName.Contains("-") && !scrController.instance.noFail && scrConductor.instance.isGameWorld) {
+                Attempts = Persistence.GetWorldAttempts(scrController.currentWorld);
+            } else {
+                Attempts = 0;
+            }
+        }
+
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double Pitch() => GCS.currentSpeedTrial;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]

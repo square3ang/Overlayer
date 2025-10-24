@@ -6,7 +6,7 @@ namespace Overlayer.Tags.Patches {
             nameof(Status.Attempts),
         })]
         public static class Status__WipeFromBlack {
-            public static void Postfix() {
+            public static void Prefix() {
                 Status.Attempts_Update();
             }
         }
