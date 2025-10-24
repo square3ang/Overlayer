@@ -25,11 +25,11 @@ namespace Overlayer.Tags.Patches {
         }
 
         [LazyPatch("Tags.P_scrPressToStart.Status__ShowText", "scrPressToStart", "ShowText", Triggers = new string[] {
-            nameof(Status.TotalCheckPoints), nameof(Status.CurCheckPoint),
+            nameof(CheckPointStats.TotalCheckPoints), nameof(CheckPointStats.CurCheckPoint),
         })]
         public static class Status__ShowText {
             public static void Postfix() {
-                Status.InterCheckPoints_Update();
+                CheckPointStats.InterCheckPoints_Update();
             }
         }
     }

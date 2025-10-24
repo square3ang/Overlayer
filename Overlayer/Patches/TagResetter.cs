@@ -14,7 +14,10 @@ namespace Overlayer.Patches
             Hit.Reset();
             HitTiming.Reset();
             Song.Reset();
-            Status.Reset();
+            Scores.Reset();
+            AccuracyStats.Reset();
+            CheckPointStats.Reset();
+            ComboStats.Reset();
             Tile.Reset();
             Time.Reset();
         }

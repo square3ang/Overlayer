@@ -9,7 +9,7 @@ namespace Overlayer.Tags.Patches {
             nameof(Tile.StartTile), nameof(Tile.StartProgress), nameof(Tile.IsStarted),
 
             // Dependency
-            nameof(Status.MaxXAccuracy), nameof(Status.AbsMaxXAccuracy),
+            nameof(AccuracyStats.MaxXAccuracy), nameof(AccuracyStats.AbsMaxXAccuracy),
         })]
         public static class Tile__ChangeState__StateMachine__StateBehaviour__ChangeState {
             public static void Prefix(StateBehaviour __instance, Enum newState) {

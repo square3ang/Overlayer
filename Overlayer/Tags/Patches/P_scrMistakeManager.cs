@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Overlayer.Tags.Patches {
     public class P_scrMistakeManager : PatchBase<P_scrMistakeManager> {
-        [LazyPatch("Tags.P_scrMistakeManager.Status__CalculatePercentAcc", "scrMistakesManager", "CalculatePercentAcc", Triggers = new string[] {
-            nameof(Status.Accuracy), nameof(Status.MaxAccuracy),
-            nameof(Status.XAccuracy), nameof(Status.MaxXAccuracy),
-            nameof(Status.AbsXAccuracy), nameof(Status.AbsMaxXAccuracy),
+        [LazyPatch("Tags.P_scrMistakeManager.AccuracyStats__CalculatePercentAcc", "scrMistakesManager", "CalculatePercentAcc", Triggers = new string[] {
+            nameof(AccuracyStats.Accuracy), nameof(AccuracyStats.MaxAccuracy),
+            nameof(AccuracyStats.XAccuracy), nameof(AccuracyStats.MaxXAccuracy),
+            nameof(AccuracyStats.AbsXAccuracy), nameof(AccuracyStats.AbsMaxXAccuracy),
         })]
-        public static class Status__CalculatePercentAcc {
+        public static class AccuracyStats__CalculatePercentAcc {
             public static void Postfix(scrMistakesManager __instance) {
                 int perfect = __instance.GetHits(HitMargin.Perfect);
                 int auto = __instance.GetHits(HitMargin.Auto);
@@ -30,7 +30,7 @@ namespace Overlayer.Tags.Patches {
                 double ratio = (success == total) ? 1.0 : ((double)success / total);
                 double bonus = (perfect + auto) * 0.0001;
 
-                Status.Accuracy = 100.0 * (ratio + bonus);
+                AccuracyStats.Accuracy = 100.0 * (ratio + bonus);
 
                 double totalHits = scrMistakesManager.hitMargins.Count;
                 double weightedHits =
@@ -40,8 +40,8 @@ namespace Overlayer.Tags.Patches {
                     0.2 * (tooEarly + tooLate);
 
                 double checkpointminus = Math.Pow(0.9875, scrController.checkpointsUsed);
-                Status.AbsXAccuracy = 100.0 * (weightedHits / totalHits);
-                Status.XAccuracy = Status.AbsXAccuracy * checkpointminus;
+                AccuracyStats.AbsXAccuracy = 100.0 * (weightedHits / totalHits);
+                AccuracyStats.XAccuracy = AccuracyStats.AbsXAccuracy * checkpointminus;
 
                 if(ADOBase.lm != null && ADOBase.lm.listFloors != null &&
                     Tile.CurTile >= 0 && Tile.CurTile < ADOBase.lm.listFloors.Count &&
@@ -54,7 +54,7 @@ namespace Overlayer.Tags.Patches {
                     double mxratio = (mxsucess == mxtotal) ? 1.0 : ((double)mxsucess / mxtotal);
                     double mxbonus = (lefttile + perfect + auto) * 0.0001;
 
-                    Status.MaxAccuracy = 100.0 * (mxratio + mxbonus);
+                    AccuracyStats.MaxAccuracy = 100.0 * (mxratio + mxbonus);
 
                     double possibleHitsX =
                         lefttile + perfect + auto + Tile.StartTile - 1 +
@@ -63,8 +63,8 @@ namespace Overlayer.Tags.Patches {
                         0.2 * (tooEarly + tooLate);
 
                     double denomX = Tile.TotalTile - 1 + tooEarly + tooLate;
-                    Status.AbsMaxXAccuracy = 100.0 * (possibleHitsX / denomX);
-                    Status.MaxXAccuracy = Status.AbsMaxXAccuracy * checkpointminus;
+                    AccuracyStats.AbsMaxXAccuracy = 100.0 * (possibleHitsX / denomX);
+                    AccuracyStats.MaxXAccuracy = AccuracyStats.AbsMaxXAccuracy * checkpointminus;
                 }
             }
         }

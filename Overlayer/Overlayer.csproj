@@ -497,12 +497,15 @@
     <Compile Include="RapidGUI\RGUI\Slider.cs" />
     <Compile Include="RapidGUI\RGUI\Slider\RecursiveSlider.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Tags\AccuracyStats.cs" />
     <Compile Include="Tags\ADOFAI.cs" />
     <Compile Include="Tags\Attributes\IgnoreCaseAttribute.cs" />
     <Compile Include="Tags\Attributes\ValueProcessing.cs" />
     <Compile Include="Tags\Attributes\JSImplementedByAttribute.cs" />
     <Compile Include="Tags\Attributes\TagAttribute.cs" />
     <Compile Include="Tags\Bpm.cs" />
+    <Compile Include="Tags\CheckPointStats.cs" />
+    <Compile Include="Tags\ComboStats.cs" />
     <Compile Include="Tags\Effect.cs" />
     <Compile Include="Tags\FrameRate.cs" />
     <Compile Include="Tags\Hex.cs" />
@@ -521,6 +524,7 @@
     <Compile Include="Tags\Patches\P_scrPressToStart.cs" />
     <Compile Include="Tags\Patches\P_scrUIController.cs" />
     <Compile Include="Tags\Patches\P_scrMistakeManager.cs" />
+    <Compile Include="Tags\Scores.cs" />
     <Compile Include="Tags\Song.cs" />
     <Compile Include="Tags\Status.cs" />
     <Compile Include="Tags\System.cs" />

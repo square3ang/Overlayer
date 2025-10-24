@@ -11,12 +11,12 @@ namespace Overlayer.Tags.Patches {
             }
         }
 
-        [LazyPatch("Tags.P_scnEditor.Status__Play", "scnEditor", "Play", Triggers = new string[] {
-            nameof(Status.CurCheckPoint),
+        [LazyPatch("Tags.P_scnEditor.CheckPoint__Play", "scnEditor", "Play", Triggers = new string[] {
+            nameof(CheckPointStats.CurCheckPoint),
         })]
-        public static class Status__Play {
+        public static class CheckPoint__Play {
             public static void Postfix() {
-                Status.TotalCheckPoients_Update();
+                CheckPointStats.TotalCheckPoients_Update();
             }
         }
 

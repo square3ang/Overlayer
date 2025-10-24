@@ -43,31 +43,35 @@ namespace Overlayer.Tags.Patches {
             }
         }
 
-        [LazyPatch("Tags.P_scrMisc.Status__GetHitMargin", "scrMisc", "GetHitMargin", Triggers = new string[] {
-            nameof(Status.Combo), nameof(Status.MaxCombo), nameof(Status.LScore), nameof(Status.NScore), nameof(Status.SScore), nameof(Status.Score),
-            nameof(Status.LMarginCombo), nameof(Status.NMarginCombo), nameof(Status.SMarginCombo), nameof(Status.MarginCombo),
-            nameof(Status.LMarginMaxCombo), nameof(Status.NMarginMaxCombo), nameof(Status.SMarginMaxCombo), nameof(Status.MarginMaxCombo),
+        [LazyPatch("Tags.P_scrMisc.ComboStats__GetHitMargin", "scrMisc", "GetHitMargin", Triggers = new string[] {
+            nameof(ComboStats.Combo), nameof(ComboStats.MaxCombo),
+            nameof(ComboStats.LMarginCombo), nameof(ComboStats.NMarginCombo), nameof(ComboStats.SMarginCombo), nameof(ComboStats.MarginCombo),
+            nameof(ComboStats.LMarginMaxCombo), nameof(ComboStats.NMarginMaxCombo), nameof(ComboStats.SMarginMaxCombo), nameof(ComboStats.MarginMaxCombo),
         })]
-        public static class Status__GetHitMargin {
+        [LazyPatch("Tags.P_scrMisc.Scores__GetHitMargin", "scrMisc", "GetHitMargin", Triggers = new string[] {
+            nameof(Scores.LScore), nameof(Scores.NScore), nameof(Scores.SScore), nameof(Scores.Score),
+        })]
+        public static class ComboStatsAndScores__GetHitMargin {
             public static void Postfix(float hitangle, float refangle, bool isCW, float bpmTimesSpeed, float conductorPitch, double marginScale, ref HitMargin __result) {
                 var controller = scrController.instance;
                 if(controller && controller.currFloor.freeroam)
                     return;
                 if(!Hit.ControllerIsSafe(controller)) {
-                    if(__result == HitMargin.Perfect)
-                        Status.MaxCombo = Math.Max(Status.MaxCombo, ++Status.Combo);
-                    else
-                        Status.Combo = 0;
+                    if(__result == HitMargin.Perfect) {
+                        ComboStats.MaxCombo = Math.Max(ComboStats.MaxCombo, ++ComboStats.Combo);
+                    } else {
+                        ComboStats.Combo = 0;
+                    }
                     var l = Hit.GetHitMargin(Difficulty.Lenient, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
                     var n = Hit.GetHitMargin(Difficulty.Normal, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
                     var s = Hit.GetHitMargin(Difficulty.Strict, hitangle, refangle, isCW, bpmTimesSpeed, conductorPitch, marginScale);
                     Hit.FixMargin(controller, ref l);
                     Hit.FixMargin(controller, ref n);
                     Hit.FixMargin(controller, ref s);
-                    Hit.SetScores(l, n, s, __result);
-                    Hit.SetCombos(Difficulty.Lenient, l);
-                    Hit.SetCombos(Difficulty.Normal, n);
-                    Hit.SetCombos(Difficulty.Strict, s);
+                    Scores.SetScores(l, n, s, __result);
+                    ComboStats.Combos_Set(Difficulty.Lenient, l);
+                    ComboStats.Combos_Set(Difficulty.Normal, n);
+                    ComboStats.Combos_Set(Difficulty.Strict, s);
                 }
             }
         }

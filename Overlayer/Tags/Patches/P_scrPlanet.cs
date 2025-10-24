@@ -15,14 +15,22 @@ namespace Overlayer.Tags.Patches {
             }
         }
 
+        [LazyPatch("Tags.P_scrPlanet.CheckPoint__MoveToNextFloor", "scrPlanet", "MoveToNextFloor", Triggers = new string[] {
+            nameof(CheckPointStats.CurCheckPoint)
+        })]
+        public static class CheckPoint__MoveToNextFloor {
+            public static void Postfix(scrFloor floor) {
+                if(CheckPointStats.AllCheckPoints != null) {
+                    CheckPointStats.CurCheckPoint = CheckPointStats.GetCheckPointIndex(floor);
+                }
+            }
+        }
+
         [LazyPatch("Tags.P_scrPlanet.Status__MoveToNextFloor", "scrPlanet", "MoveToNextFloor", Triggers = new string[] {
-            nameof(Status.CurCheckPoint), nameof(Status.BestProgress)
+            nameof(Status.BestProgress)
         })]
         public static class Status__MoveToNextFloor {
-            public static void Postfix(scrFloor floor) {
-                if(Status.AllCheckPoints != null) {
-                    Status.CurCheckPoint = Status.GetCheckPointIndex(floor);
-                }
+            public static void Postfix() {
                 Status.BestProgress_Update();
             }
         }
@@ -50,7 +58,7 @@ namespace Overlayer.Tags.Patches {
             nameof(Tile.CurTile), nameof(Tile.LeftTile), nameof(Tile.TotalTile),
 
             // Dependency
-            nameof(Status.MaxAccuracy), nameof(Status.MaxXAccuracy), nameof(Status.AbsMaxXAccuracy),
+            nameof(AccuracyStats.MaxAccuracy), nameof(AccuracyStats.MaxXAccuracy), nameof(AccuracyStats.AbsMaxXAccuracy),
         })]
         public static class Tile__SwitchChosen {
             public static void Postfix() {
