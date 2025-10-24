@@ -1,5 +1,4 @@
 ﻿using ADOFAI;
-using Overlayer.Tags.Attributes;
 
 namespace Overlayer.Tags
 {

@@ -1,5 +1,4 @@
 ﻿using Overlayer.Core.TextReplacing;
-using Overlayer.Patches;
 using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
 using System;

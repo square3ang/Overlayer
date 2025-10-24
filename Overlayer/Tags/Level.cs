@@ -1,6 +1,5 @@
 ﻿using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
-using RapidGUI;
 
 namespace Overlayer.Tags {
     public static class Level {

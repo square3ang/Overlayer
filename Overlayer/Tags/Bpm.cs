@@ -1,6 +1,4 @@
-﻿using OggVorbisEncoder.Setup;
-using Overlayer.Tags.Attributes;
-using Overlayer.Tags.Patches;
+﻿using Overlayer.Tags.Attributes;
 
 namespace Overlayer.Tags
 {
