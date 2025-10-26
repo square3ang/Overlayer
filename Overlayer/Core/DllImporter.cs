@@ -15,7 +15,7 @@ namespace Overlayer.Core {
 
                 if(alreadyLoaded) {
                     nCalcInitialized = true;
-                    Console.WriteLine($"[Field] Already loaded: {dll}");
+                    Main.Logger.Log($"Already loaded: {dll}");
                     return;
                 }
 
@@ -23,12 +23,12 @@ namespace Overlayer.Core {
                     try {
                         Assembly.LoadFrom(dll);
                         nCalcInitialized = true;
-                        Console.WriteLine($"[Field] Loaded: {dll}");
+                        Main.Logger.Log($"Loaded: {dll}");
                     } catch(Exception ex) {
-                        Console.WriteLine($"[Field] Failed to load {dll}: {ex.Message}");
+                        Main.Logger.Error($"Failed to load {dll}: {ex.Message}");
                     }
                 } else {
-                    Console.WriteLine($"[Field] DLL not found: {dll}");
+                    Main.Logger.Error($"DLL not found: {dll}");
                 }
             }
         }
