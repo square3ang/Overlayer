@@ -1,2 +1,11 @@
-﻿[ Fix ]
-Combo value doubled issue
+﻿[ Add ]
+{ Tag }
+TileAngle, TileEntryAngle, TileExitAngle,
+OverloadCounter, MultipressCounter,
+OverloadCounterRaw, MultipressCounterRaw
+
+[ Change ]
+{LevelNameTextShadow} -> {LevelNameTextColorShadow}
+
+[ Fix ]
+{DefaultTextShadowColor} issue
