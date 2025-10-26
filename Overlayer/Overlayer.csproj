@@ -507,6 +507,7 @@
     <Compile Include="Tags\CheckPointStats.cs" />
     <Compile Include="Tags\ComboStats.cs" />
     <Compile Include="Tags\Effect.cs" />
+    <Compile Include="Tags\FailStats.cs" />
     <Compile Include="Tags\FrameRate.cs" />
     <Compile Include="Tags\Hex.cs" />
     <Compile Include="Tags\Hit.cs" />
