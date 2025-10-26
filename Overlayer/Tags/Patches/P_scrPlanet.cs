@@ -35,6 +35,15 @@ namespace Overlayer.Tags.Patches {
             }
         }
 
+        [LazyPatch("Tags.P_scrPlanet.Tile__MoveToNextFloor", "scrPlanet", "MoveToNextFloor", Triggers = new string[] {
+            nameof(Tile.TileAngle), nameof(Tile.TileEntryAngle), nameof(Tile.TileExitAngle)
+        })]
+        public static class Tile__MoveToNextFloor {
+            public static void Postfix(scrFloor floor) {
+                Tile.Angle_Update(floor);
+            }
+        }
+
         [LazyPatch("Tags.P_scrPlanet.HitTiming__SwitchChosen", "scrPlanet", "SwitchChosen", Triggers = new string[] {
             nameof(HitTiming.Timing), nameof(HitTiming.TimingAvg),
         })]

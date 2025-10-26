@@ -2,8 +2,7 @@
 
 namespace Overlayer.Tags
 {
-    public static class Tile
-    {
+    public static class Tile {
         [Tag]
         public static int LeftTile;
         [Tag]
@@ -33,10 +32,28 @@ namespace Overlayer.Tags
 
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double MarginScale() => scrController.instance?.currFloor?.marginScale ?? 0;
+
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double TileAngle;
+
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double TileEntryAngle;
+
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double TileExitAngle;
+
+        const double RAD_TO_DEG = 57.29577951308232;
+        public static void Angle_Update(scrFloor floor) {
+            TileAngle = floor.angleLength * RAD_TO_DEG;
+            TileEntryAngle = floor.entryangle * RAD_TO_DEG;
+            TileExitAngle = floor.exitangle * RAD_TO_DEG;
+        }
+
         public static void Reset() {
             LeftTile = CurTile = TotalTile = StartTile = 0;
             StartProgress = 0;
             IsStarted = false;
+            TileAngle = TileEntryAngle = TileExitAngle = double.NaN;
         }
     }
 }

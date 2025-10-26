@@ -33,6 +33,18 @@ namespace Overlayer.Tags.Patches {
             }
         }
 
+        [LazyPatch("Tags.P_scnGame.Tile__Play", "scnGame", "Play", Triggers = new string[] {
+            nameof(Tile.TileAngle), nameof(Tile.TileEntryAngle), nameof(Tile.TileExitAngle)
+        })]
+        public static class Tile__Play {
+            public static void Postfix() {
+                scrFloor floor = scrController.instance?.currFloor;
+                if(floor != null) {
+                    Tile.Angle_Update(floor);
+                }
+            }
+        }
+
         [LazyPatch("Tags.P_scnGame.Status__Play", "scnGame", "Play", Triggers = new string[] {
             nameof(CheckPointStats.TotalCheckPoints), nameof(CheckPointStats.CurCheckPoint),
         })]
