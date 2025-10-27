@@ -7,9 +7,12 @@ Overlayer is a mod that displays texts in ADOFAI in-game.
 
 Originally made by [c3nb](https://github.com/c3nb).
 
-# 📜 Licenses
+# ⚖️ Licenses
 [RapidGUI](https://github.com/fuqunaga/RapidGUI) is licensed under the MIT License.   
 [UnityCodeEditor](https://github.com/joshcamas/UnityCodeEditor/) is Unlicensed but it uses MIT Licensed Code.
+
+# 📜 Scripting
+> JS-based scripting for implementing custom tags and in-game features.
 
 # 🌐 Translations are welcome!
 
