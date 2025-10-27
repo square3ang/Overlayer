@@ -515,6 +515,7 @@
     <Compile Include="Tags\OverlayerTag.cs" />
     <Compile Include="Tags\Patches\M_MonsterLove.cs" />
     <Compile Include="Tags\Patches\PatchBase.cs" />
+    <Compile Include="Tags\Patches\P_ffxSetDefaultText.cs" />
     <Compile Include="Tags\Patches\P_Persistence.cs" />
     <Compile Include="Tags\Patches\P_scnEditor.cs" />
     <Compile Include="Tags\Patches\P_scnGame.cs" />

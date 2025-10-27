@@ -16,14 +16,23 @@ namespace Overlayer.Tags {
         private static string _defaultTextColorAlpha;
         private static string _defaultTextShadowColorAlpha;
 
+        private static string _levelNameText;
+        private static string _levelNameTextRaw;
+
         private static Shadow LevelNameTextColorShadowComponent;
 
         public static void Init() {
             if(scnGame.instance != null) {
-                _titleRaw = ADOFAI.LevelData?.song;
-                _authorRaw = ADOFAI.LevelData?.author;
+                if(ADOBase.isOfficialLevel) {
+                    _titleRaw = ADOFAI.LevelData?.song;
+                    _authorRaw = ADOFAI.LevelData?.author;
+                    _artistRaw = ADOFAI.LevelData?.artist;
+                } else {
+                    _titleRaw = ADOFAI.LevelData?.song.FuckingAdofaiMapRichTagFixer();
+                    _authorRaw = ADOFAI.LevelData?.author.FuckingAdofaiMapRichTagFixer();
+                    _artistRaw = ADOFAI.LevelData?.artist.FuckingAdofaiMapRichTagFixer();
+                }
                 _author = _authorRaw.BreakRichTag();
-                _artistRaw = ADOFAI.LevelData?.artist;
                 _artist = _artistRaw.BreakRichTag();
             } else {
                 _titleRaw = ADOBase.sceneName;
@@ -49,9 +58,20 @@ namespace Overlayer.Tags {
                 _defaultTextShadowColorAlpha = ADOFAI.LevelData.defaultTextShadowColor.ToHex(true);
             }
 
-                
+            _levelNameText = ADOBase.controller.txtLevelName.text.BreakRichTag();
+            if(ADOBase.isOfficialLevel) {
+                _levelNameTextRaw = ADOBase.controller.txtLevelName.text;
+            } else {
+                _levelNameTextRaw = ADOBase.controller.txtLevelName.text.FuckingAdofaiMapRichTagFixer();
+            }
+        }
 
-           
+        public static void UpdateLevelNameText(string text) {
+            _levelNameText = text;
+        }
+
+        public static void UpdateLevelNameTextRaw(string text) {
+            _levelNameTextRaw = text;
         }
 
         [Tag]
@@ -79,9 +99,9 @@ namespace Overlayer.Tags {
         public static string DefaultTextShadowColor(bool noAlpha = false)
             => noAlpha ? _defaultTextShadowColor : _defaultTextShadowColorAlpha;
         [Tag]
-        public static string LevelNameText() => ADOBase.controller.txtLevelName.text.BreakRichTag();
+        public static string LevelNameText() => _levelNameText;
         [Tag]
-        public static string LevelNameTextRaw() => ADOBase.controller.txtLevelName.text;
+        public static string LevelNameTextRaw() => _levelNameTextRaw;
         [Tag]
         public static string LevelNameTextColor(bool noAlpha = false)
             => ADOBase.controller.txtLevelName.color.ToHex(!noAlpha);
