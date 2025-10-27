@@ -1,11 +1,10 @@
 ﻿[ Add ]
-{ Tag }
-TileAngle, TileEntryAngle, TileExitAngle,
-OverloadCounter, MultipressCounter,
-OverloadCounterRaw, MultipressCounterRaw
-
-[ Change ]
-{LevelNameTextShadow} -> {LevelNameTextColorShadow}
-
-[ Fix ]
-{DefaultTextShadowColor} issue
+A feature that automatically removes invalid <color> rich text
+in the {TitleRaw}, {AuthorRaw}, {ArtistRaw}, {LevelNameTextRaw} Tags.
+[ Example ]
+<color=#FF00FF0>
+INVALID, automatically removed
+<color=#FF00FF>
+VALID
+<color=#F0F>
+VALID
