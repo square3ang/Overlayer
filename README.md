@@ -12,7 +12,7 @@ Originally made by [c3nb](https://github.com/c3nb).
 [UnityCodeEditor](https://github.com/joshcamas/UnityCodeEditor/) is Unlicensed but it uses MIT Licensed Code.
 
 # 📜 Scripting
-> JS-based scripting for implementing custom tags and in-game features.
+- [Overlayer.Scripting](https://github.com/modlist-org/Overlayer.Scripting) is JS-based scripting for implementing custom tags and features.
 
 # 🌐 Translations are welcome!
 
