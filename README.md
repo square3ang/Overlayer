@@ -19,7 +19,7 @@ Originally made by [c3nb](https://github.com/c3nb).
 You can freely adapt the meaning to fit the style and culture of each language.
 
 * 📝 Literal translation is not required. Additional explanations are allowed.
-* 📂 Translation files are located in `/MiscFiles/lang/`.
+* 📂 Translation files are located in `/Overlayer/MiscFiles/lang/`.
 
 If you are adding a new language instead of updating an existing one, you can refer to the official English or Korean translations.  
 ➡️ Please use a pull request!
