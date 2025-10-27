@@ -94,7 +94,7 @@ namespace Overlayer.Views
                 Main.Lang.CurrentLanguage = languageNames[index];
                 model.Lang = Main.Lang.CurrentLanguage;
             }
-            if(Drawer.Button(Main.Lang.GetFail() ? TranslatorHelper.FailString(Main.Lang) : (Main.Lang.GetLoading() ? Main.Lang.Get("RELOADING","Reloading...") : Main.Lang.Get("RELOADLANG","Reload Language Pack")),GUILayout.Width(320)))
+            if(Drawer.Button(Main.Lang.GetFail() ? TranslatorHelper.FailString(Main.Lang) : Main.Lang.Get("RELOADLANG","Reload Language Pack"),GUILayout.Width(320)))
             {
                 _ = Main.Lang.LoadTranslationsAsync(Path.Combine(Main.Mod.Path,"lang"));
                 Main.Lang.CurrentLanguage = model.Lang;
