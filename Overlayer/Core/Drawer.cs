@@ -389,7 +389,7 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static bool DrawEnum<T>(string label, ref T @enum, int unique = 0) where T : Enum
+        public static bool DrawEnum<T>(string label, ref T @enum) where T : Enum
         {
             int current = EnumHelper<T>.IndexOf(@enum);
             string[] names = EnumHelper<T>.GetNames();
@@ -398,7 +398,7 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static bool DrawEnumPlus<T>(string label, ref T @enum, Func<string, string> translator, int unique = 0)
+        public static bool DrawEnumPlus<T>(string label, ref T @enum, Func<string, string> translator)
             where T : Enum
         {
             int current = EnumHelper<T>.IndexOf(@enum);
