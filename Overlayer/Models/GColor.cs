@@ -45,11 +45,21 @@ namespace Overlayer.Models
             _topRightHex = hex;
             _bottomLeftHex = hex;
             _bottomRightHex = hex;
-            status = new GUIStatus();
-            topLeftStatus = new GUIStatus();
-            topRightStatus = new GUIStatus();
-            bottomLeftStatus = new GUIStatus();
-            bottomRightStatus = new GUIStatus();
+            status = new GUIStatus() {
+                Expanded = false,
+            };
+            topLeftStatus = new GUIStatus() {
+                Expanded = false,
+            };
+            topRightStatus = new GUIStatus() {
+                Expanded = false,
+            };
+            bottomLeftStatus = new GUIStatus() {
+                Expanded = false,
+            };
+            bottomRightStatus = new GUIStatus() {
+                Expanded = false,
+            };
         }
         public GColor(VertexGradient color)
         {
@@ -58,11 +68,21 @@ namespace Overlayer.Models
             _topRightHex = ColorUtility.ToHtmlStringRGBA(color.topRight);
             _bottomLeftHex = ColorUtility.ToHtmlStringRGBA(color.bottomLeft);
             _bottomRightHex = ColorUtility.ToHtmlStringRGBA(color.bottomRight);
-            status = new GUIStatus();
-            topLeftStatus = new GUIStatus();
-            topRightStatus = new GUIStatus();
-            bottomLeftStatus = new GUIStatus();
-            bottomRightStatus = new GUIStatus();
+            status = new GUIStatus() {
+                Expanded = false,
+            };
+            topLeftStatus = new GUIStatus() {
+                Expanded = false,
+            };
+            topRightStatus = new GUIStatus() {
+                Expanded = false,
+            };
+            bottomLeftStatus = new GUIStatus() {
+                Expanded = false,
+            };
+            bottomRightStatus = new GUIStatus() {
+                Expanded = false,
+            };
 
         }
         public GColor Copy()
