@@ -44,8 +44,15 @@ namespace RapidGUI
 
         public static string SelectionPopup(string current, string[] displayOptions, Texture2D[] images) {
             var idx = Array.IndexOf(displayOptions, current);
+            var image = images != null && idx < images.Length ? images[idx] : null;
+            int newIdx;
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(2);
+            GUILayout.Label(image, GUILayout.Width(14));
             GUILayout.Box(current, RGUIStyle.alignLeftBox);
-            var newIdx = PopupOnLastRect(idx, displayOptions, images);
+            GUILayout.EndHorizontal();
+            newIdx = PopupOnLastRect(idx, displayOptions, images);
+
             if(newIdx != idx) {
                 current = displayOptions[newIdx];
             }
@@ -53,19 +60,33 @@ namespace RapidGUI
         }
 
         public static int SelectionPopup(int selectionIndex, string[] displayOptions, Texture2D[] images) {
-            var label = (selectionIndex < 0 || displayOptions.Length <= selectionIndex)
-                ? ""
-                : displayOptions[selectionIndex];
-            GUILayout.Box(label, RGUIStyle.alignLeftBox);
+            if(selectionIndex < 0 || displayOptions.Length <= selectionIndex) {
+                GUILayout.Box("", RGUIStyle.alignLeftBox);
+            } else {
+                var image = images != null && selectionIndex < images.Length ? images[selectionIndex] : null;
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(2);
+                GUILayout.Label(image, GUILayout.Width(14));
+                GUILayout.Box(displayOptions[selectionIndex], RGUIStyle.alignLeftBox);
+                GUILayout.EndHorizontal();
+            }
+            
             return PopupOnLastRect(selectionIndex, displayOptions, images);
         }
 
         public static int SelectionPopup(int selectionIndex, string[] displayOptions, Texture2D[] images,
             Dictionary<string, string> tooltips = null, params GUILayoutOption[] options) {
-            var label = (selectionIndex < 0 || displayOptions.Length <= selectionIndex)
-                ? ""
-                : displayOptions[selectionIndex];
-            GUILayout.Box(label, RGUIStyle.alignLeftBox, options);
+            if(selectionIndex < 0 || displayOptions.Length <= selectionIndex) {
+                GUILayout.Box("", RGUIStyle.alignLeftBox);
+            } else {
+                var image = images != null && selectionIndex < images.Length ? images[selectionIndex] : null;
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(2);
+                GUILayout.Label(image, GUILayout.Width(14));
+                GUILayout.Box(displayOptions[selectionIndex], RGUIStyle.alignLeftBox);
+                GUILayout.EndHorizontal();
+            }
+
             return PopupOnLastRect(selectionIndex, displayOptions, images, -1, "", tooltips);
         }
 
