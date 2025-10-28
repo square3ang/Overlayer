@@ -1,9 +1,1 @@
-﻿[ Add ]
-Ease selector preview image
-
-[ Change ]
-Remove the automatic replacement of the value 100 with
-FFDA00 when using {XAccuracy} in the {ColorRange} Tag
-
-[ Fix ]
-EasedValueEditor Preview issue
+﻿ALPHA
