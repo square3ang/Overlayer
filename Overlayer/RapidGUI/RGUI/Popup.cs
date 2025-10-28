@@ -17,11 +17,9 @@ namespace RapidGUI
             var idx = Array.IndexOf(displayOptions, current);
             GUILayout.Box(current, RGUIStyle.alignLeftBox);
             var newIdx = PopupOnLastRect(idx, displayOptions);
-            if (newIdx != idx)
-            {
+            if (newIdx != idx) {
                 current = displayOptions[newIdx];
             }
-
             return current;
         }
 
@@ -44,19 +42,57 @@ namespace RapidGUI
             return PopupOnLastRect(selectionIndex, displayOptions, -1, "", tooltips);
         }
 
+        public static string SelectionPopup(string current, string[] displayOptions, Texture2D[] images) {
+            var idx = Array.IndexOf(displayOptions, current);
+            GUILayout.Box(current, RGUIStyle.alignLeftBox);
+            var newIdx = PopupOnLastRect(idx, displayOptions, images);
+            if(newIdx != idx) {
+                current = displayOptions[newIdx];
+            }
+            return current;
+        }
+
+        public static int SelectionPopup(int selectionIndex, string[] displayOptions, Texture2D[] images) {
+            var label = (selectionIndex < 0 || displayOptions.Length <= selectionIndex)
+                ? ""
+                : displayOptions[selectionIndex];
+            GUILayout.Box(label, RGUIStyle.alignLeftBox);
+            return PopupOnLastRect(selectionIndex, displayOptions, images);
+        }
+
+        public static int SelectionPopup(int selectionIndex, string[] displayOptions, Texture2D[] images,
+            Dictionary<string, string> tooltips = null, params GUILayoutOption[] options) {
+            var label = (selectionIndex < 0 || displayOptions.Length <= selectionIndex)
+                ? ""
+                : displayOptions[selectionIndex];
+            GUILayout.Box(label, RGUIStyle.alignLeftBox, options);
+            return PopupOnLastRect(selectionIndex, displayOptions, images, -1, "", tooltips);
+        }
+
         public static int PopupOnLastRect(string[] displayOptions, string label = "") =>
             PopupOnLastRect(-1, displayOptions, -1, label);
 
         public static int PopupOnLastRect(string[] displayOptions, int button, string label = "") =>
             PopupOnLastRect(-1, displayOptions, button, label);
 
+        public static int PopupOnLastRect(string[] displayOptions, Texture2D[] images, string label = "") =>
+            PopupOnLastRect(-1, displayOptions, images, -1, label);
+
+        public static int PopupOnLastRect(string[] displayOptions, Texture2D[] images, int button, string label = "") =>
+            PopupOnLastRect(-1, displayOptions, images, button, label);
+
         public static int PopupOnLastRect(int selectionIndex, string[] displayOptions, int mouseButton = -1,
             string label = "", Dictionary<string, string> tooltips = null) => Popup(GUILayoutUtility.GetLastRect(),
-            mouseButton, selectionIndex, displayOptions,
+            mouseButton, selectionIndex, displayOptions, null,
             label, tooltips);
 
+        public static int PopupOnLastRect(int selectionIndex, string[] displayOptions, Texture2D[] images, int mouseButton = -1,
+           string label = "", Dictionary<string, string> tooltips = null) => Popup(GUILayoutUtility.GetLastRect(),
+           mouseButton, selectionIndex, displayOptions, images,
+           label, tooltips);
 
-        public static int Popup(Rect launchRect, int mouseButton, int selectionIndex, string[] displayOptions,
+
+        public static int Popup(Rect launchRect, int mouseButton, int selectionIndex, string[] displayOptions, Texture2D[] images = null,
             string label = "", Dictionary<string, string> tooltips = null)
         {
             var ret = selectionIndex;
@@ -133,6 +169,7 @@ namespace RapidGUI
 
                     popupWindow.label = label;
                     popupWindow.displayOptions = displayOptions;
+                    popupWindow.images = images;
                     popupWindow.tooltips = tooltips;
                     PopupWindow.isOpen = true;
                     WindowInvoker.Add(popupWindow);
@@ -150,6 +187,7 @@ namespace RapidGUI
             public Vector2 size;
             public int? result;
             public string[] displayOptions;
+            public Texture2D[] images;
             public Dictionary<string, string> tooltips;
             public Vector2 scrollPosition;
 
@@ -195,25 +233,30 @@ namespace RapidGUI
 
                             for (var j = 0; j < displayOptions.Length; ++j)
                             {
-                                if (GUILayout.Button(displayOptions[j], RGUIStyle.popupFlatButton))
-                                {
+
+                                if(GUILayout.Button(displayOptions[j], RGUIStyle.popupFlatButton)) {
                                     result = j;
                                     isOpen = false;
                                 }
 
-                                /*if (displayOptions[j] == "Accuracy")
-                                {
-                                    Main.Logger.Log(displayOptions[j]);
-                                    Main.Logger.Log("Hover: " + GUILayoutUtility.GetLastRect()
-                                        .Contains(Event.current.mousePosition));
-                                }*/
+                                Rect lastRect = GUILayoutUtility.GetLastRect();
 
-                                if (tooltips != null &&
-                                    GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) &&
+                                if (tooltips != null && lastRect
+                                    .Contains(Event.current.mousePosition) &&
                                     tooltips.TryGetValue(displayOptions[j], out var tooltip))
                                 {
                                     showTooltip = true;
                                     PopupWindow.tooltip = tooltip;
+                                }
+
+                                var image = images != null && j < images.Length ? images[j] : null;
+
+                                if(image != null) {
+                                    lastRect.x += 5;
+                                    lastRect.width = image.width * 4;
+                                    lastRect.height = image.height * 4;
+
+                                    GUI.Label(lastRect, image);
                                 }
                             }
                         }
@@ -226,7 +269,6 @@ namespace RapidGUI
                             !(rc.Contains(ev.mousePosition)))
                         {
                             result = -1;
-                            ;
                             isOpen = false;
                         }
 

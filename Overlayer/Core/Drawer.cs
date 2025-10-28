@@ -62,6 +62,22 @@ namespace Overlayer.Core
             return c;
         }
 
+        public static bool SelectionPopup(ref int selected, string[] options, Texture2D[] images, string label,
+            params GUILayoutOption[] layoutOptions) {
+            if(label != "") {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(label);
+            }
+
+            var news = RGUI.SelectionPopup(selected, options, images, null, layoutOptions);
+            var c = selected != news;
+
+            selected = news;
+            if(label != "")
+                GUILayout.EndHorizontal();
+            return c;
+        }
+
         public static bool SelectionPopupWithTooltip(ref int selected, string[] options, string label,
             Dictionary<string, string> tooltips, params GUILayoutOption[] layoutOptions)
         {
@@ -398,6 +414,14 @@ namespace Overlayer.Core
             return result;
         }
 
+        public static bool DrawEnum<T>(string label, ref T @enum, Texture2D[] images) where T : Enum {
+            int current = EnumHelper<T>.IndexOf(@enum);
+            string[] names = EnumHelper<T>.GetNames();
+            bool result = SelectionPopup(ref current, names, images, "");
+            @enum = EnumHelper<T>.GetValues()[current];
+            return result;
+        }
+
         public static bool DrawEnumPlus<T>(string label, ref T @enum, Func<string, string> translator)
             where T : Enum
         {
@@ -407,6 +431,19 @@ namespace Overlayer.Core
 
             bool result =
                 SelectionPopup(ref current, translatedNames, "");
+
+            @enum = EnumHelper<T>.GetValues()[current];
+            return result;
+        }
+
+        public static bool DrawEnumPlus<T>(string label, ref T @enum, Texture2D[] images, Func<string, string> translator)
+            where T : Enum {
+            int current = EnumHelper<T>.IndexOf(@enum);
+            string[] names = EnumHelper<T>.GetNames();
+            string[] translatedNames = names.Select(name => translator(name)).ToArray();
+
+            bool result =
+                SelectionPopup(ref current, translatedNames, images, "");
 
             @enum = EnumHelper<T>.GetValues()[current];
             return result;
