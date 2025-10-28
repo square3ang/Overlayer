@@ -14,7 +14,7 @@ namespace Overlayer.Utils
         public static readonly Random Random = new Random(DateTime.Now.Millisecond);
         public static readonly Regex RichTagBreaker = new Regex(@"<(color|material|quad|size)=(.|\n)*?>|<\/(color|material|quad|size)>|<(b|i)>|<\/(b|i)>", RegexOptions.Compiled | RegexOptions.Multiline);
         public static readonly Regex RichTagBreakerWithoutSize = new Regex(@"<(color|material|quad)=(.|\n)*?>|<\/(color|material|quad)>|<(b|i)>|<\/(b|i)>", RegexOptions.Compiled | RegexOptions.Multiline);
-        public static readonly Regex RichTagColorFixer = new Regex(@"<color=(#[0-9A-Fa-f]+)>(.*?)</color>", RegexOptions.Compiled | RegexOptions.Singleline);
+        public static readonly Regex RichTagColorFixer = new Regex(@"<color=([""']?#?[0-9A-Fa-f]+[""']?)>(.*?)</color>", RegexOptions.Compiled | RegexOptions.Singleline);
 
         public static string BreakRichTag(this string s)
             => RichTagBreaker.Replace(s, string.Empty);
@@ -22,11 +22,18 @@ namespace Overlayer.Utils
             => RichTagBreakerWithoutSize.Replace(s, string.Empty);
         public static string FuckingAdofaiMapRichTagFixer(this string s)
             => RichTagColorFixer.Replace(s, m => {
-                var hex = m.Groups[1].Value;
+                var raw = m.Groups[1].Value.Trim('"', '\'');
                 var content = m.Groups[2].Value;
-                int len = hex.Length - 1;
-                return (len == 3 || len == 6 || len == 8) ? m.Value : content;
-        });
+
+                if(!raw.StartsWith("#"))
+                    return content;
+
+                int len = raw.Length - 1;
+                if(len != 3 && len != 6 && len != 8)
+                    return content;
+
+                return $"<color={raw}>{content}</color>";
+            });
 
         public static double CalculateDifference(this string a, string b)
         {
