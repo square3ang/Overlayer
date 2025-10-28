@@ -405,7 +405,7 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static bool DrawEnum<T>(string label, ref T @enum) where T : Enum
+        public static bool DrawEnum<T>(ref T @enum) where T : Enum
         {
             int current = EnumHelper<T>.IndexOf(@enum);
             string[] names = EnumHelper<T>.GetNames();
@@ -415,6 +415,7 @@ namespace Overlayer.Core
         }
 
         public static bool DrawEnum<T>(string label, ref T @enum, Texture2D[] images) where T : Enum {
+        public static bool DrawEnum<T>(ref T @enum, Texture2D[] images) where T : Enum {
             int current = EnumHelper<T>.IndexOf(@enum);
             string[] names = EnumHelper<T>.GetNames();
             bool result = SelectionPopup(ref current, names, images, "");
@@ -422,7 +423,7 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static bool DrawEnumPlus<T>(string label, ref T @enum, Func<string, string> translator)
+        public static bool DrawEnumPlus<T>(ref T @enum, Func<string, string> translator)
             where T : Enum
         {
             int current = EnumHelper<T>.IndexOf(@enum);
@@ -436,7 +437,7 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static bool DrawEnumPlus<T>(string label, ref T @enum, Texture2D[] images, Func<string, string> translator)
+        public static bool DrawEnumPlus<T>(ref T @enum, Texture2D[] images, Func<string, string> translator)
             where T : Enum {
             int current = EnumHelper<T>.IndexOf(@enum);
             string[] names = EnumHelper<T>.GetNames();

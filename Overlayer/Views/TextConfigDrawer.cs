@@ -136,7 +136,7 @@ namespace Overlayer.Views
             }
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("ALIGNMENT","Alignment"));
-            if (Drawer.DrawEnumPlus("Text Alignment", ref model.Alignment, TranslateTextAlignment)) {
+            if (Drawer.DrawEnumPlus(ref model.Alignment, TranslateTextAlignment)) {
                 changed = true;
                 if(Main.Settings.autoPivot) {
                     model.Pivot = MiscUtils.AlignmentToPivot(model.Alignment);
