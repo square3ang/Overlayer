@@ -1,10 +1,9 @@
 ﻿[ Add ]
-A feature that automatically removes quotes from <color> rich text
-in the {TitleRaw}, {AuthorRaw}, {ArtistRaw}, {LevelNameTextRaw} tags.
-[ Example ]
-<color="#FF00FF">
-Quotes removed automatically
-<color=#FF00FF>
-No quotes
-<color="#F0F">
-Quotes removed automatically
+Ease selector preview image
+
+[ Change ]
+Remove the automatic replacement of the value 100 with
+FFDA00 when using {XAccuracy} in the {ColorRange} Tag
+
+[ Fix ]
+EasedValueEditor Preview issue
