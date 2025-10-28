@@ -329,6 +329,12 @@ namespace Overlayer.Core {
                 StrInitialize(ref fieldBL, ColorUtility.ToHtmlStringRGBA(color.bottomLeft));
                 StrInitialize(ref fieldBR, ColorUtility.ToHtmlStringRGBA(color.bottomRight));
 
+                if(changed && ge) {
+                    fieldTR.Str = ColorUtility.ToHtmlStringRGBA(color.topLeft);
+                    fieldBL.Str = ColorUtility.ToHtmlStringRGBA(color.bottomLeft);
+                    fieldBR.Str = ColorUtility.ToHtmlStringRGBA(color.bottomRight);
+                }
+
                 GUILayout.BeginHorizontal();
                 Color newColorTL = RGUI.Field(color.topLeft, "", GUILayout.Width(cWidth));
                 GUILayout.Space(2f);
