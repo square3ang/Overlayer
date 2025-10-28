@@ -434,8 +434,6 @@
     <Compile Include="Core\TextReplacing\Tag.cs" />
     <Compile Include="Core\Translation\Translator.cs" />
     <Compile Include="Core\UndoRedoManager.cs" />
-    <Compile Include="Lib\JSON.cs" />
-    <Compile Include="Lib\JSON.Unity.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Models\FontMeta.cs" />
     <Compile Include="Models\GColor.cs" />
@@ -549,7 +547,7 @@
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\IOUtils.cs" />
     <Compile Include="Utils\MiscUtils.cs" />
-    <Compile Include="Utils\ModelUtils.cs" />
+    <Compile Include="Models\ModelUtils.cs" />
     <Compile Include="Utils\MovingManEditor.cs" />
     <Compile Include="Utils\UpdatePopup.cs" />
     <Compile Include="Utils\StringConverter.cs" />

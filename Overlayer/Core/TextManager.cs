@@ -1,7 +1,7 @@
-﻿using JSON;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Overlayer.Models;
 using Overlayer.Unity;
-using Overlayer.Utils;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,15 +14,35 @@ namespace Overlayer.Core
         public static bool Initialized { get; private set; }
         public static int Count => Texts.Count;
         private static List<OverlayerText> Texts;
-        public static void Initialize()
-        {
-            if (Initialized) return;
+        public static void Initialize() {
+            if(Initialized) {
+                return;
+            }
+
             Texts = new List<OverlayerText>();
             string textsPath = Path.Combine(Main.Mod.Path, "Texts.json");
             List<TextConfig> configs = new List<TextConfig>();
-            if (File.Exists(textsPath))
-                configs = ModelUtils.UnwrapList<TextConfig>((JsonArray)JsonNode.Parse(File.ReadAllText(textsPath)));
-            configs.ForEach(c => CreateText(c));
+
+            if(File.Exists(textsPath)) {
+                var content = File.ReadAllText(textsPath);
+                if(!string.IsNullOrWhiteSpace(content)) {
+                    var token = JToken.Parse(content);
+
+                    if(token.Type == JTokenType.Array) {
+                        foreach(var item in (JArray)token) {
+                            if(item.Type == JTokenType.Object)
+                                configs.Add(TextConfigImporter.Import((JObject)item));
+                        }
+                    } else if(token.Type == JTokenType.Object) {
+                        configs.Add(TextConfigImporter.Import((JObject)token));
+                    }
+                }
+            }
+
+            foreach(var config in configs) {
+                CreateText(config);
+            }
+
             Refresh();
             Initialized = true;
         }
@@ -50,11 +70,10 @@ namespace Overlayer.Core
             Texts.Remove(text);
             Refresh();
         }
-        public static void Save()
-        {
+        public static void Save() {
             var array = ModelUtils.WrapList(Texts.Select(ot => ot.Config).ToList());
             string textsPath = Path.Combine(Main.Mod.Path, "Texts.json");
-            File.WriteAllText(textsPath, array.ToString(4));
+            File.WriteAllText(textsPath, JsonConvert.SerializeObject(array, Formatting.Indented));
         }
         public static void Refresh()
         {

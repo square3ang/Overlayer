@@ -1,6 +1,5 @@
-﻿using JSON;
+﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
-using Overlayer.Utils;
 using TMPro;
 using UnityEngine;
 
@@ -81,43 +80,52 @@ namespace Overlayer.Models
             col.bottomRightStatus = bottomRightStatus.Copy();
             return col;
         }
-        public JsonNode Serialize()
-        {
-            JsonNode node = JsonNode.Empty;
-            node[nameof(gradientEnabled)] = gradientEnabled;
-            node[nameof(topLeft)] = topLeft;
-            node[nameof(topRight)] = topRight;
-            node[nameof(bottomLeft)] = bottomLeft;
-            node[nameof(bottomRight)] = bottomRight;
-            node[nameof(status)] = status?.Serialize();
-            node[nameof(topLeftStatus)] = topLeftStatus?.Serialize();
-            node[nameof(topRightStatus)] = topRightStatus?.Serialize();
-            node[nameof(bottomLeftStatus)] = bottomLeftStatus?.Serialize();
-            node[nameof(bottomRightStatus)] = bottomRightStatus?.Serialize();
-            return node;
+        public JToken Serialize() {
+            return new JObject {
+                [nameof(gradientEnabled)] = gradientEnabled,
+                [nameof(topLeft)] = ModelUtils.ToNode(topLeft),
+                [nameof(topRight)] = ModelUtils.ToNode(topRight),
+                [nameof(bottomLeft)] = ModelUtils.ToNode(bottomLeft),
+                [nameof(bottomRight)] = ModelUtils.ToNode(bottomRight),
+                [nameof(status)] = status?.Serialize(),
+                [nameof(topLeftStatus)] = topLeftStatus?.Serialize(),
+                [nameof(topRightStatus)] = topRightStatus?.Serialize(),
+                [nameof(bottomLeftStatus)] = bottomLeftStatus?.Serialize(),
+                [nameof(bottomRightStatus)] = bottomRightStatus?.Serialize()
+            };
         }
-        public void Deserialize(JsonNode node)
-        {
-            gradientEnabled = node[nameof(gradientEnabled)].IfNotExist(false);
-            if (node[nameof(r)] != null && node[nameof(g)] != null && node[nameof(b)] != null)
-            {
-                r = node[nameof(r)];
-                g = node[nameof(g)];
-                b = node[nameof(b)];
-                a = node[nameof(a)].IfNotExist(1);
-            }
-            else
-            {
-                topLeft = node[nameof(topLeft)];
-                topRight = node[nameof(topRight)];
-                bottomLeft = node[nameof(bottomLeft)];
-                bottomRight = node[nameof(bottomRight)];
-                topLeftStatus = ModelUtils.Unbox<GUIStatus>(node[nameof(topLeftStatus)]) ?? new GUIStatus();
-                topRightStatus = ModelUtils.Unbox<GUIStatus>(node[nameof(topRightStatus)]) ?? new GUIStatus();
-                bottomLeftStatus = ModelUtils.Unbox<GUIStatus>(node[nameof(bottomLeftStatus)]) ?? new GUIStatus();
-                bottomRightStatus = ModelUtils.Unbox<GUIStatus>(node[nameof(bottomRightStatus)]) ?? new GUIStatus();
-            }
-            status = ModelUtils.Unbox<GUIStatus>(node[nameof(status)]) ?? new GUIStatus();
+        public void Deserialize(JToken node) {
+            gradientEnabled = node.Value<bool?>(nameof(gradientEnabled)) ?? false;
+
+            topLeft = node[nameof(topLeft)] != null
+                ? ModelUtils.ToColor(node[nameof(topLeft)])
+                : default;
+            topRight = node[nameof(topRight)] != null
+                ? ModelUtils.ToColor(node[nameof(topRight)])
+                : default;
+            bottomLeft = node[nameof(bottomLeft)] != null
+                ? ModelUtils.ToColor(node[nameof(bottomLeft)])
+                : default;
+            bottomRight = node[nameof(bottomRight)] != null
+                ? ModelUtils.ToColor(node[nameof(bottomRight)])
+                : default;
+
+            topLeftStatus = node[nameof(topLeftStatus)] != null
+                ? ModelUtils.Unbox<GUIStatus>(node[nameof(topLeftStatus)])
+                : new GUIStatus();
+            topRightStatus = node[nameof(topRightStatus)] != null
+                ? ModelUtils.Unbox<GUIStatus>(node[nameof(topRightStatus)])
+                : new GUIStatus();
+            bottomLeftStatus = node[nameof(bottomLeftStatus)] != null
+                ? ModelUtils.Unbox<GUIStatus>(node[nameof(bottomLeftStatus)])
+                : new GUIStatus();
+            bottomRightStatus = node[nameof(bottomRightStatus)] != null
+                ? ModelUtils.Unbox<GUIStatus>(node[nameof(bottomRightStatus)])
+                : new GUIStatus();
+
+            status = node[nameof(status)] != null
+                ? ModelUtils.Unbox<GUIStatus>(node[nameof(status)])
+                : new GUIStatus();
         }
 
         private void SetTopLeftColor(Color color)

@@ -1,5 +1,4 @@
-﻿using JSON;
-using Overlayer.Core;
+﻿using Overlayer.Core;
 using Overlayer.Models;
 using System;
 using System.Collections.Generic;
@@ -100,11 +99,6 @@ namespace Overlayer.Utils
             if (b) a();
             return b;
         }
-        public static string ToStringN(this JsonNode node)
-        {
-            if (node == null) return null;
-            return node.Value;
-        }
         /// <summary>
         /// For Avoid Warning
         /// </summary>
@@ -134,7 +128,6 @@ namespace Overlayer.Utils
         {
             return new Vector3(vector.x, vector.y, vector.z + z);
         }
-        public static JsonNode IfNotExist(this JsonNode node, JsonNode other) => node == null ? other : node;
         public static byte[] Compress(this byte[] data)
         {
             using (MemoryStream output = new MemoryStream())

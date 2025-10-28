@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Overlayer.Core;
 using Overlayer.Models;
 using Overlayer.Tags;
@@ -6,9 +7,7 @@ using Overlayer.Unity;
 using Overlayer.Utils;
 using SFB;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using TMPro;
 using UnityEngine;
 
 namespace Overlayer.Views
@@ -158,11 +157,13 @@ namespace Overlayer.Views
             if (Drawer.Button(Main.Lang.Get("EXPORT","Export")))
             {
                 string target = StandaloneFileBrowser.SaveFilePanel(Main.Lang.Get("SELECT_TEXT","Select Text"), Persistence.GetLastUsedFolder(), $"{model.Name}.json", "json");
-                if (!string.IsNullOrWhiteSpace(target))
-                {
-                    var node = model.Serialize();
+                if(!string.IsNullOrWhiteSpace(target)) {
+                    JObject node = model.Serialize() as JObject;
                     node["References"] = TextConfigImporter.GetReferences(model);
-                    File.WriteAllText(target, node.ToString(4));
+                    File.WriteAllText(
+                        target,
+                        JsonConvert.SerializeObject(node, Formatting.Indented)
+                    );
                 }
             }
             if (Drawer.Button(Main.Lang.Get("RESET","Reset")))

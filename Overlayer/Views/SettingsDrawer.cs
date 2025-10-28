@@ -1,23 +1,17 @@
-﻿using JSON;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.Translation;
-using Overlayer.Core.Translatior;
 using Overlayer.Models;
-using Overlayer.Tags.Patches;
 using Overlayer.Utils;
 using RapidGUI;
-using SA.GoogleDoc;
 using SFB;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.TextCore.Text;
 using static Overlayer.Patches.HitFixPatch;
-using static UnityModManagerNet.UnityModManager;
 using Object = UnityEngine.Object;
 
 namespace Overlayer.Views
@@ -206,16 +200,21 @@ namespace Overlayer.Views
                 TextManager.CreateText(new TextConfig());
                 TextManager.Refresh();
             }
-            if (Drawer.Button(Main.Lang.Get("IMPORT_TEXT","Import Text")))
-            {
-                var texts = StandaloneFileBrowser.OpenFilePanel(Main.Lang.Get("SELECT_TEXT","Select Text"), Main.Mod.Path, new[] { new ExtensionFilter("Text", "json") }, true);
-                foreach (var text in texts)
-                {
-                    var json = JsonNode.Parse(File.ReadAllText(text));
-                    if (json is JsonArray arr)
+            if(Drawer.Button(Main.Lang.Get("IMPORT_TEXT", "Import Text"))) {
+                var texts = StandaloneFileBrowser.OpenFilePanel(
+                    Main.Lang.Get("SELECT_TEXT", "Select Text"),
+                    Main.Mod.Path,
+                    new[] { new ExtensionFilter("Text", "json") },
+                    true
+                );
+
+                foreach(var text in texts) {
+                    var json = JToken.Parse(File.ReadAllText(text));
+                    if(json is JArray arr) {
                         ModelUtils.UnwrapList<TextConfig>(arr).ForEach(t => TextManager.CreateText(t));
-                    else if (json is JsonObject obj)
+                    } else if(json is JObject obj) {
                         TextManager.CreateText(TextConfigImporter.Import(obj));
+                    }
                 }
                 TextManager.Refresh();
             }

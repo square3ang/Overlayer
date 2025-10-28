@@ -1,8 +1,6 @@
-﻿using JSON;
+﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 using Overlayer.Models;
-using Overlayer.Utils;
-using UnityEngine;
 using UnityModManagerNet;
 
 namespace Overlayer
@@ -27,12 +25,11 @@ namespace Overlayer
         public bool useTooltip = true;
         public bool isFirstEg = true;
         public bool autoPivot = true;
-        public JsonNode Serialize()
-        {
-            var node = JsonNode.Empty;
+        public JToken Serialize() {
+            var node = new JObject();
             node[nameof(disableLogo)] = disableLogo;
             node[nameof(ChangeFont)] = ChangeFont;
-            node[nameof(AdofaiFont)] = AdofaiFont.Serialize();
+            node[nameof(AdofaiFont)] = AdofaiFont?.Serialize();
             node[nameof(Lang)] = Lang;
             node[nameof(FPSUpdateRate)] = FPSUpdateRate;
             node[nameof(FrameTimeUpdateRate)] = FrameTimeUpdateRate;
@@ -45,29 +42,34 @@ namespace Overlayer
             node[nameof(useEasedValueEditor)] = useEasedValueEditor;
             node[nameof(useAutoUpdate)] = useAutoUpdate;
             node[nameof(useAutoUpdateBeta)] = useAutoUpdateBeta;
+            node[nameof(useTooltip)] = useTooltip;
             node[nameof(isFirstEg)] = isFirstEg;
             node[nameof(autoPivot)] = autoPivot;
             return node;
         }
-        public void Deserialize(JsonNode node)
-        {
-            disableLogo = node[nameof(disableLogo)];
-            ChangeFont = node[nameof(ChangeFont)];
-            AdofaiFont = ModelUtils.Unbox<FontMeta>(node[nameof(AdofaiFont)]);
-            Lang = node[nameof(Lang)];
-            FPSUpdateRate = node[nameof(FPSUpdateRate)];
-            FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)];
-            SystemTagUpdateRate = node[nameof(SystemTagUpdateRate)];
-            useLegacyTheme = node[nameof(useLegacyTheme)];
-            useLegacyNumberField = node[nameof(useLegacyNumberField)];
-            useShowTrueAutoJudgment = node[nameof(useShowTrueAutoJudgment)];
-            useMovingManEditor = node[nameof(useMovingManEditor)];
-            useColorRangeEditor = node[nameof(useColorRangeEditor)];
-            useEasedValueEditor = node[nameof(useEasedValueEditor)];
-            useAutoUpdate = node[nameof(useAutoUpdate)];
-            useAutoUpdateBeta = node[nameof(useAutoUpdateBeta)];
-            isFirstEg = node[nameof(isFirstEg)];
-            autoPivot = node[nameof(autoPivot)];
+        public void Deserialize(JToken node) {
+            var defaultSettings = new Settings();
+
+            disableLogo = node[nameof(disableLogo)]?.Value<bool>() ?? defaultSettings.disableLogo;
+            ChangeFont = node[nameof(ChangeFont)]?.Value<bool>() ?? defaultSettings.ChangeFont;
+            AdofaiFont = node[nameof(AdofaiFont)] != null
+                ? ModelUtils.Unbox<FontMeta>(node[nameof(AdofaiFont)])
+                : defaultSettings.AdofaiFont;
+            Lang = node[nameof(Lang)]?.Value<string>() ?? defaultSettings.Lang;
+            FPSUpdateRate = node[nameof(FPSUpdateRate)]?.Value<float>() ?? defaultSettings.FPSUpdateRate;
+            FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)]?.Value<float>() ?? defaultSettings.FrameTimeUpdateRate;
+            SystemTagUpdateRate = node[nameof(SystemTagUpdateRate)]?.Value<int>() ?? defaultSettings.SystemTagUpdateRate;
+            useLegacyTheme = node[nameof(useLegacyTheme)]?.Value<bool>() ?? defaultSettings.useLegacyTheme;
+            useLegacyNumberField = node[nameof(useLegacyNumberField)]?.Value<bool>() ?? defaultSettings.useLegacyNumberField;
+            useShowTrueAutoJudgment = node[nameof(useShowTrueAutoJudgment)]?.Value<bool>() ?? defaultSettings.useShowTrueAutoJudgment;
+            useMovingManEditor = node[nameof(useMovingManEditor)]?.Value<bool>() ?? defaultSettings.useMovingManEditor;
+            useColorRangeEditor = node[nameof(useColorRangeEditor)]?.Value<bool>() ?? defaultSettings.useColorRangeEditor;
+            useEasedValueEditor = node[nameof(useEasedValueEditor)]?.Value<bool>() ?? defaultSettings.useEasedValueEditor;
+            useAutoUpdate = node[nameof(useAutoUpdate)]?.Value<bool>() ?? defaultSettings.useAutoUpdate;
+            useAutoUpdateBeta = node[nameof(useAutoUpdateBeta)]?.Value<bool>() ?? defaultSettings.useAutoUpdateBeta;
+            useTooltip = node[nameof(useTooltip)]?.Value<bool>() ?? defaultSettings.useTooltip;
+            isFirstEg = node[nameof(isFirstEg)]?.Value<bool>() ?? defaultSettings.isFirstEg;
+            autoPivot = node[nameof(autoPivot)]?.Value<bool>() ?? defaultSettings.autoPivot;
         }
         public Settings Copy()
         {

@@ -1,34 +1,35 @@
-﻿using JSON;
+﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 
 namespace Overlayer.Models
 {
-    public class FontMeta : IModel, ICopyable<FontMeta>
-    {
+    public class FontMeta : IModel, ICopyable<FontMeta> {
         public string name;
         public float lineSpacing = 1;
         public float fontScale = 0.5f;
-        public JsonNode Serialize()
-        {
-            var node = JsonNode.Empty;
-            node[nameof(name)] = name;
-            node[nameof(lineSpacing)] = lineSpacing;
-            node[nameof(fontScale)] = fontScale;
-            return node;
+
+        public JToken Serialize() {
+            return new JObject {
+                [nameof(name)] = name,
+                [nameof(lineSpacing)] = lineSpacing,
+                [nameof(fontScale)] = fontScale
+            };
         }
-        public void Deserialize(JsonNode node)
-        {
-            name = node[nameof(name)];
-            lineSpacing = node[nameof(lineSpacing)];
-            fontScale = node[nameof(fontScale)];
+
+        public void Deserialize(JToken obj) {
+            var defaultSettings = new FontMeta();
+
+            name = obj.Value<string>(nameof(name)) ?? defaultSettings.name;
+            lineSpacing = obj.Value<float?>(nameof(lineSpacing)) ?? defaultSettings.lineSpacing;
+            fontScale = obj.Value<float?>(nameof(fontScale)) ?? defaultSettings.fontScale;
         }
-        public FontMeta Copy()
-        {
-            var newMeta = new FontMeta();
-            newMeta.name = name;
-            newMeta.lineSpacing = lineSpacing;
-            newMeta.fontScale = fontScale;
-            return newMeta;
+
+        public FontMeta Copy() {
+            return new FontMeta {
+                name = name,
+                lineSpacing = lineSpacing,
+                fontScale = fontScale
+            };
         }
     }
 }

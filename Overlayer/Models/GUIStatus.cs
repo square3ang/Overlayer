@@ -1,4 +1,4 @@
-﻿using JSON;
+﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 
 namespace Overlayer.Models
@@ -14,17 +14,17 @@ namespace Overlayer.Models
             status.Enabled = Enabled;
             return status;
         }
-        public JsonNode Serialize()
-        {
-            var node = JsonNode.Empty;
-            node[nameof(Expanded)] = Expanded;
-            node[nameof(Enabled)] = Enabled;
-            return node;
+        public JToken Serialize() {
+            return new JObject {
+                [nameof(Expanded)] = Expanded,
+                [nameof(Enabled)] = Enabled
+            };
         }
-        public void Deserialize(JsonNode node)
-        {
-            Expanded = node[nameof(Expanded)];
-            Enabled = node[nameof(Enabled)];
+        public void Deserialize(JToken node) {
+            var defaultSettings = new GUIStatus();
+
+            Expanded = node?[nameof(Expanded)]?.Value<bool?>() ?? defaultSettings.Expanded;
+            Enabled = node?[nameof(Enabled)]?.Value<bool?>() ?? defaultSettings.Enabled;
         }
     }
 }
