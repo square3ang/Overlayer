@@ -8,7 +8,7 @@ namespace Overlayer.Olly {
     public partial class Olly : MonoBehaviour {
         private OllyRender renderer;
 
-        public static float TextSpeed = 40f;
+        public float TextSpeed = 40f;
 
         private OllyDialogue.Node currentNode;
         private string displayedText = "";
