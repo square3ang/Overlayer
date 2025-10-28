@@ -419,7 +419,7 @@ namespace Overlayer.Core
 
             var tooltip = new Dictionary<string, string>();
             foreach(var tag in tags) {
-                tooltip[tag] = Tags.Tooltip.GetTooltip(tag);
+                tooltip[tag] = Utils.Tooltip.GetTooltip(tag);
             }
 
             SelectionPopupWithTooltip(ref selected, tags.ToArray(), "", tooltip);

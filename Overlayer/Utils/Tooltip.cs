@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Overlayer.Tags;
+namespace Overlayer.Utils;
 
 public class Tooltip
 {

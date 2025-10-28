@@ -308,7 +308,7 @@ public class CodeEditor
                 if(rect.Contains(Event.current.mousePosition)) {
                     var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
                     if(TagManager.tags.ContainsKey(pars)) {
-                        Main.tooltip = Tags.Tooltip.GetTooltip(pars);
+                        Main.tooltip = Tooltip.GetTooltip(pars);
                     } else {
                         Main.tooltip = Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
                     }
