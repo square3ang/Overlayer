@@ -81,7 +81,7 @@ namespace Overlayer.Utils {
             if(Main.Settings.useLegacyNumberField) {
                 Drawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100);
             } else {
-                neoDrawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100);
+                neoDrawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100, "testvalue");
             }
         }
 
