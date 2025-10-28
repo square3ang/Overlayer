@@ -15,7 +15,6 @@ namespace Overlayer.Views
     public class TextConfigDrawer : ModelDrawable<TextConfig>
     {
         public OverlayerText text;
-        private bool[] colorsExpanded = new bool[4];
         public TextConfigDrawer(TextConfig config) : base(config) => text = TextManager.Find(config);
 
         public override void OnceCall() {
@@ -88,8 +87,8 @@ namespace Overlayer.Views
                 changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
                 changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
             }
-            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref colorsExpanded[0]);
-            if (colorsExpanded[0])
+            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref model.TextColor.status.Enabled);
+            if (model.TextColor.status.Enabled)
             {
                 if(Main.Settings.useLegacyNumberField) {
                     GUILayoutEx.BeginIndent();
@@ -101,8 +100,8 @@ namespace Overlayer.Views
             } else {
                 NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
             }
-            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("SHADOW_COLOR", "Shadow Color")), ref colorsExpanded[1]);
-            if (colorsExpanded[1])
+            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("SHADOW_COLOR", "Shadow Color")), ref model.ShadowColor.status.Enabled);
+            if (model.ShadowColor.status.Enabled)
             {
                 if(Main.Settings.useLegacyNumberField) {
                     GUILayoutEx.BeginIndent();
@@ -115,8 +114,8 @@ namespace Overlayer.Views
             } else {
                 NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
             }
-            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS","Edit {0}"),Main.Lang.Get("OUTLINE_COLOR","Outline Color")), ref colorsExpanded[2]);
-            if (colorsExpanded[2])
+            Drawer.DrawBool(string.Format(Main.Lang.Get("EDIT_THIS","Edit {0}"),Main.Lang.Get("OUTLINE_COLOR","Outline Color")), ref model.OutlineColor.status.Enabled);
+            if (model.OutlineColor.status.Enabled)
             {
                 if(Main.Settings.useLegacyNumberField) {
                     GUILayoutEx.BeginIndent();
