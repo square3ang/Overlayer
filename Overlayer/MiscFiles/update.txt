@@ -1,3 +1,6 @@
 ﻿[ Add ]
 Advanced Format Number
 Move text sorting order feature
+
+IF YOU USE SCRIPTING,
+PLEASE UPDATE OVERLAYER.SCRIPTING!!
