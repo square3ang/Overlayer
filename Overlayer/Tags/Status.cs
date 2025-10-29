@@ -9,11 +9,13 @@ namespace Overlayer.Tags
         [Tag]
         public static bool IsAutoEnabled => ADOFAI.RDC?.auto ?? false;
         [Tag]
-        public static bool IsPracticeModeEnabled => ADOFAI.RDC?.practice ?? false;
-        [Tag]
         public static bool IsOldAutoEnabled => ADOFAI.RDC?.useOldAuto ?? false;
         [Tag]
+        public static bool IsPracticeModeEnabled => ADOFAI.RDC?.practice ?? false;
+        [Tag]
         public static bool IsNoFailEnabled => ADOFAI.Controller?.noFail ?? GCS.useNoFail;
+        [Tag]
+        public static bool IsSpeedTrialEnabled => GCS.speedTrialMode;
         [Tag(NotPlaying = true)]
         public static int Deaths() => scrController.deaths;
         [Tag]
