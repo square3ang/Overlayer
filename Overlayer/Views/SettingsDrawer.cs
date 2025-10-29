@@ -231,12 +231,32 @@ namespace Overlayer.Views
             GUILayout.EndHorizontal();
             for (int i = 0; i < TextManager.Count; i++)
             {
+                GUILayout.BeginHorizontal();
+                GUI.color = (i <= 0) ? Color.gray : Color.white;
+                string upSymbol = (i <= 0) ? "△" : "▲";
+                if(Drawer.Button(upSymbol, GUILayout.Width(32))) {
+                    if(Event.current.shift) {
+                        TextManager.MoveTextToTop(i);
+                    } else if(i > 0) {
+                        TextManager.MoveTextUp(i);
+                    }
+                }
+                GUI.color = (i >= TextManager.Count - 1) ? Color.gray : Color.white;
+                string downSymbol = (i >= TextManager.Count - 1) ? "▽" : "▼";
+                if(Drawer.Button(downSymbol, GUILayout.Width(32))) {
+                    if(Event.current.shift) {
+                        TextManager.MoveTextToBottom(i);
+                    } else if(i < TextManager.Count - 1) {
+                        TextManager.MoveTextDown(i);
+                    }
+                }
+                GUI.color = Color.white;
                 var text = TextManager.Get(i);
                 if(text == null) {
-                    GUILayout.Label($"[{Main.Lang.Get("ERROR","Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX","Unable to load text data at index {0}"), i.ToString()));
+                    GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX", "Unable to load text data at index {0}"), i.ToString()));
                     continue;
                 }
-                GUILayout.BeginHorizontal();
+                GUILayout.Space(6);
                 GUI.color = new Color(0.8f, 0.8f, 1f);
                 if(Drawer.Button(Main.Lang.Get("EDIT", "Edit"))) {
                     TextConfigDrawer config = new TextConfigDrawer(text.Config);

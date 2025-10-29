@@ -63,6 +63,63 @@ namespace Overlayer.Core
             return Texts[index];
         }
         public static OverlayerText Find(TextConfig configRef) => Texts.Find(ot => ReferenceEquals(ot.Config, configRef));
+        public static void MoveTextUp(int index) {
+            if(index <= 0 || index >= Texts.Count) {
+                return;
+            }
+            var tmp = Texts[index - 1];
+            Texts[index - 1] = Texts[index];
+            Texts[index] = tmp;
+
+            var go = Texts[index].gameObject;
+            var goPrev = Texts[index - 1].gameObject;
+            int prevSibling = goPrev.transform.GetSiblingIndex();
+            goPrev.transform.SetSiblingIndex(go.transform.GetSiblingIndex());
+            go.transform.SetSiblingIndex(prevSibling);
+
+            Refresh();
+        }
+        public static void MoveTextDown(int index) {
+            if(index < 0 || index >= Texts.Count - 1) {
+                return;
+            }
+            var tmp = Texts[index + 1];
+            Texts[index + 1] = Texts[index];
+            Texts[index] = tmp;
+
+            var go = Texts[index].gameObject;
+            var goNext = Texts[index + 1].gameObject;
+            int nextSibling = goNext.transform.GetSiblingIndex();
+            goNext.transform.SetSiblingIndex(go.transform.GetSiblingIndex());
+            go.transform.SetSiblingIndex(nextSibling);
+
+            Refresh();
+        }
+        public static void MoveTextToTop(int index) {
+            if(index <= 0 || index >= Texts.Count) {
+                return;
+            }
+            var item = Texts[index];
+            Texts.RemoveAt(index);
+            Texts.Insert(0, item);
+
+            item.gameObject.transform.SetSiblingIndex(0);
+
+            Refresh();
+        }
+        public static void MoveTextToBottom(int index) {
+            if(index < 0 || index >= Texts.Count - 1) {
+                return;
+            }
+
+            var item = Texts[index];
+            Texts.RemoveAt(index);
+            Texts.Add(item);
+
+            item.gameObject.transform.SetSiblingIndex(item.gameObject.transform.parent.childCount - 1);
+
+            Refresh();
+        }
         public static void Remove(int index) => DestroyText(Texts[index]);
         public static void DestroyText(OverlayerText text)
         {
