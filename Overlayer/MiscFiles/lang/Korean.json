@@ -5,6 +5,7 @@
       "OVERLAYER"
     ],
     "ACTIVE": "활성화",
+    "ADVANCED_FORMAT_NUMBER": "고급 숫자 서식",
     "ALIGNMENT": "정렬",
     "ALLOW_THIS": "{0} 허용",
     "APPLY": "적용",
@@ -88,6 +89,7 @@
     "MISC_TOP_LEFT": "왼쪽 위",
     "MISC_TOP_RIGHT": "오른쪽 위",
     "NAME": "이름",
+    "NEED_RESTART_MOD": "모드 재시작이 필요합니다!!",
     "NEW_TEXT": "새로운 텍스트 생성",
     "NO": "아니요",
     "NOT_EXIST_TAG": "존재하지 않는 태그입니다.",

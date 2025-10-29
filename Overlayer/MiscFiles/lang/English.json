@@ -5,6 +5,7 @@
       "OVERLAYER"
     ],
     "ACTIVE": "Active",
+    "ADVANCED_FORMAT_NUMBER": "Advanced Format Number",
     "ALIGNMENT": "Alignment",
     "ALLOW_THIS": "Allow {0}",
     "APPLY": "Apply",
@@ -88,6 +89,7 @@
     "MISC_TOP_LEFT": "Top Left",
     "MISC_TOP_RIGHT": "Top Right",
     "NAME": "Name",
+    "NEED_RESTART_MOD": "You need to restart the mod!!",
     "NEW_TEXT": "Create New Text",
     "NO": "No",
     "NOT_EXIST_TAG": "This tag does not exist.",
