@@ -28,6 +28,8 @@ namespace Overlayer.Utils
                 return str.Substring(0, maxLength) + afterTrimStr?.Replace("$LeftCount", StringConverter.FromInt32(str.Length - maxLength));
             return str;
         }
+        public static string ToString(this double value, string format) => value.ToString(format);
+        public static string ToString(this float value, string format) => value.ToString(format);
         public static string PadZero(double value, int digits) => value.ToString("F"+digits);
         public static T[] SplitParse<T>(this string str, char splitter) where T : Enum
         {

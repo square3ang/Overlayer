@@ -176,6 +176,15 @@ namespace Overlayer.Views
                 Drawer.DrawBool(
                     string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_NUMBER_FIELD", "Legacy Number Field")),
                     ref model.useLegacyNumberField);
+                if(Main.AdvancedFormatNumberStatusBefore != model.advancedFormatNumber) {
+                    GUI.color = Color.yellow;
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("ADVANCED_FORMAT_NUMBER", "Advanced Format Number") + $"      <i>{Main.Lang.Get("NEED_RESTART_MOD", "You need to restart the mod!!")}</i>"),
+                    ref model.advancedFormatNumber);
+                    GUI.color = Color.white;
+                } else {
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("ADVANCED_FORMAT_NUMBER", "Advanced Format Number")),
+                    ref model.advancedFormatNumber);
+                }
                 if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
                     LazyPatchManager.Unpatch(typeof(ChangeAddHit), true);
                     LazyPatchManager.Patch(typeof(ChangeAddHit));

@@ -97,18 +97,25 @@ namespace Overlayer.Tags
                 il.Emit(OpCodes.Call, runtimeAccessor);
                 parameters.Add((typeof(string), "accessor", ""));
             }
-            if ((flags & ValueProcessing.RoundNumber) != 0)
-            {
-                if (rt != typeof(double))
-                    il.Emit(OpCodes.Conv_R8);
-                il.Emit(OpCodes.Ldarg, parameters.Count);
-                il.Emit(OpCodes.Call, round);
-                if (rt != typeof(double))
-                    il.Convert(rt);
-                parameters.Add((typeof(int), "digits", -1));
+            if((flags & ValueProcessing.RoundNumber) != 0) {
+                if(Main.Settings.advancedFormatNumber) {
+                    if(rt != typeof(double))
+                        il.Emit(OpCodes.Conv_R8);
+                    il.Emit(OpCodes.Ldarg, parameters.Count);
+                    il.Emit(OpCodes.Call, toString);
+                    rt = typeof(string); 
+                    parameters.Add((typeof(string), "format", ""));
+                } else {
+                    if(rt != typeof(double))
+                        il.Emit(OpCodes.Conv_R8);
+                    il.Emit(OpCodes.Ldarg, parameters.Count);
+                    il.Emit(OpCodes.Call, round);
+                    if(rt != typeof(double))
+                        il.Convert(rt);
+                    parameters.Add((typeof(int), "digits", -1));
+                }
             }
-            else if ((flags & ValueProcessing.TrimString) != 0)
-            {
+            else if((flags & ValueProcessing.TrimString) != 0) {
                 il.Emit(OpCodes.Ldarg, parameters.Count);
                 il.Emit(OpCodes.Ldarg, parameters.Count + 1);
                 il.Emit(OpCodes.Call, trim);
@@ -242,6 +249,7 @@ namespace Overlayer.Tags
         private static int uniqueNum = 0;
         private static MethodInfo round;
         private static MethodInfo trim;
+        private static MethodInfo toString;
         private static MethodInfo runtimeAccessor;
         private static AssemblyBuilder ass;
         private static ModuleBuilder mod;
@@ -252,6 +260,7 @@ namespace Overlayer.Tags
             runtimeAccessor = typeof(OverlayerTag).GetMethod(nameof(RuntimeAccess), (BindingFlags)15420, null, new[] { typeof(object), typeof(string) }, null);
             round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });
             trim = typeof(Extensions).GetMethod("Trim", new[] { typeof(string), typeof(int), typeof(string) });
+            toString = typeof(Extensions).GetMethod("ToString", new[] { typeof(double), typeof(string) }); 
         }
     }
 }
