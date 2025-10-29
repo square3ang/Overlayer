@@ -1,1 +1,3 @@
-﻿ALPHA
+﻿[ Add ]
+Advanced Format Number
+Move text sorting order feature
