@@ -222,7 +222,12 @@ namespace Overlayer.Views
             GUILayout.EndHorizontal();
             for (int i = 0; i < TextManager.Count; i++)
             {
+                var text = TextManager.Get(i);
+
                 GUILayout.BeginHorizontal();
+                if(Drawer.DrawOnlyBool(ref text.Config.Active)) {
+                    text.gameObject.SetActive(text.Config.Active);
+                }
                 GUI.color = (i <= 0) ? Color.gray : Color.white;
                 string upSymbol = (i <= 0) ? "△" : "▲";
                 if(Drawer.Button(upSymbol, GUILayout.Width(32))) {
@@ -242,7 +247,6 @@ namespace Overlayer.Views
                     }
                 }
                 GUI.color = Color.white;
-                var text = TextManager.Get(i);
                 if(text == null) {
                     GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX", "Unable to load text data at index {0}"), i.ToString()));
                     continue;

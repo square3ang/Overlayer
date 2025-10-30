@@ -456,6 +456,29 @@ namespace Overlayer.Core
             return prev != value;
         }
 
+        public static bool DrawOnlyBool(ref bool value) {
+            bool prev = value;
+
+            if(Main.Settings.useLegacyTheme) {
+                value = GUILayout.Toggle(value, "");
+            } else {
+                var old = GUI.backgroundColor;
+                GUI.backgroundColor = Color.clear;
+                var newskin = new GUIStyle(GUI.skin.button);
+                newskin.fontSize = 16;
+                newskin.margin = new RectOffset(0, 0, 4, 0);
+                newskin.padding = new RectOffset(0, 0, 0, 0);
+
+                if(GUILayout.Button(value ? textureSelected : textureUnselected, newskin)) {
+                    value = !value;
+                }
+
+                GUI.backgroundColor = old;
+            }
+
+            return prev != value;
+        }
+
         public static bool DrawByte(string label, ref byte value)
         {
             string str = value.ToString();
