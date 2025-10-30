@@ -1,6 +1,6 @@
 ﻿[ Add ]
-Advanced Format Number
-Move text sorting order feature
-
-IF YOU USE SCRIPTING,
-PLEASE UPDATE OVERLAYER.SCRIPTING!!
+Quick Active toggle
+Color of text name depending on text activation status
+Show Text Name As Name or DisplayText
+[ Delete ]
+AdvancedFormatNumber
