@@ -292,7 +292,11 @@ namespace Overlayer.Views
                         textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
                     }
                 } else {
-                    textName = text.Config.Name;
+                    if(text.Config.Active) {
+                        textName = text.Config.Name;
+                    } else {
+                        textName = $"<color=#808080>{text.Config.Name}</color>";
+                    }
                 }
                 GUILayout.Label(textName);
 
