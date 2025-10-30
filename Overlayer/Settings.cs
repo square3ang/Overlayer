@@ -24,7 +24,6 @@ namespace Overlayer
         public bool useAutoUpdateBeta = false;
         public bool useTooltip = true;
         public bool autoPivot = true;
-        public bool advancedFormatNumber = false;
         public bool isFirstEg = true;
         public JToken Serialize() {
             var node = new JObject();
@@ -45,7 +44,6 @@ namespace Overlayer
             node[nameof(useAutoUpdateBeta)] = useAutoUpdateBeta;
             node[nameof(useTooltip)] = useTooltip;
             node[nameof(autoPivot)] = autoPivot;
-            node[nameof(advancedFormatNumber)] = advancedFormatNumber;
             node[nameof(isFirstEg)] = isFirstEg;           
             return node;
         }
@@ -71,7 +69,6 @@ namespace Overlayer
             useAutoUpdateBeta = node[nameof(useAutoUpdateBeta)]?.Value<bool>() ?? defaultSettings.useAutoUpdateBeta;
             useTooltip = node[nameof(useTooltip)]?.Value<bool>() ?? defaultSettings.useTooltip;
             autoPivot = node[nameof(autoPivot)]?.Value<bool>() ?? defaultSettings.autoPivot;
-            advancedFormatNumber = node[nameof(advancedFormatNumber)]?.Value<bool>() ?? defaultSettings.advancedFormatNumber;
             isFirstEg = node[nameof(isFirstEg)]?.Value<bool>() ?? defaultSettings.isFirstEg;
         }
         public Settings Copy()
@@ -93,7 +90,6 @@ namespace Overlayer
             newSettings.useAutoUpdate = useAutoUpdate;
             newSettings.useAutoUpdateBeta = useAutoUpdateBeta;
             newSettings.autoPivot = autoPivot;
-            newSettings.advancedFormatNumber = advancedFormatNumber;
             newSettings.isFirstEg = isFirstEg;
             return newSettings;
         }

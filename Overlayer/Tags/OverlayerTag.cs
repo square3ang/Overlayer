@@ -97,23 +97,15 @@ namespace Overlayer.Tags
                 il.Emit(OpCodes.Call, runtimeAccessor);
                 parameters.Add((typeof(string), "accessor", ""));
             }
-            if((flags & ValueProcessing.RoundNumber) != 0) {
-                if(Main.Settings.advancedFormatNumber) {
-                    if(rt != typeof(double))
-                        il.Emit(OpCodes.Conv_R8);
-                    il.Emit(OpCodes.Ldarg, parameters.Count);
-                    il.Emit(OpCodes.Call, toString);
-                    rt = typeof(string); 
-                    parameters.Add((typeof(string), "format", ""));
-                } else {
-                    if(rt != typeof(double))
-                        il.Emit(OpCodes.Conv_R8);
-                    il.Emit(OpCodes.Ldarg, parameters.Count);
-                    il.Emit(OpCodes.Call, round);
-                    if(rt != typeof(double))
-                        il.Convert(rt);
-                    parameters.Add((typeof(int), "digits", -1));
-                }
+            if((flags & ValueProcessing.RoundNumber) != 0)
+            {
+                if(rt != typeof(double))
+                    il.Emit(OpCodes.Conv_R8);
+                il.Emit(OpCodes.Ldarg, parameters.Count);
+                il.Emit(OpCodes.Call, round);
+                if(rt != typeof(double))
+                    il.Convert(rt);
+                parameters.Add((typeof(int), "digits", -1));
             }
             else if((flags & ValueProcessing.TrimString) != 0) {
                 il.Emit(OpCodes.Ldarg, parameters.Count);

@@ -109,9 +109,6 @@ namespace Overlayer
             TextManager.Initialize();
             yield return null;
         }
-
-        public static bool AdvancedFormatNumberStatusBefore;
-
         public static bool OnToggle(ModEntry modEntry, bool toggle)
         {
             if (toggle)
@@ -134,8 +131,6 @@ namespace Overlayer
                 if(!Settings.disableLogo) {
                     LogoInit(modEntry.Path);
                 }
-
-                AdvancedFormatNumberStatusBefore = Settings.advancedFormatNumber;
             }
             else
             {
