@@ -183,6 +183,10 @@ namespace Overlayer.Unity
             mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
         }
 
+        public string GetCurrentText() {
+            return Text.text;
+        }
+
         public void OnPointerDown(PointerEventData e)
         {
             if(isAlreadyDragging) {

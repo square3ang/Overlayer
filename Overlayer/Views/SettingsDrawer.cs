@@ -218,6 +218,12 @@ namespace Overlayer.Views
                 }
                 TextManager.Refresh();
             }
+            string showAs = model.showTextNameAsDisplayText
+                ? Main.Lang.Get("TEXT_SHOW_AS_DISPLAY", "Show As <color=#808080>Name</color> / Display Text")
+                : Main.Lang.Get("TEXT_SHOW_AS_NAME", "Show As Name / <color=#808080>Display Text</color>");
+            if(Drawer.Button(showAs)) {
+                model.showTextNameAsDisplayText = !model.showTextNameAsDisplayText;
+            }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             for (int i = 0; i < TextManager.Count; i++)
@@ -275,7 +281,20 @@ namespace Overlayer.Views
                     return;
                 }
                 GUI.color = Color.white;
-                GUILayout.Label(text.Config.Name);
+                string textName;
+                if(model.showTextNameAsDisplayText) {
+                    if(text.Config.Active) {
+                        textName = text.GetCurrentText().BreakRichTag();
+                        if(string.IsNullOrEmpty(textName)) {
+                            textName = Main.Lang.Get("TEXT_EMPTY", "<color=#808080>[ empty ]</color>");
+                        }
+                    } else {
+                        textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
+                    }
+                } else {
+                    textName = text.Config.Name;
+                }
+                GUILayout.Label(textName);
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
