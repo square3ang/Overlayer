@@ -5,7 +5,6 @@
       "Zeheyu"
     ],
     "ACTIVE": "Kích hoạt",
-    "ADVANCED_FORMAT_NUMBER": "Advanced Format Number",
     "ALIGNMENT": "Căn chỉnh",
     "ALLOW_THIS": "Cho phép {0}",
     "APPLY": "Áp dụng",
@@ -89,7 +88,6 @@
     "MISC_TOP_LEFT": "Trên cùng bên trái",
     "MISC_TOP_RIGHT": "Trên cùng bên phải",
     "NAME": "Tên",
-    "NEED_RESTART_MOD": "You need to restart the mod!!",
     "NEW_TEXT": "Tạo văn bản mới",
     "NO": "Không",
     "NOT_EXIST_TAG": "This tag does not exist.",

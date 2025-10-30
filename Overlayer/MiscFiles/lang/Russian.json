@@ -5,7 +5,6 @@
       "coyami-ke"
     ],
     "ACTIVE": "Активный",
-    "ADVANCED_FORMAT_NUMBER": "Advanced Format Number",
     "ALIGNMENT": "Выравнивание",
     "ALLOW_THIS": "Разрешить {0}",
     "APPLY": "Применить",
@@ -89,7 +88,6 @@
     "MISC_TOP_LEFT": "Сверху Влево",
     "MISC_TOP_RIGHT": "Сверху Справа",
     "NAME": "Имя",
-    "NEED_RESTART_MOD": "You need to restart the mod!!",
     "NEW_TEXT": "Создать Новый Текст",
     "NO": "Нет",
     "NOT_EXIST_TAG": "This tag does not exist.",

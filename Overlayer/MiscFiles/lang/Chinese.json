@@ -5,7 +5,6 @@
       "a6."
     ],
     "ACTIVE": "启用",
-    "ADVANCED_FORMAT_NUMBER": "Advanced Format Number",
     "ALIGNMENT": "对齐方式",
     "ALLOW_THIS": "允许{0}",
     "APPLY": "应用",
@@ -89,7 +88,6 @@
     "MISC_TOP_LEFT": "左上角",
     "MISC_TOP_RIGHT": "右上角",
     "NAME": "文本名称",
-    "NEED_RESTART_MOD": "You need to restart the mod!!",
     "NEW_TEXT": "创建新的文本",
     "NO": "不删了,\n我再想想",
     "NOT_EXIST_TAG": "这个 Tag 不存在",

@@ -5,7 +5,6 @@
       "Jaynøx"
     ],
     "ACTIVE": "Activer",
-    "ADVANCED_FORMAT_NUMBER": "Advanced Format Number",
     "ALIGNMENT": "Alignment",
     "ALLOW_THIS": "Autoriser {0}",
     "APPLY": "Appliquer",
@@ -89,7 +88,6 @@
     "MISC_TOP_LEFT": "En Haut À Gauche",
     "MISC_TOP_RIGHT": "En Haut À Droite",
     "NAME": "Nom",
-    "NEED_RESTART_MOD": "You need to restart the mod!!",
     "NEW_TEXT": "Créer Un Nouveau Texte",
     "NO": "Non",
     "NOT_EXIST_TAG": "This tag does not exist.",
