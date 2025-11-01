@@ -236,7 +236,7 @@ namespace Overlayer.Views
                 }
                 GUI.color = (i <= 0) ? Color.gray : Color.white;
                 string upSymbol = (i <= 0) ? "△" : "▲";
-                if(Drawer.Button(upSymbol, GUILayout.Width(32))) {
+                if(Drawer.Button(upSymbol, GUILayout.Width(38))) {
                     if(Event.current.shift) {
                         TextManager.MoveTextToTop(i);
                     } else if(i > 0) {
@@ -245,7 +245,7 @@ namespace Overlayer.Views
                 }
                 GUI.color = (i >= TextManager.Count - 1) ? Color.gray : Color.white;
                 string downSymbol = (i >= TextManager.Count - 1) ? "▽" : "▼";
-                if(Drawer.Button(downSymbol, GUILayout.Width(32))) {
+                if(Drawer.Button(downSymbol, GUILayout.Width(38))) {
                     if(Event.current.shift) {
                         TextManager.MoveTextToBottom(i);
                     } else if(i < TextManager.Count - 1) {
@@ -302,9 +302,8 @@ namespace Overlayer.Views
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
-
-                NeoDrawer.StaticInstance.UpdateFocused();
             }
+            NeoDrawer.StaticInstance.UpdateFocused();
         }
 
         private int egClickCount = 0;
