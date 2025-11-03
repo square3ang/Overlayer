@@ -256,6 +256,7 @@ namespace Overlayer.Core {
             GUILayout.Label(label);
             GUILayout.Space(4f);
 
+            Color old = GUI.color;
             if(field.State == NeoField.StateType.ERROR) {
                 GUI.color = new Color(1f, 0.5f, 0.5f);
             } else {
@@ -277,7 +278,7 @@ namespace Overlayer.Core {
                 }
             }
 
-            GUI.color = Color.white;
+            GUI.color = old;
             GUILayout.Space(2f);
 
             GUILayout.Label(StatebyState(field.State), GUILayout.Width(10));
@@ -338,6 +339,7 @@ namespace Overlayer.Core {
                 GUILayout.BeginHorizontal();
                 Color newColorTL = RGUI.Field(color.topLeft, "", GUILayout.Width(cWidth));
                 GUILayout.Space(2f);
+                Color old = GUI.color;
                 if(fieldTL.State == NeoField.StateType.ERROR) {
                     GUI.color = new Color(1f, 0.5f, 0.5f);
                 }
@@ -363,7 +365,7 @@ namespace Overlayer.Core {
 
                 GUILayout.Space(4f);
                 GUILayout.Label("↖", GUILayout.Width(16));
-                GUI.color = Color.white;
+                GUI.color = old;
 
                 if(fieldTR.State == NeoField.StateType.ERROR) {
                     GUI.color = new Color(1f, 0.5f, 0.5f);
@@ -371,7 +373,7 @@ namespace Overlayer.Core {
                 GUILayout.Label("↗", GUILayout.Width(16));
                 GUI.SetNextControlName(FieldGetName(uniqueID));
                 string newHexTR = GUILayout.TextField(fieldTR.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
-                GUI.color = Color.white;
+                GUI.color = old;
                 if(newHexTR != fieldTR.Str) {
                     fieldTR.Str = newHexTR;
                     changed = true;
@@ -422,7 +424,7 @@ namespace Overlayer.Core {
 
                 GUILayout.Space(4f);
                 GUILayout.Label("↙", GUILayout.Width(16));
-                GUI.color = Color.white;
+                GUI.color = old;
 
                 if(fieldBR.State == NeoField.StateType.ERROR) {
                     GUI.color = new Color(1f, 0.5f, 0.5f);
@@ -430,7 +432,7 @@ namespace Overlayer.Core {
                 GUILayout.Label("↘", GUILayout.Width(16));
                 GUI.SetNextControlName(FieldGetName(uniqueID));
                 string newHexBR = GUILayout.TextField(fieldBR.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
-                GUI.color = Color.white;
+                GUI.color = old;
                 if(newHexBR != fieldBR.Str) {
                     fieldBR.Str = newHexBR;
                     changed = true;
@@ -470,12 +472,13 @@ namespace Overlayer.Core {
 
             bool changed = false;
 
+            Color old = GUI.color;
             ColorbyState(field.State);
 
             string fieldName = FieldGetName(uniqueID);
             GUI.SetNextControlName(fieldName);
             string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
-            GUI.color = Color.white;
+            GUI.color = old;
 
             if(newField != field.Str) {
                 field.Str = newField;
@@ -537,12 +540,13 @@ namespace Overlayer.Core {
 
             GUILayout.Space(8f);
 
+            Color old = GUI.color;
             ColorbyState(field.State);
 
             string fieldName = FieldGetName(uniqueID);
             GUI.SetNextControlName(fieldName);
             string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
-            GUI.color = Color.white;
+            GUI.color = old;
 
             if(newField != field.Str) {
                 field.Str = newField;
@@ -594,12 +598,13 @@ namespace Overlayer.Core {
 
             bool changed = false;
 
+            Color old = GUI.color;
             ColorbyState(field.State);
 
             string fieldName = FieldGetName(uniqueID);
             GUI.SetNextControlName(fieldName);
             string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
-            GUI.color = Color.white;
+            GUI.color = old;
 
             if(newField != field.Str) {
                 field.Str = newField;
@@ -651,12 +656,13 @@ namespace Overlayer.Core {
 
             bool changed = false;
 
+            Color old = GUI.color;
             ColorbyState(field.State);
 
             string fieldName = FieldGetName(uniqueID);
             GUI.SetNextControlName(fieldName);
             string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
-            GUI.color = Color.white;
+            GUI.color = old;
 
             if(newField != field.Str) {
                 field.Str = newField;
