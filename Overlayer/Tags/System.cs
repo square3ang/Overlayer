@@ -5,15 +5,26 @@ using UnityEngine.Profiling;
 
 namespace Overlayer.Tags {
     public static class System {
+        [Tag("GCMemUsage", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double GCMemUsage;
+        [Tag("GCMemUsageGB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double GCMemUsageGB;
+        [Tag("GCMemUsageKB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double GCMemUsageKB;
-        public static double UnityMemUsage;
-        public static double UnityMemUsageGB;
-        public static double UnityMemUsageKB;
+
+        [Tag("GCMemAllocRate", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double GCMemAllocRate;
+        [Tag("GCMemAllocRateGB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double GCMemAllocRateGB;
+        [Tag("GCMemAllocRateKB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double GCMemAllocRateKB;
+
+        [Tag("UnityMemUsage", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double UnityMemUsage;
+        [Tag("UnityMemUsageGB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double UnityMemUsageGB;
+        [Tag("UnityMemUsageKB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+        public static double UnityMemUsageKB;
 
         private static long lastGCAllocatedMemory = GC.GetTotalMemory(false);
 
@@ -45,27 +56,6 @@ namespace Overlayer.Tags {
             Update.Start();
             inited = true;
         }
-
-        [Tag("GCMemUsage", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double _GCMemUsage() => GCMemUsage;
-        [Tag("GCMemUsageGB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double _GCMemUsageGB() => GCMemUsageGB;
-        [Tag("GCMemUsageKB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double _GCMemUsageKB() => GCMemUsageKB;
-
-        [Tag("GCMemAllocRate", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double _GCMemAllocRate() => GCMemAllocRate;
-        [Tag("GCMemAllocRateGB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double _GCMemAllocRateGB() => GCMemAllocRateGB;
-        [Tag("GCMemAllocRateKB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double _GCMemAllocRateKB() => GCMemAllocRateKB;
-
-        [Tag("UnityMemUsage", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double _UnityMemUsage() => UnityMemUsage;
-        [Tag("UnityMemUsageGB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double _UnityMemUsageGB() => UnityMemUsageGB;
-        [Tag("UnityMemUsageKB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double _UnityMemUsageKB() => UnityMemUsageKB;
 
         private static double GCMemoryAllocRateCheck(long currentMemory) {
             long rate = currentMemory - lastGCAllocatedMemory;

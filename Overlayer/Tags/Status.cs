@@ -17,7 +17,7 @@ namespace Overlayer.Tags
         [Tag]
         public static bool IsSpeedTrialEnabled => GCS.speedTrialMode;
         [Tag(NotPlaying = true)]
-        public static int Deaths() => scrController.deaths;
+        public static int Deaths => scrController.deaths;
         [Tag]
         public static int Attempts;
 
@@ -64,8 +64,8 @@ namespace Overlayer.Tags
         }
 
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double Pitch() => GCS.currentSpeedTrial;
+        public static double Pitch => GCS.currentSpeedTrial;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double EditorPitch() => ((ADOFAI.LevelData?.pitch ?? 0) / 100.0);
+        public static double EditorPitch => (ADOFAI.LevelData?.pitch ?? 0) / 100.0;
     }
 }

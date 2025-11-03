@@ -5,7 +5,7 @@ using System.Linq;
 namespace Overlayer.Tags {
     public static class CheckPointStats {
         [Tag]
-        public static int CheckPointUsed() => scrController.checkpointsUsed;
+        public static int CheckPointUsed => scrController.checkpointsUsed;
         [Tag]
         public static int CurCheckPoint;
         [Tag]

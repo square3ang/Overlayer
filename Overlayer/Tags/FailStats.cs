@@ -40,8 +40,8 @@ namespace Overlayer.Tags {
             => value > 1f ? 0f : (1f - value) * 100f;
 
         [Tag]
-        public static float OverloadCounterRaw() => scrController.instance?.failbar?.overloadCounter ?? float.NaN;
+        public static float OverloadCounterRaw => scrController.instance?.failbar?.overloadCounter ?? float.NaN;
         [Tag]
-        public static float MultipressCounterRaw() => scrController.instance?.failbar?.multipressCounter ?? float.NaN;
+        public static float MultipressCounterRaw => scrController.instance?.failbar?.multipressCounter ?? float.NaN;
     }
 }

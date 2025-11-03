@@ -31,7 +31,7 @@ namespace Overlayer.Tags
         }
 
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double MarginScale() => scrController.instance?.currFloor?.marginScale ?? 0;
+        public static double MarginScale => scrController.instance?.currFloor?.marginScale ?? 0;
 
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double TileAngle;

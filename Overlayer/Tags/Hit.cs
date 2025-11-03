@@ -34,79 +34,79 @@ namespace Overlayer.Tags
         [Tag]
         public static int CTE, CVE, CEP, CP, CLP, CVL, CTL;
         [Tag]
-        public static int LFast() => LTE + LVE + LEP;
+        public static int LFast => LTE + LVE + LEP;
         [Tag]
-        public static int NFast() => NTE + NVE + NEP;
+        public static int NFast => NTE + NVE + NEP;
         [Tag]
-        public static int SFast() => STE + SVE + SEP;
+        public static int SFast => STE + SVE + SEP;
         [Tag]
-        public static int CFast() => CTE + CVE + CEP;
+        public static int CFast => CTE + CVE + CEP;
         [Tag]
-        public static int LSlow() => LTL + LVL + LLP;
+        public static int LSlow => LTL + LVL + LLP;
         [Tag]
-        public static int NSlow() => NTL + NVL + NLP;
+        public static int NSlow => NTL + NVL + NLP;
         [Tag]
-        public static int SSlow() => STL + SVL + SLP;
+        public static int SSlow => STL + SVL + SLP;
         [Tag]
-        public static int CSlow() => CTL + CVL + CLP;
+        public static int CSlow => CTL + CVL + CLP;
         [Tag]
-        public static int LELP() => LEP + LLP;
+        public static int LELP => LEP + LLP;
         [Tag]
-        public static int NELP() => NEP + NLP;
+        public static int NELP => NEP + NLP;
         [Tag]
-        public static int SELP() => SEP + SLP;
+        public static int SELP => SEP + SLP;
         [Tag]
-        public static int CELP() => CEP + CLP;
+        public static int CELP => CEP + CLP;
         [Tag]
-        public static int LV() => LVE + LVL;
+        public static int LV => LVE + LVL;
         [Tag]
-        public static int NV() => NVE + NVL;
+        public static int NV => NVE + NVL;
         [Tag]
-        public static int SV() => SVE + SVL;
+        public static int SV => SVE + SVL;
         [Tag]
-        public static int CV() => CVE + CVL;
+        public static int CV => CVE + CVL;
         [Tag]
-        public static int LT() => LTE + LTL;
+        public static int LT => LTE + LTL;
         [Tag]
-        public static int NT() => NTE + NTL;
+        public static int NT => NTE + NTL;
         [Tag]
-        public static int ST() => STE + STL;
+        public static int ST => STE + STL;
         [Tag]
-        public static int CT() => CTE + CTL;
+        public static int CT => CTE + CTL;
         [Tag]
-        public static int OTE() => scrMistakesManager.hitMarginsCount[0];
+        public static int OTE => scrMistakesManager.hitMarginsCount[0];
         [Tag]
-        public static int OVE() => scrMistakesManager.hitMarginsCount[1];
+        public static int OVE => scrMistakesManager.hitMarginsCount[1];
         [Tag]
-        public static int OEP() => scrMistakesManager.hitMarginsCount[2];
+        public static int OEP => scrMistakesManager.hitMarginsCount[2];
         [Tag]
-        public static int OP() => scrMistakesManager.hitMarginsCount[3] + scrMistakesManager.hitMarginsCount[10];
+        public static int OP => scrMistakesManager.hitMarginsCount[3] + scrMistakesManager.hitMarginsCount[10];
         [Tag]
-        public static int OLP() => scrMistakesManager.hitMarginsCount[4];
+        public static int OLP => scrMistakesManager.hitMarginsCount[4];
         [Tag]
-        public static int OVL() => scrMistakesManager.hitMarginsCount[5];
+        public static int OVL => scrMistakesManager.hitMarginsCount[5];
         [Tag]
-        public static int OTL() => scrMistakesManager.hitMarginsCount[6];
+        public static int OTL => scrMistakesManager.hitMarginsCount[6];
         [Tag]
-        public static int OA() => scrMistakesManager.hitMarginsCount[10];
+        public static int OA => scrMistakesManager.hitMarginsCount[10];
         [Tag]
-        public static int OPP() => scrMistakesManager.hitMarginsCount[3];
+        public static int OPP => scrMistakesManager.hitMarginsCount[3];
         [Tag]
-        public static int OFast() => OTE() + OVE() + OEP();
+        public static int OFast => OTE + OVE + OEP;
         [Tag]
-        public static int OSlow() => OTL() + OVL() + OLP();
+        public static int OSlow => OTL + OVL + OLP;
         [Tag]
-        public static int OELP() => OEP() + OLP();
+        public static int OELP => OEP + OLP;
         [Tag]
-        public static int OV() => OVE() + OVL();
+        public static int OV => OVE + OVL;
         [Tag]
-        public static int OT() => OTE() + OTL();
+        public static int OT => OTE + OTL;
         [Tag]
-        public static int MissCount() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
+        public static int MissCount => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
         [Tag]
-        public static int Overloads() => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
+        public static int Overloads => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
         [Tag]
-        public static int Fail() => MissCount() + Overloads();
+        public static int Fail => MissCount + Overloads;
         [Tag]
         public static int Multipress;
         [Tag]

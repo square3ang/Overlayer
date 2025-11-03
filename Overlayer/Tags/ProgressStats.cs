@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Overlayer.Tags {
     public static class ProgressStats {
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double Progress() => scrController.instance?.percentComplete * 100 ?? 0;
+        public static double Progress => scrController.instance?.percentComplete * 100 ?? 0;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double ActualProgress() {
             var listFloors = scrLevelMaker.instance?.listFloors;

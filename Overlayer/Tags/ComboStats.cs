@@ -41,7 +41,7 @@ namespace Overlayer.Tags {
                 result = "PP";
             } else if(noMiss == seqID) {
                 result = "FC+";
-            } else if(Hit.MissCount() + Hit.Overloads() <= 0) {
+            } else if(Hit.MissCount + Hit.Overloads <= 0) {
                 result = "FC";
             }
             return result.Trim(maxLength, afterTrimStr);

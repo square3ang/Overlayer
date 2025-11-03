@@ -15,9 +15,10 @@ namespace Overlayer.Tags {
         private static string _defaultTextShadowColor;
         private static string _defaultTextColorAlpha;
         private static string _defaultTextShadowColorAlpha;
-
-        private static string _levelNameText;
-        private static string _levelNameTextRaw;
+        [Tag]
+        public static string LevelNameText;
+        [Tag]
+        public static string LevelNameTextRaw;
 
         private static Shadow LevelNameTextColorShadowComponent;
 
@@ -58,20 +59,20 @@ namespace Overlayer.Tags {
                 _defaultTextShadowColorAlpha = ADOFAI.LevelData.defaultTextShadowColor.ToHex(true);
             }
 
-            _levelNameText = ADOBase.controller.txtLevelName.text.BreakRichTag();
+            LevelNameText = ADOBase.controller.txtLevelName.text.BreakRichTag();
             if(ADOBase.isOfficialLevel) {
-                _levelNameTextRaw = ADOBase.controller.txtLevelName.text;
+                LevelNameTextRaw = ADOBase.controller.txtLevelName.text;
             } else {
-                _levelNameTextRaw = ADOBase.controller.txtLevelName.text.FuckingAdofaiMapRichTagFixer();
+                LevelNameTextRaw = ADOBase.controller.txtLevelName.text.FuckingAdofaiMapRichTagFixer();
             }
         }
 
         public static void UpdateLevelNameText(string text) {
-            _levelNameText = text;
+            LevelNameText = text;
         }
 
         public static void UpdateLevelNameTextRaw(string text) {
-            _levelNameTextRaw = text;
+            LevelNameTextRaw = text;
         }
 
         [Tag]
@@ -98,10 +99,6 @@ namespace Overlayer.Tags {
         [Tag]
         public static string DefaultTextShadowColor(bool noAlpha = false)
             => noAlpha ? _defaultTextShadowColor : _defaultTextShadowColorAlpha;
-        [Tag]
-        public static string LevelNameText() => _levelNameText;
-        [Tag]
-        public static string LevelNameTextRaw() => _levelNameTextRaw;
         [Tag]
         public static string LevelNameTextColor(bool noAlpha = false)
             => ADOBase.controller.txtLevelName.color.ToHex(!noAlpha);
