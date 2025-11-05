@@ -1,6 +1,7 @@
 {
-  "中文": {
-    "0KTL": "DO_NOT_TRANSLATE_THIS",
+  "zh-CN": {
+    "0KTL": "DO_NOT_TRANSLATE_THIS_KEY!",
+    "0NATIVELANG": "中文简体",
     "0TRANSLATORS": [
       "a6."
     ],

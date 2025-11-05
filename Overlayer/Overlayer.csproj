@@ -409,7 +409,6 @@
     <Compile Include="Core\MethodDrawable.cs" />
     <Compile Include="Core\ModelDrawable.cs" />
     <Compile Include="Core\NeoDrawer.cs" />
-    <Compile Include="Core\Translation\TranslatorHelper.cs" />
     <Compile Include="Olly\OllyDialogue.cs" />
     <Compile Include="Olly\OllyDialogueLines.cs" />
     <Compile Include="Olly\OllyRender.cs" />
@@ -566,12 +565,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="MiscFiles\info.json" />
-    <None Include="MiscFiles\lang\Chinese.json" />
-    <None Include="MiscFiles\lang\English.json" />
-    <None Include="MiscFiles\lang\FrenchCanada.json" />
-    <None Include="MiscFiles\lang\Korean.json" />
-    <None Include="MiscFiles\lang\Russian.json" />
-    <None Include="MiscFiles\lang\Vietnamese.json" />
+    <None Include="MiscFiles\lang\zh-CN.json" />
+    <None Include="MiscFiles\lang\en-US.json" />
+    <None Include="MiscFiles\lang\fr-CA.json" />
+    <None Include="MiscFiles\lang\ko-KR.json" />
+    <None Include="MiscFiles\lang\ru-RU.json" />
+    <None Include="MiscFiles\lang\vi-VN.json" />
     <None Include="MiscFiles\wikidocs\basics.json" />
     <None Include="MiscFiles\wikidocs\extramenu.json" />
     <None Include="packages.config" />

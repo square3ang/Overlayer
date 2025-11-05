@@ -5,186 +5,329 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Overlayer.Core.Translatior {
-    // Enum to represent various translation loading states.
+namespace Overlayer.Core.Translation {
+
+    /***********************************************************************
+     * TRANSLATION SYSTEM BY KKITUT                                        *
+     * ------------------------------------------------------------------- *
+     * This class is designed for clarity and ease of use.                 *
+     * Helpful comments are included throughout the code for reference.    *
+     * Feel free to study or modify it as needed.                          *
+     * Happy coding :>                                                     *
+     ***********************************************************************/
+
+    /// <summary>
+    /// Enumeration representing the various failure states of the translation system.
+    /// </summary>
     public enum TranslationFailState {
-        // No failure.
-        Success = 0,
-        // Unknown error occurred.
-        UnknownCause = 1,
-        // No valid translation was found.
-        NoValidTranslationFound = 2,
-        // Error reading the directory.
-        ErrorReadingDirectory = 3,
-        // Error loading the file.
-        ErrorLoadingFile = 4,
-        // The file does not exist.
-        FileDoesNotExist = 5
+        /// <summary>
+        /// No errors; translations loaded successfully.
+        /// </summary>
+        Success,
+        /// <summary>
+        /// An unknown error occurred.
+        /// </summary>
+        UnknownCause,
+        /// <summary>
+        /// Unknown failure. Not used
+        /// </summary>
+        SomeFailure,
+        /// <summary>
+        /// Error reading the directory containing translation files.
+        /// </summary>
+        ErrorReadingDirectory,
+        /// <summary>
+        /// No translation files were found.
+        /// </summary>
+        FileDoesNotExist,
+        /// <summary>
+        /// No valid translations were found in the files.
+        /// </summary>
+        NoValidTranslationFound,
     }
 
+    /// <summary>
+    /// Translator class for managing translations.
+    /// Validates translation files using a specific key-value pair in each JSON file,
+    /// and enforces a fallback string when a translation is missing.
+    /// Provides detailed failure states and logging for easier debugging and troubleshooting.
+    /// </summary>
     public class Translator {
-        // Readonly fields for KTL key and its expected value.
+        // Key and expected value for KTL validation.
         private readonly string KTLKey;
         private readonly string ExpectedKTLValue;
 
+        // Dictionaries to hold translations.
         private Dictionary<string, Dictionary<string, string>> translations = new Dictionary<string, Dictionary<string, string>>();
         private Dictionary<string, Dictionary<string, string[]>> translationsArr = new Dictionary<string, Dictionary<string, string[]>>();
 
-        // Private backing field for current language.
-        private string currentLanguage = "Default";
-        /// <summary>   
-        /// Gets or sets the current language.
+        /// <summary>
+        /// Constant representing the fallback language code.
         /// </summary>
-        public string CurrentLanguage {
-            get { return currentLanguage; }
-            set { currentLanguage = value; }
+        public const string FALLBACK_LANGUAGE = "DEFAULT";
+
+        /// <summary>
+        /// Gets or sets the current language for translations.
+        /// </summary>
+        public string Language = FALLBACK_LANGUAGE;
+
+        /// <summary>
+        /// Gets the failure state of the translator.
+        /// </summary>
+        public TranslationFailState FailState { get; private set; } = TranslationFailState.Success;
+
+        // Flag to indicate if logging is enabled.
+        private bool useLogging;
+
+        // List to hold log messages.
+        private List<string> logStacks;
+
+        // Initializes the logging system if logging is enabled.
+        private void InitLog() {
+            if(!useLogging) {
+                return;
+            }
+            logStacks = new List<string>();
         }
 
-        // Field to store current failure state.
-        private TranslationFailState failState = TranslationFailState.Success;
+        // Logs a message if logging is enabled.
+        private void Log(string message) {
+            if(!useLogging) {
+                return;
+            }
+            logStacks.Add(message);
+        }
 
-        private bool IsLoading = true;
+        // Log prefixes for standard and exception messages.
+        public const string LOG_PREFIX = "[Translator] ";
+        public const string LOG_PREFIX_WARNING = "[Translator Warning] ";
+        public const string LOG_PREFIX_ERROR = "[Translator Error] ";
+        public const string LOG_PREFIX_EXCEPTION = "[Translator Exception] ";
 
-        // Static event to signal when the language initialization is complete.
+        // Field to indicate if loading is in progress.
+        private bool isLoading = true;
+
+        /// <summary>
+        /// Gets the loading state of the translator.
+        /// </summary>
+        /// <returns>True if loading is in progress; otherwise, false.</returns>
+        public bool IsLoading => isLoading;
+
+        /// <summary>
+        /// Checks if there was any failure during translation loading.
+        /// </summary>
+        /// <returns>True if there was a failure; otherwise, false.</returns>
+        public bool IsFail => FailState != TranslationFailState.Success;
+
+        /// <summary>
+        /// Checks if there was a partial failure during translation loading.
+        /// </summary>
+        /// <returns>True if there was some failure; otherwise, false.</returns>
+        public bool IsSomeFail => FailState == TranslationFailState.SomeFailure;
+
+        /// <summary>
+        /// Retrieves the log messages generated during translation loading.
+        /// </summary>
+        /// <returns>An array of log messages.</returns>
+        public string[] Logs => logStacks.ToArray();
+
+        /// <summary>
+        /// Determines if the default language should be used.
+        /// </summary>
+        /// <returns>True if default language should be used; otherwise, false.</returns>
+        public bool IsDefault => (IsFail && FailState != TranslationFailState.SomeFailure) || isLoading || Language == FALLBACK_LANGUAGE;
+
+        /// <summary>
+        /// Event triggered when the translator has finished initialization.
+        /// </summary>
         public event Action OnInitialize = delegate { };
+
+        // Default KTL key and expected value constants.
+        public const string DEFAULT_KTL_KEY = "0KTL";
+        public const string DEFAULT_EXPECTED_KTL_VALUE = "DO_NOT_TRANSLATE_THIS_KEY!";
 
         /// <summary>
         /// Initializes a new instance of the Translator class and starts loading translations asynchronously.
         /// </summary>
-        /// <param name="ktlKey">The key for the KTL value (default: "0KTL").</param>
-        /// <param name="expectedKtlValue">The expected value for the 0KTL key (default: "DO_NOT_TRANSLATE_THIS").</param>
-        public Translator(string ktlKey = "0KTL", string expectedKtlValue = "DO_NOT_TRANSLATE_THIS") {
-            KTLKey = ktlKey; // Assign the KTL key.
-            ExpectedKTLValue = expectedKtlValue; // Assign the expected KTL value.
+        /// <param name="ktlKey">The key for the KTL value.</param>
+        /// <param name="expectedKtlValue">The expected value for the 0KTL key.</param>
+        /// <param name="useLogging">Indicates whether to enable logging.</param>
+        public Translator(string ktlKey = DEFAULT_KTL_KEY, string expectedKtlValue = DEFAULT_EXPECTED_KTL_VALUE, bool useLogging = true) {
+            KTLKey = ktlKey;
+            ExpectedKTLValue = expectedKtlValue;
+            this.useLogging = useLogging;
         }
+
+        /* 
+         * What is the 'KTL' key?
+         * The 'KTL' key is a special validation entry included in every translation JSON file.
+         * It ensures that the file is a valid translation file by containing a fixed, non-translatable value
+         * (for example, "DO_NOT_TRANSLATE_THIS_KEY!").
+         * This mechanism allows the Translator class to verify file authenticity before loading translations.
+         * 
+         * And... what does KTL mean?
+         * KTL stands for "Kkitut Translation Language".
+         * I just made it up, lol.
+         */
 
         /// <summary>
         /// Loads translations from JSON files in the specified directory asynchronously.
         /// </summary>
         /// <param name="baseLangFolderPath">The path to the folder containing the language JSON files.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
-        internal async Task LoadTranslationsAsync(string baseLangFolderPath) {
+        internal async Task Load(string baseLangFolderPath) {
+            isLoading = true;
+
+            // Initialize logging
+            InitLog();
+
+            // Log the start of the loading process.
+            Log($"{LOG_PREFIX}Starting to load translations from: {baseLangFolderPath}");
+
+            // Reset translations before loading.
+            translations = new Dictionary<string, Dictionary<string, string>>();
+            translationsArr = new Dictionary<string, Dictionary<string, string[]>>();
+
+            // Array to hold file paths.
+            string[] files = Array.Empty<string>();
+
+            // Log the reading of translation files.
+            Log($"{LOG_PREFIX}Reading translation files...");
+
             try {
-                IsLoading = true;
-                string[] files = Array.Empty<string>();
+                // Retrieve all JSON files from the specified directory.
+                files = Directory.GetFiles(baseLangFolderPath, "*.json");
+            } catch(Exception e) {
+                // If there's an error reading the directory, set failure state.
+                FailState = TranslationFailState.ErrorReadingDirectory;
+                Log($"{LOG_PREFIX_ERROR}Error reading directory: {baseLangFolderPath}");
+                Log($"[Translator Exception] {e.GetType().Name}: {e.Message}");
+                isLoading = false;
+                OnInitialize.Invoke();
+                return;
+            }
 
+            // Log the number of files found.
+            Log($"{LOG_PREFIX}Found {files.Length} translation files.");
+
+            if(files.Length == 0) {
+                // No files found, set failure state.
+                FailState = TranslationFailState.FileDoesNotExist;
+                Log($"{LOG_PREFIX_WARNING}No translation files found");
+                isLoading = false;
+                OnInitialize.Invoke();
+                return;
+            }
+            foreach(var file in files) {
+                // Attempt to read each file.
+                StreamReader reader;
                 try {
-                    // Retrieve all JSON files from the specified directory.
-                    files = Directory.GetFiles(baseLangFolderPath, "*.json");
-                } catch {
-                    // If there's an error reading the directory, set failure state.
-                    failState = TranslationFailState.ErrorReadingDirectory;
-                    return;
+                    reader = new StreamReader(file);
+                } catch(Exception e) {
+                    // If there's an error loading the file, set failure state and continue to next file.
+                    FailState = TranslationFailState.SomeFailure;
+                    Log($"{LOG_PREFIX_ERROR}Error loading file: {file}");
+                    Log($"{LOG_PREFIX_EXCEPTION}{e.GetType().Name}: {e.Message}");
+                    continue;
                 }
-                if(files.Length == 0) {
-                    // No files found, set failure state.
-                    failState = TranslationFailState.FileDoesNotExist;
-                    return;
+
+                // Read the file content asynchronously.
+                string jsonString = string.Empty;
+                try {
+                    jsonString = await reader.ReadToEndAsync();
+                } catch(Exception e) {
+                    // If there's an error reading the file, set failure state and continue to next file.
+                    FailState = TranslationFailState.SomeFailure;
+                    Log($"{LOG_PREFIX_ERROR}Error reading file: {file}");
+                    Log($"{LOG_PREFIX_EXCEPTION}{e.GetType().Name}: {e.Message}");
+                    continue;
+                } finally {
+                    reader.Close();
                 }
-                foreach(var file in files) {
-                    try {
-                        using var reader = new StreamReader(file);
-                        var jsonString = await reader.ReadToEndAsync();
-                        var jsonObject = JObject.Parse(jsonString);
-                        var validTranslations = new Dictionary<string, Dictionary<string, string>>();
-                        var validTranslationsArr = new Dictionary<string, Dictionary<string, string[]>>();
 
-                        // Iterate through each property in the JSON object.
-                        foreach(var property in jsonObject.Properties()) {
-                            string blockName = property.Name;
-                            var blockValue = property.Value;
+                // Parse the JSON content.
+                JObject jsonObject;
+                try {
+                    jsonObject = JObject.Parse(jsonString);
+                } catch(Exception e) {
+                    // If JSON is invalid, set failure state and continue to next file.
+                    FailState = TranslationFailState.SomeFailure;
+                    Log($"{LOG_PREFIX_ERROR}Invalid JSON format in file: {file}");
+                    Log($"{LOG_PREFIX_EXCEPTION}{e.GetType().Name}: {e.Message}");
+                    continue;
+                }
 
-                            // Check if the block contains the KTL key.
-                            if(blockValue[KTLKey] != null) {
-                                string ktValue = blockValue[KTLKey].ToString();
-                                // Verify if the KTL value matches the expected value.
-                                if(ktValue == ExpectedKTLValue) {
-                                    // Convert block to dictionary for strings and arrays separately.
-                                    var dict = new Dictionary<string, string>();
-                                    var dictArr = new Dictionary<string, string[]>();
+                // Iterate through each property in the JSON object.
+                foreach(var property in jsonObject.Properties()) {
+                    // Ensure the property value is a JObject.
+                    if(property.Value is not JObject block) {
+                        FailState = TranslationFailState.SomeFailure;
+                        Log($"{LOG_PREFIX_ERROR}Block is not an object in file: {file}, block: {property.Name}");
+                        continue;
+                    }
 
-                                    foreach(var kv in (JObject)blockValue) {
-                                        if(kv.Key == KTLKey)
-                                            continue; // Skip validation key
+                    // Validate the presence and correctness of the KTL key.
+                    if(block.TryGetValue(KTLKey, out var ktToken) == false || ktToken.ToString() != ExpectedKTLValue) {
+                        FailState = TranslationFailState.SomeFailure;
+                        Log($"{LOG_PREFIX_ERROR}Invalid or missing {DEFAULT_KTL_KEY} in file: {file}, block: {property.Name}");
+                        continue;
+                    }
 
-                                        if(kv.Value is JArray arr)
-                                            dictArr[kv.Key] = arr.Select(v => v.ToString()).ToArray();
-                                        else
-                                            dict[kv.Key] = kv.Value?.ToString() ?? "";
-                                    }
+                    // Remove the KTL key from the block to avoid processing it further.
+                    block.Remove(KTLKey);
 
-                                    if(dict.Count > 0)
-                                        validTranslations[blockName] = dict;
-                                    if(dictArr.Count > 0)
-                                        validTranslationsArr[blockName] = dictArr;
-                                }
-                            }
+                    // Separate string and array translations.
+                    var stringDict = new Dictionary<string, string>();
+                    var arrayDict = new Dictionary<string, string[]>();
+
+                    // Process each key-value pair in the block.
+                    foreach(var kv in block) {
+                        if(kv.Value is JArray arr) {
+                            arrayDict[kv.Key] = arr.Select(v => v.ToString()).ToArray();
+                        } else {
+                            stringDict[kv.Key] = kv.Value?.ToString() ?? "";
                         }
+                    }
 
-                        // Merge valid translations into main dictionaries.
-                        foreach(var vt in validTranslations)
-                            translations[vt.Key] = vt.Value;
-
-                        foreach(var vta in validTranslationsArr)
-                            translationsArr[vta.Key] = vta.Value;
-                    } catch {
-                        // If there's an error loading the file, set failure state.
-                        failState = TranslationFailState.ErrorLoadingFile;
+                    // Store valid translations.
+                    if(stringDict.Count > 0) {
+                        translations[property.Name] = stringDict;
+                    }
+                    if(arrayDict.Count > 0) {
+                        translationsArr[property.Name] = arrayDict;
                     }
                 }
+            }
 
-                // Determine overall state after processing.
-                if(translations.Count == 0 && translationsArr.Count == 0)
-                    failState = TranslationFailState.NoValidTranslationFound;
-                else
-                    failState = TranslationFailState.Success;
-            } catch {
-                // Reset translations on unknown failure.
-                translations = new Dictionary<string, Dictionary<string, string>>();
-                translationsArr = new Dictionary<string, Dictionary<string, string[]>>();
-                failState = TranslationFailState.UnknownCause;
+            // Determine overall state after processing.
+            if(translations.Count == 0 && translationsArr.Count == 0) {
+                FailState = TranslationFailState.NoValidTranslationFound;
+                Log($"{LOG_PREFIX_WARNING}No valid translations were found in any files.");
+            } else if(FailState != TranslationFailState.SomeFailure) {
+                FailState = TranslationFailState.Success;
+            }
+
+            // Sort translations by language code.
+            translations = translations
+                .OrderBy(kv => kv.Key, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
+            translationsArr = translationsArr
+                .OrderBy(kv => kv.Key, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+            // Log the completion of the loading process.
+            Log($"{LOG_PREFIX}Finished loading translations.");
+
+            // Invoke the OnInitialize event safely.
+            try {
+                OnInitialize.Invoke();
+            } catch(Exception e) {
+                // Log any exceptions that occur during the event invocation.
+                Log($"{LOG_PREFIX_EXCEPTION}Exception during OnInitialize event: {e.GetType().Name}: {e.Message}");
             } finally {
-                IsLoading = false;
-                OnInitialize?.Invoke();
+                // Set loading state to false.
+                isLoading = false;
             }
-        }
-
-        /// <summary>
-        /// Gets the loading state of the translator.
-        /// </summary>
-        /// <returns>True if loading is in progress; otherwise, false.</returns>
-        public bool GetLoading() => IsLoading;
-
-        /// <summary>
-        /// Checks if there was any failure during translation loading.
-        /// </summary>
-        /// <returns>True if there was a failure; otherwise, false.</returns>
-        public bool GetFail() => failState != TranslationFailState.Success;
-
-        /// <summary>
-        /// Determines if the default language should be used.
-        /// </summary>
-        /// <returns>True if default language should be used; otherwise, false.</returns>
-        public bool GetWillDefault() => failState != TranslationFailState.Success || IsLoading || CurrentLanguage == "Default";
-
-        /// <summary>
-        /// Retrieves the current failure state code as an integer.
-        /// </summary>
-        /// <returns>The integer value of the current failure state.</returns>
-        public int GetFailAdvence() => (int)failState;
-
-        /// <summary>
-        /// Retrieves the list of available languages for translation.
-        /// </summary>
-        /// <returns>An array of language codes.</returns>
-        public string[] GetLanguages() {
-            var languages = translations.Keys.ToList();
-            // If no languages are found, or in failure/loading state, add "Default".
-            if(languages.Count <= 0 || GetWillDefault()) {
-                languages.Add("Default");
-            }
-
-            return languages.ToArray(); // Return the list of languages as an array.
         }
 
         /// <summary>
@@ -194,19 +337,94 @@ namespace Overlayer.Core.Translatior {
         /// <param name="defaultValue">The default value to return if translation is not found.</param>
         /// <returns>The translated value or the default value if not found.</returns>
         public string Get(string key, string defaultValue) {
-            // If loading is in progress or there's a failure, return the default value.
-            if(GetWillDefault()) {
+            if(IsDefault) {
                 return defaultValue;
             }
 
             // Check if the translations contain the current language.
-            if(translations.TryGetValue(CurrentLanguage, out var languageTranslations)) {
+            if(translations.TryGetValue(Language, out var langDict)) {
                 // Attempt to retrieve the translated value using the provided key.
-                if(languageTranslations.TryGetValue(key, out var translatedValue)) {
-                    return translatedValue; // Return the translated value if found.
+                if(langDict.TryGetValue(key, out var val)) {
+                    return val;
                 }
             }
-            return defaultValue; // Return the default value if translation is not found.
+
+            // Return the default value if translation is not found.
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Retrieves the translation for a specified key in a given language.
+        /// </summary>
+        /// <param name="key">The key for the translation.</param>
+        /// <param name="language">The language code.</param>
+        /// <param name="defaultValue">The default value to return if translation is not found.</param>
+        /// <returns>The translated value or the default value if not found.</returns>
+        public string GetForLanguage(string key, string language, string defaultValue) {
+            // If the specified language is null, empty, or the fallback language, return the default value.
+            if(string.IsNullOrEmpty(language) || language == FALLBACK_LANGUAGE) {
+                return defaultValue;
+            }
+
+            // Check if the translations contain the current language.
+            if(translations.TryGetValue(language, out var langDict)) {
+                // Attempt to retrieve the translated value using the provided key.
+                if(langDict.TryGetValue(key, out var val)) {
+                    return val;
+                }
+            }
+
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Retrieves the list of available languages for translation.
+        /// </summary>
+        /// <returns>An array of language codes.</returns>
+        public string[] GetLanguages() {
+            // Initialize a list to hold the language codes.
+            List<string> languages = new List<string>();
+
+            // If there was a failure, add the fallback language to the first position.
+            if(IsFail) {
+                languages.Add(FALLBACK_LANGUAGE);
+            }
+
+            // Get the language codes from the translations dictionary.
+            languages.AddRange(translations.Keys);
+
+            // Return the list of languages as an array.
+            return languages.ToArray();
+        }
+
+        /// <summary>
+        /// Retrieves the native names of available languages for translation.
+        /// </summary>
+        /// <returns>An array of native language names.</returns>
+        public string[] GetLanguageNativeNames() {
+            // Initialize a list to hold the native names.
+            List<string> names = new List<string>();
+
+            // If there was a failure, add the fallback language to the first position.
+            if(IsFail) {
+                names.Add(FALLBACK_LANGUAGE);
+            }
+
+            // Get the native names of languages from the translations dictionary.
+            names.AddRange(translations.Keys
+
+                // Order the languages alphabetically (case-insensitive) and select their native names.
+                .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
+
+                // Map each language code to its native name using the "0NATIVELANG" key.
+                .Select(lang => GetForLanguage("0NATIVELANG", lang, lang))
+
+                // Convert the result to a list.
+                .ToList()
+            );
+
+            // Return the list of native names as an array.
+            return names.ToArray();
         }
 
         /// <summary>
@@ -217,12 +435,12 @@ namespace Overlayer.Core.Translatior {
         /// <param name="defaultValue">The default value to return if translation is not found.</param>
         /// <returns>The translated value or the default value if not found.</returns>
         public string GetArr(string key, int index, string defaultValue) {
-            if(GetWillDefault()) {
+            if(IsDefault) {
                 return defaultValue;
             }
 
             // Try to get the array dictionary for the current language
-            if(translationsArr.TryGetValue(CurrentLanguage, out var lang)) {
+            if(translationsArr.TryGetValue(Language, out var lang)) {
                 // Try to get the string array for the given key
                 if(lang.TryGetValue(key, out var values)) {
                     // Return the requested element if index is valid
@@ -240,18 +458,28 @@ namespace Overlayer.Core.Translatior {
         /// <param name="key">The key for the translation.</param>
         /// <returns>The count of elements for the key, or 0 if not found or translations are not ready.</returns>
         public int GetArrCount(string key) {
-            if(GetWillDefault()) {
+            if(IsDefault) {
                 return 0;
             }
 
             // Try to get the array dictionary for the current language
-            if(translationsArr.TryGetValue(CurrentLanguage, out var lang)) {
+            if(translationsArr.TryGetValue(Language, out var lang)) {
                 // Return the length of the array if key exists
                 if(lang.TryGetValue(key, out var values)) {
                     return values.Length;
                 }
             }
             return 0;
+        }
+
+        /// <summary>
+        /// Releases resources used by the Translator.
+        /// </summary>
+        public void Release() {
+            translations.Clear();
+            translationsArr.Clear();
+            logStacks?.Clear();
+            OnInitialize = delegate { };
         }
     }
 }

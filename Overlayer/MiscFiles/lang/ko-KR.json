@@ -1,6 +1,7 @@
 {
-  "한국어": {
-    "0KTL": "DO_NOT_TRANSLATE_THIS",
+  "ko-KR": {
+    "0KTL": "DO_NOT_TRANSLATE_THIS_KEY!",
+    "0NATIVELANG": "한국어",
     "0TRANSLATORS": [
       "OVERLAYER"
     ],

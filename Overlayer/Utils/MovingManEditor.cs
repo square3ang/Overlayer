@@ -2,7 +2,7 @@
 using Overlayer.Core;
 using UnityEngine;
 using DG.Tweening;
-using Overlayer.Core.Translatior;
+using Overlayer.Core.Translation;
 using System.IO;
 using Overlayer.Patches;
 using Overlayer.Tags;

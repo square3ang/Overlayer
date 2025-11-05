@@ -1,6 +1,7 @@
 {
-  "Русский": {
-    "0KTL": "DO_NOT_TRANSLATE_THIS",
+  "ru-RU": {
+    "0KTL": "DO_NOT_TRANSLATE_THIS_KEY!",
+    "0NATIVELANG": "Русский",
     "0TRANSLATORS": [
       "coyami-ke"
     ],
@@ -17,8 +18,8 @@
     "BASELINE_JUSTIFIED": "Выравненный по Базовой Линии",
     "BASELINE_LEFT": "Базовая Линия Слева",
     "BASELINE_RIGHT": "Базовая Линия Вправо",
-    "BETA_DESCRIPTION": "Beta version May Be unstable",
-    "BETA_TEXT": "Beta version",
+    "BETA_DESCRIPTION": "Beta version may be unstable",
+    "BETA_TEXT": "Beta Version",
     "BETA_UPDATE_SUCESS": "Beta Update Sucess!",
     "BOTTOM": "Снизу",
     "BOTTOM_FLUSH": "Выровненный по Нижней Части",

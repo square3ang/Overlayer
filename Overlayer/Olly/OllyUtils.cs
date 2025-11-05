@@ -1,7 +1,7 @@
 ﻿namespace Overlayer.Olly {
     public static class OllyUtils {
         public static void InitLanguage() {
-            isKorean = Main.Lang.CurrentLanguage == "한국어";
+            isKorean = Main.Lang.Language == "ko-KR";
         }
         private static bool isKorean = false;
         public static string Tr(string en, string ko) {

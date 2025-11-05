@@ -1,6 +1,7 @@
 {
-  "English": {
-    "0KTL": "DO_NOT_TRANSLATE_THIS",
+  "en-US": {
+    "0KTL": "DO_NOT_TRANSLATE_THIS_KEY!",
+    "0NATIVELANG": "English",
     "0TRANSLATORS": [
       "OVERLAYER"
     ],
@@ -17,8 +18,8 @@
     "BASELINE_JUSTIFIED": "Baseline Justified",
     "BASELINE_LEFT": "Baseline Left",
     "BASELINE_RIGHT": "Baseline Right",
-    "BETA_DESCRIPTION": "Beta version May Be unstable",
-    "BETA_TEXT": "Beta version",
+    "BETA_DESCRIPTION": "Beta version may be unstable",
+    "BETA_TEXT": "Beta Version",
     "BETA_UPDATE_SUCESS": "Beta Update Sucess!",
     "BOTTOM": "Bottom",
     "BOTTOM_FLUSH": "Bottom Flush",

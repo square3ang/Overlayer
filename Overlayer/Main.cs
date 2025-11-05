@@ -2,7 +2,7 @@
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
-using Overlayer.Core.Translatior;
+using Overlayer.Core.Translation;
 using Overlayer.Patches;
 using Overlayer.Tags;
 using Overlayer.Tags.Attributes;
@@ -97,7 +97,6 @@ namespace Overlayer
             modEntry.OnGUI = OnGUI;
             modEntry.OnHideGUI = OnHideGUI;
             modEntry.OnSaveGUI = OnSaveGUI;
-            Lang.OnInitialize += OnLanguageInitialize;
             SceneManager.activeSceneChanged += (f, t) => ActiveScene = t;
             MiscUtils.SetAttr(TMPro.TMP_Settings.instance, "m_warningsDisabled", true);
         }
@@ -116,8 +115,9 @@ namespace Overlayer
                 StaticCoroutine.Run(null);
                 StaticCoroutine.Run(LoadCoroutine(modEntry));
                 Settings = ModSettings.Load<Settings>(modEntry);
-                Lang.CurrentLanguage = Settings.Lang;
-                _ = Lang.LoadTranslationsAsync(Path.Combine(Mod.Path, "lang"));
+                Lang.Language = Settings.Lang;
+                Lang.OnInitialize += OnLanguageInitialize;
+                _ = Lang.Load(Path.Combine(Mod.Path, "lang"));
                 LazyPatchManager.Load(Ass);
                 LazyPatchManager.PatchInternal();
                 Tag.InitializeWrapperAssembly();
@@ -147,6 +147,7 @@ namespace Overlayer
                 OverlayerTag.Release();
                 Tag.ReleaseWrapperAssembly();
                 LazyPatchManager.UnloadAll();
+                Lang.Release();
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
                 ModSettings.Save(Settings, modEntry);
             }
@@ -166,50 +167,29 @@ namespace Overlayer
             GUI.Flush();
         }
 
-        public static float preparinglastUpdateTime = 0f;
-        public static string[] preparingsymbols = { ".","..","..." };
-        public static int preparingsymbolIndex = 0;
-        public static float helptime = 0f;
-
-        public static void OnGUI(ModEntry modEntry)
-        {
-            if(Lang.GetLoading())
-            {
-                float elapsedTime = Time.time - preparinglastUpdateTime;
-
-                if(elapsedTime >= 0.05f)
-                {
-                    preparingsymbolIndex++;
-                    if(preparingsymbolIndex >= preparingsymbols.Length) {
-                        preparingsymbolIndex = 0;
-                    }
-                    preparinglastUpdateTime = Time.time;
-                }
-
-                GUILayout.Label(Lang.Get("PREPARING", "Preparing") + preparingsymbols[preparingsymbolIndex]);
-
-                helptime += Time.deltaTime;
-                if(helptime >= 4f)
-                {
-                    GUILayout.Label(Lang.Get("LONG_PREPARING","Is the Preparing is taking too long??\nplease get in touch with the developer for assistance!!"));
-                }
-                else
-                {
-                    GUILayout.Label("");
-                }
-            }
-            else
-            {
-                if (!AutoUpdater.isLatest)
-                {
-                    GUILayout.Label($"<size=50><color=red>{Lang.Get("OUTDATED_DESCRIPTION", "Outdated Version Detected!")}</color></size>");
-                    GUILayout.BeginHorizontal();
-                    if(AutoUpdater.IsUpdating) {
-                        UpdateInfo = Lang.Get("UPDATING", "Updating...");
-                    } else {
-                        if(!AutoUpdater.RequireRestart) {
-                            if(Drawer.Button($"<size=30>{Lang.Get("UPDATE", "Update")}</size>")) {
-                                _ = AutoUpdater.CheckAndPrepareUpdate(modEntry, false,
+        public static void OnGUI(ModEntry modEntry) {
+            if(!AutoUpdater.isLatest) {
+                GUILayout.Label($"<size=50><color=red>{Lang.Get("OUTDATED_DESCRIPTION", "Outdated Version Detected!")}</color></size>");
+                GUILayout.BeginHorizontal();
+                if(AutoUpdater.IsUpdating) {
+                    UpdateInfo = Lang.Get("UPDATING", "Updating...");
+                } else {
+                    if(!AutoUpdater.RequireRestart) {
+                        if(Drawer.Button($"<size=30>{Lang.Get("UPDATE", "Update")}</size>")) {
+                            _ = AutoUpdater.CheckAndPrepareUpdate(modEntry, false,
+                                () => {
+                                    UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Sucess!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!");
+                                },
+                                (err) => {
+                                    Logger.Error("Update Fail: " + err);
+                                    UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
+                                },
+                                true
+                            );
+                        }
+                        if(AutoUpdater.BetaUrl != null) {
+                            if(Drawer.Button($"<size=30>{Lang.Get("BETA", "Beta")}</size>")) {
+                                _ = AutoUpdater.CheckAndPrepareUpdate(modEntry, true,
                                     () => {
                                         UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Sucess!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!");
                                     },
@@ -220,87 +200,72 @@ namespace Overlayer
                                     true
                                 );
                             }
-                            if(AutoUpdater.BetaUrl != null) {
-                                if(Drawer.Button($"<size=30>{Lang.Get("BETA", "Beta")}</size>")) {
-                                    _ = AutoUpdater.CheckAndPrepareUpdate(modEntry, true,
-                                        () => {
-                                            UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Sucess!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!");
-                                        },
-                                        (err) => {
-                                            Logger.Error("Update Fail: " + err);
-                                            UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
-                                        },
-                                        true
-                                    );
-                                }
-                            }
-                        }
-                        if(Drawer.Button("<size=30>Square Mod Server</size>")) {
-                            Application.OpenURL("https://square.lrl.kr/");
-                        }
-                        if(Drawer.Button("<size=30>GitHub</size>")) {
-                            Application.OpenURL("https://github.com/modlist-org/Overlayer");
                         }
                     }
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
-                    GUILayout.Label(UpdateInfo);
-                    
-                    GUILayout.Space(30);
-                }
-
-                if (AutoUpdater.isBeta)
-                {
-                    GUILayout.Label($"<size=30><color=lime>{Lang.Get("BETA_TEXT", "Beta Version")}</color></size>");
-                    GUILayout.Label($"{Lang.Get("BETA_DESCRIPTION", "Beta version may be unstable")}");
-                    GUILayout.Space(30);
-                }
-
-                helptime = 0f;
-                tooltip = "";
-                GUI.Draw();
-                GUILayout.Space(30);
-                if(AutoUpdater.isLatest || AutoUpdater.isBeta) {
-                    GUILayout.BeginHorizontal();
-                    if(Drawer.Button("Square Mod Server")) {
+                    if(Drawer.Button("<size=30>Square Mod Server</size>")) {
                         Application.OpenURL("https://square.lrl.kr/");
                     }
-                    if(Drawer.Button("GitHub")) {
+                    if(Drawer.Button("<size=30>GitHub</size>")) {
                         Application.OpenURL("https://github.com/modlist-org/Overlayer");
+                    }
+                }
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                GUILayout.Label(UpdateInfo);
+
+                GUILayout.Space(30);
+            }
+
+            if (AutoUpdater.isBeta)
+            {
+                GUILayout.Label($"<size=30><color=lime>{Lang.Get("BETA_TEXT", "Beta Version")}</color></size>");
+                GUILayout.Label($"{Lang.Get("BETA_DESCRIPTION", "Beta version may be unstable")}");
+                GUILayout.Space(30);
+            }
+           
+            tooltip = "";
+            GUI.Draw();
+            GUILayout.Space(30);
+            if(AutoUpdater.isLatest || AutoUpdater.isBeta) {
+                GUILayout.BeginHorizontal();
+                if(Drawer.Button("Square Mod Server")) {
+                    Application.OpenURL("https://square.lrl.kr/");
+                }
+                if(Drawer.Button("GitHub")) {
+                    Application.OpenURL("https://github.com/modlist-org/Overlayer");
+                }
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+            }
+            if(AutoUpdater.CurrentVersionType != AutoUpdater.VersionType.Unknown) {
+                if(AutoUpdater.LatestVersion != null) {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("STABLE", GUILayout.Width(60));
+                    GUILayout.Label($":  {AutoUpdater.LatestVersion}");
+                    if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.Stable) {
+                        GUILayout.Label(" <<");
                     }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                 }
-                if(AutoUpdater.CurrentVersionType != AutoUpdater.VersionType.Unknown) {
-                    if(AutoUpdater.LatestVersion != null) {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("STABLE", GUILayout.Width(60));
-                        GUILayout.Label($":  {AutoUpdater.LatestVersion}");
-                        if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.Stable) {
-                            GUILayout.Label(" <<");
-                        }
-                        GUILayout.FlexibleSpace();
-                        GUILayout.EndHorizontal();
+                if(AutoUpdater.BetaVersion != null) {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("BETA", GUILayout.Width(60));
+                    GUILayout.Label($":  {AutoUpdater.BetaVersion}");
+                    if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.Beta) {
+                        GUILayout.Label(" <<");
                     }
-                    if(AutoUpdater.BetaVersion != null) {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("BETA", GUILayout.Width(60));
-                        GUILayout.Label($":  {AutoUpdater.BetaVersion}");
-                        if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.Beta) {
-                            GUILayout.Label(" <<");
-                        }
-                        GUILayout.FlexibleSpace();
-                        GUILayout.EndHorizontal();
-                    }
-                    if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.UnknownBeta) {
-                        GUILayout.Label($"You are using an <color=#{Tags.Effect.Rainbow(12)}>SPESIAL BETA!</color>");
-                    }
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
                 }
+                if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.UnknownBeta) {
+                    GUILayout.Label($"You are using an <color=#{Tags.Effect.Rainbow(12)}>SPESIAL BETA!</color>");
+                }
+            }
 
-                if(!RGUI.PopupWindow.isOpen) {
-                    if(Settings.useTooltip) {
-                        Drawer.Tooltip(tooltip);
-                    }
+            if(!RGUI.PopupWindow.isOpen) {
+                if(Settings.useTooltip) {
+                    Drawer.Tooltip(tooltip);
                 }
             }
         }
@@ -333,6 +298,13 @@ namespace Overlayer
 
         public static void OnLanguageInitialize()
         {
+            string[] translatorLogs = Lang.Logs;
+            if(translatorLogs != null && translatorLogs.Length > 0) {
+                foreach(var log in translatorLogs) {
+                    Logger.Log(log);
+                }
+            }
+
             _ = AutoUpdater.InitAndUpdate(
                 Mod,
                 Settings.useAutoUpdate,

@@ -9,6 +9,7 @@ using SFB;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Overlayer.Patches.HitFixPatch;
@@ -21,16 +22,34 @@ namespace Overlayer.Views
         public SettingsDrawer(Settings settings) : base(settings) { }
 
         private bool isOpenedExtraMenu = false;
+        private string[] languages;
+        private string[] userLanguages;
+
+        public static float preparinglastUpdateTime = 0f;
+        public static string[] preparingsymbols = { "|", "/", "-", "\\" };
+        public static int preparingsymbolIndex = 0;
+        public static float helptime = 0f;
+
+        private void languageInit() {
+            helptime = 0f;
+            preparingsymbolIndex = 0;
+            languages = Main.Lang.GetLanguages();
+            userLanguages = Main.Lang.GetLanguageNativeNames();
+        }
+
+        private void languageUpdate(int index) {
+            Main.Lang.Language = languages[index];
+            model.Lang = Main.Lang.Language;
+        }
 
         public override void OnceCall() {
             NeoDrawer.StaticInstance.FieldResetDictById();
+            languageInit();
         }
         public override void Draw()
         {
             NeoDrawer.StaticInstance.FieldResetId();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.EndHorizontal();
             if(Main.Logo != null && !model.disableLogo) {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(Main.Logo, GUILayout.Width(Main.Logo.width), GUILayout.Height(Main.Logo.height));
@@ -51,49 +70,80 @@ namespace Overlayer.Views
                 GUILayout.EndHorizontal();
             }
 
-            int translatorsCount = Main.Lang.GetArrCount("0TRANSLATORS");
-            string translatorsText = "[UNKNOWN]";
+            if(Main.Lang.IsLoading) {
+                float elapsedTime = Time.time - preparinglastUpdateTime;
 
-            if(translatorsCount > 0) {
-                var names = new List<string>();
-                for(int i = 0; i < translatorsCount; i++) {
-                    names.Add(Main.Lang.GetArr("0TRANSLATORS", i, "[UNKNOWN]"));
+                if(elapsedTime >= 0.05f) {
+                    preparingsymbolIndex++;
+                    if(preparingsymbolIndex >= preparingsymbols.Length) {
+                        preparingsymbolIndex = 0;
+                    }
+                    preparinglastUpdateTime = Time.time;
                 }
-                translatorsText = string.Join(" & ", names);
-            }
 
-            GUILayout.Label($"{Main.Lang.Get("SELECTLANGUAGE", "Select Language")} | {Main.Lang.CurrentLanguage} by {translatorsText}");
-            GUILayout.BeginHorizontal();
-            string[] languageNames = Main.Lang.GetLanguages();
-            int selectedIndex = Array.IndexOf(languageNames,Main.Lang.CurrentLanguage);
+                helptime += Time.deltaTime;
+                if(helptime >= 8f) {
+                    GUILayout.Label("Is the Preparing is taking too long?? please get in touch with the developer for assistance!!");
+                } else {
+                    GUILayout.Label("");
+                }
+                GUILayout.BeginHorizontal();
+                Drawer.Button("Loading translations for you, hang tight...",GUILayout.Width(480));
+                GUILayout.Space(10);
+                GUILayout.Label(preparingsymbols[preparingsymbolIndex]);
+                GUILayout.EndHorizontal();
+            } else {
+                string languageDesc;
+                if(Main.Lang.IsDefault) {
+                    languageDesc = $"! {Translator.FALLBACK_LANGUAGE} by OVERLAYER";
+                } else {
+                    int translatorsCount = Main.Lang.GetArrCount("0TRANSLATORS");
 
-            if(Drawer.Button("◀",GUILayout.Width(40)))
-            {
-                selectedIndex = (selectedIndex - 1 + languageNames.Length) % languageNames.Length;
-                UpdateLanguageSetting(selectedIndex);
-            }
+                    if(translatorsCount > 0) {
+                        var names = new List<string>();
+                        for(int i = 0; i < translatorsCount; i++) {
+                            names.Add(Main.Lang.GetArr("0TRANSLATORS", i, "[UNKNOWN]"));
+                        }
+                        string translatorsText = string.Join(" & ", names);
+                        languageDesc = $"| {Main.Lang.Get("0NATIVELANG", Main.Lang.Language)} by {translatorsText}";
+                    } else {
+                        languageDesc = $"| {Main.Lang.Language}";
+                    }
+                }
 
-            if(Drawer.SelectionPopup(ref selectedIndex,languageNames, "", GUILayout.Width(400)))
-            {
-                UpdateLanguageSetting(selectedIndex);
-            }
-            if(Drawer.Button("▶",GUILayout.Width(40)))
-            {
-                selectedIndex = (selectedIndex + 1) % languageNames.Length;
-                UpdateLanguageSetting(selectedIndex);
-            }
+                GUILayout.Label($"{Main.Lang.Get("SELECTLANGUAGE", "Select Language")} {languageDesc}");
+                if(Main.Lang.IsSomeFail) {
+                    GUILayout.Label("<color=#FFFF00>Some translations are failed to load, See the log for details.</color>");
+                } else if(Main.Lang.IsFail) {
+                    GUILayout.Label($"<color=#FF0000>All translations failed to load: {Main.Lang.FailState}</color>");
+                }
+                GUILayout.BeginHorizontal();
+                int selectedIndex = Array.IndexOf(languages, Main.Lang.Language);
 
-            void UpdateLanguageSetting(int index)
-            {
-                Main.Lang.CurrentLanguage = languageNames[index];
-                model.Lang = Main.Lang.CurrentLanguage;
+                if(Drawer.Button("◀", GUILayout.Width(40))) {
+                    selectedIndex = (selectedIndex - 1 + languages.Length) % languages.Length;
+                    languageUpdate(selectedIndex);
+                }
+
+                if(Drawer.SelectionPopup(ref selectedIndex, userLanguages, "", GUILayout.Width(400))) {
+                    languageUpdate(selectedIndex);
+                }
+                if(Drawer.Button("▶", GUILayout.Width(40))) {
+                    selectedIndex = (selectedIndex + 1) % languages.Length;
+                    languageUpdate(selectedIndex);
+                }
+
+                if(Drawer.Button(Main.Lang.Get("RELOADLANG", "Reload Language Pack"), GUILayout.Width(320))) {
+                    languages = null;
+                    userLanguages = null;
+                    _ = Task.Run(async () => {
+                        Main.Lang.OnInitialize += languageInit;
+                        await Main.Lang.Load(Path.Combine(Main.Mod.Path, "lang"));
+                        Main.Lang.OnInitialize -= languageInit;
+                    });
+                }
+                GUILayout.EndHorizontal();
             }
-            if(Drawer.Button(Main.Lang.GetFail() ? TranslatorHelper.FailString(Main.Lang) : Main.Lang.Get("RELOADLANG","Reload Language Pack"),GUILayout.Width(320)))
-            {
-                _ = Main.Lang.LoadTranslationsAsync(Path.Combine(Main.Mod.Path,"lang"));
-                Main.Lang.CurrentLanguage = model.Lang;
-            }
-            GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             if(Drawer.Button(Main.Lang.Get("EXTRA_MENU","Extra Menu") + " " + (isOpenedExtraMenu ? "▼" : "▲"))) {
                 isOpenedExtraMenu = !isOpenedExtraMenu;
