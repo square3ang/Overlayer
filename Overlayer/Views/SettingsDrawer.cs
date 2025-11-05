@@ -195,11 +195,7 @@ namespace Overlayer.Views
                 }
             }
             GUILayout.BeginHorizontal();
-            if (Drawer.Button(Main.Lang.Get("NEW_TEXT","Create New Text")))
-            {
-                TextManager.CreateText(new TextConfig());
-                TextManager.Refresh();
-            }
+            bool needCreateNewText = Drawer.Button(Main.Lang.Get("NEW_TEXT", "Create New Text"));
             if(Drawer.Button(Main.Lang.Get("IMPORT_TEXT", "Import Text"))) {
                 var texts = StandaloneFileBrowser.OpenFilePanel(
                     Main.Lang.Get("SELECT_TEXT", "Select Text"),
@@ -305,6 +301,11 @@ namespace Overlayer.Views
                 GUILayout.EndHorizontal();
             }
             NeoDrawer.StaticInstance.UpdateFocused();
+
+            if(needCreateNewText) {
+                TextManager.CreateText(new TextConfig());
+                TextManager.Refresh();
+            }
         }
 
         private int egClickCount = 0;
