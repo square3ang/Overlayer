@@ -1,9 +1,13 @@
 ﻿[ Add ]
+{ Tag }
+IsSpeedTrialEnabled
+- Only works on CLS and official levels
+
 Some Buttons Colors
-Some GUI Change
 GUI Icons
 
 [ Change ]
+Some GUI
 Language load system changed
 - View GUI even while loading language
 Language now uses Code, like en-US, ko-KR..
