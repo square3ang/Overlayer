@@ -143,6 +143,7 @@ namespace Overlayer.Views
                             needLangInit = true;
                         });
                     }
+                } catch {
                 } finally {
                     GUILayout.EndHorizontal();
                 }
