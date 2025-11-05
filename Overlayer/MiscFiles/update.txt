@@ -14,3 +14,5 @@ Language now uses Code, like en-US, ko-KR..
 - You need to change language setting
 .NET Framework 4.8 -> 4.8.1
 - Requires Windows 10 20H2 or later
+
+NEED TO UPDATE SCRIPTING!
