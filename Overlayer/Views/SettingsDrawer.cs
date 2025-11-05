@@ -234,6 +234,7 @@ namespace Overlayer.Views
                 if(Drawer.DrawOnlyBool(ref text.Config.Active)) {
                     text.gameObject.SetActive(text.Config.Active);
                 }
+                Color old = GUI.color;
                 GUI.color = (i <= 0) ? Color.gray : Color.white;
                 string upSymbol = (i <= 0) ? "△" : "▲";
                 if(Drawer.Button(upSymbol, GUILayout.Width(38))) {
@@ -280,7 +281,7 @@ namespace Overlayer.Views
                     }
                     return;
                 }
-                GUI.color = Color.white;
+                GUI.color = old;
                 string textName;
                 if(model.showTextNameAsDisplayText) {
                     if(text.Config.Active) {
