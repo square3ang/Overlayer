@@ -253,8 +253,10 @@ namespace Overlayer.Core {
             StrInitialize(ref field, ColorUtility.ToHtmlStringRGBA(color));
 
             GUILayout.BeginHorizontal();
+            if(!string.IsNullOrEmpty(label)) {
             GUILayout.Label(label);
             GUILayout.Space(4f);
+            }
 
             Color old = GUI.color;
             if(field.State == NeoField.StateType.ERROR) {
