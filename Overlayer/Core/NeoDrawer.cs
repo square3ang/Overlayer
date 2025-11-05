@@ -457,7 +457,7 @@ namespace Overlayer.Core {
                 GUILayout.FlexibleSpace();
             } else {
                 Color all = color.topLeft;
-                if(changed = DrawColor(Main.Lang.Get("TEXT_COLOR", "Text Color"), ref all, cWidth, uniqueID)) {
+                if(changed = DrawColor("", ref all, cWidth, uniqueID)) {
                     color = all;
                 }
             }
