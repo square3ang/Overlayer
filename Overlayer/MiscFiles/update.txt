@@ -1,7 +1,12 @@
 ﻿[ Add ]
-Quick Active toggle
-Color of text name depending on text activation status
-Show Text Name As Name or DisplayText
+Some Buttons Colors
+Some GUI Change
+GUI Icons
 
-[ Delete ]
-AdvancedFormatNumber
+[ Change ]
+Language load system changed
+- View GUI even while loading language
+Language now uses Code, like en-US, ko-KR..
+- You need to change language setting
+.NET Framework 4.8 -> 4.8.1
+- Requires Windows 10 20H2 or later

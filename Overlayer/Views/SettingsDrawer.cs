@@ -24,7 +24,7 @@ namespace Overlayer.Views
         private bool isOpenedExtraMenu = false;
         private string[] languages;
         private string[] userLanguages;
-        private bool needLangInit = false;
+        internal bool NeedLangInit = true;
 
         public static float preparinglastUpdateTime = 0f;
         public static string[] preparingsymbols = { "|", "/", "-", "\\" };
@@ -140,7 +140,7 @@ namespace Overlayer.Views
                     if(Drawer.Button(Main.Lang.Get("RELOADLANG", "Reload Language Pack"), GUILayout.Width(320))) {
                         _ = Task.Run(async () => {
                             await Main.Lang.Load(Path.Combine(Main.Mod.Path, "lang"));
-                            needLangInit = true;
+                            NeedLangInit = true;
                         });
                     }
                 } catch {
@@ -356,8 +356,8 @@ namespace Overlayer.Views
                     GUILayout.EndHorizontal();
                 }
 
-                if(needLangInit) {
-                    needLangInit = false;
+                if(NeedLangInit) {
+                    NeedLangInit = false;
                     languages = null;
                     userLanguages = null;
                     languageInit();

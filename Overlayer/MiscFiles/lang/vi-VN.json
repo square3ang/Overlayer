@@ -342,6 +342,7 @@
     "UPDATE": "Cập nhật",
     "UPDATE_FAIL": "Update Fail",
     "UPDATE_NEED_TO_RESTART": "Need to Restart!",
+    "UPDATE_RATE_LIMITED": "Update or Version check Rate Limited!",
     "UPDATE_SUCESS": "Update Sucess!",
     "UPDATER_ALREADY_LATEST": "Already the latest version",
     "UPDATER_ALREADY_UPDATING": "Already updating",

@@ -1,8 +1,8 @@
 {
     "Id": "Overlayer",
     "DisplayName": "Overlayer",
-    "Author": "Square & Kkitut",
-    "Version": "3.35.0",
+    "Author": "modlist.org",
+    "Version": "3.36.0",
     "AssemblyName": "Overlayer.dll",
     "EntryMethod": "Overlayer.Main.Load"
 }

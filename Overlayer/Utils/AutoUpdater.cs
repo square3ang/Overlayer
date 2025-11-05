@@ -20,16 +20,17 @@ namespace Overlayer.Utils {
             UnknownBeta,
         }
 
-        public static bool isLatest = true;
-        public static bool isBeta = false;
-        public static string LatestUrl;
-        public static string BetaUrl;
+        public static bool IsLatest { get; private set; } = true;
+        public static bool IsBeta { get; private set; } = false;
+        public static string LatestUrl { get; private set; }
+        public static string BetaUrl { get; private set; }
         public static Version LatestVersion;
         public static Version BetaVersion;
         public static VersionType CurrentVersionType = VersionType.Unknown;
         public static bool IsUpdating { get; private set; } = false;
         public static bool RequireRestart { get; private set; }
         public static readonly string OverlayerGithubApiLink = "https://api.github.com/repos/modlist-org/Overlayer/releases";
+        public static bool IsRateLimited { get; private set; }
 
         public static void Reload(ModEntry modEntry) {
             Type entryType = typeof(ModEntry);
@@ -49,14 +50,30 @@ namespace Overlayer.Utils {
             }, err);
         }
         public static async Task InitUpdate(Version currentVersion, Action ok = null, Action<string> err = null) {
+            if(IsRateLimited) {
+                err?.Invoke(Main.Lang.Get("UPDATER_RATE_LIMITED", "GitHub API rate limit exceeded"));
+                return;
+            }
             string json = null;
             try {
                 using(var client = new HttpClient()) {
                     client.DefaultRequestHeaders.UserAgent.ParseAdd("Overlayer-Updater");
                     var response = await client.GetAsync(OverlayerGithubApiLink);
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    IsRateLimited =
+                        response.StatusCode == HttpStatusCode.Forbidden &&
+                        content.Contains("API rate limit exceeded");
+
+                    if(IsRateLimited) {
+                        err?.Invoke(Main.Lang.Get("UPDATER_RATE_LIMITED", "GitHub API rate limit exceeded"));
+                        return;
+                    }
+
                     if(!response.IsSuccessStatusCode)
                         return;
-                    json = await response.Content.ReadAsStringAsync();
+
+                    json = content;
                 }
             } catch(Exception ex) {
                 err?.Invoke(Main.Lang.Get("UPDATER_FAILED_FEATCH_INFO", "Failed to fetch update info") + ": " + ex.Message);
@@ -83,10 +100,10 @@ namespace Overlayer.Utils {
                     .FirstOrDefault() is JObject latestRelease) {
                     LatestVersion = new Version(latestRelease["tag_name"].ToString());
                     if(LatestVersion > currentVersion) {
-                        isLatest = false;
+                        IsLatest = false;
                         CurrentVersionType = VersionType.Old;
                     } else if(LatestVersion < currentVersion) {
-                        isBeta = true;
+                        IsBeta = true;
                         CurrentVersionType = VersionType.Beta;
                     } else {
                         CurrentVersionType = VersionType.Stable;
@@ -129,7 +146,7 @@ namespace Overlayer.Utils {
                 return;
             }
 
-            if(isLatest && (!allowBeta || CurrentVersionType == VersionType.OldBeta)) {
+            if(IsLatest && (!allowBeta || CurrentVersionType == VersionType.OldBeta)) {
                 string msg = Main.Lang.Get("UPDATER_ALREADY_LATEST", "Already the latest version");
                 if(latestPassIsError) {
                     err?.Invoke(msg);

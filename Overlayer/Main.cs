@@ -47,6 +47,8 @@ namespace Overlayer
         public static string tooltip = "";
         public static string UpdateInfo = "";
 
+        private static bool updateOnce = true;
+
         public static Texture2D Logo;
 
         internal static Wiki.Wiki Wiki;
@@ -117,6 +119,10 @@ namespace Overlayer
                 Settings = ModSettings.Load<Settings>(modEntry);
                 Lang.Language = Settings.Lang;
                 Lang.OnInitialize += OnLanguageInitialize;
+                var settingsDrawer = new SettingsDrawer(Settings);
+                Lang.OnInitialize += () => {
+                    settingsDrawer.NeedLangInit = true;
+                };
                 _ = Lang.Load(Path.Combine(Mod.Path, "lang"));
                 LazyPatchManager.Load(Ass);
                 LazyPatchManager.PatchInternal();
@@ -131,7 +137,26 @@ namespace Overlayer
                 if(!Settings.disableLogo) {
                     LogoInit(modEntry.Path);
                 }
-            }
+
+                GUI.Init(settingsDrawer);
+                GUI.Flush();
+
+                if(updateOnce) {
+                    updateOnce = false;
+                    _ = AutoUpdater.InitAndUpdate(
+                        Mod,
+                        Settings.useAutoUpdate,
+                        Settings.useAutoUpdateBeta,
+                        () => {
+                            UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Success!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!");
+                        },
+                        (err) => {
+                            Logger.Error("Update Fail: " + err);
+                            UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
+                        }
+                    );
+                }
+                }
             else
             {
                 if(EgEnabled) {
@@ -168,7 +193,7 @@ namespace Overlayer
         }
 
         public static void OnGUI(ModEntry modEntry) {
-            if(!AutoUpdater.isLatest) {
+            if(!AutoUpdater.IsLatest) {
                 GUILayout.Label($"<size=50><color=red>{Lang.Get("OUTDATED_DESCRIPTION", "Outdated Version Detected!")}</color></size>");
                 GUILayout.BeginHorizontal();
                 if(AutoUpdater.IsUpdating) {
@@ -216,7 +241,7 @@ namespace Overlayer
                 GUILayout.Space(30);
             }
 
-            if (AutoUpdater.isBeta)
+            if (AutoUpdater.IsBeta)
             {
                 GUILayout.Label($"<size=30><color=lime>{Lang.Get("BETA_TEXT", "Beta Version")}</color></size>");
                 GUILayout.Label($"{Lang.Get("BETA_DESCRIPTION", "Beta version may be unstable")}");
@@ -226,7 +251,7 @@ namespace Overlayer
             tooltip = "";
             GUI.Draw();
             GUILayout.Space(30);
-            if(AutoUpdater.isLatest || AutoUpdater.isBeta) {
+            if(AutoUpdater.IsLatest || AutoUpdater.IsBeta) {
                 GUILayout.BeginHorizontal();
                 if(Drawer.Button("Square Mod Server")) {
                     Application.OpenURL("https://square.lrl.kr/");
@@ -261,6 +286,8 @@ namespace Overlayer
                 if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.UnknownBeta) {
                     GUILayout.Label($"You are using an <color=#{Tags.Effect.Rainbow(12)}>SPESIAL BETA!</color>");
                 }
+            } else if(AutoUpdater.IsRateLimited) {
+                GUILayout.Label($"<color=yellow>{Lang.Get("UPDATE_RATE_LIMITED", "Update or Version check Rate Limited!")}</color>");
             }
 
             if(!RGUI.PopupWindow.isOpen) {
@@ -304,22 +331,6 @@ namespace Overlayer
                     Logger.Log(log);
                 }
             }
-
-            _ = AutoUpdater.InitAndUpdate(
-                Mod,
-                Settings.useAutoUpdate,
-                Settings.useAutoUpdateBeta,
-                () => {
-                    UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Success!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!");
-                },
-                (err) => {
-                    Logger.Error("Update Fail: " + err);
-                    UpdateInfo = Lang.Get("UPDATE_FAIL", "Update Fail") + ": " + err;
-                }
-            );
-
-            GUI.Flush();
-            GUI.Init(new SettingsDrawer(Settings));
         }
 
         public static void LogoInit(string path) {
