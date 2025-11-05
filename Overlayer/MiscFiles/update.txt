@@ -1,10 +1,10 @@
 ﻿[ Add ]
+Some Buttons Colors
+GUI Icons
+
 { Tag }
 IsSpeedTrialEnabled
 - Only works on CLS and official levels
-
-Some Buttons Colors
-GUI Icons
 
 [ Change ]
 Some GUI
