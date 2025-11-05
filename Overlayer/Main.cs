@@ -227,12 +227,6 @@ namespace Overlayer
                             }
                         }
                     }
-                    if(Drawer.Button("<size=30>Discord</size>")) {
-                        Application.OpenURL("https://square.lrl.kr/");
-                    }
-                    if(Drawer.Button("<size=30>GitHub</size>")) {
-                        Application.OpenURL("https://github.com/modlist-org/Overlayer");
-                    }
                 }
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
@@ -251,17 +245,15 @@ namespace Overlayer
             tooltip = "";
             GUI.Draw();
             GUILayout.Space(30);
-            if(AutoUpdater.IsLatest || AutoUpdater.IsBeta) {
-                GUILayout.BeginHorizontal();
-                if(Drawer.Button("Discord")) {
-                    Application.OpenURL("https://square.lrl.kr/");
-                }
-                if(Drawer.Button("GitHub")) {
-                    Application.OpenURL("https://github.com/modlist-org/Overlayer");
-                }
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if(Drawer.Button("Discord")) {
+                Application.OpenURL("https://square.lrl.kr/");
             }
+            if(Drawer.Button("GitHub")) {
+                Application.OpenURL("https://github.com/modlist-org/Overlayer");
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
             if(AutoUpdater.CurrentVersionType != AutoUpdater.VersionType.Unknown) {
                 if(AutoUpdater.LatestVersion != null) {
                     GUILayout.BeginHorizontal();
