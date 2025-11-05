@@ -24,6 +24,7 @@ namespace Overlayer.Views
         private bool isOpenedExtraMenu = false;
         private string[] languages;
         private string[] userLanguages;
+        private bool needLangInit = false;
 
         public static float preparinglastUpdateTime = 0f;
         public static string[] preparingsymbols = { "|", "/", "-", "\\" };
@@ -132,14 +133,10 @@ namespace Overlayer.Views
                     selectedIndex = (selectedIndex + 1) % languages.Length;
                     languageUpdate(selectedIndex);
                 }
-
                 if(Drawer.Button(Main.Lang.Get("RELOADLANG", "Reload Language Pack"), GUILayout.Width(320))) {
-                    languages = null;
-                    userLanguages = null;
                     _ = Task.Run(async () => {
-                        Main.Lang.OnInitialize += languageInit;
                         await Main.Lang.Load(Path.Combine(Main.Mod.Path, "lang"));
-                        Main.Lang.OnInitialize -= languageInit;
+                        needLangInit = true;
                     });
                 }
                 GUILayout.EndHorizontal();
@@ -272,90 +269,98 @@ namespace Overlayer.Views
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            for (int i = 0; i < TextManager.Count; i++)
-            {
-                var text = TextManager.Get(i);
+            if(TextManager.Initialized) {
+                for(int i = 0; i < TextManager.Count; i++) {
+                    var text = TextManager.Get(i);
 
-                GUILayout.BeginHorizontal();
-                if(Drawer.DrawOnlyBool(ref text.Config.Active)) {
-                    text.gameObject.SetActive(text.Config.Active);
-                }
-                Color old = GUI.color;
-                GUI.color = (i <= 0) ? Color.gray : Color.white;
-                string upSymbol = (i <= 0) ? "△" : "▲";
-                if(Drawer.Button(upSymbol, GUILayout.Width(38))) {
-                    if(Event.current.shift) {
-                        TextManager.MoveTextToTop(i);
-                    } else if(i > 0) {
-                        TextManager.MoveTextUp(i);
+                    GUILayout.BeginHorizontal();
+                    if(Drawer.DrawOnlyBool(ref text.Config.Active)) {
+                        text.gameObject.SetActive(text.Config.Active);
                     }
-                }
-                GUI.color = (i >= TextManager.Count - 1) ? Color.gray : Color.white;
-                string downSymbol = (i >= TextManager.Count - 1) ? "▽" : "▼";
-                if(Drawer.Button(downSymbol, GUILayout.Width(38))) {
-                    if(Event.current.shift) {
-                        TextManager.MoveTextToBottom(i);
-                    } else if(i < TextManager.Count - 1) {
-                        TextManager.MoveTextDown(i);
-                    }
-                }
-                GUI.color = Color.white;
-                if(text == null) {
-                    GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX", "Unable to load text data at index {0}"), i.ToString()));
-                    continue;
-                }
-                GUILayout.Space(6);
-                GUI.color = new Color(0.8f, 0.8f, 1f);
-                if(Drawer.Button(Main.Lang.Get("EDIT", "Edit"))) {
-                    TextConfigDrawer config = new TextConfigDrawer(text.Config);
-                    Main.GUI.Push(config);
-                }
-                GUI.color = new Color(0.8f, 1f, 0.8f);
-                if(Drawer.Button(Main.Lang.Get("CLONE", "Clone"))) {
-                    TextManager.CreateText(text.Config.Copy());
-                }
-                GUI.color = new Color(1f, 0.8f, 0.8f);
-                if(Drawer.Button(Main.Lang.Get("DESTROY", "Destroy"))) {
-                    if(Event.current.shift) {
-                        TextManager.DestroyText(text);
-                    } else {
-                        if(Object.FindAnyObjectByType<DeletePopup>() == null) {
-                            var popup = new GameObject().AddComponent<DeletePopup>();
-                            UnityEngine.Object.DontDestroyOnLoad(popup);
-                            popup.Initialize(text);
+                    Color old = GUI.color;
+                    GUI.color = (i <= 0) ? Color.gray : Color.white;
+                    string upSymbol = (i <= 0) ? "△" : "▲";
+                    if(Drawer.Button(upSymbol, GUILayout.Width(38))) {
+                        if(Event.current.shift) {
+                            TextManager.MoveTextToTop(i);
+                        } else if(i > 0) {
+                            TextManager.MoveTextUp(i);
                         }
                     }
-                    return;
-                }
-                GUI.color = old;
-                string textName;
-                if(model.showTextNameAsDisplayText) {
-                    if(text.Config.Active) {
-                        textName = text.GetCurrentText().BreakRichTag();
-                        if(string.IsNullOrEmpty(textName)) {
-                            textName = Main.Lang.Get("TEXT_EMPTY", "<color=#808080>[ empty ]</color>");
+                    GUI.color = (i >= TextManager.Count - 1) ? Color.gray : Color.white;
+                    string downSymbol = (i >= TextManager.Count - 1) ? "▽" : "▼";
+                    if(Drawer.Button(downSymbol, GUILayout.Width(38))) {
+                        if(Event.current.shift) {
+                            TextManager.MoveTextToBottom(i);
+                        } else if(i < TextManager.Count - 1) {
+                            TextManager.MoveTextDown(i);
+                        }
+                    }
+                    GUI.color = Color.white;
+                    if(text == null) {
+                        GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX", "Unable to load text data at index {0}"), i.ToString()));
+                        continue;
+                    }
+                    GUILayout.Space(6);
+                    GUI.color = new Color(0.8f, 0.8f, 1f);
+                    if(Drawer.Button(Main.Lang.Get("EDIT", "Edit"))) {
+                        TextConfigDrawer config = new TextConfigDrawer(text.Config);
+                        Main.GUI.Push(config);
+                    }
+                    GUI.color = new Color(0.8f, 1f, 0.8f);
+                    if(Drawer.Button(Main.Lang.Get("CLONE", "Clone"))) {
+                        TextManager.CreateText(text.Config.Copy());
+                    }
+                    GUI.color = new Color(1f, 0.8f, 0.8f);
+                    if(Drawer.Button(Main.Lang.Get("DESTROY", "Destroy"))) {
+                        if(Event.current.shift) {
+                            TextManager.DestroyText(text);
+                        } else {
+                            if(Object.FindAnyObjectByType<DeletePopup>() == null) {
+                                var popup = new GameObject().AddComponent<DeletePopup>();
+                                UnityEngine.Object.DontDestroyOnLoad(popup);
+                                popup.Initialize(text);
+                            }
+                        }
+                        return;
+                    }
+                    GUI.color = old;
+                    string textName;
+                    if(model.showTextNameAsDisplayText) {
+                        if(text.Config.Active) {
+                            string current = text.GetCurrentText();
+                            textName = current?.BreakRichTag();
+                            if(string.IsNullOrEmpty(textName)) {
+                                textName = Main.Lang.Get("TEXT_EMPTY", "<color=#808080>[ empty ]</color>");
+                            }
+                        } else {
+                            textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
                         }
                     } else {
-                        textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
+                        if(text.Config.Active) {
+                            textName = text.Config.Name;
+                        } else {
+                            textName = $"<color=#808080>{text.Config.Name}</color>";
+                        }
                     }
-                } else {
-                    if(text.Config.Active) {
-                        textName = text.Config.Name;
-                    } else {
-                        textName = $"<color=#808080>{text.Config.Name}</color>";
-                    }
-                }
-                GUILayout.Label(textName);
+                    GUILayout.Label(textName);
 
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+                }
+
+                if(needLangInit) {
+                    needLangInit = false;
+                    languages = null;
+                    userLanguages = null;
+                    languageInit();
+                }
+                if(needCreateNewText) {
+                    TextManager.CreateText(new TextConfig());
+                    TextManager.Refresh();
+                }
             }
             NeoDrawer.StaticInstance.UpdateFocused();
-
-            if(needCreateNewText) {
-                TextManager.CreateText(new TextConfig());
-                TextManager.Refresh();
-            }
         }
 
         private int egClickCount = 0;
