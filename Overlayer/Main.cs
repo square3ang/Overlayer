@@ -246,10 +246,10 @@ namespace Overlayer
             GUI.Draw();
             GUILayout.Space(30);
             GUILayout.BeginHorizontal();
-            if(Drawer.Button("Discord")) {
+            if(Drawer.Button(Drawer.icon_Discord, " Discord")) {
                 Application.OpenURL("https://square.lrl.kr/");
             }
-            if(Drawer.Button("GitHub")) {
+            if(Drawer.Button(Drawer.icon_Github, " GitHub")) {
                 Application.OpenURL("https://github.com/modlist-org/Overlayer");
             }
             GUILayout.FlexibleSpace();
