@@ -89,7 +89,7 @@ namespace Overlayer.Views
                     GUILayout.Label("");
                 }
                 GUILayout.BeginHorizontal();
-                Drawer.Button("Loading translations for you, hang tight...",GUILayout.Width(480));
+                Drawer.Button("Loading translations for you, hang tight...", GUILayout.Width(480));
                 GUILayout.Space(10);
                 GUILayout.Label(preparingsymbols[preparingsymbolIndex]);
                 GUILayout.EndHorizontal();
@@ -133,13 +133,19 @@ namespace Overlayer.Views
                     selectedIndex = (selectedIndex + 1) % languages.Length;
                     languageUpdate(selectedIndex);
                 }
-                if(Drawer.Button(Main.Lang.Get("RELOADLANG", "Reload Language Pack"), GUILayout.Width(320))) {
-                    _ = Task.Run(async () => {
-                        await Main.Lang.Load(Path.Combine(Main.Mod.Path, "lang"));
-                        needLangInit = true;
-                    });
+
+                // I LOVE UNITY SO MUCH WTF
+                try {
+                    // F###! WHY 'System.ArgumentException'?????? WHY??????????????
+                    if(Drawer.Button(Main.Lang.Get("RELOADLANG", "Reload Language Pack"), GUILayout.Width(320))) {
+                        _ = Task.Run(async () => {
+                            await Main.Lang.Load(Path.Combine(Main.Mod.Path, "lang"));
+                            needLangInit = true;
+                        });
+                    }
+                } finally {
+                    GUILayout.EndHorizontal();
                 }
-                GUILayout.EndHorizontal();
             }
             GUILayout.BeginHorizontal();
             if(Drawer.Button(Main.Lang.Get("EXTRA_MENU","Extra Menu") + " " + (isOpenedExtraMenu ? "▼" : "▲"))) {
