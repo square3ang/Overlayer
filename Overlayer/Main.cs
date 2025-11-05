@@ -40,7 +40,7 @@ namespace Overlayer
         public static GUIController GUI { get; private set; }
         public static Scene ActiveScene { get; private set; }
         [Tag(NotPlaying = true)] public static Translator Lang { get; internal set; }
-        [Tag(NotPlaying = true)] public static Version ModVersion() => Mod.Version;
+        [Tag(NotPlaying = true)] public static Version ModVersion => Mod.Version;
         public static bool IsShowGUI { get; private set; } = false;
         private static UpdatePopup popup;
 
