@@ -249,7 +249,7 @@ namespace Overlayer.Views
                 }
             }
             GUILayout.BeginHorizontal();
-            bool needCreateNewText = Drawer.Button(Main.Lang.Get("NEW_TEXT", "Create New Text"));
+            bool needCreateNewText = Drawer.Button("+" + Main.Lang.Get("NEW_TEXT", "Create New Text"));
             if(Drawer.Button(Main.Lang.Get("IMPORT_TEXT", "Import Text"))) {
                 var texts = StandaloneFileBrowser.OpenFilePanel(
                     Main.Lang.Get("SELECT_TEXT", "Select Text"),
