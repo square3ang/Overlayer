@@ -104,14 +104,11 @@ namespace Overlayer.Core.Translation {
         public const string LOG_PREFIX_ERROR = "[Translator Error] ";
         public const string LOG_PREFIX_EXCEPTION = "[Translator Exception] ";
 
-        // Field to indicate if loading is in progress.
-        private bool isLoading = true;
-
         /// <summary>
         /// Gets the loading state of the translator.
         /// </summary>
         /// <returns>True if loading is in progress; otherwise, false.</returns>
-        public bool IsLoading => isLoading;
+        public bool IsLoading { get; private set; } = false;
 
         /// <summary>
         /// Checks if there was any failure during translation loading.
@@ -135,7 +132,7 @@ namespace Overlayer.Core.Translation {
         /// Determines if the default language should be used.
         /// </summary>
         /// <returns>True if default language should be used; otherwise, false.</returns>
-        public bool IsDefault => (IsFail && FailState != TranslationFailState.SomeFailure) || isLoading || Language == FALLBACK_LANGUAGE;
+        public bool IsDefault => (IsFail && FailState != TranslationFailState.SomeFailure) || IsLoading || Language == FALLBACK_LANGUAGE;
 
         /// <summary>
         /// Event triggered when the translator has finished initialization.
@@ -176,7 +173,11 @@ namespace Overlayer.Core.Translation {
         /// <param name="baseLangFolderPath">The path to the folder containing the language JSON files.</param>
         /// <returns>A Task representing the asynchronous operation.</returns>
         internal async Task Load(string baseLangFolderPath) {
-            isLoading = true;
+            if(IsLoading) {
+                return;
+            }
+
+            IsLoading = true;
 
             // Initialize logging
             InitLog();
@@ -202,7 +203,7 @@ namespace Overlayer.Core.Translation {
                 FailState = TranslationFailState.ErrorReadingDirectory;
                 Log($"{LOG_PREFIX_ERROR}Error reading directory: {baseLangFolderPath}");
                 Log($"[Translator Exception] {e.GetType().Name}: {e.Message}");
-                isLoading = false;
+                IsLoading = false;
                 OnInitialize.Invoke();
                 return;
             }
@@ -214,7 +215,7 @@ namespace Overlayer.Core.Translation {
                 // No files found, set failure state.
                 FailState = TranslationFailState.FileDoesNotExist;
                 Log($"{LOG_PREFIX_WARNING}No translation files found");
-                isLoading = false;
+                IsLoading = false;
                 OnInitialize.Invoke();
                 return;
             }
@@ -326,7 +327,7 @@ namespace Overlayer.Core.Translation {
                 Log($"{LOG_PREFIX_EXCEPTION}Exception during OnInitialize event: {e.GetType().Name}: {e.Message}");
             } finally {
                 // Set loading state to false.
-                isLoading = false;
+                IsLoading = false;
             }
         }
 
