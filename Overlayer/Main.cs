@@ -227,7 +227,7 @@ namespace Overlayer
                             }
                         }
                     }
-                    if(Drawer.Button("<size=30>Square Mod Server</size>")) {
+                    if(Drawer.Button("<size=30>Discord</size>")) {
                         Application.OpenURL("https://square.lrl.kr/");
                     }
                     if(Drawer.Button("<size=30>GitHub</size>")) {
@@ -253,7 +253,7 @@ namespace Overlayer
             GUILayout.Space(30);
             if(AutoUpdater.IsLatest || AutoUpdater.IsBeta) {
                 GUILayout.BeginHorizontal();
-                if(Drawer.Button("Square Mod Server")) {
+                if(Drawer.Button("Discord")) {
                     Application.OpenURL("https://square.lrl.kr/");
                 }
                 if(Drawer.Button("GitHub")) {
