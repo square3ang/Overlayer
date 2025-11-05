@@ -153,6 +153,7 @@ namespace Overlayer.Views
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("PLAYING_TEXT","Playing Text"), model.Name + "PlayingText", ref model.PlayingText);
             changed |= Drawer.DrawCodeEditor(Main.Lang.Get("NOT_PLAYING_TEXT","Not Playing Text"), model.Name + "NotPlayingText", ref model.NotPlayingText);
             GUILayout.BeginHorizontal();
+            GUI.color = new Color(1f, 0.8f, 1f);
             if (Drawer.Button(Main.Lang.Get("EXPORT","Export")))
             {
                 string target = StandaloneFileBrowser.SaveFilePanel(Main.Lang.Get("SELECT_TEXT","Select Text"), Persistence.GetLastUsedFolder(), $"{model.Name}.json", "json");
@@ -165,6 +166,8 @@ namespace Overlayer.Views
                     );
                 }
             }
+            GUI.color = Color.white;
+            GUI.color = new Color(1f, 1f, 0.8f);
             if (Drawer.Button(Main.Lang.Get("RESET","Reset")))
             {
                 changed = true;
