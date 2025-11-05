@@ -319,7 +319,7 @@
     "TOOLTIP_TLHEX": "너무 느림 Hex 색상",
     "TOOLTIP_TOTALCHECKPOINTS": "총 체크포인트 수",
     "TOOLTIP_TOTALDAY": "노래의 총 일수",
-    "TOOLTIP_TOTALHOUR": "Total hour of song",
+    "TOOLTIP_TOTALHOUR": "노래의 총 시간",
     "TOOLTIP_TOTALMILLISECOND": "노래의 총 밀리초",
     "TOOLTIP_TOTALMINUTE": "노래의 총 분",
     "TOOLTIP_TOTALSECOND": "노래의 총 초",
