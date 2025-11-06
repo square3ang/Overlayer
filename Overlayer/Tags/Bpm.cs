@@ -26,8 +26,12 @@ namespace Overlayer.Tags
 
             if(scnGame.instance != null) {
                 pitch = (float)scnGame.instance.levelData.pitch / 100;
-                if(ADOBase.isCLSLevel)
+                if(ADOBase.isOfficialLevel) {
+                    pitch *= scrConductor.instance.song.pitch;
+                }
+                if(ADOBase.isCLSLevel) {
                     pitch *= GCS.currentSpeedTrial;
+                }
                 if(scnEditor.instance != null) {
                     pitch *= scnEditor.instance.playbackSpeed;
                 }
