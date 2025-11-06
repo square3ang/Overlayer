@@ -1,18 +1,9 @@
 ﻿[ Add ]
-Some Buttons Colors
-GUI Icons
+CodeEditor Tags Icon
+Truncate display text if it is too long
 
-{ Tag }
-IsSpeedTrialEnabled
-- Only works on CLS and official levels
+[ Fix ]
+BPM pitch issue when OfficialLevel is scnGame
 
-[ Change ]
-Some GUI
-Language load system changed
-- View GUI even while loading language
-Language now uses Code, like en-US, ko-KR..
-- You need to change language setting
-.NET Framework 4.8 -> 4.8.1
-- Requires Windows 10 20H2 or later
-
-NEED TO UPDATE SCRIPTING!
+[ Delete ]
+Lex Option
