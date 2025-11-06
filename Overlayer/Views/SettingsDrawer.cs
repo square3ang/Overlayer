@@ -133,19 +133,22 @@ namespace Overlayer.Views
                     selectedIndex = (selectedIndex + 1) % languages.Length;
                     languageUpdate(selectedIndex);
                 }
-
+                
+                bool reloadLang = false;
                 // I LOVE UNITY SO MUCH WTF
                 try {
                     // F###! WHY 'System.ArgumentException'?????? WHY??????????????
-                    if(Drawer.Button(Main.Lang.Get("RELOADLANG", "Reload Language Pack"), GUILayout.Width(320))) {
-                        _ = Task.Run(async () => {
-                            await Main.Lang.Load(Path.Combine(Main.Mod.Path, "lang"));
-                            NeedLangInit = true;
-                        });
-                    }
+                    reloadLang = Drawer.Button(Main.Lang.Get("RELOADLANG", "Reload Language Pack"), GUILayout.Width(320));
                 } catch {
                 } finally {
                     GUILayout.EndHorizontal();
+                }
+
+                if(reloadLang) {
+                    _ = Task.Run(async () => {
+                        await Main.Lang.Load(Path.Combine(Main.Mod.Path, "lang"));
+                        NeedLangInit = true;
+                    });
                 }
             }
             GUILayout.BeginHorizontal();
