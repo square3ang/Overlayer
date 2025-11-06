@@ -159,7 +159,7 @@ namespace Overlayer.Olly {
         }
 
         public void DrawChoices() {
-            if(currentNode == null || currentNode.Choices == null || currentNode.Choices.Length == 0 || IsTalking()) {
+            if(currentNode == null || currentNode.Choices == null || currentNode.Choices.Length == 0 || IsTalking) {
                 return;
             }
 
@@ -199,6 +199,6 @@ namespace Overlayer.Olly {
             }
         }
 
-        public bool IsTalking() => currentNode != null && charIndex < currentNode.Text.Length;
+        public bool IsTalking => currentNode != null && charIndex < currentNode.Text.Length;
     }
 }
