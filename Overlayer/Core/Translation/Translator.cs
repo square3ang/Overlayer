@@ -20,29 +20,17 @@ namespace Overlayer.Core.Translation {
     /// Enumeration representing the various failure states of the translation system.
     /// </summary>
     public enum TranslationFailState {
-        /// <summary>
-        /// No errors; translations loaded successfully.
-        /// </summary>
+        /// <summary>No errors; translations loaded successfully.</summary>
         Success,
-        /// <summary>
-        /// An unknown error occurred.
-        /// </summary>
+        /// <summary>An unknown error occurred.</summary>
         UnknownCause,
-        /// <summary>
-        /// Unknown failure. Not used
-        /// </summary>
+        /// <summary>Unknown failure. Not used</summary>
         SomeFailure,
-        /// <summary>
-        /// Error reading the directory containing translation files.
-        /// </summary>
+        /// <summary>Error reading the directory containing translation files.</summary>
         ErrorReadingDirectory,
-        /// <summary>
-        /// No translation files were found.
-        /// </summary>
+        /// <summary>No translation files were found.</summary>
         FileDoesNotExist,
-        /// <summary>
-        /// No valid translations were found in the files.
-        /// </summary>
+        /// <summary>No valid translations were found in the files.</summary>
         NoValidTranslationFound,
     }
 
