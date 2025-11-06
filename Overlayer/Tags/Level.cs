@@ -2,6 +2,7 @@
 using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Overlayer.Tags {
     public static class Level {
@@ -67,12 +68,16 @@ namespace Overlayer.Tags {
             }
         }
 
-        public static void UpdateLevelNameText(string text) {
-            LevelNameText = text;
+        public static void UpdateLevelNameText(ffxSetDefaultText instance) {
+            if(instance.levelTitleTextUsed || Main.Settings.tagLevelNameTextUpdateAlways) {
+                LevelNameText = instance.levelTitleText.BreakRichTag();
+            }
         }
 
-        public static void UpdateLevelNameTextRaw(string text) {
-            LevelNameTextRaw = text;
+        public static void UpdateLevelNameTextRaw(ffxSetDefaultText instance) {
+            if(instance.levelTitleTextUsed || Main.Settings.tagLevelNameTextUpdateAlways) {
+                LevelNameTextRaw = instance.levelTitleText.FuckingAdofaiMapRichTagFixer();
+            }
         }
 
         [Tag]

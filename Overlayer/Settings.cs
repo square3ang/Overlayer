@@ -25,6 +25,7 @@ namespace Overlayer
         public bool useTooltip = true;
         public bool autoPivot = true;
         public bool showTextNameAsDisplayText = false;
+        public bool tagLevelNameTextUpdateAlways = false;
         public bool isFirstEg = true;
         public JToken Serialize() {
             var node = new JObject();
@@ -46,6 +47,7 @@ namespace Overlayer
             node[nameof(useTooltip)] = useTooltip;
             node[nameof(autoPivot)] = autoPivot;
             node[nameof(showTextNameAsDisplayText)] = showTextNameAsDisplayText;
+            node[nameof(tagLevelNameTextUpdateAlways)] = tagLevelNameTextUpdateAlways;
             node[nameof(isFirstEg)] = isFirstEg;           
             return node;
         }
@@ -72,6 +74,7 @@ namespace Overlayer
             useTooltip = node[nameof(useTooltip)]?.Value<bool>() ?? defaultSettings.useTooltip;
             autoPivot = node[nameof(autoPivot)]?.Value<bool>() ?? defaultSettings.autoPivot;
             showTextNameAsDisplayText = node[nameof(showTextNameAsDisplayText)]?.Value<bool>() ?? defaultSettings.showTextNameAsDisplayText;
+            tagLevelNameTextUpdateAlways = node[nameof(tagLevelNameTextUpdateAlways)]?.Value<bool>() ?? defaultSettings.tagLevelNameTextUpdateAlways;
             isFirstEg = node[nameof(isFirstEg)]?.Value<bool>() ?? defaultSettings.isFirstEg;
         }
         public Settings Copy()
@@ -94,6 +97,7 @@ namespace Overlayer
             newSettings.useAutoUpdateBeta = useAutoUpdateBeta;
             newSettings.autoPivot = autoPivot;
             newSettings.showTextNameAsDisplayText = showTextNameAsDisplayText;
+            newSettings.tagLevelNameTextUpdateAlways = tagLevelNameTextUpdateAlways;
             newSettings.isFirstEg = isFirstEg;
             return newSettings;
         }

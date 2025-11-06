@@ -21,7 +21,13 @@ namespace Overlayer.Views
     {
         public SettingsDrawer(Settings settings) : base(settings) { }
 
-        private bool isOpenedExtraMenu = false;
+        private enum ExtraMenus {
+            Closed,
+            Extra,
+            Tag,
+        }
+
+        private ExtraMenus extraMenu = ExtraMenus.Closed;
         private string[] languages;
         private string[] userLanguages;
         internal bool NeedLangInit = true;
@@ -152,8 +158,19 @@ namespace Overlayer.Views
                 }
             }
             GUILayout.BeginHorizontal();
-            if(Drawer.Button(Main.Lang.Get("EXTRA_MENU","Extra Menu") + " " + (isOpenedExtraMenu ? "▼" : "▲"))) {
-                isOpenedExtraMenu = !isOpenedExtraMenu;
+            if(Drawer.Button(Main.Lang.Get("EXTRA_MENU","Extra Menu") + " " + (extraMenu == ExtraMenus.Extra ? "▼" : "▲"))) {
+                if(extraMenu == ExtraMenus.Extra) {
+                    extraMenu = ExtraMenus.Closed;
+                } else {
+                    extraMenu = ExtraMenus.Extra;
+                }
+            }
+            if(Drawer.Button(Main.Lang.Get("TAG_MENU", "Tag Menu") + " " + (extraMenu == ExtraMenus.Tag ? "▼" : "▲"))) {
+                if(extraMenu == ExtraMenus.Tag) {
+                    extraMenu = ExtraMenus.Closed;
+                } else {
+                    extraMenu = ExtraMenus.Tag;
+                }
             }
             /*
             if(Drawer.Button(Main.Lang.Get("OPEN_WIKI_MENU","Open Wiki Menu"))) {
@@ -167,89 +184,86 @@ namespace Overlayer.Views
             */
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            if(isOpenedExtraMenu) {
-                if(Drawer.DrawBool(string.Format(Main.Lang.Get("DISABLE_THIS","Disable {0}"), Main.Lang.Get("LOGO","Logo")), ref model.disableLogo)) {
-                    if (model.disableLogo) {
-                        Main.LogoRelease();
-                    } else {
-                        Main.LogoInit(Main.Mod.Path);
-                    }
-                }
-                if (Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT","Change Font"), ref model.ChangeFont))
-                {
-                    if (!model.ChangeFont)
-                    {
-                        model.AdofaiFont.name = "Default";
-                        if (model.AdofaiFont.Apply(out var font))
-                        {
-                            FontManager.SetFont(model.AdofaiFont.name, font);
-                            RDString.initialized = false;
-                            RDString.Setup();
-                            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            switch(extraMenu) {
+                case ExtraMenus.Extra:
+                    if(Drawer.DrawBool(string.Format(Main.Lang.Get("DISABLE_THIS", "Disable {0}"), Main.Lang.Get("LOGO", "Logo")), ref model.disableLogo)) {
+                        if(model.disableLogo) {
+                            Main.LogoRelease();
+                        } else {
+                            Main.LogoInit(Main.Mod.Path);
                         }
                     }
-                }
-                if (model.ChangeFont)
-                {
-                    GUILayoutEx.BeginIndent();
-                    Drawer.DrawString(Main.Lang.Get("FONT","Font"), ref model.AdofaiFont.name);
-                    Drawer.DrawSingle(Main.Lang.Get("FONT_SCALE","Font Scale"), ref model.AdofaiFont.fontScale);
-                    Drawer.DrawSingle(Main.Lang.Get("LINE_SPACING","Font Line Spacing"), ref model.AdofaiFont.lineSpacing);
-                    GUILayout.BeginHorizontal();
-                    if (Drawer.Button(Main.Lang.Get("APPLY","Apply")))
-                    {
-                        if (model.AdofaiFont.Apply(out var font))
-                        {
-                            FontManager.SetFont(model.AdofaiFont.name, font);
-                            RDString.initialized = false;
-                            RDString.Setup();
-                            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                    if(Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT", "Change Font"), ref model.ChangeFont)) {
+                        if(!model.ChangeFont) {
+                            model.AdofaiFont.name = "Default";
+                            if(model.AdofaiFont.Apply(out var font)) {
+                                FontManager.SetFont(model.AdofaiFont.name, font);
+                                RDString.initialized = false;
+                                RDString.Setup();
+                                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                            }
                         }
                     }
-                    if (Drawer.Button(Main.Lang.Get("LOG_FONT_LIST","Log Font List")))
-                    {
-                        foreach (var font in FontManager.OSFonts)
-                            Main.Logger.Log(font);
+                    if(model.ChangeFont) {
+                        GUILayoutEx.BeginIndent();
+                        Drawer.DrawString(Main.Lang.Get("FONT", "Font"), ref model.AdofaiFont.name);
+                        Drawer.DrawSingle(Main.Lang.Get("FONT_SCALE", "Font Scale"), ref model.AdofaiFont.fontScale);
+                        Drawer.DrawSingle(Main.Lang.Get("LINE_SPACING", "Font Line Spacing"), ref model.AdofaiFont.lineSpacing);
+                        GUILayout.BeginHorizontal();
+                        if(Drawer.Button(Main.Lang.Get("APPLY", "Apply"))) {
+                            if(model.AdofaiFont.Apply(out var font)) {
+                                FontManager.SetFont(model.AdofaiFont.name, font);
+                                RDString.initialized = false;
+                                RDString.Setup();
+                                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                            }
+                        }
+                        if(Drawer.Button(Main.Lang.Get("LOG_FONT_LIST", "Log Font List"))) {
+                            foreach(var font in FontManager.OSFonts)
+                                Main.Logger.Log(font);
+                        }
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
+                        GUILayoutEx.EndIndent();
                     }
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
-                    GUILayoutEx.EndIndent();
-                }
 
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("UPDATE", "Update"))), ref model.useAutoUpdate);
-                if (model.useAutoUpdate) {
-                    GUILayoutEx.BeginIndent();
-                    Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.useAutoUpdateBeta);
-                    GUILayoutEx.EndIndent();
-                }
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("TOOLTIP", "Tooltip")), ref model.useTooltip);
-                if (Drawer.DrawBool(
-                        string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
-                        ref model.useLegacyTheme))
-                {
-                    Drawer.SetStyle(model.useLegacyTheme);
-                    RGUIStyle.CreateStyles();
-                }
-                Drawer.DrawBool(
-                    string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_NUMBER_FIELD", "Legacy Number Field")),
-                    ref model.useLegacyNumberField);
-                if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
-                    LazyPatchManager.Unpatch(typeof(ChangeAddHit), true);
-                    LazyPatchManager.Patch(typeof(ChangeAddHit));
-                }
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan")), ref model.useMovingManEditor);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "EasedValue")), ref model.useEasedValueEditor);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot"))), ref model.autoPivot);
-                if(Main.Settings.useLegacyNumberField) {
-                    Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
-                    Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
-                    Drawer.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
-                } else {
-                    NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
-                    NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
-                    NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
-                }
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("UPDATE", "Update"))), ref model.useAutoUpdate);
+                    if(model.useAutoUpdate) {
+                        GUILayoutEx.BeginIndent();
+                        Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.useAutoUpdateBeta);
+                        GUILayoutEx.EndIndent();
+                    }
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("TOOLTIP", "Tooltip")), ref model.useTooltip);
+                    if(Drawer.DrawBool(
+                            string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
+                            ref model.useLegacyTheme)) {
+                        Drawer.SetStyle(model.useLegacyTheme);
+                        RGUIStyle.CreateStyles();
+                    }
+                    Drawer.DrawBool(
+                        string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_NUMBER_FIELD", "Legacy Number Field")),
+                        ref model.useLegacyNumberField);
+                    if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
+                        LazyPatchManager.Unpatch(typeof(ChangeAddHit), true);
+                        LazyPatchManager.Patch(typeof(ChangeAddHit));
+                    }
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan")), ref model.useMovingManEditor);
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "EasedValue")), ref model.useEasedValueEditor);
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot"))), ref model.autoPivot);
+                    if(Main.Settings.useLegacyNumberField) {
+                        Drawer.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
+                        Drawer.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
+                        Drawer.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
+                    } else {
+                        NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
+                        NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
+                        NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
+                    }
+                    break;
+                case ExtraMenus.Tag:
+                    Drawer.DrawBool(Main.Lang.Get("LEVEL_NAME_TEXT_UPDATE_ALWAYS", "Always update {LevelNameText} and {LevelNameTextRaw} (for ADOFAI Tweaks 'Hide song artist and title' setting)"), ref model.tagLevelNameTextUpdateAlways);
+                    break;
             }
             GUILayout.BeginHorizontal();
             bool needCreateNewText = Drawer.Button("+ " + Main.Lang.Get("NEW_TEXT", "Create New Text"));

@@ -13,9 +13,7 @@ namespace Overlayer.Tags.Patches {
         })]
         public static class Level_LevelNameText__StartEffect {
             public static void Postfix(ffxSetDefaultText __instance) {
-                if(__instance.levelTitleTextUsed) {
-                    Level.UpdateLevelNameText(__instance.levelTitleText.BreakRichTag());
-                }
+                Level.UpdateLevelNameText(__instance);
             }
         }
 
@@ -24,9 +22,7 @@ namespace Overlayer.Tags.Patches {
         })]
         public static class Level_LevelNameTextRaw__StartEffect {
             public static void Postfix(ffxSetDefaultText __instance) {
-                if(__instance.levelTitleTextUsed) {
-                    Level.UpdateLevelNameTextRaw(__instance.levelTitleText.FuckingAdofaiMapRichTagFixer());
-                }
+                Level.UpdateLevelNameTextRaw(__instance);
             }
         }
     }
