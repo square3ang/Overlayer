@@ -77,7 +77,6 @@ namespace Overlayer.Views
                     changed |= Drawer.DrawSelectFont(ref model.FallbackFonts[i]);
                 }
             }
-            changed |= Drawer.DrawString(Drawer.icon_Parse, Main.Lang.Get("LEX_OPTION","Text interpreter settings"), ref model.LexOption);
             if(Main.Settings.useLegacyNumberField) {
                 changed |= Drawer.DrawSingleWithSlider(Drawer.icon_FontSize, Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f);
                 changed |= Drawer.DrawSingleWithSlider(Drawer.icon_LineSpacing, Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f);

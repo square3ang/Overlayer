@@ -25,7 +25,6 @@ namespace Overlayer.Models
         public string Font = "Default";
         public string PlayingText = "<color=#{FOHex}>{Overloads}</color> <color=#{TEHex}>{CTE}</color> <color=#{VEHex}>{CVE}</color> <color=#{EPHex}>{CEP}</color> <color=#{PHex}>{CP}</color> <color=#{LPHex}>{CLP}</color> <color=#{VLHex}>{CVL}</color> <color=#{TLHex}>{CTL}</color> <color=#{FMHex}>{MissCount}</color>";
         public string NotPlayingText = string.Empty;
-        public string LexOption = "{}:(),";
         public float FontSize = 44;
         public float OutlineWidth = 0;
         public float LineSpacing = -25f;
@@ -52,7 +51,6 @@ namespace Overlayer.Models
             newConfig.Font = Font;
             newConfig.PlayingText = PlayingText;
             newConfig.NotPlayingText = NotPlayingText;
-            newConfig.LexOption = LexOption;
             newConfig.FontSize = FontSize;
             newConfig.OutlineWidth = OutlineWidth;
             newConfig.LineSpacing = LineSpacing;
@@ -81,7 +79,6 @@ namespace Overlayer.Models
             node[nameof(Font)] = Font;
             node[nameof(PlayingText)] = PlayingText;
             node[nameof(NotPlayingText)] = NotPlayingText;
-            node[nameof(LexOption)] = LexOption;
             node[nameof(FontSize)] = FontSize;
             node[nameof(OutlineWidth)] = OutlineWidth;
             node[nameof(LineSpacing)] = LineSpacing;
@@ -110,7 +107,6 @@ namespace Overlayer.Models
             Font = node[nameof(Font)]?.Value<string>() ?? defaultSettings.Font;
             PlayingText = node[nameof(PlayingText)]?.Value<string>() ?? defaultSettings.PlayingText;
             NotPlayingText = node[nameof(NotPlayingText)]?.Value<string>() ?? defaultSettings.NotPlayingText;
-            LexOption = node[nameof(LexOption)]?.Value<string>() ?? defaultSettings.LexOption;
             FontSize = node[nameof(FontSize)]?.Value<float>() ?? defaultSettings.FontSize;
             OutlineWidth = node[nameof(OutlineWidth)]?.Value<float>() ?? defaultSettings.OutlineWidth;
             LineSpacing = node[nameof(LineSpacing)]?.Value<float>() ?? defaultSettings.LineSpacing;

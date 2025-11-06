@@ -138,9 +138,6 @@ namespace Overlayer.Unity
         {
             PlayingReplacer.Source = Config.PlayingText;
             NotPlayingReplacer.Source = Config.NotPlayingText;
-            var lexConfig = MiscUtils.CreateLexConfigFromString(Config.LexOption);
-            PlayingReplacer.SetLexConfig(lexConfig);
-            NotPlayingReplacer.SetLexConfig(lexConfig);
             PlayingReplacer.UpdateTags(TagManager.All.Select(ot => ot.Tag));
             NotPlayingReplacer.UpdateTags(TagManager.NP.Select(ot => ot.Tag));
             PlayingReplacer.Compile();
