@@ -1,9 +1,2 @@
-﻿[ Add ]
-CodeEditor Tags Icon
-Truncate display text if it is too long
-
-[ Fix ]
-BPM pitch issue when OfficialLevel is scnGame
-
-[ Delete ]
-Lex Option
+﻿[ Fix ]
+Translator error log fix
