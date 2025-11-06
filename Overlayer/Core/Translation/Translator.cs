@@ -269,8 +269,7 @@ namespace Overlayer.Core.Translation {
 
                     // Validate the presence and correctness of the KTL key.
                     if(block.TryGetValue(KTLKey, out var ktToken) == false || ktToken.ToString() != ExpectedKTLValue) {
-                        FailState = TranslationFailState.SomeFailure;
-                        Log($"{LOG_PREFIX_ERROR}Invalid or missing {DEFAULT_KTL_KEY} in file: {file}, block: {property.Name}");
+                        Log($"{LOG_PREFIX}Invalid or missing {DEFAULT_KTL_KEY} in file: {file}, block: {property.Name}, passing");
                         continue;
                     }
 
