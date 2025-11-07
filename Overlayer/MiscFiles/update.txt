@@ -1,2 +1,2 @@
-﻿[ Fix ]
-Translator error log fix
+﻿[ Add ]
+tagLevelNameTextUpdateAlways setting
