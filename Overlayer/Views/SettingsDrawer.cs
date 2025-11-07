@@ -356,8 +356,10 @@ namespace Overlayer.Views
                             textName = current?.BreakRichTag();
                             if(string.IsNullOrEmpty(textName)) {
                                 textName = Main.Lang.Get("TEXT_EMPTY", "<color=#808080>[ empty ]</color>");
-                            } else if(textName?.Length > 62) {
-                                textName = textName.Substring(0, 62) + $"<color=#808080>..({textName.Length - 62})</color>";
+                            }
+                            textName = textName.Replace('\n', ' ');
+                            if(textName?.Length > 62) {
+                                textName = textName.Substring(0, 62) + $"<color=#808080>..({textName.Length - 62})</color>"; //TODO: Scroling Name
                             }
                         } else {
                             textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
