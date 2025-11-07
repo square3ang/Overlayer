@@ -37,21 +37,21 @@ namespace Overlayer.Views
         public static int preparingsymbolIndex = 0;
         public static float helptime = 0f;
 
-        private void languageInit() {
+        private void LanguageInit() {
             helptime = 0f;
             preparingsymbolIndex = 0;
             languages = Main.Lang.GetLanguages();
             userLanguages = Main.Lang.GetLanguageNativeNames();
         }
 
-        private void languageUpdate(int index) {
+        private void LanguageUpdate(int index) {
             Main.Lang.Language = languages[index];
             model.Lang = Main.Lang.Language;
         }
 
         public override void OnceCall() {
             NeoDrawer.StaticInstance.FieldResetDictById();
-            languageInit();
+            LanguageInit();
         }
         public override void Draw()
         {
@@ -129,15 +129,15 @@ namespace Overlayer.Views
 
                 if(Drawer.Button("◀", GUILayout.Width(40))) {
                     selectedIndex = (selectedIndex - 1 + languages.Length) % languages.Length;
-                    languageUpdate(selectedIndex);
+                    LanguageUpdate(selectedIndex);
                 }
 
                 if(Drawer.SelectionPopup(ref selectedIndex, userLanguages, "", GUILayout.Width(400))) {
-                    languageUpdate(selectedIndex);
+                    LanguageUpdate(selectedIndex);
                 }
                 if(Drawer.Button("▶", GUILayout.Width(40))) {
                     selectedIndex = (selectedIndex + 1) % languages.Length;
-                    languageUpdate(selectedIndex);
+                    LanguageUpdate(selectedIndex);
                 }
                 
                 bool reloadLang = false;
@@ -379,7 +379,7 @@ namespace Overlayer.Views
                     NeedLangInit = false;
                     languages = null;
                     userLanguages = null;
-                    languageInit();
+                    LanguageInit();
                 }
                 if(needCreateNewText) {
                     TextManager.CreateText(new TextConfig());
