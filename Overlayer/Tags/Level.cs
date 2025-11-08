@@ -69,15 +69,11 @@ namespace Overlayer.Tags {
         }
 
         public static void UpdateLevelNameText(ffxSetDefaultText instance) {
-            if(instance.levelTitleTextUsed || Main.Settings.tagLevelNameTextUpdateAlways) {
-                LevelNameText = instance.levelTitleText.BreakRichTag();
-            }
+            LevelNameText = instance.levelTitleText.BreakRichTag();
         }
 
         public static void UpdateLevelNameTextRaw(ffxSetDefaultText instance) {
-            if(instance.levelTitleTextUsed || Main.Settings.tagLevelNameTextUpdateAlways) {
-                LevelNameTextRaw = instance.levelTitleText.FuckingAdofaiMapRichTagFixer();
-            }
+            LevelNameTextRaw = instance.levelTitleText.FuckingAdofaiMapRichTagFixer();
         }
 
         [Tag]

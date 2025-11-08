@@ -24,7 +24,6 @@ namespace Overlayer.Views
         private enum ExtraMenus {
             Closed,
             Extra,
-            Tag,
         }
 
         private ExtraMenus extraMenu = ExtraMenus.Closed;
@@ -165,13 +164,6 @@ namespace Overlayer.Views
                     extraMenu = ExtraMenus.Extra;
                 }
             }
-            if(Drawer.Button(Main.Lang.Get("TAG_MENU", "Tag Menu") + " " + (extraMenu == ExtraMenus.Tag ? "▼" : "▲"))) {
-                if(extraMenu == ExtraMenus.Tag) {
-                    extraMenu = ExtraMenus.Closed;
-                } else {
-                    extraMenu = ExtraMenus.Tag;
-                }
-            }
             /*
             if(Drawer.Button(Main.Lang.Get("OPEN_WIKI_MENU","Open Wiki Menu"))) {
                 if(Main.Wiki == null) {
@@ -260,9 +252,6 @@ namespace Overlayer.Views
                         NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
                         NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
                     }
-                    break;
-                case ExtraMenus.Tag:
-                    Drawer.DrawBool(Main.Lang.Get("LEVEL_NAME_TEXT_UPDATE_ALWAYS", "Always update {LevelNameText} and {LevelNameTextRaw} (for ADOFAI Tweaks 'Hide song artist and title' setting)"), ref model.tagLevelNameTextUpdateAlways);
                     break;
             }
             GUILayout.BeginHorizontal();
