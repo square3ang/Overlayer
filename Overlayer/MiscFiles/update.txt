@@ -1,2 +1,8 @@
-﻿[ Add ]
-tagLevelNameTextUpdateAlways setting
+﻿[ Fix ]
+{LevelNameText}, {LevelNameTextRaw} not appearing
+
+{LevelNameTextColor}, {LevelNameTextShadowColor}
+bug caused by ADOFAI Tweaks
+
+[ Delete ]
+Delete previous useless update settings
