@@ -25,5 +25,23 @@ namespace Overlayer.Tags.Patches {
                 Level.UpdateLevelNameTextRaw();
             }
         }
+
+        [LazyPatch("Tags.P_ffxSetDefaultText.Level_LevelNameTextColor__Decode", "ffxSetDefaultText", "Decode", Triggers = new string[] {
+            nameof(Level.LevelNameTextColor)
+        })]
+        public static class Level_LevelNameText__Decode {
+            public static void Postfix(ffxSetDefaultText __instance) {
+                __instance.defaultTextColorUsed = true;
+            }
+        }
+
+        [LazyPatch("Tags.P_ffxSetDefaultText.Level_LevelNameTextShadowColor__Decode", "ffxSetDefaultText", "Decode", Triggers = new string[] {
+            nameof(Level.LevelNameTextShadowColor)
+        })]
+        public static class Level_LevelNameTextRaw__Decode {
+            public static void Postfix(ffxSetDefaultText __instance) {
+                __instance.defaultTextShadowColorUsed = true;
+            }
+        }
     }
 }
