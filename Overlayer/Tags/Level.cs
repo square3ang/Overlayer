@@ -68,12 +68,12 @@ namespace Overlayer.Tags {
             }
         }
 
-        public static void UpdateLevelNameText(ffxSetDefaultText instance) {
-            LevelNameText = instance.levelTitleText.BreakRichTag();
+        public static void UpdateLevelNameText() {
+            LevelNameText = ADOBase.controller.txtLevelName.text.BreakRichTag();
         }
 
-        public static void UpdateLevelNameTextRaw(ffxSetDefaultText instance) {
-            LevelNameTextRaw = instance.levelTitleText.FuckingAdofaiMapRichTagFixer();
+        public static void UpdateLevelNameTextRaw() {
+            LevelNameTextRaw = ADOBase.controller.txtLevelName.text.FuckingAdofaiMapRichTagFixer();
         }
 
         [Tag]

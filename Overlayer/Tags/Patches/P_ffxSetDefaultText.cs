@@ -12,8 +12,8 @@ namespace Overlayer.Tags.Patches {
             nameof(Level.LevelNameText)
         })]
         public static class Level_LevelNameText__StartEffect {
-            public static void Postfix(ffxSetDefaultText __instance) {
-                Level.UpdateLevelNameText(__instance);
+            public static void Postfix() {
+                Level.UpdateLevelNameText();
             }
         }
 
@@ -21,8 +21,8 @@ namespace Overlayer.Tags.Patches {
             nameof(Level.LevelNameTextRaw)
         })]
         public static class Level_LevelNameTextRaw__StartEffect {
-            public static void Postfix(ffxSetDefaultText __instance) {
-                Level.UpdateLevelNameTextRaw(__instance);
+            public static void Postfix() {
+                Level.UpdateLevelNameTextRaw();
             }
         }
     }
