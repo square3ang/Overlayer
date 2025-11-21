@@ -3,7 +3,7 @@
 namespace Overlayer.Tags {
     public static class FailStats {
 
-        [Tag]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static float OverloadCounter() {
             var controller = scrController.instance;
             if(controller == null) {
@@ -18,7 +18,7 @@ namespace Overlayer.Tags {
             return CalculateFailValue(controller.failbar.overloadCounter);
         }
 
-        [Tag]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static float MultipressCounter() {
             var controller = scrController.instance;
             if(controller == null) {
@@ -39,9 +39,9 @@ namespace Overlayer.Tags {
         public static float CalculateFailValue(float value)
             => value > 1f ? 0f : (1f - value) * 100f;
 
-        [Tag]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static float OverloadCounterRaw => scrController.instance?.failbar?.overloadCounter ?? float.NaN;
-        [Tag]
+        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static float MultipressCounterRaw => scrController.instance?.failbar?.multipressCounter ?? float.NaN;
     }
 }
