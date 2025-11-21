@@ -41,6 +41,14 @@ namespace Overlayer.Core {
             if(!string.IsNullOrWhiteSpace(text.Font) && text.Font != "Default")
                 references.Add(Reference.GetReference(text.Font, Reference.Type.Font));
 
+            if(text.EnableFallbackFonts) {
+                foreach(var fallback in text.FallbackFonts ?? Array.Empty<string>()) {
+                    if(!string.IsNullOrWhiteSpace(fallback) && fallback != "Default") {
+                        references.Add(Reference.GetReference(fallback, Reference.Type.Font));
+                    }
+                }
+            }
+
             return ModelUtils.WrapList(references
                 .Where(r => r != null)
                 .Distinct()
