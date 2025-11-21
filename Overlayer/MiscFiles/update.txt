@@ -1,8 +1,6 @@
 ﻿[ Fix ]
-{LevelNameText}, {LevelNameTextRaw} not appearing
+{OverloadCounter}, {MultipressCounter},
+{OverloadCounterRaw}, {MultipressCounterRaw}
+Tag RoundNumber is not working
 
-{LevelNameTextColor}, {LevelNameTextShadowColor}
-bug caused by ADOFAI Tweaks
-
-[ Delete ]
-Delete previous useless update settings
+FallbackFonts are not being added to the Reference when exporting text.

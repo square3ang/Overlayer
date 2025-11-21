@@ -2,7 +2,7 @@
     "Id": "Overlayer",
     "DisplayName": "Overlayer",
     "Author": "modlist.org",
-    "Version": "3.38.1",
+    "Version": "3.38.2",
     "AssemblyName": "Overlayer.dll",
     "EntryMethod": "Overlayer.Main.Load"
 }
