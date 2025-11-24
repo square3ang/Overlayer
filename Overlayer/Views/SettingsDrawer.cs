@@ -400,7 +400,7 @@ namespace Overlayer.Views
                 egFirstClickTime = now;
             }
 
-            if(egClickCount >= 7) {
+            if(egClickCount >= 10) {
                 Main.EgEnabled = true;
                 egClickCount = 0;
             }
