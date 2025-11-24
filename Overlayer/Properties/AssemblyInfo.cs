@@ -18,5 +18,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("3.38.2.0")]
-[assembly: InternalsVisibleTo("Overlayer.Scripting")]
+
 [assembly: NeutralResourcesLanguage("")]
+
+[assembly: InternalsVisibleTo("Overlayer.Scripting")]
