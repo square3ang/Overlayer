@@ -275,6 +275,7 @@ namespace Overlayer.Views
                         ModelUtils.UnwrapList<TextConfig>(arr).ForEach(t => TextManager.CreateText(t));
                     } else if(json is JObject obj) {
                         TextManager.CreateText(TextConfigImporter.Import(obj));
+                        dragSoltNeedInit = true;
                     }
                 }
                 TextManager.Refresh();
@@ -316,7 +317,7 @@ namespace Overlayer.Views
                         if(Drawer.DrawOnlyBool(ref text.Config.Active)) {
                             text.gameObject.SetActive(text.Config.Active);
                         }
-                        GUILayout.Label("===", GUI.skin.label);
+                        GUILayout.Label("-==-", GUI.skin.label);
                         if(dragSoltDragging < 0 && Event.current.type == EventType.MouseDown && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
                             dragSoltDragging = i;
                             dragSoltInsert = i;
@@ -434,7 +435,7 @@ namespace Overlayer.Views
                         GUILayout.Space(20);
                         bool dmyActive = dtxt.Config.Active;
                         Drawer.DrawOnlyBool(ref dmyActive);
-                        GUILayout.Label("===", GUI.skin.label);
+                        GUILayout.Label("-==-", GUI.skin.label);
                         Color old = GUI.color;
                         GUILayout.Space(6);
                         GUI.color = new Color(0.8f, 0.8f, 1f);
