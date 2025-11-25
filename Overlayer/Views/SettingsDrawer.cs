@@ -31,10 +31,10 @@ namespace Overlayer.Views
         private string[] userLanguages;
         internal bool NeedLangInit = true;
 
-        public static float preparinglastUpdateTime = 0f;
-        public static string[] preparingsymbols = { "|", "/", "-", "\\" };
-        public static int preparingsymbolIndex = 0;
-        public static float helptime = 0f;
+        public readonly static string[] preparingsymbols = { "|", "/", "-", "\\" };
+        public float preparinglastUpdateTime = 0f;
+        public int preparingsymbolIndex = 0;
+        public float helptime = 0f;
 
         private void LanguageInit() {
             helptime = 0f;
