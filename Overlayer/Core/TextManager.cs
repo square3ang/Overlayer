@@ -88,6 +88,29 @@ namespace Overlayer.Core
             return MoveTextToIndex(index, Texts.Count - 1);
         }
 
+        public static bool MoveTextByDrag(int fromIndex, int toIndex) {
+            if(fromIndex < 0 || fromIndex >= Texts.Count) {
+                return false;
+            }
+
+            toIndex = Mathf.Clamp(toIndex, 0, Texts.Count);
+
+            if(fromIndex == toIndex || fromIndex == toIndex - 1) {
+                return false;
+            }
+
+            var item = Texts[fromIndex];
+            Texts.RemoveAt(fromIndex);
+
+            if(fromIndex < toIndex) {
+                toIndex--;
+            }
+
+            Texts.Insert(toIndex, item);
+            item.gameObject.transform.SetSiblingIndex(toIndex);
+            return true;
+        }
+
         public static void Remove(int index) => DestroyText(Texts[index]);
         public static void DestroyText(OverlayerText text)
         {

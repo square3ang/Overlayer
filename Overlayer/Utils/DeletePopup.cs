@@ -5,6 +5,7 @@ using Overlayer.Core.Translation;
 using System.IO;
 using Overlayer.Unity;
 using RapidGUI;
+using System;
 
 namespace Overlayer.Utils
 {
@@ -16,10 +17,12 @@ namespace Overlayer.Utils
         private bool isAnimating = false;
         private bool isSpawn = false;
         private OverlayerText txt;
+        private Action OnDelete;
 
-        public void Initialize(OverlayerText txt)
+        public void Initialize(OverlayerText txt, Action onDelete = null)
         {
             this.txt = txt;
+            this.OnDelete = onDelete;
             contentLines = new[] { "<size=30>" + Main.Lang.Get("DESTROY_ASK", "Destroy?") + "</size>\n", "<size=20>" + txt.Config.Name + "</size>\n" };
             var maxWidth = 0f;
             
@@ -79,6 +82,7 @@ namespace Overlayer.Utils
                 Main.GUI.Skip(frames: 2);
                 Main.GUI.Pop();
                 Destroy(gameObject);
+                OnDelete?.Invoke();
             }
             if(Drawer.Button($"<size=18>{Main.Lang.Get("NO","No")}</size>",GUILayout.Width(150),GUILayout.Height(52)))
             {

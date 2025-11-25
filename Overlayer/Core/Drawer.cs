@@ -1290,5 +1290,15 @@ namespace Overlayer.Core
         public static bool ButtonImage(Texture2D texture, params GUILayoutOption[] options) {
             return GUILayout.Button(texture, myButton, options);
         }
+
+        public static void ButtonImageDummy(Texture2D texture, params GUILayoutOption[] options) {
+            GUIStyle dummyStyle = new GUIStyle(myButton);
+            dummyStyle.normal.background = myButton.normal.background;
+            dummyStyle.hover.background = myButton.normal.background;
+            dummyStyle.active.background = myButton.normal.background;
+            dummyStyle.focused.background = myButton.normal.background;
+
+            GUILayout.Button(texture, dummyStyle, options);
+        }
     }
 }

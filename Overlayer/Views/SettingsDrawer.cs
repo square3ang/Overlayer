@@ -48,6 +48,11 @@ namespace Overlayer.Views
             model.Lang = Main.Lang.Language;
         }
 
+        private int[] dragSoltRange;
+        private bool dragSoltNeedInit = true;
+        private int dragSoltDragging = -1;
+        private int dragSoltInsert = -1;
+
         public override void OnceCall() {
             NeoDrawer.StaticInstance.FieldResetDictById();
             LanguageInit();
@@ -283,87 +288,194 @@ namespace Overlayer.Views
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             if(TextManager.Initialized) {
+                bool isRepaint = Event.current.type == EventType.Repaint;
+                if(dragSoltNeedInit) {
+                    dragSoltNeedInit = false;
+                    dragSoltRange = new int[TextManager.Count];
+                }
+
                 for(int i = 0; i < TextManager.Count; i++) {
                     var text = TextManager.Get(i);
-
-                    GUILayout.BeginHorizontal();
-                    if(Drawer.DrawOnlyBool(ref text.Config.Active)) {
-                        text.gameObject.SetActive(text.Config.Active);
-                    }
-                    Color old = GUI.color;
-                    GUI.color = (i <= 0) ? Color.gray : Color.white;
-                    string upSymbol = (i <= 0) ? "△" : "▲";
-                    if(Drawer.Button(upSymbol, GUILayout.Width(38))) {
-                        if(Event.current.shift) {
-                            TextManager.MoveTextToTop(i);
-                        } else if(i > 0) {
-                            TextManager.MoveTextUp(i);
-                        }
-                    }
-                    GUI.color = (i >= TextManager.Count - 1) ? Color.gray : Color.white;
-                    string downSymbol = (i >= TextManager.Count - 1) ? "▽" : "▼";
-                    if(Drawer.Button(downSymbol, GUILayout.Width(38))) {
-                        if(Event.current.shift) {
-                            TextManager.MoveTextToBottom(i);
-                        } else if(i < TextManager.Count - 1) {
-                            TextManager.MoveTextDown(i);
-                        }
-                    }
-                    GUI.color = Color.white;
                     if(text == null) {
                         GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX", "Unable to load text data at index {0}"), i.ToString()));
                         continue;
                     }
-                    GUILayout.Space(6);
-                    GUI.color = new Color(0.8f, 0.8f, 1f);
-                    if(Drawer.ButtonImage(Drawer.icon_Pencil, GUILayout.Width(46))) {
-                        TextConfigDrawer config = new TextConfigDrawer(text.Config);
-                        Main.GUI.Push(config);
-                    }
-                    GUI.color = new Color(0.8f, 1f, 0.8f);
-                    if(Drawer.ButtonImage(Drawer.icon_Copy, GUILayout.Width(46))) {
-                        TextManager.CreateText(text.Config.Copy());
-                    }
-                    GUI.color = new Color(1f, 0.8f, 0.8f);
-                    if(Drawer.ButtonImage(Drawer.icon_X, GUILayout.Width(46))) {
-                        if(Event.current.shift) {
-                            TextManager.DestroyText(text);
-                        } else {
-                            if(Object.FindAnyObjectByType<DeletePopup>() == null) {
-                                var popup = new GameObject().AddComponent<DeletePopup>();
-                                UnityEngine.Object.DontDestroyOnLoad(popup);
-                                popup.Initialize(text);
-                            }
-                        }
-                        return;
-                    }
-                    GUI.color = old;
-                    string textName;
-                    if(model.showTextNameAsDisplayText) {
-                        if(text.Config.Active) {
-                            string current = text.GetCurrentText();
-                            textName = current?.BreakRichTag();
-                            if(string.IsNullOrEmpty(textName)) {
-                                textName = Main.Lang.Get("TEXT_EMPTY", "<color=#808080>[ empty ]</color>");
-                            }
-                            textName = textName.Replace('\n', ' ');
-                            if(textName?.Length > 62) {
-                                textName = textName.Substring(0, 62) + $"<color=#808080>..({textName.Length - 62})</color>"; //TODO: Scroling Name
-                            }
-                        } else {
-                            textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
-                        }
-                    } else {
-                        if(text.Config.Active) {
-                            textName = text.Config.Name;
-                        } else {
-                            textName = $"<color=#808080>{text.Config.Name}</color>";
-                        }
-                    }
-                    GUILayout.Label(textName);
 
+                    if(i != dragSoltDragging) {
+                        if(i == dragSoltInsert) {
+                            GUILayout.BeginHorizontal();
+                            bool dummy = false;
+                            Color oldd = GUI.color;
+                            GUI.color = Color.black;
+                            Drawer.DrawOnlyBool(ref dummy);
+                            GUI.color = oldd;
+                            GUILayout.FlexibleSpace();
+                            GUILayout.EndHorizontal();
+                        }
+                        GUILayout.BeginHorizontal();
+                        if(Drawer.DrawOnlyBool(ref text.Config.Active)) {
+                            text.gameObject.SetActive(text.Config.Active);
+                        }
+                        GUILayout.Label("===", GUI.skin.label);
+                        if(dragSoltDragging < 0 && Event.current.type == EventType.MouseDown && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+                            dragSoltDragging = i;
+                            dragSoltInsert = i;
+                        }
+                        Color old = GUI.color;
+                        GUILayout.Space(6);
+                        GUI.color = new Color(0.8f, 0.8f, 1f);
+                        if(Drawer.ButtonImage(Drawer.icon_Pencil, GUILayout.Width(46))) {
+                            TextConfigDrawer config = new TextConfigDrawer(text.Config);
+                            Main.GUI.Push(config);
+                        }
+                        GUI.color = new Color(0.8f, 1f, 0.8f);
+                        if(Drawer.ButtonImage(Drawer.icon_Copy, GUILayout.Width(46))) {
+                            TextManager.CreateText(text.Config.Copy());
+                            dragSoltNeedInit = true;
+                        }
+                        GUI.color = new Color(1f, 0.8f, 0.8f);
+                        if(Drawer.ButtonImage(Drawer.icon_X, GUILayout.Width(46))) {
+                            if(Event.current.shift) {
+                                TextManager.DestroyText(text);
+                            } else {
+                                if(Object.FindAnyObjectByType<DeletePopup>() == null) {
+                                    var popup = new GameObject().AddComponent<DeletePopup>();
+                                    UnityEngine.Object.DontDestroyOnLoad(popup);
+                                    popup.Initialize(text, () => {
+                                        dragSoltNeedInit = true;
+                                    });
+                                }
+                            }
+                            return;
+                        }
+                        GUI.color = old;
+                        string textName;
+                        if(model.showTextNameAsDisplayText) {
+                            if(text.Config.Active) {
+                                string current = text.GetCurrentText();
+                                textName = current?.BreakRichTag();
+                                if(string.IsNullOrEmpty(textName)) {
+                                    textName = Main.Lang.Get("TEXT_EMPTY", "<color=#808080>[ empty ]</color>");
+                                }
+                                textName = textName.Replace('\n', ' ');
+                                if(textName?.Length > 62) {
+                                    textName = textName.Substring(0, 62) + $"<color=#808080>..({textName.Length - 62})</color>"; //TODO: Scroling Name
+                                }
+                            } else {
+                                textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
+                            }
+                        } else {
+                            if(text.Config.Active) {
+                                textName = text.Config.Name;
+                            } else {
+                                textName = $"<color=#808080>{text.Config.Name}</color>";
+                            }
+                        }
+                        GUILayout.Label(textName);
+
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
+                    }
+                    if(Event.current.type == EventType.Repaint) {
+                        dragSoltRange[i] = Mathf.RoundToInt(GUILayoutUtility.GetLastRect().y);
+                    }
+                }
+
+                if(dragSoltInsert == TextManager.Count) {
+                    GUILayout.BeginHorizontal();
+                    bool dummy = false;
+                    Color oldd = GUI.color;
+                    GUI.color = Color.black;
+                    Drawer.DrawOnlyBool(ref dummy);
+                    GUI.color = oldd;
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
+                }
+
+                if(dragSoltDragging >= 0) {
+                    if(Event.current.type == EventType.MouseUp) {
+                        TextManager.MoveTextByDrag(dragSoltDragging, dragSoltInsert);
+
+                        dragSoltDragging = -1;
+                        dragSoltInsert = -1;
+
+                        GUILayout.BeginArea(Rect.zero);
+                        GUILayout.BeginHorizontal();
+                        GUILayout.EndHorizontal();
+                        GUILayout.EndArea();
+                    } else {
+                        if(isRepaint) {
+                            int insertIndex = -1;
+                            for(int i = 0; i < dragSoltRange.Length; i++) {
+                                if(Event.current.mousePosition.y - 14 <= dragSoltRange[i]) {
+                                    insertIndex = i;
+                                    break;
+                                } else if(i == dragSoltRange.Length - 1) {
+                                    insertIndex = dragSoltRange.Length;
+                                    break;
+                                }
+                            }
+                            dragSoltInsert = insertIndex;
+                        }
+
+                        float dragWidth = Screen.width;
+                        float dragHeight = 24;
+                        Rect dragRect = new Rect(
+                            GUILayoutUtility.GetLastRect().x,
+                            Event.current.mousePosition.y - dragHeight * 3,
+                            dragWidth,
+                            dragHeight
+                        );
+
+                        var dtxt = TextManager.Get(dragSoltDragging);
+
+                        GUILayout.BeginArea(dragRect);
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(20);
+                        bool dmyActive = dtxt.Config.Active;
+                        Drawer.DrawOnlyBool(ref dmyActive);
+                        GUILayout.Label("===", GUI.skin.label);
+                        Color old = GUI.color;
+                        GUILayout.Space(6);
+                        GUI.color = new Color(0.8f, 0.8f, 1f);
+                        Drawer.ButtonImageDummy(Drawer.icon_Pencil, GUILayout.Width(46));
+                        GUI.color = new Color(0.8f, 1f, 0.8f);
+                        Drawer.ButtonImageDummy(Drawer.icon_Copy, GUILayout.Width(46));
+                        GUI.color = new Color(1f, 0.8f, 0.8f);
+                        Drawer.ButtonImageDummy(Drawer.icon_X, GUILayout.Width(46));
+                        GUI.color = old;
+                        string textName;
+                        if(model.showTextNameAsDisplayText) {
+                            if(dtxt.Config.Active) {
+                                string current = dtxt.GetCurrentText();
+                                textName = current?.BreakRichTag();
+                                if(string.IsNullOrEmpty(textName)) {
+                                    textName = Main.Lang.Get("TEXT_EMPTY", "<color=#808080>[ empty ]</color>");
+                                }
+                                textName = textName.Replace('\n', ' ');
+                                if(textName?.Length > 62) {
+                                    textName = textName.Substring(0, 62) + $"<color=#808080>..({textName.Length - 62})</color>";
+                                }
+                            } else {
+                                textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
+                            }
+                        } else {
+                            if(dtxt.Config.Active) {
+                                textName = dtxt.Config.Name;
+                            } else {
+                                textName = $"<color=#808080>{dtxt.Config.Name}</color>";
+                            }
+                        }
+                        GUILayout.Label(textName);
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
+                        GUILayout.EndArea();
+                    }
+                } else {
+                    GUILayout.BeginArea(Rect.zero);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.EndHorizontal();
+                    GUILayout.EndArea();
                 }
 
                 if(NeedLangInit) {
@@ -375,6 +487,7 @@ namespace Overlayer.Views
                 if(needCreateNewText) {
                     TextManager.CreateText(new TextConfig());
                     TextManager.Refresh();
+                    dragSoltNeedInit = true;
                 }
             }
             NeoDrawer.StaticInstance.UpdateFocused();
