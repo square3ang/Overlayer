@@ -1,6 +1,3 @@
-﻿[ Fix ]
-{OverloadCounter}, {MultipressCounter},
-{OverloadCounterRaw}, {MultipressCounterRaw}
-Tag RoundNumber is not working
-
-FallbackFonts are not being added to the Reference when exporting text.
+﻿[ Add ]
+Text Edit, Clone, and Destroy buttons are now icons.
+Text items can be rearranged via drag-and-drop.
