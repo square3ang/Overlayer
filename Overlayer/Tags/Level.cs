@@ -1,8 +1,6 @@
 ﻿using ADOFAI;
 using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
-using UnityEngine.UI;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Overlayer.Tags {
     public static class Level {
