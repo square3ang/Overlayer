@@ -21,8 +21,6 @@ namespace Overlayer.Tags {
         [Tag]
         public static string LevelNameTextRaw;
 
-        private static Shadow LevelNameTextColorShadowComponent;
-
         public static void Init() {
             if(scnGame.instance != null) {
                 if(ADOBase.isOfficialLevel) {
@@ -44,8 +42,6 @@ namespace Overlayer.Tags {
                 _artist = string.Empty;
             }
             _title = _titleRaw.BreakRichTag();
-
-            LevelNameTextColorShadowComponent = ADOBase.controller.txtLevelName.GetComponent<Shadow>();
 
             LevelData levelData = ADOFAI.LevelData;
             if(levelData == null) {
@@ -102,14 +98,9 @@ namespace Overlayer.Tags {
             => noAlpha ? _defaultTextShadowColor : _defaultTextShadowColorAlpha;
         [Tag]
         public static string LevelNameTextColor(bool noAlpha = false)
-            => ADOBase.controller.txtLevelName.color.ToHex(!noAlpha);
+            => scrVfx.instance.currentColourScheme.colourText.ToHex(!noAlpha);
         [Tag]
-        public static string LevelNameTextShadowColor(bool noAlpha = false) {
-            if(LevelNameTextColorShadowComponent == null) {
-                return noAlpha ? "#000000" : "#00000050";
-            } else {
-                return LevelNameTextColorShadowComponent?.effectColor.ToHex(!noAlpha);
-            }
-        }
+        public static string LevelNameTextShadowColor(bool noAlpha = false)
+            => scrVfx.instance.currentColourScheme.colourTextShadow.ToHex(!noAlpha);
     }
 }
