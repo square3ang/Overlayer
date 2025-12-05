@@ -11,8 +11,6 @@ namespace Overlayer.Tags
 {
     public static class Effect
     {
-        static Dictionary<string, double> movingMan_tagValueCache = new Dictionary<string, double>();
-        static Dictionary<string, long> movingMan_tagStartTimeCache = new Dictionary<string, long>();
         [JSImplementedBy("Discord@kkitut")]
         [Tag(NotPlaying = true)]
         public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, string easeRaw = "Linear", int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
@@ -104,6 +102,8 @@ namespace Overlayer.Tags
             return h;
         }
 
+        static Dictionary<string, double> movingMan_tagValueCache = new Dictionary<string, double>();
+        static Dictionary<string, long> movingMan_tagStartTimeCache = new Dictionary<string, long>();
         [JSImplementedBy("Discord@kkitut")]
         [Tag(NotPlaying = true)]
         public static double MovingMan(string rawFunc = "Combo", double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool invert = false, Ease ease = Ease.OutExpo)
