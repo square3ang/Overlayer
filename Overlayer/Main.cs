@@ -32,6 +32,8 @@ namespace Overlayer
         public static string Developer => Lang.Get("MISC_DEVELOPER","Square & Kkitut. Display everything as you wish. Thank you for being with Overlayer.");
         [Tag(NotPlaying = true)]
         public static string MipaNyang => "MipaNyang is God";
+        [Tag(NotPlaying = true)]
+        public static string Kyulio => "Kyulio is Sexy";
 
         public static Assembly Ass { get; private set; }
         public static ModEntry Mod { get; private set; }
