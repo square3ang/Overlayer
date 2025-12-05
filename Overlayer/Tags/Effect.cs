@@ -83,7 +83,6 @@ namespace Overlayer.Tags
             fmt = -1;
             return null;
         }
-
         public static string FormatOutput(Color c, int fmt) {
             string h = ColorUtility.ToHtmlStringRGBA(c);
             if(fmt == 8) {
@@ -142,6 +141,7 @@ namespace Overlayer.Tags
 
             return defaultSize;
         }
+
         [JSImplementedBy("Discord@wsbimango")]
         [Tag(NotPlaying = true)]
         public static double EasedValue(string rawFunc = "TileBpm", int digits = -1, double speed = 500, Ease ease = Ease.Linear) {
