@@ -14,66 +14,143 @@ namespace Overlayer.Tags
         static Dictionary<string, double> movingMan_tagValueCache = new Dictionary<string, double>();
         static Dictionary<string, long> movingMan_tagStartTimeCache = new Dictionary<string, long>();
         [JSImplementedBy("Discord@kkitut")]
-        [Tag]
-        public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, string easeRaw = "Linear", int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
-        {
-            Tag tag = TagManager.GetTag(rawFunc)?.Tag;
-            if (tag == null) return "Tag Not Found!";
+        [Tag(NotPlaying = true)]
+        public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, string easeRaw = "Linear", int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
+            OverlayerTag ovTag = TagManager.GetTag(rawFunc);
+            if(ovTag == null) {
+                return "Tag Not Found!";
+            }
+            if(!ovTag.NotPlaying && !Main.IsPlaying) {
+                return "Tag Not Playing!";
+            }
+            Tag tag = ovTag.Tag;
             Delegate getter = tag.GetterDelegate;
+
             double val = 0;
-            if (getter is Func<string> fs)
+            if(getter is Func<string> fs) {
                 val = StringConverter.ToDouble(fs());
-            else if (getter is Func<string, string> fss)
+            } else if(getter is Func<string, string> fss) {
                 val = StringConverter.ToDouble(fss("6"));
-            else return "Not Supported Tag!";
-            if (colorMinHex.Length < 6 || colorMaxHex.Length < 6) return "Color's Length Must Be Greater Than 6!";
-            if (colorMinHex[0] != '#') colorMinHex = '#' + colorMinHex;
-            if (colorMaxHex[0] != '#') colorMaxHex = '#' + colorMaxHex;
+            } else {
+                return "Not Supported Tag!";
+            }
             val = Clamp(val, valueMin, valueMax);
-            float eased = DOVirtual.EasedValue(0, 1, (float)ZeroAndOne(val, valueMin, valueMax), EnumHelper<Ease>.Parse(easeRaw));
-            ColorUtility.TryParseHtmlString(colorMinHex, out Color min);
-            ColorUtility.TryParseHtmlString(colorMaxHex, out Color max);
-            Color newColor = new Color(((1 - eased) * min.r) + (eased * max.r), ((1 - eased) * min.g) + (eased * max.g), ((1 - eased) * min.b) + (eased * max.b), ((1 - eased) * min.a) + (eased * max.a));
+
+            float eased = DOVirtual.EasedValue(0, 1, Mathf.InverseLerp((float)valueMin, (float)valueMax, (float)val), EnumHelper<Ease>.Parse(easeRaw));
+            int fmtMin, fmtMax;
+            string hexMin = NormalizeHex(colorMinHex, out fmtMin);
+            string hexMax = NormalizeHex(colorMaxHex, out fmtMax);
+            if(fmtMin == -1 || fmtMax == -1) {
+                return "Hex length must be 3, 4, 6, or 8!";
+            }
+            if(fmtMin != fmtMax) {
+                return "Min/Max hex lengths must match!";
+            }
+
+            ColorUtility.TryParseHtmlString("#" + hexMin, out Color min);
+            ColorUtility.TryParseHtmlString("#" + hexMax, out Color max);
+            Color newColor = new Color(
+                ((1 - eased) * min.r) + (eased * max.r),
+                ((1 - eased) * min.g) + (eased * max.g),
+                ((1 - eased) * min.b) + (eased * max.b),
+                ((1 - eased) * min.a) + (eased * max.a)
+            );
+
             return ColorUtility.ToHtmlStringRGBA(newColor).Trim(maxLength, afterTrimStr);
         }
+        public static double Clamp(double value, double min, double max) {
+            return value < min ? min : value > max ? max : value;
+        }
+        public static string NormalizeHex(string hex, out int fmt) {
+            if(hex[0] == '#') {
+                hex = hex.Substring(1);
+            }
+            if(hex.Length == 8) {
+                fmt = 8;
+                return hex;
+            }
+            if(hex.Length == 6) {
+                fmt = 6;
+                return hex;
+            }
+            if(hex.Length == 3) {
+                fmt = 3;
+                return $"{hex[0]}{hex[0]}{hex[1]}{hex[1]}{hex[2]}{hex[2]}";
+            }
+            if(hex.Length == 4) {
+                fmt = 4;
+                return $"{hex[0]}{hex[0]}{hex[1]}{hex[1]}{hex[2]}{hex[2]}{hex[3]}{hex[3]}";
+            }
+
+            fmt = -1;
+            return null;
+        }
+
+        public static string FormatOutput(Color c, int fmt) {
+            string h = ColorUtility.ToHtmlStringRGBA(c);
+            if(fmt == 8) {
+                return h;
+            }
+            if(fmt == 6) {
+                return h.Substring(0, 6);
+            }
+            if(fmt == 3) {
+                return $"{h[0]}{h[2]}{h[4]}";
+            }
+            if(fmt == 4) {
+                return h;
+            }
+
+            return h;
+        }
+
         [JSImplementedBy("Discord@kkitut")]
-        [Tag]
+        [Tag(NotPlaying = true)]
         public static double MovingMan(string rawFunc = "Combo", double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool invert = false, Ease ease = Ease.OutExpo)
         {
-            Tag tag = TagManager.GetTag(rawFunc)?.Tag;
-            if (tag == null) return -1;
+            OverlayerTag ovTag = TagManager.GetTag(rawFunc);
+            if(ovTag == null || !ovTag.NotPlaying && !Main.IsPlaying) {
+                return defaultSize;
+            }
+            Tag tag = ovTag.Tag;
             Delegate getter = tag.GetterDelegate;
+
             double val = 0;
-            if (getter is Func<string> fs)
+            if(getter is Func<string> fs) {
                 val = StringConverter.ToDouble(fs());
-            else if (getter is Func<string, string> fss)
+            } else if(getter is Func<string, string> fss) {
                 val = StringConverter.ToDouble(fss("6"));
-            else return -1;
+            } else {
+                return defaultSize;
+            }
+
             movingMan_tagValueCache.TryGetValue(rawFunc, out double vCache);
             movingMan_tagStartTimeCache.TryGetValue(rawFunc, out long stCache);
             long mills = FastDateTime.Now.Ticks / 10000;
-            if (val != vCache)
-            {
+            if (val != vCache) {
                 movingMan_tagStartTimeCache[rawFunc] = stCache = mills;
                 movingMan_tagValueCache[rawFunc] = val;
             }
             float elapsed = mills - stCache;
-            if (elapsed < speed)
-            {
+            if (elapsed < speed) {
                 float lifetime = (float)(elapsed / speed);
                 float eased = DOVirtual.EasedValue(0, 1, lifetime, ease);
                 if (invert) eased = 1 - eased;
                 float changed = (float)(endSize - startSize) * eased;
                 return startSize + changed;
             }
+
             return defaultSize;
         }
         [JSImplementedBy("Discord@wsbimango")]
-        [Tag]
-        public static double EasedValue(string rawFunc = "TileBpm", int digits = -1, double speed = 500, Ease ease = Ease.Linear)
-        {
-            Tag tag = TagManager.GetTag(rawFunc)?.Tag;
-            if (tag == null) return -1;
+        [Tag(NotPlaying = true)]
+        public static double EasedValue(string rawFunc = "TileBpm", int digits = -1, double speed = 500, Ease ease = Ease.Linear) {
+            OverlayerTag ovTag = TagManager.GetTag(rawFunc);
+            if(ovTag == null || !ovTag.NotPlaying && !Main.IsPlaying) {
+                return 0;
+            }
+            Tag tag = ovTag.Tag;
+
             Delegate getter = tag.GetterDelegate;
             EventEase ee = new EventEase(
                 getter is Func<string> fs ?
@@ -81,16 +158,14 @@ namespace Overlayer.Tags
                 getter is Func<string, string> fss ?
                 () => StringConverter.ToDouble(fss("6")) :
                 null, ease, speed, false);
-            if (ee.Getter == null) return -11;
+            if(ee.Getter == null) {
+                return 0;
+            }
+
             var easedValue = ee.Compute(rawFunc);
             var prev = ee.GetPrevValue(rawFunc);
+
             return (prev + (ee.Value - prev) * easedValue).Round(digits);
-        }
-        public static double Clamp(double value, double min, double max)
-            => value < min ? min : value > max ? max : value;
-        public static double ZeroAndOne(double nowV, double minV, double maxV)
-        {
-            return (Math.Min(Math.Max(nowV, minV), maxV) - minV) / (maxV - minV);
         }
 
         [Tag(NotPlaying = true)]
