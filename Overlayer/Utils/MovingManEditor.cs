@@ -27,7 +27,7 @@ namespace Overlayer.Utils
         private int tester = 0;
         private float timer = 0;
 
-        public string targetTag = "Combo";
+        public string targetTag = nameof(ComboStats.Combo);
         public double startSize = 30;
 
         public double endSize = 80;

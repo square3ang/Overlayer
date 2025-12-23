@@ -13,7 +13,7 @@ namespace Overlayer.Tags
     {
         [JSImplementedBy("Discord@kkitut")]
         [Tag(NotPlaying = true)]
-        public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, string easeRaw = "Linear", int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
+        public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, Ease ease = Ease.Linear, int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
             OverlayerTag ovTag = TagManager.GetTag(rawFunc);
             if(ovTag == null) {
                 return "Tag Not Found!";
@@ -34,10 +34,9 @@ namespace Overlayer.Tags
             }
             val = Clamp(val, valueMin, valueMax);
 
-            float eased = DOVirtual.EasedValue(0, 1, Mathf.InverseLerp((float)valueMin, (float)valueMax, (float)val), EnumHelper<Ease>.Parse(easeRaw));
-            int fmtMin, fmtMax;
-            string hexMin = NormalizeHex(colorMinHex, out fmtMin);
-            string hexMax = NormalizeHex(colorMaxHex, out fmtMax);
+            float eased = DOVirtual.EasedValue(0, 1, Mathf.InverseLerp((float)valueMin, (float)valueMax, (float)val), ease);
+            string hexMin = NormalizeHex(colorMinHex, out int fmtMin);
+            string hexMax = NormalizeHex(colorMaxHex, out int fmtMax);
             if(fmtMin == -1 || fmtMax == -1) {
                 return "Hex length must be 3, 4, 6, or 8!";
             }
@@ -105,7 +104,7 @@ namespace Overlayer.Tags
         static Dictionary<string, long> movingMan_tagStartTimeCache = new Dictionary<string, long>();
         [JSImplementedBy("Discord@kkitut")]
         [Tag(NotPlaying = true)]
-        public static double MovingMan(string rawFunc = "Combo", double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool invert = false, Ease ease = Ease.OutExpo)
+        public static double MovingMan(string rawFunc = nameof(ComboStats.Combo), double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool invert = false, Ease ease = Ease.OutExpo)
         {
             OverlayerTag ovTag = TagManager.GetTag(rawFunc);
             if(ovTag == null || !ovTag.NotPlaying && !Main.IsPlaying) {

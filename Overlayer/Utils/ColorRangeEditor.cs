@@ -24,7 +24,7 @@ namespace Overlayer.Utils
         private bool isSpawn = false;
         private float testvalue;
 
-        public string targetTag = "Combo";
+        public string targetTag = nameof(ComboStats.Combo);
         public double valueMin = 0;
         public double valueMax = 100;
         public Color colorMin = Color.black;
@@ -94,7 +94,7 @@ namespace Overlayer.Utils
             TagManager.testerValue = testvalue.ToString();
             GUI.BringWindowToFront(windowID);
             var col = Effect.ColorRange("INTERNAL_TESTER_TAG_1234512345_" + targetTag, valueMin, valueMax,
-                ColorUtility.ToHtmlStringRGBA(colorMin), ColorUtility.ToHtmlStringRGBA(colorMax), ease.ToString(),
+                ColorUtility.ToHtmlStringRGBA(colorMin), ColorUtility.ToHtmlStringRGBA(colorMax), ease,
                 maxLength);
             col = col.Replace(".", "F").Replace("(", "F").Replace(")", "F");
             if(Main.Settings.useLegacyNumberField) {

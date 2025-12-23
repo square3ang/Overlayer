@@ -21,7 +21,7 @@ namespace Overlayer.Utils {
         private bool isSpawn = false;
         private float testvalue;
 
-        public string targetTag = "XAccuracy";
+        public string targetTag = nameof(AccuracyStats.XAccuracy);
         public int digits = 6;
         public double speed = 1000;
 
