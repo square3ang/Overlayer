@@ -143,7 +143,7 @@ namespace Overlayer.Tags
 
         [JSImplementedBy("Discord@wsbimango")]
         [Tag(NotPlaying = true)]
-        public static double EasedValue(string rawFunc = "TileBpm", int digits = -1, double speed = 500, Ease ease = Ease.Linear) {
+        public static double EasedValue(string rawFunc = nameof(Bpm.TileBpm), int digits = -1, double speed = 500, Ease ease = Ease.Linear) {
             OverlayerTag ovTag = TagManager.GetTag(rawFunc);
             if(ovTag == null || !ovTag.NotPlaying && !Main.IsPlaying) {
                 return 0;
