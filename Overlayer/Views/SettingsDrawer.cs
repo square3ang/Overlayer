@@ -325,17 +325,17 @@ namespace Overlayer.Views
                         Color old = GUI.color;
                         GUILayout.Space(6);
                         GUI.color = new Color(0.8f, 0.8f, 1f);
-                        if(Drawer.ButtonImage(Drawer.icon_Pencil, GUILayout.Width(46))) {
+                        if(Drawer.Button(Drawer.icon_Pencil, GUILayout.Width(46))) {
                             TextConfigDrawer config = new TextConfigDrawer(text.Config);
                             Main.GUI.Push(config);
                         }
                         GUI.color = new Color(0.8f, 1f, 0.8f);
-                        if(Drawer.ButtonImage(Drawer.icon_Copy, GUILayout.Width(46))) {
+                        if(Drawer.Button(Drawer.icon_Copy, GUILayout.Width(46))) {
                             TextManager.CreateText(text.Config.Copy());
                             dragSoltNeedInit = true;
                         }
                         GUI.color = new Color(1f, 0.8f, 0.8f);
-                        if(Drawer.ButtonImage(Drawer.icon_X, GUILayout.Width(46))) {
+                        if(Drawer.Button(Drawer.icon_X, GUILayout.Width(46))) {
                             if(Event.current.shift) {
                                 TextManager.DestroyText(text);
                             } else {
@@ -439,11 +439,11 @@ namespace Overlayer.Views
                         Color old = GUI.color;
                         GUILayout.Space(6);
                         GUI.color = new Color(0.8f, 0.8f, 1f);
-                        Drawer.ButtonImageDummy(Drawer.icon_Pencil, GUILayout.Width(46));
+                        Drawer.ButtonDummy(Drawer.icon_Pencil, GUILayout.Width(46));
                         GUI.color = new Color(0.8f, 1f, 0.8f);
-                        Drawer.ButtonImageDummy(Drawer.icon_Copy, GUILayout.Width(46));
+                        Drawer.ButtonDummy(Drawer.icon_Copy, GUILayout.Width(46));
                         GUI.color = new Color(1f, 0.8f, 0.8f);
-                        Drawer.ButtonImageDummy(Drawer.icon_X, GUILayout.Width(46));
+                        Drawer.ButtonDummy(Drawer.icon_X, GUILayout.Width(46));
                         GUI.color = old;
                         string textName;
                         if(model.showTextNameAsDisplayText) {

@@ -963,7 +963,7 @@ namespace Overlayer.Core
         public static bool DrawAlignment(ref TextAlignmentOptions value) {
             if(value == TextAlignmentOptions.Converted) {
                 GUI.color = Color.cyan;
-                ButtonImage(ali_Unknown, GUILayout.Width(404));
+                Button(ali_Unknown, GUILayout.Width(404));
                 GUI.color = Color.white;
                 return false;
             }
@@ -975,42 +975,42 @@ namespace Overlayer.Core
 
             // Left 0
             GUI.color = (((int)value & (1 << 0)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Left, GUILayout.Width(40))) {
+            if(Button(ali_Left, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;         // clear 0~7
                 newvalue |= (1 << 0);
             }
 
             // Center 1
             GUI.color = (((int)value & (1 << 1)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Center, GUILayout.Width(40))) {
+            if(Button(ali_Center, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 1);
             }
 
             // Right 2
             GUI.color = (((int)value & (1 << 2)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Right, GUILayout.Width(40))) {
+            if(Button(ali_Right, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 2);
             }
 
             // Justified 3
             GUI.color = (((int)value & (1 << 3)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Justified, GUILayout.Width(40))) {
+            if(Button(ali_Justified, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 3);
             }
 
             // Flush 4
             GUI.color = (((int)value & (1 << 4)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Flush, GUILayout.Width(40))) {
+            if(Button(ali_Flush, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 4);
             }
 
             // Geometry_Center 5
             GUI.color = (((int)value & (1 << 5)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Geometry_Center, GUILayout.Width(40))) {
+            if(Button(ali_Geometry_Center, GUILayout.Width(40))) {
                 newvalue &= ~0xFF;
                 newvalue |= (1 << 5);
             }
@@ -1019,42 +1019,42 @@ namespace Overlayer.Core
 
             // Top 8
             GUI.color = (((int)value & (1 << 8)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Top, GUILayout.Width(40))) {
+            if(Button(ali_Top, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);  // clear 8~15
                 newvalue |= (1 << 8);
             }
 
             // Middle 9
             GUI.color = (((int)value & (1 << 9)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Middle, GUILayout.Width(40))) {
+            if(Button(ali_Middle, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 9);
             }
 
             // Bottom 10
             GUI.color = (((int)value & (1 << 10)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Bottom, GUILayout.Width(40))) {
+            if(Button(ali_Bottom, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 10);
             }
 
             // Baseline 11
             GUI.color = (((int)value & (1 << 11)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Baseline, GUILayout.Width(40))) {
+            if(Button(ali_Baseline, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 11);
             }
 
             // Midline 12
             GUI.color = (((int)value & (1 << 12)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Midline, GUILayout.Width(40))) {
+            if(Button(ali_Midline, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 12);
             }
 
             // Capline 13
             GUI.color = (((int)value & (1 << 13)) != 0) ? Color.cyan : Color.white;
-            if(ButtonImage(ali_Capline, GUILayout.Width(40))) {
+            if(Button(ali_Capline, GUILayout.Width(40))) {
                 newvalue &= ~(0xFF << 8);
                 newvalue |= (1 << 13);
             }
@@ -1073,7 +1073,7 @@ namespace Overlayer.Core
         public static bool DrawSelectFont(ref string fontPath) {
             bool result = false;
             GUILayout.BeginHorizontal();
-            if(ButtonImage(openFolder, GUILayout.Width(40))) {
+            if(Button(openFolder, GUILayout.Width(40))) {
                 var extensions = new[]
                 {
                     new ExtensionFilter("Font Files", "ttf", "otf"),
@@ -1287,11 +1287,11 @@ namespace Overlayer.Core
             return GUILayout.Button(new GUIContent(text, icon), myButton, options);
         }
 
-        public static bool ButtonImage(Texture2D texture, params GUILayoutOption[] options) {
+        public static bool Button(Texture2D texture, params GUILayoutOption[] options) {
             return GUILayout.Button(texture, myButton, options);
         }
 
-        public static void ButtonImageDummy(Texture2D texture, params GUILayoutOption[] options) {
+        public static void ButtonDummy(Texture2D texture, params GUILayoutOption[] options) {
             GUIStyle dummyStyle = new GUIStyle(myButton);
             dummyStyle.normal.background = myButton.normal.background;
             dummyStyle.hover.background = myButton.normal.background;
