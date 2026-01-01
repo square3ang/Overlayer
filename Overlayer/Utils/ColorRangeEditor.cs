@@ -135,7 +135,7 @@ namespace Overlayer.Utils
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("EASE", "Ease"));
-            Drawer.DrawEaseEnum(ref ease);
+            Drawer.DrawEase(ref ease);
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();

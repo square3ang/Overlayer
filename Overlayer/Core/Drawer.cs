@@ -661,7 +661,7 @@ namespace Overlayer.Core
             return result;
         }
 
-        public static bool DrawEaseEnum(ref Ease ease) {
+        public static bool DrawEase(ref Ease ease) {
             string[] names = Enum.GetNames(typeof(Ease));
             int current = (int)ease;
             Texture2D[] easeImages = new Texture2D[] { null,ease_Linear,ease_InSine,ease_OutSine,ease_InOutSine,ease_InQuad,ease_OutQuad,ease_InOutQuad,ease_InCubic,ease_OutCubic,ease_InOutCubic,ease_InQuart,ease_OutQuart,ease_InOutQuart,ease_InQuint,ease_OutQuint,ease_InOutQuint,ease_InExpo,ease_OutExpo,ease_InOutExpo,ease_InCirc,ease_OutCirc,ease_InOutCirc,ease_InElastic,ease_OutElastic,ease_InOutElastic,ease_InBack,ease_OutBack,ease_InOutBack,ease_InBounce,ease_OutBounce,ease_InOutBounce };
