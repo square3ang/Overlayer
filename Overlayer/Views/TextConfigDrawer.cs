@@ -33,7 +33,6 @@ namespace Overlayer.Views
                 model.Drag = _drag;
             }
             bool changed = false;
-            GUILayout.Label($"{Main.Lang.Get("AVAILABLE_TAGS","Available Tags")}: {TagManager.Count}");
             Drawer.DrawString(Drawer.icon_Pencil, Main.Lang.Get("NAME","Name"), ref model.Name);
             if (Main.Settings.useLegacyNumberField) {
                 changed |= Drawer.DrawSize2(Main.Lang.Get("POSITION", "Position"), ref model.Position, 0, 1);
