@@ -97,11 +97,7 @@ namespace Overlayer.Utils
                 ColorUtility.ToHtmlStringRGBA(colorMin), ColorUtility.ToHtmlStringRGBA(colorMax), ease,
                 maxLength);
             col = col.Replace(".", "F").Replace("(", "F").Replace(")", "F");
-            if(Main.Settings.useLegacyNumberField) {
-                Drawer.DrawSingleWithSlider("Value", ref testvalue, (float)valueMin, (float)valueMax, 100);
-            } else {
-                neoDrawer.DrawSingleWithSlider("Value", ref testvalue, (float)valueMin, (float)valueMax, 100, "Pre");
-            }
+            neoDrawer.DrawSingleWithSlider("Value", ref testvalue, (float)valueMin, (float)valueMax, 100, "Pre");
             GUILayout.Label("<size=40><color=#" + col +
                            ">Test</color></size>");
         }
@@ -119,19 +115,10 @@ namespace Overlayer.Utils
             Drawer.DrawTags(ref targetTag);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            if(Main.Settings.useLegacyNumberField) {
-                Drawer.DrawDouble(Main.Lang.Get("VALUE_MIN", "Min Value"), ref valueMin);
-                Drawer.DrawDouble(Main.Lang.Get("VALUE_MAX", "Max Value"), ref valueMax);
-                GUILayout.Label(Main.Lang.Get("COLOR_MIN", "Min Color"));
-                Drawer.DrawColor(ref colorMin);
-                GUILayout.Label(Main.Lang.Get("COLOR_MAX", "Max Color"));
-                Drawer.DrawColor(ref colorMax);
-            } else {
-                neoDrawer.DrawDouble(Main.Lang.Get("VALUE_MIN", "Min Value"), ref valueMin);
-                neoDrawer.DrawDouble(Main.Lang.Get("VALUE_MAX", "Max Value"), ref valueMax);
-                neoDrawer.DrawColor(Main.Lang.Get("COLOR_MIN", "Min Color"), ref colorMin, 180f);
-                neoDrawer.DrawColor(Main.Lang.Get("COLOR_MAX", "Max Color"), ref colorMax, 180f);
-            }
+            neoDrawer.DrawDouble(Main.Lang.Get("VALUE_MIN", "Min Value"), ref valueMin);
+            neoDrawer.DrawDouble(Main.Lang.Get("VALUE_MAX", "Max Value"), ref valueMax);
+            neoDrawer.DrawColor(Main.Lang.Get("COLOR_MIN", "Min Color"), ref colorMin, 180f);
+            neoDrawer.DrawColor(Main.Lang.Get("COLOR_MAX", "Max Color"), ref colorMax, 180f);
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("EASE", "Ease"));
@@ -140,11 +127,7 @@ namespace Overlayer.Utils
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            if(Main.Settings.useLegacyNumberField) {
-                Drawer.DrawInt32("maxLength", ref maxLength);
-            } else {
-                neoDrawer.DrawInt32("maxLength", ref maxLength);
-            }
+            neoDrawer.DrawInt32("maxLength", ref maxLength);
 
             neoDrawer.UpdateFocused();
 

@@ -15,7 +15,6 @@ namespace Overlayer
         public float FrameTimeUpdateRate = 100;
         public int SystemTagUpdateRate = 100;
         public bool useLegacyTheme = false;
-        public bool useLegacyNumberField = false;
         public bool useShowTrueAutoJudgment = false;
         public bool useMovingManEditor = true;
         public bool useColorRangeEditor = true;
@@ -36,7 +35,6 @@ namespace Overlayer
             node[nameof(FrameTimeUpdateRate)] = FrameTimeUpdateRate;
             node[nameof(SystemTagUpdateRate)] = SystemTagUpdateRate;
             node[nameof(useLegacyTheme)] = useLegacyTheme;
-            node[nameof(useLegacyNumberField)] = useLegacyNumberField;
             node[nameof(useShowTrueAutoJudgment)] = useShowTrueAutoJudgment;
             node[nameof(useMovingManEditor)] = useMovingManEditor;
             node[nameof(useColorRangeEditor)] = useColorRangeEditor;
@@ -62,7 +60,6 @@ namespace Overlayer
             FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)]?.Value<float>() ?? defaultSettings.FrameTimeUpdateRate;
             SystemTagUpdateRate = node[nameof(SystemTagUpdateRate)]?.Value<int>() ?? defaultSettings.SystemTagUpdateRate;
             useLegacyTheme = node[nameof(useLegacyTheme)]?.Value<bool>() ?? defaultSettings.useLegacyTheme;
-            useLegacyNumberField = node[nameof(useLegacyNumberField)]?.Value<bool>() ?? defaultSettings.useLegacyNumberField;
             useShowTrueAutoJudgment = node[nameof(useShowTrueAutoJudgment)]?.Value<bool>() ?? defaultSettings.useShowTrueAutoJudgment;
             useMovingManEditor = node[nameof(useMovingManEditor)]?.Value<bool>() ?? defaultSettings.useMovingManEditor;
             useColorRangeEditor = node[nameof(useColorRangeEditor)]?.Value<bool>() ?? defaultSettings.useColorRangeEditor;
@@ -85,7 +82,6 @@ namespace Overlayer
             newSettings.FrameTimeUpdateRate = FrameTimeUpdateRate;
             newSettings.SystemTagUpdateRate = SystemTagUpdateRate;
             newSettings.useLegacyTheme = useLegacyTheme;
-            newSettings.useLegacyNumberField = useLegacyNumberField;
             newSettings.useShowTrueAutoJudgment = useShowTrueAutoJudgment;
             newSettings.useMovingManEditor = useMovingManEditor;
             newSettings.useColorRangeEditor = useColorRangeEditor;

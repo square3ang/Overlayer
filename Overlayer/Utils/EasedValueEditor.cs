@@ -78,11 +78,7 @@ namespace Overlayer.Utils {
         private void PreviewWindow(int windowID) {
             GUI.BringWindowToFront(windowID);
             GUILayout.Label("<size=40>"+Effect.EasedValue("INTERNAL_TESTER_TAG_1234512345", digits, speed, ease).ToString()+"</size>");
-            if(Main.Settings.useLegacyNumberField) {
-                Drawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100);
-            } else {
-                neoDrawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100, "testvalue");
-            }
+            neoDrawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100, "testvalue");
         }
 
         private void DrawWindow(int windowID) {
@@ -98,13 +94,8 @@ namespace Overlayer.Utils {
             Drawer.DrawTags(ref targetTag);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            if(Main.Settings.useLegacyNumberField) {
-                Drawer.DrawInt32(Main.Lang.Get("DIGITS", "Digits"), ref digits);
-                Drawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
-            } else {
-                neoDrawer.DrawInt32(Main.Lang.Get("DIGITS", "Digits"), ref digits);
-                neoDrawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
-            }
+            neoDrawer.DrawInt32(Main.Lang.Get("DIGITS", "Digits"), ref digits);
+            neoDrawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Lang.Get("EASE", "Ease"));
             Drawer.DrawEase(ref ease);
