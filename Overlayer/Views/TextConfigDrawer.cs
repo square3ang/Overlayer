@@ -17,8 +17,11 @@ namespace Overlayer.Views
         public OverlayerText text;
         public TextConfigDrawer(TextConfig config) : base(config) => text = TextManager.Find(config);
 
+        bool isAdvensedMode = false;
+
         public override void OnceCall() {
             NeoDrawer.StaticInstance.FieldResetDictById();
+            isAdvensedMode = Main.Settings.uiMode == Settings.EditorUIMode.Advanced;
         }
 
         public override void Draw()
@@ -35,44 +38,49 @@ namespace Overlayer.Views
             bool changed = false;
             Drawer.DrawString(Drawer.icon_Pencil, Main.Lang.Get("NAME","Name"), ref model.Name);
             changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("POSITION", "Position"), ref model.Position, 0, 1);
-            changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("SCALE", "Scale"), ref model.Scale, 0, 2);
-            changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("PIVOT", "Pivot"), ref model.Pivot, 0, 1);
-            changed |= NeoDrawer.StaticInstance.DrawRotate3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180);
-            changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), ref model.ShadowOffset, -1, 1);
+            if(isAdvensedMode) {
+                changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("SCALE", "Scale"), ref model.Scale, 0, 2);
+                changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("PIVOT", "Pivot"), ref model.Pivot, 0, 1);
+                changed |= NeoDrawer.StaticInstance.DrawRotate3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180);
+                changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), ref model.ShadowOffset, -1, 1);
+            }
             GUILayout.BeginHorizontal();
             GUILayout.Label(Drawer.icon_Font);
             GUILayout.Space(4);
             GUILayout.Label(Main.Lang.Get("FONT","Font"));
             changed |= Drawer.DrawSelectFont(ref model.Font);
             GUILayout.EndHorizontal();
+            if(isAdvensedMode) {
+                changed |= Drawer.DrawBool(Drawer.icon_FontAlternate, Main.Lang.Get("FALLBACK_FONTS", "Enable Fallback Fonts"), ref model.EnableFallbackFonts);
 
-            changed |= Drawer.DrawBool(Drawer.icon_FontAlternate, Main.Lang.Get("FALLBACK_FONTS", "Enable Fallback Fonts"), ref model.EnableFallbackFonts);
+                if(model.EnableFallbackFonts) {
+                    model.FallbackFonts ??= new string[0];
 
-            if(model.EnableFallbackFonts) {
-                model.FallbackFonts ??= new string[0];
+                    GUILayout.BeginHorizontal();
 
-                GUILayout.BeginHorizontal();
+                    if(Drawer.Button("+", GUILayout.Width(50))) {
+                        Array.Resize(ref model.FallbackFonts, model.FallbackFonts.Length + 1);
+                        changed = true;
+                    }
 
-                if(Drawer.Button("+", GUILayout.Width(50))) {
-                    Array.Resize(ref model.FallbackFonts, model.FallbackFonts.Length + 1);
-                    changed = true;
-                }
+                    if(Drawer.Button("-", GUILayout.Width(50)) && model.FallbackFonts.Length > 0) {
+                        Array.Resize(ref model.FallbackFonts, model.FallbackFonts.Length - 1);
+                        changed = true;
+                    }
 
-                if(Drawer.Button("-", GUILayout.Width(50)) && model.FallbackFonts.Length > 0) {
-                    Array.Resize(ref model.FallbackFonts, model.FallbackFonts.Length - 1);
-                    changed = true;
-                }
-
-                GUILayout.EndHorizontal();
-                for(int i = 0; i < model.FallbackFonts.Length; i++) {
-                    changed |= Drawer.DrawSelectFont(ref model.FallbackFonts[i]);
+                    GUILayout.EndHorizontal();
+                    for(int i = 0; i < model.FallbackFonts.Length; i++) {
+                        changed |= Drawer.DrawSelectFont(ref model.FallbackFonts[i]);
+                    }
                 }
             }
             changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_FontSize, Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f);
-            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_LineSpacing, Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f);
-            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_ShadowDilate, Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
-            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_ShadowSoftness, Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
-            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_OutlineWidth, Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
+            if(isAdvensedMode) {
+                changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_LineSpacing, Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f);
+                changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_ShadowDilate, Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
+                changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_ShadowSoftness, Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
+                changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_OutlineWidth, Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
+            }
             Drawer.DrawBool(Drawer.icon_Color, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref model.TextColor.status.Enabled);
             if (model.TextColor.status.Enabled) {
                 changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.TextColor, true);
@@ -95,7 +103,7 @@ namespace Overlayer.Views
             GUILayout.Label(Main.Lang.Get("ALIGNMENT","Alignment"));
             if (Drawer.DrawEnumPlus(ref model.Alignment, TranslateTextAlignment)) {
                 changed = true;
-                if(Main.Settings.autoPivot) {
+                if(Main.Settings.autoPivot || !isAdvensedMode) {
                     model.Pivot = MiscUtils.AlignmentToPivot(model.Alignment);
                 }
             }
@@ -104,7 +112,7 @@ namespace Overlayer.Views
 
             if (Drawer.DrawAlignment(ref model.Alignment)) {
                 changed = true;
-                if(Main.Settings.autoPivot) {
+                if(Main.Settings.autoPivot || !isAdvensedMode) {
                     model.Pivot = MiscUtils.AlignmentToPivot(model.Alignment);
                 }
             }

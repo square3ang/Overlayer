@@ -1,12 +1,18 @@
 ﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 using Overlayer.Models;
+using Overlayer.Utils;
 using UnityModManagerNet;
 
 namespace Overlayer
 {
     public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
     {
+        public enum EditorUIMode {
+            Simple,
+            Advanced
+        }
+
         public bool disableLogo = false;
         public bool ChangeFont = false;
         public FontMeta AdofaiFont = new FontMeta();
@@ -24,6 +30,7 @@ namespace Overlayer
         public bool useTooltip = true;
         public bool autoPivot = true;
         public bool showTextNameAsDisplayText = false;
+        public EditorUIMode uiMode = EditorUIMode.Simple;
         public bool isFirstEg = true;
         public JToken Serialize() {
             var node = new JObject();
@@ -44,6 +51,7 @@ namespace Overlayer
             node[nameof(useTooltip)] = useTooltip;
             node[nameof(autoPivot)] = autoPivot;
             node[nameof(showTextNameAsDisplayText)] = showTextNameAsDisplayText;
+            node[nameof(uiMode)] = uiMode.ToString();
             node[nameof(isFirstEg)] = isFirstEg;           
             return node;
         }
@@ -69,6 +77,8 @@ namespace Overlayer
             useTooltip = node[nameof(useTooltip)]?.Value<bool>() ?? defaultSettings.useTooltip;
             autoPivot = node[nameof(autoPivot)]?.Value<bool>() ?? defaultSettings.autoPivot;
             showTextNameAsDisplayText = node[nameof(showTextNameAsDisplayText)]?.Value<bool>() ?? defaultSettings.showTextNameAsDisplayText;
+            uiMode = EnumHelper<EditorUIMode>.Parse(node[nameof(uiMode)]?.Value<string>() ?? defaultSettings.uiMode.ToString());
+
             isFirstEg = node[nameof(isFirstEg)]?.Value<bool>() ?? defaultSettings.isFirstEg;
         }
         public Settings Copy()
