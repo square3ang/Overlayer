@@ -74,7 +74,7 @@ namespace Overlayer.Tags
         public static int SMarginCombos(string margins) => MarginCombos_Internal(global::Difficulty.Strict, margins);
         [Tag(Dummy=123)]
         public static int MarginCombos(string margins) => MarginCombos_Internal(GCS.difficulty, margins);
-        [Tag(Dummy="yay it worked)]
+        [Tag(Dummy="yay it worked")]
         public static int FCCombo => MarginCombos_Internal(GCS.difficulty, "VeryEarly|EarlyPerfect|Perfect|LatePerfect|VeryLate");
         [Tag(Dummy="PP")]
         public static string SpecialPlayMark(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
