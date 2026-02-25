@@ -66,7 +66,7 @@ public class Tooltip
         ["DEATHS"] = "The total number of planet explosions on the current map",
         ["DEFAULTTEXTCOLOR"] = "Default text color of the level",
         ["DEFAULTTEXTSHADOWCOLOR"] = "Default text shadow color of the level",
-        ["DEVELOPER"] = "Square & Kkitut",
+        ["DEVELOPER"] = "Square3ang & Kkitut",
         ["DIFFICULTY"] = "Current Difficulty",
         ["DIFFICULTYRAW"] = "Fixed difficulty return value regardless of language setting",
         ["EASEDVALUE"] = "When the tag value changes, the tag value changes according to the speed.",

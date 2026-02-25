@@ -72,7 +72,7 @@ namespace Overlayer.Views
                     Event.current.Use();
                 }
                 GUILayout.Label($"<size=26>{Main.Lang.Get("SLOGAN_TEXT", "Display everything as you wish.")}</size>");
-                GUILayout.Label($"<size=16>{Main.Mod.Version}, by <color=#{Tags.Effect.Rainbow()}>Square & Kkitut</color></size>");
+                GUILayout.Label($"<size=16>{Main.Mod.Version}, by <color=#{Tags.Effect.Rainbow()}>Square3ang & Kkitut</color></size>");
                 if(Main.EgEnabled) {
                     Main.Eg.DrawChoices();
                 }

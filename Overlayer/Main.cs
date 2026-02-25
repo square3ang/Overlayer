@@ -29,7 +29,7 @@ namespace Overlayer
     public static class Main
     {
         [Tag(NotPlaying = true)]
-        public static string Developer => Lang.Get("MISC_DEVELOPER","Square & Kkitut. Display everything as you wish. Thank you for being with Overlayer.");
+        public static string Developer => Lang.Get("MISC_DEVELOPER","Square3ang & Kkitut. Display everything as you wish. Thank you for being with Overlayer.");
         [Tag(NotPlaying = true)]
         public static string MipaNyang => "MipaNyang is God";
         [Tag(NotPlaying = true)]
@@ -249,7 +249,7 @@ namespace Overlayer
             GUILayout.Space(30);
             GUILayout.BeginHorizontal();
             if(Drawer.Button(Drawer.icon_Discord, " Discord")) {
-                Application.OpenURL("https://square.lrl.kr/");
+                Application.OpenURL("https://discord.modlist.org/");
             }
             if(Drawer.Button(Drawer.icon_Github, " GitHub")) {
                 Application.OpenURL("https://github.com/modlist-org/Overlayer");
