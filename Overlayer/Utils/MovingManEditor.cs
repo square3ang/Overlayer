@@ -126,17 +126,10 @@ namespace Overlayer.Utils
             Drawer.DrawTags(ref targetTag);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            if(Main.Settings.useLegacyNumberField) {
-                Drawer.DrawDouble(Main.Lang.Get("START_SIZE", "Start Size"), ref startSize);
-                Drawer.DrawDouble(Main.Lang.Get("END_SIZE", "End Size"), ref endSize);
-                Drawer.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
-                Drawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
-            } else {
-                neoDrawer.DrawDouble(Main.Lang.Get("START_SIZE", "Start Size"), ref startSize);
-                neoDrawer.DrawDouble(Main.Lang.Get("END_SIZE", "End Size"), ref endSize);
-                neoDrawer.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
-                neoDrawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
-            }
+            neoDrawer.DrawDouble(Main.Lang.Get("START_SIZE", "Start Size"), ref startSize);
+            neoDrawer.DrawDouble(Main.Lang.Get("END_SIZE", "End Size"), ref endSize);
+            neoDrawer.DrawDouble(Main.Lang.Get("DEFAULT_SIZE", "Default Size"), ref defaultSize);
+            neoDrawer.DrawDouble(Main.Lang.Get("SPEED", "Speed"), ref speed);
 
             Drawer.DrawBool(Main.Lang.Get("INVERT", "Invert"), ref invert);
             GUILayout.BeginHorizontal();
