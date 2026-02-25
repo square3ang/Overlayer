@@ -1,2 +1,2 @@
-﻿[ Change ]
-Effect Tag (Such as {MovingMan}) Now Available when Not Playing
+﻿[ Fix ]
+Gradation Editor
