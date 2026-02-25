@@ -355,40 +355,56 @@ namespace Overlayer.Core {
             bool changed = ge != prevGe;
 
             if(color.gradientEnabled && canEnableGradient) {
+
                 NeoField fieldTL = FieldGet(uniqueID);
                 NeoField fieldTR;
                 NeoField fieldBL;
                 NeoField fieldBR;
+
                 if(string.IsNullOrEmpty(uniqueID)) {
                     fieldTR = FieldGet();
                     fieldBL = FieldGet();
                     fieldBR = FieldGet();
                 } else {
-                   fieldTR = FieldGet(uniqueID + "_1");
-                   fieldBL = FieldGet(uniqueID + "_2");
-                   fieldBR = FieldGet(uniqueID + "_3");
+                    fieldTR = FieldGet(uniqueID + "_1");
+                    fieldBL = FieldGet(uniqueID + "_2");
+                    fieldBR = FieldGet(uniqueID + "_3");
                 }
 
-                StrInitialize(ref fieldTL, ColorUtility.ToHtmlStringRGBA(color.topLeft));
-                StrInitialize(ref fieldTR, ColorUtility.ToHtmlStringRGBA(color.topRight));
-                StrInitialize(ref fieldBL, ColorUtility.ToHtmlStringRGBA(color.bottomLeft));
-                StrInitialize(ref fieldBR, ColorUtility.ToHtmlStringRGBA(color.bottomRight));
+                StrInitialize(ref fieldTL, color.topLeftHex);
+                StrInitialize(ref fieldTR, color.topRightHex);
+                StrInitialize(ref fieldBL, color.bottomLeftHex);
+                StrInitialize(ref fieldBR, color.bottomRightHex);
 
                 if(changed && ge) {
-                    fieldTR.Str = ColorUtility.ToHtmlStringRGBA(color.topLeft);
-                    fieldBL.Str = ColorUtility.ToHtmlStringRGBA(color.bottomLeft);
-                    fieldBR.Str = ColorUtility.ToHtmlStringRGBA(color.bottomRight);
+                    fieldTL.Str = color.topLeftHex;
+                    fieldTR.Str = color.topRightHex;
+                    fieldBL.Str = color.bottomLeftHex;
+                    fieldBR.Str = color.bottomRightHex;
+
+                    fieldTL.State = NeoField.StateType.OK;
+                    fieldTR.State = NeoField.StateType.OK;
+                    fieldBL.State = NeoField.StateType.OK;
+                    fieldBR.State = NeoField.StateType.OK;
                 }
 
+                /* ! TOP ! */
+
                 GUILayout.BeginHorizontal();
+
+                // TL
                 Color newColorTL = RGUI.Field(color.topLeft, "", GUILayout.Width(cWidth));
                 GUILayout.Space(2f);
+
                 Color old = GUI.color;
                 if(fieldTL.State == NeoField.StateType.ERROR) {
                     GUI.color = new Color(1f, 0.5f, 0.5f);
                 }
+
                 GUI.SetNextControlName(FieldGetName(uniqueID));
                 string newHexTL = GUILayout.TextField(fieldTL.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
+                GUI.color = old;
+
                 if(newHexTL != fieldTL.Str) {
                     fieldTL.Str = newHexTL;
                     changed = true;
@@ -400,24 +416,28 @@ namespace Overlayer.Core {
                         fieldTL.State = NeoField.StateType.ERROR;
                     }
                 }
+
                 if(newColorTL != color.topLeft) {
                     color.topLeft = newColorTL;
                     changed = true;
-                    fieldTR.Str = ColorUtility.ToHtmlStringRGBA(color.topLeft);
-                    fieldTR.State = NeoField.StateType.OK;
+
+                    fieldTL.Str = color.topLeftHex;
+                    fieldTL.State = NeoField.StateType.OK;
                 }
 
                 GUILayout.Space(4f);
                 GUILayout.Label("↖", GUILayout.Width(16));
-                GUI.color = old;
 
+                // TR
                 if(fieldTR.State == NeoField.StateType.ERROR) {
                     GUI.color = new Color(1f, 0.5f, 0.5f);
                 }
+
                 GUILayout.Label("↗", GUILayout.Width(16));
-                GUI.SetNextControlName(FieldGetName(uniqueID));
+                GUI.SetNextControlName(FieldGetName(uniqueID + "_1"));
                 string newHexTR = GUILayout.TextField(fieldTR.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
                 GUI.color = old;
+
                 if(newHexTR != fieldTR.Str) {
                     fieldTR.Str = newHexTR;
                     changed = true;
@@ -429,25 +449,35 @@ namespace Overlayer.Core {
                         fieldTR.State = NeoField.StateType.ERROR;
                     }
                 }
+
                 Color newColorTR = RGUI.Field(color.topRight, "", GUILayout.Width(cWidth));
                 if(newColorTR != color.topRight) {
                     color.topRight = newColorTR;
                     changed = true;
-                    fieldTR.Str = ColorUtility.ToHtmlStringRGBA(color.topRight);
+
+                    fieldTR.Str = color.topLeftHex;
                     fieldTR.State = NeoField.StateType.OK;
                 }
+
                 GUILayout.EndHorizontal();
                 GUILayout.FlexibleSpace();
 
+                /* ! BOTTOM ! */
 
                 GUILayout.BeginHorizontal();
+
+                // BL
                 Color newColorBL = RGUI.Field(color.bottomLeft, "", GUILayout.Width(cWidth));
                 GUILayout.Space(2f);
+
                 if(fieldBL.State == NeoField.StateType.ERROR) {
                     GUI.color = new Color(1f, 0.5f, 0.5f);
                 }
-                GUI.SetNextControlName(FieldGetName(uniqueID));
+
+                GUI.SetNextControlName(FieldGetName(uniqueID + "_2"));
                 string newHexBL = GUILayout.TextField(fieldBL.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
+                GUI.color = old;
+
                 if(newHexBL != fieldBL.Str) {
                     fieldBL.Str = newHexBL;
                     changed = true;
@@ -459,24 +489,28 @@ namespace Overlayer.Core {
                         fieldBL.State = NeoField.StateType.ERROR;
                     }
                 }
+
                 if(newColorBL != color.bottomLeft) {
                     color.bottomLeft = newColorBL;
                     changed = true;
-                    fieldBL.Str = ColorUtility.ToHtmlStringRGBA(color.bottomLeft);
+
+                    fieldBL.Str = color.topLeftHex;
                     fieldBL.State = NeoField.StateType.OK;
                 }
 
                 GUILayout.Space(4f);
                 GUILayout.Label("↙", GUILayout.Width(16));
-                GUI.color = old;
 
+                // BR
                 if(fieldBR.State == NeoField.StateType.ERROR) {
                     GUI.color = new Color(1f, 0.5f, 0.5f);
                 }
+
                 GUILayout.Label("↘", GUILayout.Width(16));
-                GUI.SetNextControlName(FieldGetName(uniqueID));
+                GUI.SetNextControlName(FieldGetName(uniqueID + "_3"));
                 string newHexBR = GUILayout.TextField(fieldBR.Str, 8, Drawer.myTextFieldNoPad, GUILayout.Width(80f));
                 GUI.color = old;
+
                 if(newHexBR != fieldBR.Str) {
                     fieldBR.Str = newHexBR;
                     changed = true;
@@ -488,13 +522,16 @@ namespace Overlayer.Core {
                         fieldBR.State = NeoField.StateType.ERROR;
                     }
                 }
+
                 Color newColorBR = RGUI.Field(color.bottomRight, "", GUILayout.Width(cWidth));
                 if(newColorBR != color.bottomRight) {
                     color.bottomRight = newColorBR;
                     changed = true;
-                    fieldBR.Str = ColorUtility.ToHtmlStringRGBA(color.bottomRight);
+
+                    fieldBR.Str = color.topLeftHex;
                     fieldBR.State = NeoField.StateType.OK;
                 }
+
                 GUILayout.EndHorizontal();
                 GUILayout.FlexibleSpace();
             } else {
