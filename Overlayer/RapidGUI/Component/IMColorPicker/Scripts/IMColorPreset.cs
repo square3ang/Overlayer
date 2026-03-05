@@ -1,26 +1,16 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace RapidGUI {
-    public class IMColorPreset : ScriptableObject {
+namespace RapidGUI;
 
-        public List<Color> Colors {
-            get {
-                return colors;
-            }
-        }
+public class IMColorPreset : ScriptableObject {
 
-        [SerializeField] List<Color> colors = new();
+    [field: SerializeField]
+    public List<Color> Colors { get; } = new();
 
-        public void Save(Color color) {
-            colors.Add(color);
-        }
+    public void Save(Color color) => Colors.Add(color);
 
-        public void Remove(int index) {
-            colors.RemoveAt(index);
-        }
-
-    }
+    public void Remove(int index) => Colors.RemoveAt(index);
 
 }
 

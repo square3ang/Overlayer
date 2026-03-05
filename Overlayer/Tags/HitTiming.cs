@@ -1,17 +1,15 @@
 ﻿using Overlayer.Tags.Attributes;
 using System.Collections.Generic;
 
-namespace Overlayer.Tags {
-    public static class HitTiming {
-        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double Timing;
-        [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double TimingAvg;
+namespace Overlayer.Tags;
 
-        public static List<double> Timings = new();
+public static class HitTiming {
+    [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double Timing;
+    [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double TimingAvg;
 
-        public static void Reset() {
-            Timing = TimingAvg = 0;
-        }
-    }
+    public static List<double> Timings = new();
+
+    public static void Reset() => Timing = TimingAvg = 0;
 }

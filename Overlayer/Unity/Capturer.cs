@@ -1,42 +1,42 @@
 ﻿using UnityEngine;
 
-namespace Overlayer.Unity {
-    public class Capturer : MonoBehaviour {
-        //public static Capturer Instance
-        //{
-        //    get
-        //    {
-        //        if (instance == null && (instance = FindObjectOfType<Capturer>()) == null)
-        //        {
-        //            var go = new GameObject("Overlayer Capturer");
-        //            instance = go.AddComponent<Capturer>();
-        //            DontDestroyOnLoad(go);
-        //        }
-        //        return instance;
-        //    }
-        //}
-        //private static Capturer instance;
+namespace Overlayer.Unity;
 
-        //private RenderTexture rt;
-        //private Vector2Int size;
+public class Capturer : MonoBehaviour {
+    //public static Capturer Instance
+    //{
+    //    get
+    //    {
+    //        if (instance == null && (instance = FindObjectOfType<Capturer>()) == null)
+    //        {
+    //            var go = new GameObject("Overlayer Capturer");
+    //            instance = go.AddComponent<Capturer>();
+    //            DontDestroyOnLoad(go);
+    //        }
+    //        return instance;
+    //    }
+    //}
+    //private static Capturer instance;
 
-        //public Vector2Int Size
-        //{
-        //    get => rt != null ? size = new Vector2Int(rt.width, rt.height) : Vector2Int.zero;
-        //    set => size = value;
-        //}
+    //private RenderTexture rt;
+    //private Vector2Int size;
 
-        //public void Apply(Camera target)
-        //{
-        //    rt?.Release();
-        //    rt = new RenderTexture(size.x, size.y, 16, RenderTextureFormat.ARGB32);
-        //    rt.Create();
-        //    target.targetTexture = rt;
-        //}
+    //public Vector2Int Size
+    //{
+    //    get => rt != null ? size = new Vector2Int(rt.width, rt.height) : Vector2Int.zero;
+    //    set => size = value;
+    //}
 
-        //void OnDestroy()
-        //{
-        //    rt?.Release();
-        //}
-    }
+    //public void Apply(Camera target)
+    //{
+    //    rt?.Release();
+    //    rt = new RenderTexture(size.x, size.y, 16, RenderTextureFormat.ARGB32);
+    //    rt.Create();
+    //    target.targetTexture = rt;
+    //}
+
+    //void OnDestroy()
+    //{
+    //    rt?.Release();
+    //}
 }

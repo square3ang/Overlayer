@@ -7,9 +7,6 @@ public static class BlockUMMClosing {
 
     [LazyPatch("Patches.BlockUMMClosing", "UnityModManagerNet.UnityModManager+UI", "ToggleWindow", new string[] { "System.Boolean" })]
     public static class BlockUMMClosingPatch {
-        public static bool Prefix() {
-
-            return !Block;
-        }
+        public static bool Prefix() => !Block;
     }
 }

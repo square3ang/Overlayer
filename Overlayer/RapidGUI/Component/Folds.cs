@@ -2,23 +2,22 @@
 using System.Linq;
 using UnityEngine;
 
+namespace RapidGUI;
 
-namespace RapidGUI {
-    public class Folds : TitleContents<Fold> {
-        List<Fold> folds = new();
+public class Folds : TitleContents<Fold> {
+    List<Fold> folds = new();
 
-        public bool DoGUI() {
-            var ret = false;
+    public bool DoGUI() {
+        var ret = false;
 
-            if(dicChanged) {
-                folds = dic.Values.ToList();
-                dicChanged = false;
-            }
-
-            using(new GUILayout.VerticalScope()) {
-                ret = folds.Aggregate(false, (changed, fold) => changed || fold.DoGUI());
-            }
-            return ret;
+        if(dicChanged) {
+            folds = dic.Values.ToList();
+            dicChanged = false;
         }
+
+        using(new GUILayout.VerticalScope()) {
+            ret = folds.Aggregate(false, (changed, fold) => changed || fold.DoGUI());
+        }
+        return ret;
     }
 }

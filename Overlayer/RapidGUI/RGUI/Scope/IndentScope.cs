@@ -1,22 +1,22 @@
 ﻿using UnityEngine;
 
-namespace RapidGUI {
-    public static partial class RGUI {
-        public static void BeginIndent(float width = 32f) {
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(width);
-            GUILayout.BeginVertical();
-        }
+namespace RapidGUI;
 
-        public static void EndIndent() {
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
+public static partial class RGUI {
+    public static void BeginIndent(float width = 32f) {
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(width);
+        GUILayout.BeginVertical();
+    }
 
-        }
-        public class IndentScope : GUI.Scope {
-            public IndentScope(float width = 32f) => BeginIndent(width);
+    public static void EndIndent() {
+        GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
 
-            protected override void CloseScope() => EndIndent();
-        }
+    }
+    public class IndentScope : GUI.Scope {
+        public IndentScope(float width = 32f) => BeginIndent(width);
+
+        protected override void CloseScope() => EndIndent();
     }
 }

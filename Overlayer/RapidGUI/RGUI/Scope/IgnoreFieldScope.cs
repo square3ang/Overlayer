@@ -2,27 +2,20 @@
 using System.Linq;
 using UnityEngine;
 
+namespace RapidGUI;
 
-namespace RapidGUI {
-    public static partial class RGUI {
-        static bool CheckIgnoreField(string label) => ignoreFieldStack.Any(set => set.Contains(label));
+public static partial class RGUI {
+    static bool CheckIgnoreField(string label) => ignoreFieldStack.Any(set => set.Contains(label));
 
+    static Stack<HashSet<string>> ignoreFieldStack = new();
 
-        static Stack<HashSet<string>> ignoreFieldStack = new();
+    public static void BeginIgnoreField(params string[] fieldNames) => ignoreFieldStack.Push(new HashSet<string>(fieldNames));
 
-        public static void BeginIgnoreField(params string[] fieldNames) {
-            ignoreFieldStack.Push(new HashSet<string>(fieldNames));
-        }
+    public static void EndIgnoreField() => ignoreFieldStack.Pop();
 
-        public static void EndIgnoreField() {
-            ignoreFieldStack.Pop();
-        }
+    public class IgnoreFieldScope : GUI.Scope {
+        public IgnoreFieldScope(params string[] fieldNames) => BeginIgnoreField(fieldNames);
 
-
-        public class IgnoreFieldScope : GUI.Scope {
-            public IgnoreFieldScope(params string[] fieldNames) => BeginIgnoreField(fieldNames);
-
-            protected override void CloseScope() => EndIgnoreField();
-        }
+        protected override void CloseScope() => EndIgnoreField();
     }
 }

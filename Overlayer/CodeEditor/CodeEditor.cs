@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Overlayer.CodeEditor;
-
 using UnityEngine;
+
+namespace Overlayer.CodeEditor;
 
 public class CodeEditor {
     public string controlName { get; set; }
@@ -32,17 +32,13 @@ public class CodeEditor {
 
     private static Regex tagRegex = new(@"{(.*?)}", RegexOptions.Compiled);
 
-    public bool isFocused {
-        get { return GUI.GetNameOfFocusedControl() == controlName; }
-    }
-
+    public bool isFocused => GUI.GetNameOfFocusedControl() == controlName;
 
     public CodeEditor(string controlName, CodeTheme theme) {
         this.controlName = controlName;
         this.theme = theme;
         highlighter = code => code;
     }
-
 
     private string selectedtag = "Developer";
 
@@ -116,13 +112,13 @@ public class CodeEditor {
         GUI.skin.settings.cursorColor = GetColor(theme.cursor);
         GUI.skin.settings.cursorFlashSpeed = 0;
 
-        var backStyle = new GUIStyle(style);
-        backStyle.richText = false;
+        var backStyle = new GUIStyle(style) {
+            richText = false
+        };
         backStyle.normal.textColor = Color.clear;
         backStyle.hover.textColor = Color.clear;
         backStyle.active.textColor = Color.clear;
         backStyle.focused.textColor = Color.clear;
-
 
         backStyle.normal.background = Texture2D.whiteTexture;
         backStyle.hover.background = Texture2D.whiteTexture;
@@ -193,7 +189,6 @@ public class CodeEditor {
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
         }
 
-
         if(cachedCode != code) {
             cachedCode = code;
             cachedHighlightedCode = highlighter(code);
@@ -202,8 +197,9 @@ public class CodeEditor {
         // Render syntax highlighting
         GUI.backgroundColor = Color.clear;
 
-        var foreStyle = new GUIStyle(style);
-        foreStyle.richText = true;
+        var foreStyle = new GUIStyle(style) {
+            richText = true
+        };
 
         foreStyle.normal.textColor = GUI.color;
         foreStyle.hover.textColor = GUI.color;
@@ -213,7 +209,6 @@ public class CodeEditor {
 
         // Render highlighted text
         GUI.Label(GUILayoutUtility.GetLastRect(), cachedHighlightedCode, foreStyle);
-
 
         var i = 0;
         var bak = Event.current;
@@ -247,7 +242,6 @@ public class CodeEditor {
 
                 var width = style.CalcSize(new GUIContent(lastline)).x;
 
-
                 /*while (width >= editorw - 5)
                 {
                     width -= editorw - 5;
@@ -255,11 +249,9 @@ public class CodeEditor {
 
                 //Main.Logger.Log(width + "");
 
-
                 var y = len * height;
 
                 var x = width + 5;
-
 
                 var rect = GUILayoutUtility.GetLastRect();
                 rect.x += x;
@@ -268,7 +260,6 @@ public class CodeEditor {
                 rect.width = style.CalcSize(new GUIContent(match.Groups[1].Value)).x;
 
                 rect.height = height;
-
 
                 var mvm = match.Groups[1].Value.StartsWith("MovingMan");
 
@@ -292,14 +283,8 @@ public class CodeEditor {
 
                 if(rect.Contains(Event.current.mousePosition)) {
                     var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                    if(TagManager.tags.ContainsKey(pars)) {
-                        Main.tooltip = Tooltip.GetTooltip(pars);
-                    } else {
-                        Main.tooltip = Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
-                    }
+                    Main.tooltip = TagManager.tags.ContainsKey(pars) ? Tooltip.GetTooltip(pars) : Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
                 }
-
-
 
                 if(special) {
                     if(GUI.Button(rect, "")) {

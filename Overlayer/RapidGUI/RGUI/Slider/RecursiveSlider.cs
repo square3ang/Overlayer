@@ -1,44 +1,42 @@
 ﻿using System;
 using UnityEngine;
 
-namespace RapidGUI {
-    public static partial class RGUI {
-        static object RecursiveSlider(object obj, object min, object max) {
-            return DoRecursiveSafe(obj, () => DoRecursiveSlider(obj, min, max));
+namespace RapidGUI;
+
+public static partial class RGUI {
+    static object RecursiveSlider(object obj, object min, object max) => DoRecursiveSafe(obj, () => DoRecursiveSlider(obj, min, max));
+
+    static object DoRecursiveSlider(object obj, object min, object max) {
+        min ??= Activator.CreateInstance(obj.GetType());
+
+        GUILayout.EndHorizontal();
+
+        using(new PrefixLabelIndentScope()) {
+            var type = obj.GetType();
+            DoSlider(obj, min, max, type);
         }
 
-        static object DoRecursiveSlider(object obj, object min, object max) {
-            min ??= Activator.CreateInstance(obj.GetType());
+        GUILayout.BeginHorizontal();
 
-            GUILayout.EndHorizontal();
+        return obj;
+    }
 
-            using(new PrefixLabelIndentScope()) {
-                var type = obj.GetType();
-                DoSlider(obj, min, max, type);
+    static void DoSlider(object obj, object min, object max, Type type) {
+        var infos = TypeUtility.GetMemberInfoList(type);
+        for(var i = 0; i < infos.Count; ++i) {
+            var info = infos[i];
+            if(CheckIgnoreField(info.Name)) {
+                continue;
             }
 
-            GUILayout.BeginHorizontal();
+            var elem = info.GetValue(obj);
+            var elemMin = (min is float) ? min : info.GetValue(min);
+            var elemMax = (max is float) ? max : info.GetValue(max);
+            var elemLabel = CheckCustomLabel(info.Name) ?? info.label;
 
-            return obj;
-        }
+            elem = Slider(elem, elemMin, elemMax, info.MemberType, elemLabel);
 
-        static void DoSlider(object obj, object min, object max, Type type) {
-            var infos = TypeUtility.GetMemberInfoList(type);
-            for(var i = 0; i < infos.Count; ++i) {
-                var info = infos[i];
-                if(CheckIgnoreField(info.Name)) {
-                    continue;
-                }
-
-                var elem = info.GetValue(obj);
-                var elemMin = (min is float) ? min : info.GetValue(min);
-                var elemMax = (max is float) ? max : info.GetValue(max);
-                var elemLabel = CheckCustomLabel(info.Name) ?? info.label;
-
-                elem = Slider(elem, elemMin, elemMax, info.MemberType, elemLabel);
-
-                info.SetValue(obj, elem);
-            }
+            info.SetValue(obj, elem);
         }
     }
 }

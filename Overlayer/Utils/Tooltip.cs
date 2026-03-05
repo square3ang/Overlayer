@@ -12,15 +12,9 @@ public class Tooltip {
 
         string langKey = "TOOLTIP_" + keyUpper;
         string localized = Main.Lang.Get(langKey, null);
-        if(!string.IsNullOrEmpty(localized)) {
-            return localized;
-        }
-
-        if(tooltip.TryGetValue(keyUpper, out var staticTip) && !string.IsNullOrEmpty(staticTip)) {
-            return staticTip;
-        }
-
-        return null;
+        return !string.IsNullOrEmpty(localized)
+            ? localized
+            : tooltip.TryGetValue(keyUpper, out var staticTip) && !string.IsNullOrEmpty(staticTip) ? staticTip : null;
     }
 
     public static Dictionary<string, string> tooltip = new() {

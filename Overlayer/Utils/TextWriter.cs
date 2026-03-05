@@ -3,46 +3,46 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.IO;
 
-namespace Overlayer.Utils {
-    public class TextWriter {
-        private static readonly Font defFont = new(FontFamily.GenericSerif, 8);
-        private Font font = defFont;
+namespace Overlayer.Utils;
 
-        /// <summary>
-        /// If CustomBrush Is Not Null, This Will Be Ignored
-        /// </summary>
-        public Color Color = Color.White;
-        public StringFormat Format = new() {
-            Alignment = StringAlignment.Center,
-            LineAlignment = StringAlignment.Center,
-        };
-        /// <summary>
-        /// If Null, Using Solid Brush With Color
-        /// </summary>
-        public Brush CustomBrush = null;
+public class TextWriter {
+    private static readonly Font defFont = new(FontFamily.GenericSerif, 8);
+    private Font font = defFont;
 
-        public bool TrySetFont(string fileName, int emSize) {
-            if(!File.Exists(fileName)) {
-                return false;
-            }
+    /// <summary>
+    /// If CustomBrush Is Not Null, This Will Be Ignored
+    /// </summary>
+    public Color Color = Color.White;
+    public StringFormat Format = new() {
+        Alignment = StringAlignment.Center,
+        LineAlignment = StringAlignment.Center,
+    };
+    /// <summary>
+    /// If Null, Using Solid Brush With Color
+    /// </summary>
+    public Brush CustomBrush = null;
 
-            using(var fonts = new PrivateFontCollection()) {
-                fonts.AddFontFile(fileName);
-                font = new Font(fonts.Families[0], emSize);
-            }
-            return true;
+    public bool TrySetFont(string fileName, int emSize) {
+        if(!File.Exists(fileName)) {
+            return false;
         }
-        public void Write(Image target, PointF pt, string text) {
-            RectangleF rectf = new(pt.X, pt.Y, target.Width - pt.X, target.Height - pt.Y);
-            using(Graphics g = Graphics.FromImage(target)) {
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-                g.DrawString(text, font, CustomBrush ?? new SolidBrush(Color), rectf, Format);
-                g.Flush();
-            }
+
+        using(var fonts = new PrivateFontCollection()) {
+            fonts.AddFontFile(fileName);
+            font = new Font(fonts.Families[0], emSize);
         }
-        public void Write(Image target, float x, float y, string text) => Write(target, new PointF(x, y), text);
+        return true;
     }
+    public void Write(Image target, PointF pt, string text) {
+        RectangleF rectf = new(pt.X, pt.Y, target.Width - pt.X, target.Height - pt.Y);
+        using(Graphics g = Graphics.FromImage(target)) {
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            g.DrawString(text, font, CustomBrush ?? new SolidBrush(Color), rectf, Format);
+            g.Flush();
+        }
+    }
+    public void Write(Image target, float x, float y, string text) => Write(target, new PointF(x, y), text);
 }

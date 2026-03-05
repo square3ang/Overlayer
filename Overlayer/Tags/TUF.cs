@@ -1,5 +1,5 @@
-﻿namespace Overlayer.Tags {
-    public static class TUF {
+﻿namespace Overlayer.Tags;
 
-    }
+public static class TUF {
+
 }

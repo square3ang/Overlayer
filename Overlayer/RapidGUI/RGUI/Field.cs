@@ -1,87 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using FieldFunc = System.Func<object, System.Type, object>;
+using LabelRightFunc = System.Func<object, System.Type, object>;
 
+namespace RapidGUI;
 
-namespace RapidGUI {
-    using FieldFunc = Func<object, Type, object>;
-    using LabelRightFunc = Func<object, Type, object>;
+public static partial class RGUI {
+    // dummy GUIStyle.none.
+    // unity is optimized to GUIStyle.none.
+    // it seems to occur indent mismatch for complex Vertical/Horizontal Scope.
+    static GUIStyle styleNone = new(GUIStyle.none);
 
-    public static partial class RGUI {
-        // dummy GUIStyle.none.
-        // unity is optimized to GUIStyle.none.
-        // it seems to occur indent mismatch for complex Vertical/Horizontal Scope.
-        static GUIStyle styleNone = new(GUIStyle.none);
+    public static T Field<T>(T v, string label = null, params GUILayoutOption[] options) => Field<T>(v, label, styleNone, options);
 
-        public static T Field<T>(T v, string label = null, params GUILayoutOption[] options) => Field<T>(v, label, styleNone, options);
+    public static T Field<T>(T v, string label, GUIStyle style, params GUILayoutOption[] options) {
+        var type = typeof(T);
+        var obj = Field(v, type, label, style, options);
+        return (T)Convert.ChangeType(obj, type);
+    }
 
-        public static T Field<T>(T v, string label, GUIStyle style, params GUILayoutOption[] options) {
-            var type = typeof(T);
-            var obj = Field(v, type, label, style, options);
-            return (T)Convert.ChangeType(obj, type);
-        }
+    public static object Field(object obj, Type type, string label = null, params GUILayoutOption[] options) => Field(obj, type, label, GUIStyle.none, options);
 
-        public static object Field(object obj, Type type, string label = null, params GUILayoutOption[] options) => Field(obj, type, label, GUIStyle.none, options);
+    public static object Field(object obj, Type type, string label, GUIStyle style, params GUILayoutOption[] options) => DoField(obj, type, label, style, DispatchFieldFunc(type), DispatchLabelRightFunc(type), options);
 
+    static object DoField(object obj, Type type, string label, GUIStyle style, FieldFunc fieldFunc, LabelRightFunc labelRightFunc, GUILayoutOption[] options) {
+        using(new GUILayout.VerticalScope(style, options)) {
+            GUILayout.BeginHorizontal();
 
-        public static object Field(object obj, Type type, string label, GUIStyle style, params GUILayoutOption[] options) {
-            return DoField(obj, type, label, style, DispatchFieldFunc(type), DispatchLabelRightFunc(type), options);
-        }
+            obj = PrefixLabelDraggable(label, obj, type, out var isLong);
 
-        static object DoField(object obj, Type type, string label, GUIStyle style, FieldFunc fieldFunc, LabelRightFunc labelRightFunc, GUILayoutOption[] options) {
-            using(new GUILayout.VerticalScope(style, options)) {
-                GUILayout.BeginHorizontal();
-
-                obj = PrefixLabelDraggable(label, obj, type, out var isLong);
-
-                if(isLong || labelRightFunc != null) {
-                    if(labelRightFunc != null) {
-                        obj = labelRightFunc(obj, type);
-                    }
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Space(PrefixLabelSetting.width + GUI.skin.label.margin.horizontal);
+            if(isLong || labelRightFunc != null) {
+                if(labelRightFunc != null) {
+                    obj = labelRightFunc(obj, type);
                 }
-
-                obj = fieldFunc(obj, type);
-
                 GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(PrefixLabelSetting.width + GUI.skin.label.margin.horizontal);
             }
 
-            return obj;
+            obj = fieldFunc(obj, type);
+
+            GUILayout.EndHorizontal();
         }
 
-        static Dictionary<Type, FieldFunc> fieldFuncTable = new()
-        {
-            {typeof(bool), new FieldFunc((obj,t) => BoolField(obj)) },
-            {typeof(Color), new FieldFunc((obj,t) => ColorField(obj)) }
-        };
+        return obj;
+    }
 
-        static FieldFunc DispatchFieldFunc(Type type) {
-            if(!fieldFuncTable.TryGetValue(type, out var func)) {
-                if(type.IsEnum) {
-                    func = new FieldFunc((obj, t) => EnumField(obj));
-                } else if(TypeUtility.IsList(type)) {
-                    func = ListField;
-                } else if(TypeUtility.IsRecursive(type)) {
-                    func = new FieldFunc((obj, t) => RecursiveField(obj));
-                } else {
-                    func = StandardField;
-                }
+    static Dictionary<Type, FieldFunc> fieldFuncTable = new()
+    {
+        {typeof(bool), new FieldFunc((obj,t) => BoolField(obj)) },
+        {typeof(Color), new FieldFunc((obj,t) => ColorField(obj)) }
+    };
 
-                fieldFuncTable[type] = func;
+    static FieldFunc DispatchFieldFunc(Type type) {
+        if(!fieldFuncTable.TryGetValue(type, out var func)) {
+            if(type.IsEnum) {
+                func = new FieldFunc((obj, t) => EnumField(obj));
+            } else {
+                func = TypeUtility.IsList(type)
+                    ? ListField
+                    : TypeUtility.IsRecursive(type) ? new FieldFunc((obj, t) => RecursiveField(obj)) : StandardField;
             }
 
-            return func;
+            fieldFuncTable[type] = func;
         }
 
-        static LabelRightFunc DispatchLabelRightFunc(Type type) {
-            LabelRightFunc ret = null;
-            if(TypeUtility.IsList(type)) {
-                ret = ListLabelRightFunc;
-            }
+        return func;
+    }
 
-            return ret;
+    static LabelRightFunc DispatchLabelRightFunc(Type type) {
+        LabelRightFunc ret = null;
+        if(TypeUtility.IsList(type)) {
+            ret = ListLabelRightFunc;
         }
+
+        return ret;
     }
 }

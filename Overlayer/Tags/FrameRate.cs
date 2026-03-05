@@ -1,22 +1,20 @@
 ﻿using Overlayer.Tags.Attributes;
 using UnityEngine;
 
-namespace Overlayer.Tags {
-    public static class FrameRate {
-        [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double Fps;
-        [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double FrameTime;
+namespace Overlayer.Tags;
 
-        [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-        public static double TargetFps => Application.targetFrameRate;
+public static class FrameRate {
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double Fps;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double FrameTime;
 
-        public static float LastDeltaTime;
-        public static float FpsTimer;
-        public static float FpsTimeTimer;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double TargetFps => Application.targetFrameRate;
 
-        public static void Reset() {
-            Fps = FrameTime = 0;
-        }
-    }
+    public static float LastDeltaTime;
+    public static float FpsTimer;
+    public static float FpsTimeTimer;
+
+    public static void Reset() => Fps = FrameTime = 0;
 }

@@ -2,42 +2,42 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RapidGUI {
-    public static partial class TypeUtility {
-        static readonly string ListInterfaceStr = "IList`1";
+namespace RapidGUI;
 
-        public static Type GetListInterface(Type type) => type.GetInterface(ListInterfaceStr);
+public static partial class TypeUtility {
+    static readonly string ListInterfaceStr = "IList`1";
 
-        public static bool IsList(Type type) => GetListInterface(type) != null;
+    public static Type GetListInterface(Type type) => type.GetInterface(ListInterfaceStr);
 
-        static Dictionary<Type, bool> multiLineTable = new();
-        public static bool IsMultiLine(Type type) {
-            bool ret;
-            if(!multiLineTable.TryGetValue(type, out ret)) {
-                var infoList = GetMemberInfoList(type);
+    public static bool IsList(Type type) => GetListInterface(type) != null;
 
-                ret = infoList.Any(info => info.range != null);
-                if(!ret) {
-                    var elemtTypes = infoList.Select(info => info.MemberType);
+    static Dictionary<Type, bool> multiLineTable = new();
+    public static bool IsMultiLine(Type type) {
+        bool ret;
+        if(!multiLineTable.TryGetValue(type, out ret)) {
+            var infoList = GetMemberInfoList(type);
 
-                    ret = elemtTypes.Any(t => IsRecursive(t) || IsList(t))
-                        || (elemtTypes.Count() > 4);
-                }
+            ret = infoList.Any(info => info.range != null);
+            if(!ret) {
+                var elemtTypes = infoList.Select(info => info.MemberType);
 
-                multiLineTable[type] = ret;
+                ret = elemtTypes.Any(t => IsRecursive(t) || IsList(t))
+                    || (elemtTypes.Count() > 4);
             }
 
-            return ret;
+            multiLineTable[type] = ret;
         }
 
-        static Dictionary<Type, bool> isRecursiveTable = new();
+        return ret;
+    }
 
-        public static bool IsRecursive(Type type) {
-            if(!isRecursiveTable.TryGetValue(type, out var ret)) {
-                ret = GetMemberInfoList(type).Any();
-                isRecursiveTable[type] = ret;
-            }
-            return ret;
+    static Dictionary<Type, bool> isRecursiveTable = new();
+
+    public static bool IsRecursive(Type type) {
+        if(!isRecursiveTable.TryGetValue(type, out var ret)) {
+            ret = GetMemberInfoList(type).Any();
+            isRecursiveTable[type] = ret;
         }
+        return ret;
     }
 }

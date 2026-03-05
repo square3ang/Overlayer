@@ -1,6 +1,6 @@
-﻿namespace RapidGUI {
-    public interface IDoGUIWindow {
-        void DoGUIWindow();
-        void CloseWindow();
-    }
+﻿namespace RapidGUI;
+
+public interface IDoGUIWindow {
+    void DoGUIWindow();
+    void CloseWindow();
 }

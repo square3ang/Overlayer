@@ -1,25 +1,21 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+namespace RapidGUI;
 
-namespace RapidGUI {
-    public static partial class RGUI {
-        static Stack<Color> colorScopeStack = new();
+public static partial class RGUI {
+    static Stack<Color> colorScopeStack = new();
 
-        public static void BeginColor(Color color) {
-            colorScopeStack.Push(GUI.color);
-            GUI.color = color;
-        }
+    public static void BeginColor(Color color) {
+        colorScopeStack.Push(GUI.color);
+        GUI.color = color;
+    }
 
-        public static void EndColor() {
-            GUI.color = colorScopeStack.Pop();
-        }
+    public static void EndColor() => GUI.color = colorScopeStack.Pop();
 
+    public class ColorScope : GUI.Scope {
+        public ColorScope(Color color) => BeginColor(color);
 
-        public class ColorScope : GUI.Scope {
-            public ColorScope(Color color) => BeginColor(color);
-
-            protected override void CloseScope() => EndColor();
-        }
+        protected override void CloseScope() => EndColor();
     }
 }

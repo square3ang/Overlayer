@@ -1,27 +1,27 @@
 ﻿using UnityEngine;
 
-namespace RapidGUI {
-    public static class ForcusChecker {
-        static int time;
-        static int mouseId;
-        static int keyboardId;
-        static bool changed;
+namespace RapidGUI;
 
-        public static bool IsChanged() {
-            if(time != Time.frameCount) {
-                time = Time.frameCount;
+public static class ForcusChecker {
+    static int time;
+    static int mouseId;
+    static int keyboardId;
+    static bool changed;
 
-                var currentMouse = GUIUtility.hotControl;
-                var currentKeyboard = GUIUtility.keyboardControl;
+    public static bool IsChanged() {
+        if(time != Time.frameCount) {
+            time = Time.frameCount;
 
-                changed = (keyboardId != currentKeyboard) || (mouseId != currentMouse);
-                if(changed) {
-                    keyboardId = currentKeyboard;
-                    mouseId = currentMouse;
-                }
+            var currentMouse = GUIUtility.hotControl;
+            var currentKeyboard = GUIUtility.keyboardControl;
+
+            changed = (keyboardId != currentKeyboard) || (mouseId != currentMouse);
+            if(changed) {
+                keyboardId = currentKeyboard;
+                mouseId = currentMouse;
             }
-
-            return changed;
         }
+
+        return changed;
     }
 }
