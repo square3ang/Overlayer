@@ -3,19 +3,16 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.IO;
 
-namespace Overlayer.Utils
-{
-    public class TextWriter
-    {
-        private static readonly Font defFont = new Font(FontFamily.GenericSerif, 8);
+namespace Overlayer.Utils {
+    public class TextWriter {
+        private static readonly Font defFont = new(FontFamily.GenericSerif, 8);
         private Font font = defFont;
 
         /// <summary>
         /// If CustomBrush Is Not Null, This Will Be Ignored
         /// </summary>
         public Color Color = Color.White;
-        public StringFormat Format = new StringFormat()
-        {
+        public StringFormat Format = new() {
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center,
         };
@@ -24,21 +21,18 @@ namespace Overlayer.Utils
         /// </summary>
         public Brush CustomBrush = null;
 
-        public bool TrySetFont(string fileName, int emSize)
-        {
-            if (!File.Exists(fileName)) return false;
-            using (var fonts = new PrivateFontCollection())
-            {
+        public bool TrySetFont(string fileName, int emSize) {
+            if(!File.Exists(fileName))
+                return false;
+            using(var fonts = new PrivateFontCollection()) {
                 fonts.AddFontFile(fileName);
                 font = new Font(fonts.Families[0], emSize);
             }
             return true;
         }
-        public void Write(Image target, PointF pt, string text)
-        {
-            RectangleF rectf = new RectangleF(pt.X, pt.Y, target.Width - pt.X, target.Height - pt.Y);
-            using (Graphics g = Graphics.FromImage(target))
-            {
+        public void Write(Image target, PointF pt, string text) {
+            RectangleF rectf = new(pt.X, pt.Y, target.Width - pt.X, target.Height - pt.Y);
+            using(Graphics g = Graphics.FromImage(target)) {
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;

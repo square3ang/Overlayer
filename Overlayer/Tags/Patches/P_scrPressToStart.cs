@@ -1,5 +1,4 @@
 ﻿using Overlayer.Core.Patches;
-using System.Linq;
 
 namespace Overlayer.Tags.Patches {
     public class P_scrPressToStart : PatchBase<P_scrPressToStart> {

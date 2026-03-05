@@ -112,8 +112,8 @@ namespace Overlayer.Tags {
         }
 
         #endregion
-        public static Dictionary<int, int[]> MComboCache = new Dictionary<int, int[]>();
-        public static Dictionary<int, int[]> MMaxComboCache = new Dictionary<int, int[]>();
+        public static Dictionary<int, int[]> MComboCache = new();
+        public static Dictionary<int, int[]> MMaxComboCache = new();
         public static void SetMarginCombos() {
             foreach(int hash in MComboCache.Keys.ToList()) {
                 var hms = ADOUtils.UnboxMarginHash(hash);

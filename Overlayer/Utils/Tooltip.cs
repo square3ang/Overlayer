@@ -2,8 +2,7 @@
 
 namespace Overlayer.Utils;
 
-public class Tooltip
-{
+public class Tooltip {
     public static string GetTooltip(string key) {
         if(string.IsNullOrEmpty(key)) {
             return null;

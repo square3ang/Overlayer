@@ -2,10 +2,8 @@
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Overlayer.Core
-{
-    public static class FastDateTime
-    {
+namespace Overlayer.Core {
+    public static class FastDateTime {
         public delegate TimeSpan GDTNUOFU(DateTime utcNow, out bool ald);
         public static long ticks;
         public static bool ald;
@@ -16,11 +14,10 @@ namespace Overlayer.Core
         public static readonly FieldInfo aldFld = typeof(FastDateTime).GetField("ald", (BindingFlags)15420);
         public static readonly GDTNUOFU getOffset;
         public static readonly Func<DateTime> GetNow;
-        static FastDateTime()
-        {
+        static FastDateTime() {
             getOffset = (GDTNUOFU)typeof(TimeZoneInfo).GetMethod("GetDateTimeNowUtcOffsetFromUtc", (BindingFlags)15420).CreateDelegate(typeof(GDTNUOFU));
             ticks = getOffset(DateTime.UtcNow, out ald).Ticks;
-            DynamicMethod nowGetter = new DynamicMethod(string.Empty, typeof(DateTime), Type.EmptyTypes, true);
+            DynamicMethod nowGetter = new(string.Empty, typeof(DateTime), Type.EmptyTypes, true);
             ILGenerator il = nowGetter.GetILGenerator();
             LocalBuilder dtLoc = il.DeclareLocal(typeof(DateTime));
             LocalBuilder tLoc = il.DeclareLocal(typeof(long));

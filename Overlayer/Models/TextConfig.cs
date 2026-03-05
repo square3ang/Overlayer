@@ -4,10 +4,8 @@ using Overlayer.Utils;
 using TMPro;
 using UnityEngine;
 
-namespace Overlayer.Models
-{
-    public class TextConfig : IModel, ICopyable<TextConfig>
-    {
+namespace Overlayer.Models {
+    public class TextConfig : IModel, ICopyable<TextConfig> {
         public bool Active = true;
         public delegate void DragChangeHandler(bool state);
         public event DragChangeHandler OnDragChanged;
@@ -36,14 +34,13 @@ namespace Overlayer.Models
         public GColor TextColor = Color.white;
         public GColor OutlineColor = Color.clear;
         public GColor ShadowColor = Color.black with { a = 0.5f };
-        public Vector2 Scale = new Vector2(1, 1);
-        public Vector2 Position = new Vector2(0.5f, 0.0175f);
-        public Vector2 Pivot = new Vector2(0.5f, 0.5f);
-        public Vector2 ShadowOffset = new Vector2(0.5f, -0.5f);
+        public Vector2 Scale = new(1, 1);
+        public Vector2 Position = new(0.5f, 0.0175f);
+        public Vector2 Pivot = new(0.5f, 0.5f);
+        public Vector2 ShadowOffset = new(0.5f, -0.5f);
         public Vector3 Rotation = Vector3.zero;
         public TextAlignmentOptions Alignment = TextAlignmentOptions.Center;
-        public TextConfig Copy()
-        {
+        public TextConfig Copy() {
             var newConfig = new TextConfig();
             newConfig.Active = Active;
             newConfig.Drag = Drag;
@@ -70,8 +67,7 @@ namespace Overlayer.Models
             newConfig.FallbackFonts = FallbackFonts;
             return newConfig;
         }
-        public JToken Serialize()
-        {
+        public JToken Serialize() {
             var node = new JObject();
             node[nameof(Active)] = Active;
             node[nameof(Drag)] = Drag;
@@ -98,8 +94,7 @@ namespace Overlayer.Models
             node[nameof(FallbackFonts)] = new JArray(FallbackFonts);
             return node;
         }
-        public void Deserialize(JToken node)
-        {
+        public void Deserialize(JToken node) {
             var defaultSettings = new TextConfig();
             Active = node[nameof(Active)]?.Value<bool>() ?? defaultSettings.Active;
             Drag = node[nameof(Drag)]?.Value<bool>() ?? defaultSettings.Drag;

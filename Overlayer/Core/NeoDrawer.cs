@@ -3,18 +3,12 @@ using Overlayer.Models;
 using RapidGUI;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Overlayer.Core {
     public class NeoDrawer {
-        public static NeoDrawer StaticInstance = new NeoDrawer();
+        public static NeoDrawer StaticInstance = new();
         public class NeoField {
             public enum StateType {
                 OK = 0,
@@ -27,7 +21,7 @@ namespace Overlayer.Core {
             public string Str;
             public StateType State;
             public object ComputedValue;
-            
+
         }
 
         private string LastFocused;
@@ -43,7 +37,7 @@ namespace Overlayer.Core {
             }
             return false;
         }
-        
+
         public uint FieldGetId() {
             return id;
         }
@@ -80,7 +74,7 @@ namespace Overlayer.Core {
             return field;
         }
 
-        public  string FieldGetName(string uniqueID = null) {
+        public string FieldGetName(string uniqueID = null) {
             return $"Field_{uniqueID ?? (id - 1).ToString()}";
         }
 
@@ -229,7 +223,7 @@ namespace Overlayer.Core {
                 changed |= DrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f, uniqueID + "_0");
                 changed |= DrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f, uniqueID + "_1");
                 changed |= DrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f, uniqueID + "_2");
-            } 
+            }
             return changed;
         }
 
@@ -328,7 +322,7 @@ namespace Overlayer.Core {
             GUILayout.Label(StatebyState(field.State), GUILayout.Width(10));
 
             Color newColor = RGUI.Field(color, "", GUILayout.Width(cWidth));
-            
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 

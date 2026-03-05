@@ -2,24 +2,19 @@
 using UnityEngine;
 using TupleObject = System.ValueTuple<object, object>;
 
-namespace RapidGUI
-{
-    public static partial class RGUI
-    {
-        static object RecursiveMinMaxSlider(TupleObject to, object min, object max)
-        {
+namespace RapidGUI {
+    public static partial class RGUI {
+        static object RecursiveMinMaxSlider(TupleObject to, object min, object max) {
             return DoRecursiveSafe(to, () => DoRecursiveMinMaxSlider(to, min, max));
         }
 
-        static object DoRecursiveMinMaxSlider(TupleObject to, object min, object max)
-        {
+        static object DoRecursiveMinMaxSlider(TupleObject to, object min, object max) {
             var type = to.Item1.GetType();
-            min = min ?? Activator.CreateInstance(type);
+            min ??= Activator.CreateInstance(type);
 
             GUILayout.EndHorizontal();
 
-            using (new PrefixLabelIndentScope())
-            {
+            using(new PrefixLabelIndentScope()) {
                 DoMinMaxSlider(to, min, max, type);
             }
 
@@ -28,13 +23,12 @@ namespace RapidGUI
             return to;
         }
 
-        static void DoMinMaxSlider(TupleObject to, object min, object max, Type type)
-        {
+        static void DoMinMaxSlider(TupleObject to, object min, object max, Type type) {
             var infos = TypeUtility.GetMemberInfoList(type);
-            for (var i = 0; i < infos.Count; ++i)
-            {
+            for(var i = 0; i < infos.Count; ++i) {
                 var info = infos[i];
-                if (CheckIgnoreField(info.Name)) continue;
+                if(CheckIgnoreField(info.Name))
+                    continue;
 
                 var elemValMin = info.GetValue(to.Item1);
                 var elemValMax = info.GetValue(to.Item2);

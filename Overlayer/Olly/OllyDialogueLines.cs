@@ -63,7 +63,7 @@ namespace Overlayer.Olly {
                 mouth: Mouth.Normal,
                 eyebrow: Eyebrow.Normal
             );
-            
+
             var node2_4_2 = new Node(
                 Tr("Darn..", "이런.."),
                 new[] { "..." },

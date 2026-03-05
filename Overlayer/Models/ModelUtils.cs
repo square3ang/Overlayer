@@ -4,10 +4,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Overlayer.Models
-{
-    public static class ModelUtils
-    {
+namespace Overlayer.Models {
+    public static class ModelUtils {
         public static readonly Type model_t = typeof(IModel);
         public static readonly Type vec2_t = typeof(Vector2);
         public static readonly Type vec3_t = typeof(Vector3);
@@ -131,7 +129,7 @@ namespace Overlayer.Models
             if(token == null) {
                 return default;
             }
-            T t = new T();
+            T t = new();
             if(token.Type == JTokenType.Object) {
                 t.Deserialize(token);
             }

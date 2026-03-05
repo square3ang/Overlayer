@@ -2,30 +2,22 @@
 using UnityEngine;
 
 
-namespace RapidGUI
-{
-    public static partial class RGUI
-    {
-        public static class PrefixLabelSetting
-        {
+namespace RapidGUI {
+    public static partial class RGUI {
+        public static class PrefixLabelSetting {
             public static float width = 130f;
         }
 
-        public static bool PrefixLabel(string label)
-        {
+        public static bool PrefixLabel(string label) {
             var isLong = false;
 
-            if (!string.IsNullOrEmpty(label))
-            {
+            if(!string.IsNullOrEmpty(label)) {
                 var style = GUI.skin.label;
                 isLong = PrefixLabelSetting.width > 0f && style.CalcSize(RGUIUtility.TempContent(label)).x > PrefixLabelSetting.width;
 
-                if (isLong)
-                {
+                if(isLong) {
                     GUILayout.Label(label);
-                }
-                else
-                {
+                } else {
                     GUILayout.Label(label, GUILayout.Width(PrefixLabelSetting.width));
                 }
             }
@@ -35,14 +27,11 @@ namespace RapidGUI
 
         //public static object PrefixLabelDraggable(string label, object obj, Type type) => PrefixLabelDraggable(label, obj, type, out var _);
 
-        public static object PrefixLabelDraggable(string label, object obj, Type type, out bool isLong)
-        {
+        public static object PrefixLabelDraggable(string label, object obj, Type type, out bool isLong) {
             isLong = false;
-            if (!string.IsNullOrEmpty(label))
-            {
+            if(!string.IsNullOrEmpty(label)) {
                 isLong = PrefixLabel(label);
-                if (IsDraggable(type))
-                {
+                if(IsDraggable(type)) {
                     obj = DoDrag(obj, type);
                 }
             }
@@ -56,8 +45,7 @@ namespace RapidGUI
         static Vector2 lastMousePos;
         static readonly int DoDragHash = "DoDrag".GetHashCode();
 
-        static object DoDrag(object obj, Type type)
-        {
+        static object DoDrag(object obj, Type type) {
             var controlId = GUIUtility.GetControlID(DoDragHash, FocusType.Passive);
 
             var rect = GUILayoutUtility.GetLastRect();
@@ -65,13 +53,10 @@ namespace RapidGUI
             var ev = Event.current;
             var evType = ev.GetTypeForControl(controlId);
 
-            switch (evType)
-            {
-                case EventType.MouseDown:
-                {
-                    if ((ev.button == RapidGUIBehaviour.Instance.prefixLabelSlideButton) &&
-                        rect.Contains(ev.mousePosition))
-                    {
+            switch(evType) {
+                case EventType.MouseDown: {
+                    if((ev.button == RapidGUIBehaviour.Instance.prefixLabelSlideButton) &&
+                        rect.Contains(ev.mousePosition)) {
                         GUIUtility.hotControl = controlId;
                         lastMousePos = ev.mousePosition;
 
@@ -81,36 +66,29 @@ namespace RapidGUI
                 }
                 break;
 
-                case EventType.MouseUp:
-                {
-                    if (GUIUtility.hotControl == controlId)
-                    {
+                case EventType.MouseUp: {
+                    if(GUIUtility.hotControl == controlId) {
                         GUIUtility.hotControl = 0;
                         ev.Use();
                     }
                 }
                 break;
 
-                case EventType.MouseDrag:
-                {
-                    if ((ev.button == RapidGUIBehaviour.Instance.prefixLabelSlideButton) &&
-                        (GUIUtility.hotControl == controlId))
-                    {
+                case EventType.MouseDrag: {
+                    if((ev.button == RapidGUIBehaviour.Instance.prefixLabelSlideButton) &&
+                        (GUIUtility.hotControl == controlId)) {
                         var diff = ev.mousePosition - lastMousePos;
                         var add = (Mathf.Abs(diff.x) > Mathf.Abs(diff.y)) ? diff.x : diff.y;
                         add = Math.Sign(add);
 
                         lastMousePos = ev.mousePosition;
-                        if (typeof(int) == type)
-                        {
-                            var v = (int) obj;
-                            v += (int) (add);
+                        if(typeof(int) == type) {
+                            var v = (int)obj;
+                            v += (int)(add);
                             obj = v;
-                        }
-                        else if (typeof(float) == type)
-                        {
+                        } else if(typeof(float) == type) {
                             var scale = 0.03f;
-                            var v = (float) obj;
+                            var v = (float)obj;
                             v += add * scale;
                             v = Mathf.Floor(v * 100f) * 0.01f; // chop
                             obj = v;
@@ -120,11 +98,9 @@ namespace RapidGUI
                     }
                 }
                 break;
-                
-                case EventType.Repaint:
-                {
-                    if (GUIUtility.hotControl == controlId)
-                    {
+
+                case EventType.Repaint: {
+                    if(GUIUtility.hotControl == controlId) {
                         RGUIUtility.SetCursor(MouseCursor.ResizeHorizontal);
                     }
                 }
@@ -135,8 +111,7 @@ namespace RapidGUI
         }
 
 
-        public static bool IsDraggable(Type type)
-        {
+        public static bool IsDraggable(Type type) {
             return (
                 (typeof(int) == type) ||
                 (typeof(float)) == type

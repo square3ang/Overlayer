@@ -65,7 +65,7 @@ namespace Overlayer.Core {
             public string Name;
             public byte[] Raw;
 
-            static Dictionary<string, Reference> refCache = new Dictionary<string, Reference>();
+            static Dictionary<string, Reference> refCache = new();
 
             public static Reference GetReference(string path, Type referenceType) {
                 var target = path.Replace("{ModDir}", Main.Mod.Path);

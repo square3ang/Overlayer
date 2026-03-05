@@ -7,10 +7,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Overlayer.Tags
-{
-    public static class Effect
-    {
+namespace Overlayer.Tags {
+    public static class Effect {
         [JSImplementedBy("Discord@kkitut")]
         [Tag(NotPlaying = true)]
         public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, Ease ease = Ease.Linear, int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
@@ -46,7 +44,7 @@ namespace Overlayer.Tags
 
             ColorUtility.TryParseHtmlString("#" + hexMin, out Color min);
             ColorUtility.TryParseHtmlString("#" + hexMax, out Color max);
-            Color newColor = new Color(
+            Color newColor = new(
                 ((1 - eased) * min.r) + (eased * max.r),
                 ((1 - eased) * min.g) + (eased * max.g),
                 ((1 - eased) * min.b) + (eased * max.b),
@@ -100,12 +98,11 @@ namespace Overlayer.Tags
             return h;
         }
 
-        static Dictionary<string, double> movingMan_tagValueCache = new Dictionary<string, double>();
-        static Dictionary<string, long> movingMan_tagStartTimeCache = new Dictionary<string, long>();
+        static Dictionary<string, double> movingMan_tagValueCache = new();
+        static Dictionary<string, long> movingMan_tagStartTimeCache = new();
         [JSImplementedBy("Discord@kkitut")]
         [Tag(NotPlaying = true)]
-        public static double MovingMan(string rawFunc = nameof(ComboStats.Combo), double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool invert = false, Ease ease = Ease.OutExpo)
-        {
+        public static double MovingMan(string rawFunc = nameof(ComboStats.Combo), double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool invert = false, Ease ease = Ease.OutExpo) {
             OverlayerTag ovTag = TagManager.GetTag(rawFunc);
             if(ovTag == null || !ovTag.NotPlaying && !Main.IsPlaying) {
                 return defaultSize;
@@ -125,15 +122,16 @@ namespace Overlayer.Tags
             movingMan_tagValueCache.TryGetValue(rawFunc, out double vCache);
             movingMan_tagStartTimeCache.TryGetValue(rawFunc, out long stCache);
             long mills = FastDateTime.Now.Ticks / 10000;
-            if (val != vCache) {
+            if(val != vCache) {
                 movingMan_tagStartTimeCache[rawFunc] = stCache = mills;
                 movingMan_tagValueCache[rawFunc] = val;
             }
             float elapsed = mills - stCache;
-            if (elapsed < speed) {
+            if(elapsed < speed) {
                 float lifetime = (float)(elapsed / speed);
                 float eased = DOVirtual.EasedValue(0, 1, lifetime, ease);
-                if (invert) eased = 1 - eased;
+                if(invert)
+                    eased = 1 - eased;
                 float changed = (float)(endSize - startSize) * eased;
                 return startSize + changed;
             }
@@ -151,7 +149,7 @@ namespace Overlayer.Tags
             Tag tag = ovTag.Tag;
 
             Delegate getter = tag.GetterDelegate;
-            EventEase ee = new EventEase(
+            EventEase ee = new(
                 getter is Func<string> fs ?
                 () => StringConverter.ToDouble(fs()) :
                 getter is Func<string, string> fss ?
@@ -176,12 +174,7 @@ namespace Overlayer.Tags
             double m = 0;
             double r, g = 0, b;
 
-            if(hue < 60) { r = c; g = x; b = 0; } 
-            else if(hue < 120) { r = x; g = c; b = 0; } 
-            else if(hue < 180) { r = 0; g = c; b = x; } 
-            else if(hue < 240) { r = 0; g = x; b = c; } 
-            else if(hue < 300) { r = x; g = 0; b = c; } 
-            else { r = c; g = 0; b = x; }
+            if(hue < 60) { r = c; g = x; b = 0; } else if(hue < 120) { r = x; g = c; b = 0; } else if(hue < 180) { r = 0; g = c; b = x; } else if(hue < 240) { r = 0; g = x; b = c; } else if(hue < 300) { r = x; g = 0; b = c; } else { r = c; g = 0; b = x; }
 
             int R = (int)((r + m) * 255);
             int G = (int)((g + m) * 255);

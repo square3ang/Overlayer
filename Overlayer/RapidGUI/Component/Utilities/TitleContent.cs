@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace RapidGUI
-{
+namespace RapidGUI {
     /// <summary>
     /// Title and content that opens and closes
     /// </summary>
-    public abstract class TitleContent<T> where T : TitleContent<T>
-    {
-        protected class FuncData
-        {
+    public abstract class TitleContent<T> where T : TitleContent<T> {
+        protected class FuncData {
             public Func<bool> checkEnableFunc;
             public Func<bool> guiFunc;
         }
@@ -20,12 +17,11 @@ namespace RapidGUI
 
         public bool isOpen { get; protected set; }
         protected Action titleAction;
-        protected List<FuncData> funcDatas = new List<FuncData>();
+        protected List<FuncData> funcDatas = new();
 
         public TitleContent() { }
 
-        public TitleContent(string name)
-        {
+        public TitleContent(string name) {
             this.name = name;
         }
 
@@ -36,10 +32,8 @@ namespace RapidGUI
 
         public T Add(Func<bool> guiFunc) => Add(null, guiFunc);
 
-        public T Add(Func<bool> checkEnableFunc, Func<bool> guiFunc)
-        {
-            funcDatas.Add(new FuncData()
-            {
+        public T Add(Func<bool> checkEnableFunc, Func<bool> guiFunc) {
+            funcDatas.Add(new FuncData() {
                 checkEnableFunc = checkEnableFunc,
                 guiFunc = guiFunc
             });

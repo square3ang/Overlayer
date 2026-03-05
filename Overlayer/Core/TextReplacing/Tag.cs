@@ -5,19 +5,15 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Overlayer.Core.TextReplacing
-{
-    public class Tag
-    {
+namespace Overlayer.Core.TextReplacing {
+    public class Tag {
         public string Name { get; }
         public bool Referenced => ReferencedCount > 0;
         private int referencedCount;
-        public int ReferencedCount
-        {
+        public int ReferencedCount {
             get => referencedCount;
-            set
-            {
-                if (value < 0)
+            set {
+                if(value < 0)
                     throw new InvalidOperationException("ReferencedCount Cannot Be Less Than 0!! Reference May Be Broken!");
                 referencedCount = value;
             }
@@ -65,33 +61,32 @@ namespace Overlayer.Core.TextReplacing
         /// Argument => Original Getter Converter
         /// </summary>
         public MethodInfo[] ArgumentConverter { get; private set; }
-        public Tag(string name)
-        {
+        public Tag(string name) {
             Name = name;
         }
-        public Tag SetGetter(MethodInfo method, object target = null)
-        {
-            if (Getter != null) return null;
-            if (method == null) throw new ArgumentNullException(nameof(method));
-            if (method.ReturnType != typeof(string))
-            {
+        public Tag SetGetter(MethodInfo method, object target = null) {
+            if(Getter != null)
+                return null;
+            if(method == null)
+                throw new ArgumentNullException(nameof(method));
+            if(method.ReturnType != typeof(string)) {
                 var rtc = StringConverter.GetFromConverter(method.ReturnType);
-                if (rtc == null) throw new NotSupportedException($"{method.ReturnType} Is Not Supported Return Type!");
+                if(rtc == null)
+                    throw new NotSupportedException($"{method.ReturnType} Is Not Supported Return Type!");
                 ReturnConverter = rtc;
             }
             GetterOriginalTarget = target;
             var parameters = method.GetParameters();
             var argConverter = new MethodInfo[parameters.Length];
-            for (int i = 0; i < parameters.Length; i++)
-            {
+            for(int i = 0; i < parameters.Length; i++) {
                 var param = parameters[i];
-                if (param.ParameterType == typeof(string)) continue;
-                if (param.ParameterType == typeof(object))
-                {
+                if(param.ParameterType == typeof(string))
+                    continue;
+                if(param.ParameterType == typeof(object)) {
                     HasObjectArgument = true;
                     continue;
                 }
-                if ((argConverter[i] = StringConverter.GetToConverter(param.ParameterType)) == null)
+                if((argConverter[i] = StringConverter.GetToConverter(param.ParameterType)) == null)
                     throw new NotSupportedException($"{param.ParameterType} Is Not Supported Parameter Type!");
             }
             ArgumentConverter = argConverter;
@@ -104,30 +99,30 @@ namespace Overlayer.Core.TextReplacing
             ArgumentCount = parameters.Length;
             return this;
         }
-        public Tag SetGetter(Delegate del)
-        {
-            if (Getter != null) return null;
+        public Tag SetGetter(Delegate del) {
+            if(Getter != null)
+                return null;
             var method = del.Method;
-            if (method == null) throw new ArgumentNullException(nameof(method));
-            if (method.ReturnType != typeof(string))
-            {
+            if(method == null)
+                throw new ArgumentNullException(nameof(method));
+            if(method.ReturnType != typeof(string)) {
                 var rtc = StringConverter.GetFromConverter(method.ReturnType);
-                if (rtc == null) throw new NotSupportedException($"{method.ReturnType} Is Not Supported Return Type!");
+                if(rtc == null)
+                    throw new NotSupportedException($"{method.ReturnType} Is Not Supported Return Type!");
                 ReturnConverter = rtc;
             }
             GetterOriginalTarget = del;
             var parameters = method.GetParameters();
             var argConverter = new MethodInfo[parameters.Length];
-            for (int i = 0; i < parameters.Length; i++)
-            {
+            for(int i = 0; i < parameters.Length; i++) {
                 var param = parameters[i];
-                if (param.ParameterType == typeof(string)) continue;
-                if (param.ParameterType == typeof(object))
-                {
+                if(param.ParameterType == typeof(string))
+                    continue;
+                if(param.ParameterType == typeof(object)) {
                     HasObjectArgument = true;
                     continue;
                 }
-                if ((argConverter[i] = StringConverter.GetToConverter(param.ParameterType)) == null)
+                if((argConverter[i] = StringConverter.GetToConverter(param.ParameterType)) == null)
                     throw new NotSupportedException($"{param.ParameterType} Is Not Supported Parameter Type!");
             }
             ArgumentConverter = argConverter;
@@ -144,10 +139,10 @@ namespace Overlayer.Core.TextReplacing
         static ModuleBuilder TagWrapperModule;
         static int uniqueId = 0;
         static bool wrapperInitialized = false;
-        MethodInfo WrapMethodToGetter(out Delegate del)
-        {
+        MethodInfo WrapMethodToGetter(out Delegate del) {
             del = GetterDelegate;
-            if (Getter != null) return Getter;
+            if(Getter != null)
+                return Getter;
             string methodName, targetFieldName;
             TypeBuilder t = TagWrapperModule.DefineType($"{Name}_WrapperType${uniqueId++}", TypeAttributes.Public);
             ParameterInfo[] parameters = GetterOriginal.GetParameters();
@@ -155,19 +150,19 @@ namespace Overlayer.Core.TextReplacing
             MethodBuilder m = t.DefineMethod(methodName = $"{Name}_WrapperMethod", MethodAttributes.Public | MethodAttributes.Static, typeof(string), parameterTypes);
             FieldBuilder targetField = t.DefineField(targetFieldName = "Target", GetterOriginal.DeclaringType, FieldAttributes.Public | FieldAttributes.Static);
             ILGenerator il = m.GetILGenerator();
-            if (!GetterOriginal.IsStatic)
+            if(!GetterOriginal.IsStatic)
                 il.Emit(OpCodes.Ldsfld, targetField);
-            for (int i = 0; i < ArgumentConverter.Length; i++)
-            {
+            for(int i = 0; i < ArgumentConverter.Length; i++) {
                 var converter = ArgumentConverter[i];
                 m.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
                 il.Emit(OpCodes.Ldarg, i);
-                if (converter == null)
+                if(converter == null)
                     il.Emit(OpCodes.Box, parameters[i].ParameterType);
-                else il.Emit(OpCodes.Call, converter);
+                else
+                    il.Emit(OpCodes.Call, converter);
             }
             il.Emit(OpCodes.Call, GetterOriginal);
-            if (ReturnConverter != null)
+            if(ReturnConverter != null)
                 il.Emit(OpCodes.Call, ReturnConverter);
             il.Emit(OpCodes.Ret);
             var resultT = t.CreateType();
@@ -176,8 +171,7 @@ namespace Overlayer.Core.TextReplacing
             del = result.CreateDelegate(Expression.GetFuncType(parameterTypes.Append(typeof(string)).ToArray()));
             return result;
         }
-        static MethodInfo WrapDelegateDirect(string name, Delegate del)
-        {
+        static MethodInfo WrapDelegateDirect(string name, Delegate del) {
             Type delType = del.GetType();
             MethodInfo invoke = delType.GetMethod("Invoke");
             MethodInfo method = del.Method;
@@ -189,8 +183,7 @@ namespace Overlayer.Core.TextReplacing
             ILGenerator il = methodB.GetILGenerator();
             il.Emit(OpCodes.Ldsfld, delField);
             int paramIndex = 1;
-            foreach (ParameterInfo param in parameters)
-            {
+            foreach(ParameterInfo param in parameters) {
                 methodB.DefineParameter(paramIndex++, ParameterAttributes.None, param.Name);
                 il.Emit(OpCodes.Ldarg, paramIndex - 2);
             }
@@ -200,17 +193,16 @@ namespace Overlayer.Core.TextReplacing
             t.GetField("del").SetValue(null, del);
             return t.GetMethod($"{name}_Delegate_WrapperMethod");
         }
-        public static void InitializeWrapperAssembly()
-        {
-            if (wrapperInitialized) return;
+        public static void InitializeWrapperAssembly() {
+            if(wrapperInitialized)
+                return;
             uniqueId = 0;
             wrapperInitialized = true;
             TagWrapperAssembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("Overlayer.TagWrapper"), AssemblyBuilderAccess.RunAndCollect);
             TagWrapperModule = TagWrapperAssembly.DefineDynamicModule("Overlayer.TagWrapper");
             Main.Logger.Log("Initialized Tag Wrapper Assembly.");
         }
-        public static void ReleaseWrapperAssembly()
-        {
+        public static void ReleaseWrapperAssembly() {
             TagWrapperAssembly = null;
             TagWrapperModule = null;
             wrapperInitialized = false;

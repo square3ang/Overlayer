@@ -14,22 +14,18 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
-using Time = UnityEngine.Time;
 
-namespace Overlayer
-{
+namespace Overlayer {
 #if DEBUG
 [UnityModManagerNet.EnableReloading]
 #endif
-    public static class Main
-    {
+    public static class Main {
         [Tag(NotPlaying = true)]
-        public static string Developer => Lang.Get("MISC_DEVELOPER","Square3ang & Kkitut. Display everything as you wish. Thank you for being with Overlayer.");
+        public static string Developer => Lang.Get("MISC_DEVELOPER", "Square3ang & Kkitut. Display everything as you wish. Thank you for being with Overlayer.");
         [Tag(NotPlaying = true)]
         public static string MipaNyang => "MipaNyang is God";
         [Tag(NotPlaying = true)]
@@ -79,8 +75,7 @@ namespace Overlayer
             }
         }
 
-        public static void Load(ModEntry modEntry)
-        {
+        public static void Load(ModEntry modEntry) {
             Logger = modEntry.Logger;
             Ass = Assembly.GetExecutingAssembly();
             Mod = modEntry;
@@ -105,17 +100,15 @@ namespace Overlayer
             MiscUtils.SetAttr(TMPro.TMP_Settings.instance, "m_warningsDisabled", true);
         }
 
-        public static IEnumerator LoadCoroutine(ModEntry modEntry)
-        {
+        public static IEnumerator LoadCoroutine(ModEntry modEntry) {
             yield return null;
-            while (!RDString.initialized) yield return null;
+            while(!RDString.initialized)
+                yield return null;
             TextManager.Initialize();
             yield return null;
         }
-        public static bool OnToggle(ModEntry modEntry, bool toggle)
-        {
-            if (toggle)
-            {
+        public static bool OnToggle(ModEntry modEntry, bool toggle) {
+            if(toggle) {
                 StaticCoroutine.Run(null);
                 StaticCoroutine.Run(LoadCoroutine(modEntry));
                 Settings = ModSettings.Load<Settings>(modEntry);
@@ -158,9 +151,7 @@ namespace Overlayer
                         }
                     );
                 }
-                }
-            else
-            {
+            } else {
                 if(EgEnabled) {
                     EgEnabled = false;
                 }
@@ -182,8 +173,7 @@ namespace Overlayer
             return true;
         }
 
-        public static void OnShowGUI(ModEntry modEntry)
-        {
+        public static void OnShowGUI(ModEntry modEntry) {
             IsShowGUI = true;
             popup = new GameObject().AddComponent<UpdatePopup>();
             UnityEngine.Object.DontDestroyOnLoad(popup);
@@ -237,13 +227,12 @@ namespace Overlayer
                 GUILayout.Space(30);
             }
 
-            if (AutoUpdater.IsBeta)
-            {
+            if(AutoUpdater.IsBeta) {
                 GUILayout.Label($"<size=30><color=lime>{Lang.Get("BETA_TEXT", "Beta Version")}</color></size>");
                 GUILayout.Label($"{Lang.Get("BETA_DESCRIPTION", "Beta version may be unstable")}");
                 GUILayout.Space(30);
             }
-           
+
             tooltip = "";
             GUI.Draw();
             GUILayout.Space(30);
@@ -291,34 +280,29 @@ namespace Overlayer
             }
         }
 
-        public static void OnHideGUI(ModEntry modEntry)
-        {
+        public static void OnHideGUI(ModEntry modEntry) {
             IsShowGUI = false;
             //CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
             Drawer.codeEditor.undoRedoManagers.Clear();
             GUI.Flush();
         }
 
-        public static void OnSaveGUI(ModEntry modEntry)
-        {
+        public static void OnSaveGUI(ModEntry modEntry) {
             TextManager.Save();
             ModSettings.Save(Settings, modEntry);
         }
 
-        public static bool IsPlaying
-        {
-            get
-            {
+        public static bool IsPlaying {
+            get {
                 var ctrl = scrController.instance;
                 var cdt = scrConductor.instance;
-                if (ctrl != null && cdt != null)
+                if(ctrl != null && cdt != null)
                     return !ctrl.paused && cdt.isGameWorld;
                 return false;
             }
         }
 
-        public static void OnLanguageInitialize()
-        {
+        public static void OnLanguageInitialize() {
             string[] translatorLogs = Lang.Logs;
             if(translatorLogs != null && translatorLogs.Length > 0) {
                 foreach(var log in translatorLogs) {

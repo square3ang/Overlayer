@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace RapidGUI
-{
+namespace RapidGUI {
     //[CreateAssetMenu(menuName = "RapidGUI/Create CursorData")]
-    public class CursorData : ScriptableObject
-    {
+    public class CursorData : ScriptableObject {
         [System.Serializable]
-        public class Data
-        {
+        public class Data {
             public Texture2D tex;
             public Vector2Int hotspot;
         }

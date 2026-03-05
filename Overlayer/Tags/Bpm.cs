@@ -1,9 +1,7 @@
 ﻿using Overlayer.Tags.Attributes;
 
-namespace Overlayer.Tags
-{
-    public static class Bpm
-    {
+namespace Overlayer.Tags {
+    public static class Bpm {
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
         public static double TileBpm;
         [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
@@ -79,8 +77,7 @@ namespace Overlayer.Tags
             RecKPSWithoutPitch = curBPMWithoutPitch / 60;
         }
 
-        public static void Reset()
-        {
+        public static void Reset() {
             TileBpm = CurBpm = RecKPS = 0;
             TileBpmWithoutPitch = CurBpmWithoutPitch = RecKPSWithoutPitch = 0;
         }

@@ -6,23 +6,23 @@ using static Overlayer.Olly.OllyState;
 namespace Overlayer.Olly {
     public class OllyRender {
         public static class Anchor {
-            public static readonly Vector2 BGAnchor = new Vector2(24, 62);
-            public static readonly Vector2 HairAnchor = new Vector2(11, 6);
-            public static readonly Vector2 HairBGAnchor = new Vector2(7, 3);
-            public static readonly Vector2 EyelidUpAnchor = new Vector2(53, 96);
-            public static readonly Vector2 EyelidDownAnchor = new Vector2(63, 126);
-            public static readonly Vector2 EyelidBGAnchor = new Vector2(53, 92);
-            public static readonly Vector2 NoseAnchor = new Vector2(121, 134);
+            public static readonly Vector2 BGAnchor = new(24, 62);
+            public static readonly Vector2 HairAnchor = new(11, 6);
+            public static readonly Vector2 HairBGAnchor = new(7, 3);
+            public static readonly Vector2 EyelidUpAnchor = new(53, 96);
+            public static readonly Vector2 EyelidDownAnchor = new(63, 126);
+            public static readonly Vector2 EyelidBGAnchor = new(53, 92);
+            public static readonly Vector2 NoseAnchor = new(121, 134);
 
             public static readonly Vector2[] EyebrowAnchor = new Vector2[] {
-                new Vector2(72, 76), // Normal
-                new Vector2(75, 87), // Sad
-                new Vector2(69, 74), // Angry
-                new Vector2(78, 52), // AngryMore
-                new Vector2(73, 68), // Curious
-                new Vector2(62, 75), // Twist
-                new Vector2(63, 66), // Pity
-                new Vector2(65, 65)  // NormalHigh
+                new(72, 76), // Normal
+                new(75, 87), // Sad
+                new(69, 74), // Angry
+                new(78, 52), // AngryMore
+                new(73, 68), // Curious
+                new(62, 75), // Twist
+                new(63, 66), // Pity
+                new(65, 65)  // NormalHigh
             };
 
             public static readonly (Vector2, Vector2)[] EyesAnchor = new (Vector2, Vector2)[] {
@@ -31,47 +31,47 @@ namespace Overlayer.Olly {
             };
 
             public static readonly Vector2[] EyeSpecialAnchor = new Vector2[] {
-                new Vector2(59, 115), // Up
-                new Vector2(55, 112)  // Down
+                new(59, 115), // Up
+                new(55, 112)  // Down
             };
 
             public static readonly (Vector2, Vector2) EyeHighlightAnchor =
                 (new Vector2(82, 108), new Vector2(146, 107));
 
             public static readonly Vector2[] MouthAnchor = new Vector2[] {
-                new Vector2(119, 155), // Normal
-                new Vector2(115, 152), // Shift
-                new Vector2(117, 153), // CaretWide
-                new Vector2(108, 137), // HalfChewed
-                new Vector2(117, 154), // Smile
-                new Vector2(115, 152), // OpenSmall
-                new Vector2(115, 152), // OpenSmallHarf
-                new Vector2(116, 154), // OpenMicro
-                new Vector2(113, 150), // OpenCaret
-                new Vector2(111, 150), // Open
-                new Vector2(113, 150), // Disgust
-                new Vector2(107, 149), // OpenDisgust
-                new Vector2(109, 151), // Joker
-                new Vector2(121, 153), // SadSmall
-                new Vector2(122, 153), // Caret
-                new Vector2(113, 150), // Clenched
-                new Vector2(105, 148), // Mad
-                new Vector2(102, 143), // Surprise
-                new Vector2(107, 150), // SurpriseSmall
-                new Vector2(110, 149)  // WideStretch
+                new(119, 155), // Normal
+                new(115, 152), // Shift
+                new(117, 153), // CaretWide
+                new(108, 137), // HalfChewed
+                new(117, 154), // Smile
+                new(115, 152), // OpenSmall
+                new(115, 152), // OpenSmallHarf
+                new(116, 154), // OpenMicro
+                new(113, 150), // OpenCaret
+                new(111, 150), // Open
+                new(113, 150), // Disgust
+                new(107, 149), // OpenDisgust
+                new(109, 151), // Joker
+                new(121, 153), // SadSmall
+                new(122, 153), // Caret
+                new(113, 150), // Clenched
+                new(105, 148), // Mad
+                new(102, 143), // Surprise
+                new(107, 150), // SurpriseSmall
+                new(110, 149)  // WideStretch
             };
 
             public static readonly Vector2[] EffectAnchor = new Vector2[] {
-                new Vector2(61, 125), // Tear
-                new Vector2(79, 111), // Sweat
-                new Vector2(63, 129)  // Blush
+                new(61, 125), // Tear
+                new(79, 111), // Sweat
+                new(63, 129)  // Blush
             };
 
             public static readonly Vector2[] EffectForwardAnchor = new Vector2[] {
-                new Vector2(3, 186),  // Cloud
-                new Vector2(16, 8),   // Tremble
-                new Vector2(65, 39),  // Tendon
-                new Vector2(50, 96)   // BlushBig
+                new(3, 186),  // Cloud
+                new(16, 8),   // Tremble
+                new(65, 39),  // Tendon
+                new(50, 96)   // BlushBig
             };
         }
         public struct FaceShape {
@@ -96,7 +96,7 @@ namespace Overlayer.Olly {
             eyeBlinkTimer += Time.deltaTime;
             bool canBlink = true;
             if(followMouse) {
-                Rect touchArea = new Rect(33, 38, 208, 108);
+                Rect touchArea = new(33, 38, 208, 108);
                 if(Event.current.button == 0 && Event.current.type == EventType.MouseDown && touchArea.Contains(mousePos)) {
                     canBlink = false;
                     touching = true;
@@ -134,19 +134,19 @@ namespace Overlayer.Olly {
             }
 
             if(followMouse) {
-                Vector2 left = new Vector2(
+                Vector2 left = new(
                     Anchor.EyesAnchor[(int)Eye.Normal - 1].Item1.x + Eyes[(int)Eye.Normal - 1].Item1.width / 2f,
                     Anchor.EyesAnchor[(int)Eye.Normal - 1].Item1.y + Eyes[(int)Eye.Normal - 1].Item1.height / 2f
                 );
 
-                Vector2 right = new Vector2(
+                Vector2 right = new(
                     Anchor.EyesAnchor[(int)Eye.Normal - 1].Item2.x + Eyes[(int)Eye.Normal - 1].Item2.width / 2f,
                     Anchor.EyesAnchor[(int)Eye.Normal - 1].Item2.y + Eyes[(int)Eye.Normal - 1].Item2.height / 2f
                 );
 
                 Vector2 pivot = (left + right) * 0.5f;
 
-                Vector2 delta = new Vector2(mousePos.x - pivot.x, mousePos.y - pivot.y);
+                Vector2 delta = new(mousePos.x - pivot.x, mousePos.y - pivot.y);
                 float distance = delta.magnitude;
                 float maxDistance = 100f;
                 float maxOffset = 3.6f;
@@ -172,7 +172,7 @@ namespace Overlayer.Olly {
                 float xPivot = Anchor.HairAnchor.x + (Hair.width / 2);
                 float yPivot = Anchor.HairAnchor.y + (Hair.height / 2);
 
-                Vector2 delta = new Vector2(mousePos.x - xPivot, mousePos.y - yPivot);
+                Vector2 delta = new(mousePos.x - xPivot, mousePos.y - yPivot);
                 float distance = delta.magnitude;
                 float maxDistance = 100f;
                 float maxOffset = 1.7f;
@@ -196,7 +196,7 @@ namespace Overlayer.Olly {
             if(followMouse) {
                 faceOffset = eyeOffset * 0.5f;
             }
-            if (face.Mouth  != Mouth.None) {
+            if(face.Mouth != Mouth.None) {
                 GUI.DrawTexture(new Rect(imageX + Anchor.MouthAnchor[(int)face.Mouth - 1].x + faceOffset.x,
                     20 + Anchor.MouthAnchor[(int)face.Mouth - 1].y + faceOffset.y,
                     Mouths[(int)face.Mouth - 1].width, Mouths[(int)face.Mouth - 1].height), Mouths[(int)face.Mouth - 1]);
@@ -250,7 +250,7 @@ namespace Overlayer.Olly {
             if(face.EyeSpecial == EyeSpecial.None) {
                 Vector2 leftEyeOffset = Vector2.zero;
                 Vector2 rightEyeOffset = Vector2.zero;
-                Vector2 eyelidOffset = Vector2. zero;
+                Vector2 eyelidOffset = Vector2.zero;
                 if(face.Eye == Eye.Small) {
                     leftEyeOffset = new Vector2(4f, 6f);
                     rightEyeOffset = new Vector2(0, 5f);
@@ -290,7 +290,7 @@ namespace Overlayer.Olly {
                 if(followMouse) {
                     eyebrowOffset = eyeOffset * 0.23f;
                 }
-            
+
                 GUI.DrawTexture(new Rect(imageX + Anchor.EyebrowAnchor[(int)face.Eyebrow - 1].x + eyebrowOffset.x,
                 20 + Anchor.EyebrowAnchor[(int)face.Eyebrow - 1].y + eyebrowOffset.y,
                 Eyebrows[(int)face.Eyebrow - 1].width, Eyebrows[(int)face.Eyebrow - 1].height), Eyebrows[(int)face.Eyebrow - 1]);

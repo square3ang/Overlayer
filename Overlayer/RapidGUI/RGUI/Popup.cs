@@ -1,30 +1,26 @@
-﻿using System;
+﻿using Overlayer;
+using Overlayer.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Overlayer;
-using Overlayer.Core;
 using UnityEngine;
 
-namespace RapidGUI
-{
-    public static partial class RGUI
-    {
+namespace RapidGUI {
+    public static partial class RGUI {
         static int popupControlId;
-        static readonly PopupWindow popupWindow = new PopupWindow();
+        static readonly PopupWindow popupWindow = new();
 
-        public static string SelectionPopup(string current, string[] displayOptions)
-        {
+        public static string SelectionPopup(string current, string[] displayOptions) {
             var idx = Array.IndexOf(displayOptions, current);
             GUILayout.Box(current, RGUIStyle.alignLeftBox);
             var newIdx = PopupOnLastRect(idx, displayOptions);
-            if (newIdx != idx) {
+            if(newIdx != idx) {
                 current = displayOptions[newIdx];
             }
             return current;
         }
 
-        public static int SelectionPopup(int selectionIndex, string[] displayOptions)
-        {
+        public static int SelectionPopup(int selectionIndex, string[] displayOptions) {
             var label = (selectionIndex < 0 || displayOptions.Length <= selectionIndex)
                 ? ""
                 : displayOptions[selectionIndex];
@@ -33,8 +29,7 @@ namespace RapidGUI
         }
 
         public static int SelectionPopup(int selectionIndex, string[] displayOptions,
-            Dictionary<string, string> tooltips = null, params GUILayoutOption[] options)
-        {
+            Dictionary<string, string> tooltips = null, params GUILayoutOption[] options) {
             var label = (selectionIndex < 0 || displayOptions.Length <= selectionIndex)
                 ? ""
                 : displayOptions[selectionIndex];
@@ -70,7 +65,7 @@ namespace RapidGUI
                 GUILayout.Box(displayOptions[selectionIndex], RGUIStyle.alignLeftBox);
                 GUILayout.EndHorizontal();
             }
-            
+
             return PopupOnLastRect(selectionIndex, displayOptions, images);
         }
 
@@ -114,53 +109,44 @@ namespace RapidGUI
 
 
         public static int Popup(Rect launchRect, int mouseButton, int selectionIndex, string[] displayOptions, Texture2D[] images = null,
-            string label = "", Dictionary<string, string> tooltips = null)
-        {
+            string label = "", Dictionary<string, string> tooltips = null) {
             var ret = selectionIndex;
             var controlId = GUIUtility.GetControlID(FocusType.Passive);
 
             // not Popup Owner
-            if (popupControlId != controlId)
-            {
+            if(popupControlId != controlId) {
                 var ev = Event.current;
                 var pos = ev.mousePosition;
 
-                if ((ev.type == EventType.MouseUp)
+                if((ev.type == EventType.MouseUp)
                     && ((mouseButton < 0) || (ev.button == mouseButton))
                     && launchRect.Contains(pos)
                     && displayOptions != null
                     && displayOptions.Any()
-                   )
-                {
+                   ) {
                     popupWindow.pos = RGUIUtility.GetMouseScreenPos(Vector2.one * 150f);
                     popupControlId = controlId;
                     ev.Use();
                 }
             }
             // Active
-            else
-            {
+            else {
                 var type = Event.current.type;
 
                 var result = popupWindow.result;
-                if (result.HasValue && type == EventType.Layout)
-                {
-                    if (result.Value >= 0) // -1 when the popup is closed by clicking outside the window
+                if(result.HasValue && type == EventType.Layout) {
+                    if(result.Value >= 0) // -1 when the popup is closed by clicking outside the window
                     {
                         ret = result.Value;
                     }
 
                     popupWindow.result = null;
                     popupControlId = 0;
-                }
-                else
-                {
-                    if ((type == EventType.Layout) || (type == EventType.Repaint))
-                    {
+                } else {
+                    if((type == EventType.Layout) || (type == EventType.Repaint)) {
                         var buttonStyle = RGUIStyle.popupFlatButton;
                         var contentSize = Vector2.zero;
-                        for (var i = 0; i < displayOptions.Length; ++i)
-                        {
+                        for(var i = 0; i < displayOptions.Length; ++i) {
                             var textSize = buttonStyle.CalcSize(RGUIUtility.TempContent(displayOptions[i]));
                             contentSize.x = Mathf.Max(contentSize.x, textSize.x);
                             contentSize.y += textSize.y;
@@ -201,8 +187,7 @@ namespace RapidGUI
         }
 
 
-        public class PopupWindow : IDoGUIWindow
-        {
+        public class PopupWindow : IDoGUIWindow {
             public string label;
             public Vector2 pos;
             public Vector2 size;
@@ -218,10 +203,9 @@ namespace RapidGUI
 
             static readonly int PopupWindowId = "Popup".GetHashCode();
 
-            public Rect GetWindowRect() => new Rect(pos, size);
+            public Rect GetWindowRect() => new(pos, size);
 
-            public void DoGUIWindow()
-            {
+            public void DoGUIWindow() {
                 var npopup = new GUIStyle(RGUIStyle.popup);
                 npopup.normal.background = Texture2D.blackTexture;
                 npopup.hover.background = Texture2D.blackTexture;
@@ -231,78 +215,70 @@ namespace RapidGUI
                 wrect.y -= 100;
                 wrect.width += 2000;
                 wrect.height += 200;
-                GUI.ModalWindow(PopupWindowId, wrect, (id) =>
-                    {
-                        var rc = new Rect(new Vector2(1000, 100), GetWindowRect().size);
-                        GUI.Box(rc, "", RGUIStyle.popup);
-                        showTooltip = false;
-                        
-                        var bakv = GUI.skin.verticalScrollbar.normal.background;
-                        var bakvt = GUI.skin.verticalScrollbarThumb.normal.background;
+                GUI.ModalWindow(PopupWindowId, wrect, (id) => {
+                    var rc = new Rect(new Vector2(1000, 100), GetWindowRect().size);
+                    GUI.Box(rc, "", RGUIStyle.popup);
+                    showTooltip = false;
 
-                        if (!Main.Settings.useLegacyTheme)
-                        {
-                            GUI.skin.verticalScrollbar.normal.background = Drawer.jittengray;
+                    var bakv = GUI.skin.verticalScrollbar.normal.background;
+                    var bakvt = GUI.skin.verticalScrollbarThumb.normal.background;
 
-                            GUI.skin.verticalScrollbarThumb.normal.background = Drawer.gray;
+                    if(!Main.Settings.useLegacyTheme) {
+                        GUI.skin.verticalScrollbar.normal.background = Drawer.jittengray;
 
-                        }
+                        GUI.skin.verticalScrollbarThumb.normal.background = Drawer.gray;
 
-                        using (var sc = new GUILayout.ScrollViewScope(scrollPosition))
-                        {
-                            scrollPosition = sc.scrollPosition;
+                    }
 
-                            for (var j = 0; j < displayOptions.Length; ++j)
-                            {
+                    using(var sc = new GUILayout.ScrollViewScope(scrollPosition)) {
+                        scrollPosition = sc.scrollPosition;
 
-                                if(GUILayout.Button(displayOptions[j], RGUIStyle.popupFlatButton)) {
-                                    result = j;
-                                    isOpen = false;
-                                }
+                        for(var j = 0; j < displayOptions.Length; ++j) {
 
-                                Rect lastRect = GUILayoutUtility.GetLastRect();
+                            if(GUILayout.Button(displayOptions[j], RGUIStyle.popupFlatButton)) {
+                                result = j;
+                                isOpen = false;
+                            }
 
-                                if (tooltips != null && lastRect
-                                    .Contains(Event.current.mousePosition) &&
-                                    tooltips.TryGetValue(displayOptions[j], out var tooltip))
-                                {
-                                    showTooltip = true;
-                                    PopupWindow.tooltip = tooltip;
-                                }
+                            Rect lastRect = GUILayoutUtility.GetLastRect();
 
-                                var image = images != null && j < images.Length ? images[j] : null;
+                            if(tooltips != null && lastRect
+                                .Contains(Event.current.mousePosition) &&
+                                tooltips.TryGetValue(displayOptions[j], out var tooltip)) {
+                                showTooltip = true;
+                                PopupWindow.tooltip = tooltip;
+                            }
 
-                                if(image != null) {
-                                    lastRect.x += 5;
-                                    lastRect.width = image.width * 4;
-                                    lastRect.height = image.height * 4;
+                            var image = images != null && j < images.Length ? images[j] : null;
 
-                                    GUI.Label(lastRect, image);
-                                }
+                            if(image != null) {
+                                lastRect.x += 5;
+                                lastRect.width = image.width * 4;
+                                lastRect.height = image.height * 4;
+
+                                GUI.Label(lastRect, image);
                             }
                         }
-
-                        GUI.skin.verticalScrollbar.normal.background = bakv;
-                        GUI.skin.verticalScrollbarThumb.normal.background = bakvt;
-
-                        var ev = Event.current;
-                        if ((ev.rawType == EventType.MouseDown) &&
-                            !(rc.Contains(ev.mousePosition)))
-                        {
-                            result = -1;
-                            isOpen = false;
-                        }
-
-                        if (showTooltip)
-                        {
-                            Drawer.Tooltip(tooltip, true);
-                        }
                     }
+
+                    GUI.skin.verticalScrollbar.normal.background = bakv;
+                    GUI.skin.verticalScrollbarThumb.normal.background = bakvt;
+
+                    var ev = Event.current;
+                    if((ev.rawType == EventType.MouseDown) &&
+                        !(rc.Contains(ev.mousePosition))) {
+                        result = -1;
+                        isOpen = false;
+                    }
+
+                    if(showTooltip) {
+                        Drawer.Tooltip(tooltip, true);
+                    }
+                }
                     , label, npopup);
             }
 
-            public void CloseWindow()
-            {
+            public void CloseWindow() {
                 result = -1;
                 isOpen = false;
             }

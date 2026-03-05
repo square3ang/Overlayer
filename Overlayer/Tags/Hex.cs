@@ -1,9 +1,7 @@
 ﻿using Overlayer.Tags.Attributes;
 
-namespace Overlayer.Tags
-{
-    public static class Hex
-    {
+namespace Overlayer.Tags {
+    public static class Hex {
         [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.TrimString)]
         public static string TEHex = "FF0000FF";
         [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.TrimString)]

@@ -5,17 +5,14 @@ using System.Reflection;
 using UnityEngine;
 
 
-namespace RapidGUI
-{
+namespace RapidGUI {
     /// <summary>
     /// TypeUtility.GetmemberInfoList() implements
     /// </summary>
-    public static partial class TypeUtility
-    {
+    public static partial class TypeUtility {
         #region Type Define
 
-        public abstract class MemberWrapper
-        {
+        public abstract class MemberWrapper {
             public abstract string Name { get; }
             public abstract Type MemberType { get; }
 
@@ -24,15 +21,12 @@ namespace RapidGUI
 
             string label_;
 
-            public string label
-            {
-                get
-                {
+            public string label {
+                get {
                     return label_ ?? Name;
                 }
 
-                set
-                {
+                set {
                     label_ = value;
                 }
             }
@@ -40,18 +34,14 @@ namespace RapidGUI
             public MinMaxFloat range { get; set; }
         }
 
-        public class MemberFieldInfo : MemberWrapper
-        {
+        public class MemberFieldInfo : MemberWrapper {
             FieldInfo info;
 
-            public MemberFieldInfo(FieldInfo info)
-            {
+            public MemberFieldInfo(FieldInfo info) {
                 this.info = info;
                 var rangeAttr = info.GetCustomAttribute<RangeAttribute>();
-                if ( rangeAttr != null)
-                {
-                    range = new MinMaxFloat()
-                    {
+                if(rangeAttr != null) {
+                    range = new MinMaxFloat() {
                         min = rangeAttr.min,
                         max = rangeAttr.max
                     };
@@ -67,12 +57,10 @@ namespace RapidGUI
             public override void SetValue(object obj, object value) => info.SetValue(obj, value);
         }
 
-        public class MemberPropertyInfo : MemberWrapper
-        {
+        public class MemberPropertyInfo : MemberWrapper {
             PropertyInfo info;
 
-            public MemberPropertyInfo(PropertyInfo info)
-            {
+            public MemberPropertyInfo(PropertyInfo info) {
                 this.info = info;
             }
 
@@ -87,12 +75,10 @@ namespace RapidGUI
 
         #endregion
 
-        static Dictionary<Type, List<MemberWrapper>> memberInfoTable = new Dictionary<Type, List<MemberWrapper>>();
-        public static List<MemberWrapper> GetMemberInfoList(Type type)
-        {
+        static Dictionary<Type, List<MemberWrapper>> memberInfoTable = new();
+        public static List<MemberWrapper> GetMemberInfoList(Type type) {
             List<MemberWrapper> list;
-            if (!memberInfoTable.TryGetValue(type, out list))
-            {
+            if(!memberInfoTable.TryGetValue(type, out list)) {
                 list = new List<MemberWrapper>();
                 list.AddRange(GetPropertyInfoList(type).Select(info => new MemberPropertyInfo(info)));
                 list.AddRange(GetFieldInfoList(type).Select(info => new MemberFieldInfo(info)));
@@ -107,10 +93,8 @@ namespace RapidGUI
         #region Property Info List
 
         static Dictionary<Type, List<PropertyInfo>> propertyInfoTable;
-        static List<PropertyInfo> GetPropertyInfoList(Type type)
-        {
-            if (propertyInfoTable == null)
-            {
+        static List<PropertyInfo> GetPropertyInfoList(Type type) {
+            if(propertyInfoTable == null) {
                 var list = new[]
                 {
                     new {type = typeof(Vector2Int), names = new[]{"x", "y"} },
@@ -123,7 +107,8 @@ namespace RapidGUI
                 };
 
                 propertyInfoTable = list.ToDictionary(tn => tn.type, tn => tn.names.Select(name => tn.type.GetProperty(name)).ToList());
-            };
+            }
+            ;
 
             propertyInfoTable.TryGetValue(type, out var piList);
 
@@ -135,12 +120,10 @@ namespace RapidGUI
 
         #region Field Info List
 
-        static Dictionary<Type, List<FieldInfo>> fieldInfoTable = new Dictionary<Type, List<FieldInfo>>();
+        static Dictionary<Type, List<FieldInfo>> fieldInfoTable = new();
 
-        static List<FieldInfo> GetFieldInfoList(Type type)
-        {
-            if (!fieldInfoTable.TryGetValue(type, out var fiList))
-            {
+        static List<FieldInfo> GetFieldInfoList(Type type) {
+            if(!fieldInfoTable.TryGetValue(type, out var fiList)) {
                 fiList = type
                     .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                     .Where(fi => !typeof(Delegate).IsAssignableFrom(fi.FieldType))

@@ -1,7 +1,6 @@
 ﻿using Overlayer.Core;
 using Overlayer.Core.TextReplacing;
 using Overlayer.Models;
-using Overlayer.Patches;
 using Overlayer.Tags;
 using Overlayer.Utils;
 using System;
@@ -11,10 +10,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEngine.Random;
 
-namespace Overlayer.Unity
-{
+namespace Overlayer.Unity {
     public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
         public static event Action<OverlayerText> OnApplyConfig = delegate { };
         public bool Initialized { get; private set; }
@@ -37,8 +34,7 @@ namespace Overlayer.Unity
         public static GameObject PCanvasObj;
         public static Canvas PublicCanvas;
         public static Shader sr_msdf;
-        static OverlayerText()
-        {
+        static OverlayerText() {
             sr_msdf = (Shader)typeof(ShaderUtilities).GetProperty("ShaderRef_MobileSDF", (BindingFlags)15420).GetValue(null);
         }
         #endregion
@@ -87,7 +83,7 @@ namespace Overlayer.Unity
             DontDestroyOnLoad(PublicCanvas);
         }
         public static void DragInit() {
-            if (DragObj != null) {
+            if(DragObj != null) {
                 return;
             }
             if(PublicCanvas == null) {
@@ -98,7 +94,7 @@ namespace Overlayer.Unity
             DragObj.transform.localPosition = Vector3.zero;
             DragImage = DragObj.AddComponent<Image>();
 
-            Texture2D outlinetex = new Texture2D(3, 3, TextureFormat.RGBA32, false);
+            Texture2D outlinetex = new(3, 3, TextureFormat.RGBA32, false);
             Color[] outlinetexpixels = new Color[] {
                 Color.white, Color.white, Color.white,
                 Color.white, Color.clear, Color.white,
@@ -123,19 +119,19 @@ namespace Overlayer.Unity
             DragImage.rectTransform.sizeDelta = Vector2.zero;
             DragObj.SetActive(false);
         }
-        public void Update()
-        {
-            if (Main.IsPlaying) Text.text = PlayingReplacer.Replace();
-            else Text.text = NotPlayingReplacer.Replace();
-            if (isDragging) {
+        public void Update() {
+            if(Main.IsPlaying)
+                Text.text = PlayingReplacer.Replace();
+            else
+                Text.text = NotPlayingReplacer.Replace();
+            if(isDragging) {
                 DragObj.transform.position = Text.gameObject.transform.position;
                 DragObj.transform.rotation = Text.gameObject.transform.rotation;
                 DragImage.rectTransform.pivot = Text.rectTransform.pivot;
                 DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
-            } 
+            }
         }
-        public void ApplyConfig()
-        {
+        public void ApplyConfig() {
             PlayingReplacer.Source = Config.PlayingText;
             NotPlayingReplacer.Source = Config.NotPlayingText;
             PlayingReplacer.UpdateTags(TagManager.All.Select(ot => ot.Tag));
@@ -154,8 +150,7 @@ namespace Overlayer.Unity
             Text.alignment = Config.Alignment;
             SetFont();
             Material[] sharedMaterials = Text.fontSharedMaterials;
-            for (int i = 0; i < sharedMaterials.Length; i++)
-            {
+            for(int i = 0; i < sharedMaterials.Length; i++) {
                 var mat = new Material(sharedMaterials[i]);
                 ApplyMaterial(mat);
                 sharedMaterials[i] = mat;
@@ -163,14 +158,13 @@ namespace Overlayer.Unity
             Text.fontSharedMaterials = sharedMaterials;
             OnApplyConfig(this);
         }
-        private static void InitMaterial(Material mat)
-        {
-            if (sr_msdf) mat.shader = sr_msdf;
+        private static void InitMaterial(Material mat) {
+            if(sr_msdf)
+                mat.shader = sr_msdf;
             mat.EnableKeyword(ShaderUtilities.Keyword_Outline);
             mat.EnableKeyword(ShaderUtilities.Keyword_Underlay);
         }
-        private void ApplyMaterial(Material mat)
-        {
+        private void ApplyMaterial(Material mat) {
             mat.SetColor(ShaderUtilities.ID_OutlineColor, Config.OutlineColor);
             mat.SetFloat(ShaderUtilities.ID_OutlineWidth, Config.OutlineWidth);
             mat.SetColor(ShaderUtilities.ID_UnderlayColor, Config.ShadowColor);
@@ -184,8 +178,7 @@ namespace Overlayer.Unity
             return Text.text;
         }
 
-        public void OnPointerDown(PointerEventData e)
-        {
+        public void OnPointerDown(PointerEventData e) {
             if(isAlreadyDragging) {
                 return;
             }
@@ -195,23 +188,20 @@ namespace Overlayer.Unity
             initialObjectPosition = Text.rectTransform.anchoredPosition;
         }
 
-        public void OnPointerUp(PointerEventData e)
-        {
+        public void OnPointerUp(PointerEventData e) {
             if(isDragging) {
                 isDragging = false;
                 isAlreadyDragging = false;
             }
         }
 
-        public void OnDrag(PointerEventData e)
-        {
-            if(isDragging)
-            {
+        public void OnDrag(PointerEventData e) {
+            if(isDragging) {
                 Vector2 currentPointerPosition = e.position;
                 Vector2 offset = currentPointerPosition - initialPointerPosition;
                 Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
 
-                Vector2 screenSize = new Vector2(1920, 1080);
+                Vector2 screenSize = new(1920, 1080);
                 Config.Position = (Text.rectTransform.anchoredPosition / screenSize) + new Vector2(0.5f, 0.5f);
             }
         }
@@ -235,19 +225,16 @@ namespace Overlayer.Unity
                 if(!isAlreadyDragging) {
                     DragObj.SetActive(false);
                 }
-            } else if (pointingCount < 0) {
+            } else if(pointingCount < 0) {
                 pointingCount = 0;
             }
             isPointing = false;
         }
 
-        private void SetFont()
-        {
-            if (FontManager.TryGetFont(Config.Font, out FontData font))
-            {
+        private void SetFont() {
+            if(FontManager.TryGetFont(Config.Font, out FontData font)) {
                 TMP_FontAsset targetFont = font.fontTMP;
-                if (Config.EnableFallbackFonts)
-                {
+                if(Config.EnableFallbackFonts) {
                     targetFont = TMP_FontAsset.CreateFontAsset(font.font);
                     var fallbacks = Config.FallbackFonts?.Select(f => FontManager.GetFont(f)).Where(d => d != null);
                     targetFont.fallbackFontAssetTable = fallbacks.Select(fd => fd.Value.fontTMP).ToList();

@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using Newtonsoft.Json.Linq;
-using static UnityModManagerNet.UnityModManager;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Reflection;
+using System.Threading.Tasks;
+using static UnityModManagerNet.UnityModManager;
 
 namespace Overlayer.Utils {
     public static class AutoUpdater {
@@ -170,7 +170,7 @@ namespace Overlayer.Utils {
 
             IsUpdating = true;
 
-            string tempDir = Path.Combine(modEntry.Path,"updatetemp");
+            string tempDir = Path.Combine(modEntry.Path, "updatetemp");
             string zipPath = Path.Combine(tempDir, "Overlayer.zip");
 
             try {
@@ -258,7 +258,7 @@ namespace Overlayer.Utils {
                 Main.Logger.Error(ex.Message);
                 return null;
             }
-            
+
             return extractedVersion;
         }
     }

@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Overlayer.Unity
-{
-    public class Capturer : MonoBehaviour
-    {
+namespace Overlayer.Unity {
+    public class Capturer : MonoBehaviour {
         //public static Capturer Instance
         //{
         //    get
@@ -32,7 +25,7 @@ namespace Overlayer.Unity
         //    get => rt != null ? size = new Vector2Int(rt.width, rt.height) : Vector2Int.zero;
         //    set => size = value;
         //}
-        
+
         //public void Apply(Camera target)
         //{
         //    rt?.Release();

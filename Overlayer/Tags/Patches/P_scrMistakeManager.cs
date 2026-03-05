@@ -1,9 +1,5 @@
 ﻿using Overlayer.Core.Patches;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Overlayer.Tags.Patches {
     public class P_scrMistakeManager : PatchBase<P_scrMistakeManager> {

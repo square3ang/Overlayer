@@ -9,7 +9,7 @@ namespace Overlayer.Wiki {
         private bool IsLoading = false;
         private bool failed = false;
         private event Action<List<WikiData>> OnLoaded = delegate { };
-        
+
         public WikiLoader(Action<List<WikiData>> listener) {
             OnLoaded += listener;
         }
@@ -31,7 +31,7 @@ namespace Overlayer.Wiki {
                 return;
             }
 
-            List<WikiData> wikiDatas = new List<WikiData>();
+            List<WikiData> wikiDatas = new();
 
             foreach(var file in files) {
                 using var reader = new StreamReader(file);
@@ -43,7 +43,7 @@ namespace Overlayer.Wiki {
                     continue;
                 }
 
-                WikiData wikiData = new WikiData();
+                WikiData wikiData = new();
                 wikiData.Title = title;
 
                 if(json["body"] is not JArray bodyArray) {

@@ -1,18 +1,14 @@
 ﻿using System.Linq;
 
-namespace RapidGUI
-{
-    public static class CustomGUI
-    {
-        public static bool Label<T>(string memberName, string label)
-        {
+namespace RapidGUI {
+    public static class CustomGUI {
+        public static bool Label<T>(string memberName, string label) {
             var infos = TypeUtility.GetMemberInfoList(typeof(T));
 
-            bool changed = false; ;
-            foreach (var info in infos)
-            {
-                if (info.Name == memberName)
-                {
+            bool changed = false;
+            ;
+            foreach(var info in infos) {
+                if(info.Name == memberName) {
                     info.label = label;
                     changed = true;
                 }
@@ -21,8 +17,7 @@ namespace RapidGUI
             return changed;
         }
 
-        public static bool IgnoreMember<T>(string memberName)
-        {
+        public static bool IgnoreMember<T>(string memberName) {
             var infos = TypeUtility.GetMemberInfoList(typeof(T));
             var removed = infos.RemoveAll(info => info.Name == memberName) > 0;
             return removed;
@@ -32,13 +27,11 @@ namespace RapidGUI
 
         public static bool AddRange<T>(string memberName, float min, float max) => AddRange<T>(memberName, new MinMaxFloat() { min = min, max = max });
 
-        public static bool AddRange<T>(string memberName, MinMaxFloat range)
-        {
+        public static bool AddRange<T>(string memberName, MinMaxFloat range) {
             var infos = TypeUtility.GetMemberInfoList(typeof(T));
             var info = infos.FirstOrDefault(fi => fi.Name == memberName);
             var hasMember = (info != null);
-            if (hasMember)
-            {
+            if(hasMember) {
                 info.range = range;
             }
 

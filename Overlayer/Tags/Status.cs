@@ -1,11 +1,7 @@
 ﻿using Overlayer.Tags.Attributes;
-using System;
-using UnityEngine;
 
-namespace Overlayer.Tags
-{
-    public static class Status
-    {
+namespace Overlayer.Tags {
+    public static class Status {
         [Tag]
         public static bool IsAutoEnabled => ADOFAI.RDC?.auto ?? false;
         [Tag]

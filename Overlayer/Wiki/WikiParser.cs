@@ -1,6 +1,4 @@
-﻿using Overlayer.Utils;
-using System;
-using System.Text;
+﻿using System.Text;
 
 namespace Overlayer.Wiki {
     public static class WikiParser {

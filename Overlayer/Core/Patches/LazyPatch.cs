@@ -1,15 +1,12 @@
 ﻿using HarmonyLib;
-using Overlayer.Patches;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Overlayer.Core.Patches
-{
-    internal class LazyPatch
-    {
+namespace Overlayer.Core.Patches {
+    internal class LazyPatch {
         public const string InternalTrigger = "INTERNAL";
-        public static readonly Dictionary<string, LazyPatch> Patches = new Dictionary<string, LazyPatch>();
+        public static readonly Dictionary<string, LazyPatch> Patches = new();
         public Type patchType;
         public Harmony harmony;
         public MethodInfo prefix;
@@ -23,8 +20,7 @@ namespace Overlayer.Core.Patches
         public bool Locked { get; set; }
         public int IgnorePatchCount { get; set; }
         public int IgnoreUnpatchCount { get; set; }
-        public LazyPatch(Harmony harmony, Type patchType, LazyPatchAttribute attr)
-        {
+        public LazyPatch(Harmony harmony, Type patchType, LazyPatchAttribute attr) {
             this.patchType = patchType!;
             this.attr = attr!;
             this.harmony = harmony!;
@@ -33,19 +29,19 @@ namespace Overlayer.Core.Patches
             transpiler = patchType.GetMethod("Transpiler", (BindingFlags)15420);
             finalizer = patchType.GetMethod("Finalizer", (BindingFlags)15420);
             target = attr.Resolve();
-            if (attr.IsCompatible && target == null)
+            if(attr.IsCompatible && target == null)
                 Main.Logger.Log($"ID:{attr.Id}, {attr.TargetType}.{attr.TargetMethod} Could Not Be Resolved!");
             Patches.Add(attr.Id, this);
         }
-        public void Patch(bool force = false)
-        {
-            if (Patched || IgnorePatchCount-- > 0 || target == null || patch != null) return;
-            if (!force && Locked)
-            {
+        public void Patch(bool force = false) {
+            if(Patched || IgnorePatchCount-- > 0 || target == null || patch != null)
+                return;
+            if(!force && Locked) {
                 Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Patched!");
                 return;
             }
-            if (force) Locked = false;
+            if(force)
+                Locked = false;
             var pre_hm = prefix != null ? new HarmonyMethod(prefix) : null;
             var post_hm = postfix != null ? new HarmonyMethod(postfix) : null;
             var trans_hm = transpiler != null ? new HarmonyMethod(transpiler) : null;
@@ -54,15 +50,15 @@ namespace Overlayer.Core.Patches
             Main.Logger.Log($"ID:{attr.Id} Patched!");
             Patched = true;
         }
-        public void Unpatch(bool force = false)
-        {
-            if (!Patched || IgnoreUnpatchCount-- > 0 || target == null || patch == null) return;
-            if (!force && Locked)
-            {
+        public void Unpatch(bool force = false) {
+            if(!Patched || IgnoreUnpatchCount-- > 0 || target == null || patch == null)
+                return;
+            if(!force && Locked) {
                 Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Unpatched!");
                 return;
             }
-            if (force) Locked = false;
+            if(force)
+                Locked = false;
             harmony.Unpatch(target, patch);
             Main.Logger.Log($"ID:{attr.Id} Unpatched!");
             patch = null;

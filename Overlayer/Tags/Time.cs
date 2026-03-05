@@ -2,10 +2,8 @@
 using Overlayer.Tags.Attributes;
 using System;
 
-namespace Overlayer.Tags
-{
-    public static class Time
-    {
+namespace Overlayer.Tags {
+    public static class Time {
         [Tag(NotPlaying = true)]
         public static int Year => FastDateTime.Now.Year;
         [Tag(NotPlaying = true)]

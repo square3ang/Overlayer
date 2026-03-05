@@ -1,19 +1,14 @@
-﻿using System;
+﻿using DG.Tweening;
 using Overlayer.Core;
-using UnityEngine;
-using DG.Tweening;
-using Overlayer.Core.Translation;
-using System.IO;
 using Overlayer.Patches;
 using Overlayer.Tags;
-using Overlayer.Unity;
 using RapidGUI;
+using System;
+using UnityEngine;
 using Time = UnityEngine.Time;
 
-namespace Overlayer.Utils
-{
-    internal class MovingManEditor : MonoBehaviour
-    {
+namespace Overlayer.Utils {
+    internal class MovingManEditor : MonoBehaviour {
         public string codesBefore;
         public string codesAfter;
         public string matchValue;
@@ -39,10 +34,8 @@ namespace Overlayer.Utils
 
         private NeoDrawer neoDrawer;
 
-        public void Initialize(string tag, string codesBefore, string codesAfter)
-        {
-            if (tag.Contains("("))
-            {
+        public void Initialize(string tag, string codesBefore, string codesAfter) {
+            if(tag.Contains("(")) {
                 var arr = tag.Split('(')[1].Split(')')[0].Split(',');
                 targetTag = arr[0];
                 startSize = double.Parse(arr[1]);
@@ -64,34 +57,30 @@ namespace Overlayer.Utils
             neoDrawer = new NeoDrawer();
         }
 
-        public void Update()
-        {
+        public void Update() {
             timer += Time.deltaTime;
-            if (timer >= speed / 1000f)
-            {
+            if(timer >= speed / 1000f) {
                 timer -= (float)speed / 1000f;
                 tester++;
-                if (tester > 100) tester = 0;
+                if(tester > 100)
+                    tester = 0;
                 TagManager.testerValue = tester.ToString();
             }
         }
 
-        public void OnGUI()
-        {
-            if (isInitaialize)
-            {
+        public void OnGUI() {
+            if(isInitaialize) {
                 var fmt = string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan");
-                if (!isSpawn && Event.current.type == EventType.Repaint)
-                {
+                if(!isSpawn && Event.current.type == EventType.Repaint) {
                     windowRect = GUILayout.Window(122, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
                     windowRect.x = (int)(Screen.width * 0.5f - windowRect.width * 0.5f);
                     windowRect.y = (int)(Screen.height * 0.5f - windowRect.height * 0.5f);
-                    
-                    
-                    
+
+
+
                     isSpawn = true;
                 }
-                
+
                 windowRect = GUILayout.Window(122, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
                 var txt = "<size=" + Math.Max(Math.Max(startSize / 2f, endSize / 2f), defaultSize / 2f) +
                           ">Test</size>";
@@ -105,15 +94,13 @@ namespace Overlayer.Utils
             }
         }
 
-        private void PreviewWindow(int windowID)
-        {
+        private void PreviewWindow(int windowID) {
             GUI.BringWindowToFront(windowID);
             GUILayout.Label("<size=" + Effect.MovingMan("INTERNAL_TESTER_TAG_1234512345", startSize, endSize,
                 defaultSize, speed, invert, ease) / 2f + ">Test</size>");
         }
 
-        private void DrawWindow(int windowID)
-        {
+        private void DrawWindow(int windowID) {
             neoDrawer.FieldResetId();
 
             GUI.BringWindowToFront(windowID);
@@ -140,8 +127,7 @@ namespace Overlayer.Utils
 
             neoDrawer.UpdateFocused();
 
-            if (Drawer.Button(Main.Lang.Get("DONE", "Done")))
-            {
+            if(Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
                 neoDrawer = null;
                 BlockUMMClosing.Block = false;
                 Destroy(gameObject);

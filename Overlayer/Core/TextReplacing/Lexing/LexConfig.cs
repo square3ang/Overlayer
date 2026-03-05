@@ -1,7 +1,5 @@
-﻿namespace Overlayer.Core.TextReplacing.Lexing
-{
-    public class LexConfig
-    {
+﻿namespace Overlayer.Core.TextReplacing.Lexing {
+    public class LexConfig {
         public char TagStart = '{';
         public char TagEnd = '}';
         public char TagOptSeparator = ':';

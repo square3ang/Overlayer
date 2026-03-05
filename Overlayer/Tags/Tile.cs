@@ -1,7 +1,6 @@
 ﻿using Overlayer.Tags.Attributes;
 
-namespace Overlayer.Tags
-{
+namespace Overlayer.Tags {
     public static class Tile {
         [Tag]
         public static int LeftTile;

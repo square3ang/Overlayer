@@ -2,31 +2,26 @@
 using UnityEngine;
 
 
-namespace RapidGUI
-{
+namespace RapidGUI {
     /// <summary>
     /// UnparsedStr
     /// temporary display string that could not be parsed
     /// </summary>
-    public class UnparsedStr
-    {
+    public class UnparsedStr {
         #region static
 
         static string lastStr;
         static int lastControlID;
 
-        public static UnparsedStr Create()
-        {
-            if (ForcusChecker.IsChanged())
-            {
+        public static UnparsedStr Create() {
+            if(ForcusChecker.IsChanged()) {
                 Reset();
             }
 
             return new UnparsedStr();
         }
 
-        protected static void Reset()
-        {
+        protected static void Reset() {
             lastStr = null;
             lastControlID = 0;
         }
@@ -36,27 +31,20 @@ namespace RapidGUI
 
         int controlID;
 
-        protected UnparsedStr()
-        {
+        protected UnparsedStr() {
             controlID = GUIUtility.GetControlID(FocusType.Passive);
         }
 
-        public string Get()
-        {
+        public string Get() {
             return hasStr ? lastStr : null;
         }
 
-        public void Set(string str)
-        {
-            if (str == null)
-            {
-                if ( hasStr )
-                {
+        public void Set(string str) {
+            if(str == null) {
+                if(hasStr) {
                     Reset();
                 }
-            }
-            else
-            {
+            } else {
                 lastStr = str;
                 lastControlID = controlID;
             }
@@ -64,17 +52,14 @@ namespace RapidGUI
 
         public bool hasStr => (controlID == lastControlID);
 
-        public bool CanParse(Type type)
-        {
+        public bool CanParse(Type type) {
             var ret = false;
             var str = Get();
 
-            if ( str != null)
-            try
-            {
-                ret = Convert.ChangeType(str, type).ToString() == str;
-            }
-            catch { }
+            if(str != null)
+                try {
+                    ret = Convert.ChangeType(str, type).ToString() == str;
+                } catch { }
 
             return ret;
         }

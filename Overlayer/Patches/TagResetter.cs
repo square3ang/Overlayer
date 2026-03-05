@@ -1,13 +1,10 @@
 ﻿using Overlayer.Core.Patches;
 using Overlayer.Tags;
 
-namespace Overlayer.Patches
-{
+namespace Overlayer.Patches {
     [LazyPatch("Patches.TagResetter", "scrController", "Awake_Rewind")]
-    public static class TagResetter
-    {
-        public static void Postfix()
-        {
+    public static class TagResetter {
+        public static void Postfix() {
             Bpm.Reset();
             Tags.FrameRate.Reset();
             Hex.Reset();

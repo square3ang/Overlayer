@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using HarmonyLib;
-using Overlayer.Core;
+﻿using Overlayer.Core;
 using Overlayer.Tags;
 using Overlayer.Utils;
-using UnityModManagerNet;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Overlayer.CodeEditor;
 
 using UnityEngine;
-using System.Reflection;
 
-public class CodeEditor
-{
+public class CodeEditor {
     public string controlName { get; set; }
     public System.Action onValueChange;
     public int tabSpaces = 2;
@@ -37,14 +32,12 @@ public class CodeEditor
 
     private static Regex tagRegex = new(@"{(.*?)}", RegexOptions.Compiled);
 
-    public bool isFocused
-    {
+    public bool isFocused {
         get { return GUI.GetNameOfFocusedControl() == controlName; }
     }
 
 
-    public CodeEditor(string controlName, CodeTheme theme)
-    {
+    public CodeEditor(string controlName, CodeTheme theme) {
         this.controlName = controlName;
         this.theme = theme;
         highlighter = code => code;
@@ -55,10 +48,8 @@ public class CodeEditor
 
     internal Dictionary<string, UndoRedoManager> undoRedoManagers = new();
 
-    public string Draw(string code, GUIStyle style, string id, params GUILayoutOption[] options)
-    {
-        if (!undoRedoManagers.ContainsKey(id))
-        {
+    public string Draw(string code, GUIStyle style, string id, params GUILayoutOption[] options) {
+        if(!undoRedoManagers.ContainsKey(id)) {
             undoRedoManagers[id] = new UndoRedoManager();
             undoRedoManagers[id].SaveState(code);
             //Main.Logger.Log("Created UndoRedoManager for " + id);
@@ -66,10 +57,8 @@ public class CodeEditor
 
         controlName = id;
         var oldEvent = new Event(Event.current);
-        if (movingManEditor)
-        {
-            if (editingHash == code.GetHashCode())
-            {
+        if(movingManEditor) {
+            if(editingHash == code.GetHashCode()) {
                 code = movingManEditor.codesBefore + "MovingMan(" + movingManEditor.targetTag + "," +
                        movingManEditor.startSize + "," + movingManEditor.endSize + "," +
                        movingManEditor.defaultSize + "," + movingManEditor.speed + "," +
@@ -78,10 +67,8 @@ public class CodeEditor
             }
         }
 
-        if (colorRangeEditor)
-        {
-            if (editingHash == code.GetHashCode())
-            {
+        if(colorRangeEditor) {
+            if(editingHash == code.GetHashCode()) {
                 code = colorRangeEditor.codesBefore + "ColorRange(" + colorRangeEditor.targetTag + "," +
                        colorRangeEditor.valueMin + "," + colorRangeEditor.valueMax + "," +
                        ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMin) + "," +
@@ -92,9 +79,8 @@ public class CodeEditor
             }
         }
 
-        if (easedValueEditor) {
-            if (editingHash == code.GetHashCode())
-            {
+        if(easedValueEditor) {
+            if(editingHash == code.GetHashCode()) {
                 code = easedValueEditor.codesBefore + "EasedValue(" + easedValueEditor.targetTag + "," +
                        easedValueEditor.digits + "," + easedValueEditor.speed + "," +
                        easedValueEditor.ease + ")" + easedValueEditor.codesAfter;
@@ -107,8 +93,7 @@ public class CodeEditor
         GUILayout.Space(2);
         Drawer.DrawTags(ref selectedtag);
 
-        if (Drawer.Button(Main.Lang.Get("INSERT", "Insert")))
-        {
+        if(Drawer.Button(Main.Lang.Get("INSERT", "Insert"))) {
             TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
             var sb = new StringBuilder(code);
             sb.Insert(editor.selectIndex, "{" + selectedtag + "}");
@@ -158,65 +143,54 @@ public class CodeEditor
         pressedTab = usedTab && Event.current.type == EventType.KeyDown;
         pressedShift = Event.current.shift;
 
-        if (usedTab)
+        if(usedTab)
             Event.current.Use();
 
         // Drawing the text area using GUILayout
         GUI.SetNextControlName(controlName);
         var editorw = 700;
 
-        if (isFocused)
-        {
-            if (Event.current.type == EventType.KeyDown)
-            {
+        if(isFocused) {
+            if(Event.current.type == EventType.KeyDown) {
                 var oldcode = code;
-                if (Event.current.keyCode == KeyCode.Z && Event.current.control)
-                {
-                    if (Event.current.shift)
-                    {
+                if(Event.current.keyCode == KeyCode.Z && Event.current.control) {
+                    if(Event.current.shift) {
                         var tx = undoRedoManagers[id].Redo();
-                        if (tx != null) code = tx;
-                    }
-                    else
-                    {
+                        if(tx != null)
+                            code = tx;
+                    } else {
                         var tx = undoRedoManagers[id].Undo();
-                        if (tx != null) code = tx;
+                        if(tx != null)
+                            code = tx;
                     }
-                }
-                else if ((Event.current.keyCode == KeyCode.Y && Event.current.control) || (Event.current.shift && Event.current.keyCode == KeyCode.Z))
-                {
+                } else if((Event.current.keyCode == KeyCode.Y && Event.current.control) || (Event.current.shift && Event.current.keyCode == KeyCode.Z)) {
                     var tx = undoRedoManagers[id].Redo();
-                    if (tx != null) code = tx;
+                    if(tx != null)
+                        code = tx;
                 }
 
-                if (code != oldcode)
-                {
+                if(code != oldcode) {
                     Event.current.Use();
                 }
             }
         }
 
-        if (!movingManEditor && !colorRangeEditor && !easedValueEditor)
-        {
+        if(!movingManEditor && !colorRangeEditor && !easedValueEditor) {
             GUI.SetNextControlName(id);
             string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true),
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
-            if (editedCode != code)
-            {
+            if(editedCode != code) {
                 code = editedCode;
                 undoRedoManagers[id].SaveState(code);
                 onValueChange?.Invoke();
             }
-        }
-        else
-        {
+        } else {
             GUILayout.Box(code, backStyle, GUILayout.ExpandHeight(true),
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
         }
 
 
-        if (cachedCode != code)
-        {
+        if(cachedCode != code) {
             cachedCode = code;
             cachedHighlightedCode = highlighter(code);
         }
@@ -241,11 +215,9 @@ public class CodeEditor
         var bak = Event.current;
         Event.current = oldEvent;
 
-        if (!movingManEditor && !colorRangeEditor && !easedValueEditor)
-        {
+        if(!movingManEditor && !colorRangeEditor && !easedValueEditor) {
             // Get Tags
-            foreach (Match match in tagRegex.Matches(code))
-            {
+            foreach(Match match in tagRegex.Matches(code)) {
                 var tag = match.Groups[1].Value;
                 var start = match.Groups[1].Index;
                 var end = start + match.Groups[1].Length;
@@ -302,9 +274,12 @@ public class CodeEditor
 
                 var special = mvm || cr || ev;
 
-                if (mvm && !Main.Settings.useMovingManEditor) special = false;
-                if (cr && !Main.Settings.useColorRangeEditor) special = false;
-                if (ev && !Main.Settings.useEasedValueEditor) special = false;
+                if(mvm && !Main.Settings.useMovingManEditor)
+                    special = false;
+                if(cr && !Main.Settings.useColorRangeEditor)
+                    special = false;
+                if(ev && !Main.Settings.useEasedValueEditor)
+                    special = false;
 
                 if(rect.Contains(Event.current.mousePosition)) {
                     var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
@@ -317,24 +292,17 @@ public class CodeEditor
 
 
 
-                if(special)
-                {
-                    if (GUI.Button(rect, ""))
-                    {
-                        if (cr)
-                        {
+                if(special) {
+                    if(GUI.Button(rect, "")) {
+                        if(cr) {
                             colorRangeEditor = new GameObject().AddComponent<ColorRangeEditor>();
                             Object.DontDestroyOnLoad(colorRangeEditor);
                             colorRangeEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
-                        }
-                        else if (mvm)
-                        {
+                        } else if(mvm) {
                             movingManEditor = new GameObject().AddComponent<MovingManEditor>();
                             Object.DontDestroyOnLoad(movingManEditor);
                             movingManEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
-                        }
-                        else if (ev)
-                        {
+                        } else if(ev) {
                             easedValueEditor = new GameObject().AddComponent<EasedValueEditor>();
                             Object.DontDestroyOnLoad(easedValueEditor);
                             easedValueEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
@@ -359,26 +327,21 @@ public class CodeEditor
         return code;
     }
 
-    private string UpdateEditorTabs(string content, bool shift)
-    {
+    private string UpdateEditorTabs(string content, bool shift) {
         // Custom tab handling logic for runtime
-        string tabrep = new string(' ', tabSpaces);
+        string tabrep = new(' ', tabSpaces);
 
         // Normal case
-        if (!shift)
-        {
+        if(!shift) {
             content += tabrep;
-        }
-        else if (content.Length >= tabSpaces)
-        {
+        } else if(content.Length >= tabSpaces) {
             content = content.Remove(content.Length - tabSpaces, tabSpaces);
         }
 
         return content;
     }
 
-    private void DrawLineNumbers(string code, GUIStyle baseStyle)
-    {
+    private void DrawLineNumbers(string code, GUIStyle baseStyle) {
         float lineCountWidth = code.Split('\n').Length.ToString().Length * charWidth;
 
         // Reserve space
@@ -388,12 +351,10 @@ public class CodeEditor
         string lineString = "";
         var i = 0;
         float curwidth;
-        foreach (var st in code.Split('\n'))
-        {
+        foreach(var st in code.Split('\n')) {
             curwidth = 0;
             lineString += ++i + "\n";
-            foreach (var ch in st)
-            {
+            foreach(var ch in st) {
                 curwidth += baseStyle.CalcSize(new GUIContent(ch.ToString())).x;
                 /*if (curwidth >= editorw - 5)
                 {
@@ -403,7 +364,7 @@ public class CodeEditor
             }
         }
 
-        GUIStyle style = new GUIStyle(baseStyle);
+        GUIStyle style = new(baseStyle);
         style.normal.textColor = Color.white;
 
         style.normal.background = Texture2D.whiteTexture;
@@ -420,8 +381,7 @@ public class CodeEditor
         GUI.backgroundColor = GetColor(theme.background);
     }
 
-    private Color GetColor(string colorCode)
-    {
+    private Color GetColor(string colorCode) {
         Color color = Color.magenta;
         ColorUtility.TryParseHtmlString(colorCode, out color);
         return color;

@@ -1,8 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-namespace RapidGUI.imColorPicker
-{
+﻿namespace RapidGUI.imColorPicker {
 
     public class IMColorPickerEditor {
 

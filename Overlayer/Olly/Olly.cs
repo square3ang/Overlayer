@@ -16,7 +16,7 @@ namespace Overlayer.Olly {
         private float textTimer = 0f;
         private float newlineWait = 0f;
 
-        private FaceShape face = new FaceShape();
+        private FaceShape face = new();
         internal bool FollowMouse = false;
         public ref bool GetFollowMouseRef() {
             return ref FollowMouse;
@@ -138,7 +138,7 @@ namespace Overlayer.Olly {
             float newWidth = Mathf.Max(portraitSize + 20, maxLineWidth + 20);
             float newHeight = 20 + portraitSize + 10 + textHeight + 10;
 
-            Vector2 center = new Vector2(windowRect.x + windowRect.width / 2f, windowRect.y + windowRect.height / 2f);
+            Vector2 center = new(windowRect.x + windowRect.width / 2f, windowRect.y + windowRect.height / 2f);
             windowRect.width = newWidth;
             windowRect.height = newHeight;
             windowRect.x = center.x - newWidth / 2f;
@@ -154,7 +154,7 @@ namespace Overlayer.Olly {
                 textY += size.y;
             }
 
-            Rect dragRect = new Rect(0, 0, windowRect.width, 20);
+            Rect dragRect = new(0, 0, windowRect.width, 20);
             GUI.DragWindow(dragRect);
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Overlayer.Wiki {
     public struct Body {
@@ -12,6 +8,6 @@ namespace Overlayer.Wiki {
     public class WikiData {
         public string Title;
         public string Language;
-        public List<Body> Sections = new List<Body>();
+        public List<Body> Sections = new();
     }
 }

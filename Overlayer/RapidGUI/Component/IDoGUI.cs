@@ -1,10 +1,8 @@
-﻿namespace RapidGUI
-{
+﻿namespace RapidGUI {
     /// <summary>
     /// DoGUI interface
     /// </summary>
-    public interface IDoGUI
-    {
+    public interface IDoGUI {
         void DoGUI();
     }
 }

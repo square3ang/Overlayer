@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Overlayer.Wiki {
     public class Wiki : MonoBehaviour {
         private Rect windowRect;
-        public bool IsLoaded { get; private set; }  = false;
+        public bool IsLoaded { get; private set; } = false;
 
         private List<WikiData> wikiDatas;
         private Vector2 leftScroll = Vector2.zero;
@@ -19,11 +19,11 @@ namespace Overlayer.Wiki {
 
         private void Start() {
             WikiIcons.Init();
-            WikiLoader loader = new WikiLoader((data) => {
+            WikiLoader loader = new((data) => {
                 wikiDatas = data;
                 IsLoaded = true;
             });
-            _ = loader.LoadAsync(Path.Combine(Main.Mod.Path,"wikidocs"));
+            _ = loader.LoadAsync(Path.Combine(Main.Mod.Path, "wikidocs"));
 
             int initWidth = Mathf.Max(480, Screen.width / 2);
             int initHeight = Mathf.Max(320, Screen.height / 2);
@@ -56,7 +56,7 @@ namespace Overlayer.Wiki {
                 searchFieldRect.x += 4;
                 searchFieldRect.width -= 4;
                 GUI.Label(searchFieldRect, "<i><color=#AAAAAA>Search...</color></i>");
-                Rect labelRect = new Rect(searchFieldRect.xMax - 22, searchFieldRect.y, 22, 22);
+                Rect labelRect = new(searchFieldRect.xMax - 22, searchFieldRect.y, 22, 22);
                 GUI.DrawTexture(labelRect, WikiIcons.Search);
             }
             GUILayout.Space(8);
@@ -108,7 +108,7 @@ namespace Overlayer.Wiki {
             }
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-            
+
             GUILayout.EndHorizontal();
 
             if(WindowToFrontOnce) {

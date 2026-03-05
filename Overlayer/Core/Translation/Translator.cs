@@ -46,8 +46,8 @@ namespace Overlayer.Core.Translation {
         private readonly string ExpectedKTLValue;
 
         // Dictionaries to hold translations.
-        private Dictionary<string, Dictionary<string, string>> translations = new Dictionary<string, Dictionary<string, string>>();
-        private Dictionary<string, Dictionary<string, string[]>> translationsArr = new Dictionary<string, Dictionary<string, string[]>>();
+        private Dictionary<string, Dictionary<string, string>> translations = new();
+        private Dictionary<string, Dictionary<string, string[]>> translationsArr = new();
 
         /// <summary>
         /// Constant representing the fallback language code.
@@ -371,7 +371,7 @@ namespace Overlayer.Core.Translation {
         /// <returns>An array of language codes.</returns>
         public string[] GetLanguages() {
             // Initialize a list to hold the language codes.
-            List<string> languages = new List<string>();
+            List<string> languages = new();
 
             // If there was a failure, add the fallback language to the first position.
             if(IsFail) {
@@ -391,7 +391,7 @@ namespace Overlayer.Core.Translation {
         /// <returns>An array of native language names.</returns>
         public string[] GetLanguageNativeNames() {
             // Initialize a list to hold the native names.
-            List<string> names = new List<string>();
+            List<string> names = new();
 
             // If there was a failure, add the fallback language to the first position.
             if(IsFail) {

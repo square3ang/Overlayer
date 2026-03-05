@@ -1,9 +1,7 @@
 ﻿using ADOFAI;
 
-namespace Overlayer.Tags
-{
-    public static class ADOFAI
-    {
+namespace Overlayer.Tags {
+    public static class ADOFAI {
         //[Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]
         public static LevelData LevelData => scnGame.instance?.levelData ?? scnEditor.instance?.levelData;
         //[Tag(ProcessingFlags = ValueProcessing.AccessMember, NotPlaying = true)]

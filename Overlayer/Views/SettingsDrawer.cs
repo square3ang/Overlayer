@@ -15,10 +15,8 @@ using UnityEngine.SceneManagement;
 using static Overlayer.Patches.HitFixPatch;
 using Object = UnityEngine.Object;
 
-namespace Overlayer.Views
-{
-    public class SettingsDrawer : ModelDrawable<Settings>
-    {
+namespace Overlayer.Views {
+    public class SettingsDrawer : ModelDrawable<Settings> {
         public SettingsDrawer(Settings settings) : base(settings) { }
 
         private enum ExtraMenus {
@@ -57,8 +55,7 @@ namespace Overlayer.Views
             NeoDrawer.StaticInstance.FieldResetDictById();
             LanguageInit();
         }
-        public override void Draw()
-        {
+        public override void Draw() {
             NeoDrawer.StaticInstance.FieldResetId();
 
             if(Main.Logo != null && !model.disableLogo) {
@@ -143,7 +140,7 @@ namespace Overlayer.Views
                     selectedIndex = (selectedIndex + 1) % languages.Length;
                     LanguageUpdate(selectedIndex);
                 }
-                
+
                 bool reloadLang = false;
                 // I LOVE UNITY SO MUCH WTF
                 try {
@@ -162,7 +159,7 @@ namespace Overlayer.Views
                 }
             }
             GUILayout.BeginHorizontal();
-            if(Drawer.Button(Main.Lang.Get("EXTRA_MENU","Extra Menu") + " " + (extraMenu == ExtraMenus.Extra ? "▼" : "▲"))) {
+            if(Drawer.Button(Main.Lang.Get("EXTRA_MENU", "Extra Menu") + " " + (extraMenu == ExtraMenus.Extra ? "▼" : "▲"))) {
                 if(extraMenu == ExtraMenus.Extra) {
                     extraMenu = ExtraMenus.Closed;
                 } else {
@@ -321,7 +318,7 @@ namespace Overlayer.Views
                         GUILayout.Space(6);
                         GUI.color = new Color(0.8f, 0.8f, 1f);
                         if(Drawer.Button(Drawer.icon_Pencil, GUILayout.Width(46))) {
-                            TextConfigDrawer config = new TextConfigDrawer(text.Config);
+                            TextConfigDrawer config = new(text.Config);
                             Main.GUI.Push(config);
                         }
                         GUI.color = new Color(0.8f, 1f, 0.8f);
@@ -416,7 +413,7 @@ namespace Overlayer.Views
 
                         float dragWidth = Screen.width;
                         float dragHeight = 24;
-                        Rect dragRect = new Rect(
+                        Rect dragRect = new(
                             GUILayoutUtility.GetLastRect().x,
                             Event.current.mousePosition.y - dragHeight * 3,
                             dragWidth,

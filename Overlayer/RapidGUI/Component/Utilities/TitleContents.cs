@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Assertions;
 
-namespace RapidGUI
-{
-    public abstract class TitleContents<T> where T : TitleContent<T>, new()
-    {
-        protected readonly Dictionary<string, T> dic = new Dictionary<string, T>();
+namespace RapidGUI {
+    public abstract class TitleContents<T> where T : TitleContent<T>, new() {
+        protected readonly Dictionary<string, T> dic = new();
         protected bool dicChanged = true;
 
 
@@ -17,14 +15,10 @@ namespace RapidGUI
 
         public T Add(string title, Func<bool> guiFunc) => Add(title, null, guiFunc);
 
-        public virtual T Add(string title, Func<bool> checkEnableFunc, Func<bool> guiFunc)
-        {
-            if (dic.TryGetValue(title, out var element))
-            {
+        public virtual T Add(string title, Func<bool> checkEnableFunc, Func<bool> guiFunc) {
+            if(dic.TryGetValue(title, out var element)) {
                 element.Add(checkEnableFunc, guiFunc);
-            }
-            else
-            {
+            } else {
                 element = new T() { name = title }.Add(checkEnableFunc, guiFunc);
                 dic.Add(title, element);
             }
@@ -34,8 +28,7 @@ namespace RapidGUI
             return element;
         }
 
-        public T Add(string title, params Type[] iDoGUITypes)
-        {
+        public T Add(string title, params Type[] iDoGUITypes) {
             Assert.IsTrue(iDoGUITypes.All(type => type.GetInterfaces().Contains(typeof(IDoGUI))));
 
             var iDoGUIs = iDoGUITypes.Select(t => new LazyFindObject(t)).ToList() // exec once.
@@ -45,15 +38,12 @@ namespace RapidGUI
         }
 
 
-        public bool Contains(string name)
-        {
+        public bool Contains(string name) {
             return dic.ContainsKey(name);
         }
 
-        public void Remove(string name)
-        {
-            if (dic.ContainsKey(name))
-            {
+        public void Remove(string name) {
+            if(dic.ContainsKey(name)) {
                 dic.Remove(name);
             }
 

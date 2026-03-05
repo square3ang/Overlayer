@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using UnityEngine;
-using static UnityEngine.Object;
 using UnityModManagerNet;
 using static Overlayer.Olly.OllyState;
+using static UnityEngine.Object;
 
 namespace Overlayer.Olly {
     public static class OllyResources {

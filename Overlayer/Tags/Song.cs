@@ -1,9 +1,7 @@
 ﻿using Overlayer.Tags.Attributes;
 
-namespace Overlayer.Tags
-{
-    public static class Song
-    {
+namespace Overlayer.Tags {
+    public static class Song {
         [Tag]
         public static int CurDay;
         [Tag]

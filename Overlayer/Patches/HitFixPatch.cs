@@ -1,7 +1,6 @@
-﻿using Overlayer.Core.Patches;
-using Overlayer.Models;
+﻿using HarmonyLib;
+using Overlayer.Core.Patches;
 using System.Collections.Generic;
-using HarmonyLib;
 using System.Reflection;
 using System.Reflection.Emit;
 

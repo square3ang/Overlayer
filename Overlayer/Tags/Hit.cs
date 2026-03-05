@@ -1,14 +1,10 @@
 ﻿using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-namespace Overlayer.Tags
-{
-    public static class Hit
-    {
+namespace Overlayer.Tags {
+    public static class Hit {
         [Tag("LHitRaw")]
         public static HitMargin Lenient;
         [Tag("NHitRaw")]
@@ -253,11 +249,14 @@ namespace Overlayer.Tags
             float num = 0.065f;
             switch(diff) {
                 case global::Difficulty.Lenient:
-                    num = 0.091f; break;
+                    num = 0.091f;
+                    break;
                 case global::Difficulty.Normal:
-                    num = 0.065f; break;
+                    num = 0.065f;
+                    break;
                 case global::Difficulty.Strict:
-                    num = 0.04f; break;
+                    num = 0.04f;
+                    break;
             }
             bool isMobile = ADOBase.isMobile;
             num = isMobile ? 0.09f : (num / GCS.currentSpeedTrial);
@@ -273,9 +272,12 @@ namespace Overlayer.Tags
             double result2 = Math.Max(45.0 * marginMult, val2);
             double result3 = Math.Max(30.0 * marginMult, val3);
             switch(marginType) {
-                case HitMarginGeneral.Counted: return result;
-                case HitMarginGeneral.Perfect: return result2;
-                case HitMarginGeneral.Pure: return result3;
+                case HitMarginGeneral.Counted:
+                    return result;
+                case HitMarginGeneral.Perfect:
+                    return result2;
+                case HitMarginGeneral.Pure:
+                    return result3;
             }
             return result;
         }
@@ -318,50 +320,79 @@ namespace Overlayer.Tags
         }
 
         public static HitMargin GetCHit(Difficulty diff) {
-            switch (diff) {
-                case global::Difficulty.Lenient: return Lenient;
-                case global::Difficulty.Normal: return Normal;
-                case global::Difficulty.Strict: return Strict;
-                default: return Strict;
+            switch(diff) {
+                case global::Difficulty.Lenient:
+                    return Lenient;
+                case global::Difficulty.Normal:
+                    return Normal;
+                case global::Difficulty.Strict:
+                    return Strict;
+                default:
+                    return Strict;
             }
         }
 
         public static int GetHitCount(Difficulty diff, HitMargin margin) {
-            switch (diff) {
+            switch(diff) {
                 case global::Difficulty.Lenient:
-                    switch (margin) {
-                        case HitMargin.TooEarly: return LTE;
-                        case HitMargin.VeryEarly: return LVE;
-                        case HitMargin.EarlyPerfect: return LEP;
-                        case HitMargin.Perfect: return LP;
-                        case HitMargin.LatePerfect: return LLP;
-                        case HitMargin.VeryLate: return LVL;
-                        case HitMargin.TooLate: return LTL;
-                        default: return 0;
+                    switch(margin) {
+                        case HitMargin.TooEarly:
+                            return LTE;
+                        case HitMargin.VeryEarly:
+                            return LVE;
+                        case HitMargin.EarlyPerfect:
+                            return LEP;
+                        case HitMargin.Perfect:
+                            return LP;
+                        case HitMargin.LatePerfect:
+                            return LLP;
+                        case HitMargin.VeryLate:
+                            return LVL;
+                        case HitMargin.TooLate:
+                            return LTL;
+                        default:
+                            return 0;
                     }
                 case global::Difficulty.Normal:
-                    switch (margin) {
-                        case HitMargin.TooEarly: return NTE;
-                        case HitMargin.VeryEarly: return NVE;
-                        case HitMargin.EarlyPerfect: return NEP;
-                        case HitMargin.Perfect: return NP;
-                        case HitMargin.LatePerfect: return NLP;
-                        case HitMargin.VeryLate: return NVL;
-                        case HitMargin.TooLate: return NTL;
-                        default: return 0;
+                    switch(margin) {
+                        case HitMargin.TooEarly:
+                            return NTE;
+                        case HitMargin.VeryEarly:
+                            return NVE;
+                        case HitMargin.EarlyPerfect:
+                            return NEP;
+                        case HitMargin.Perfect:
+                            return NP;
+                        case HitMargin.LatePerfect:
+                            return NLP;
+                        case HitMargin.VeryLate:
+                            return NVL;
+                        case HitMargin.TooLate:
+                            return NTL;
+                        default:
+                            return 0;
                     }
                 case global::Difficulty.Strict:
-                    switch (margin) {
-                        case HitMargin.TooEarly: return STE;
-                        case HitMargin.VeryEarly: return SVE;
-                        case HitMargin.EarlyPerfect: return SEP;
-                        case HitMargin.Perfect: return SP;
-                        case HitMargin.LatePerfect: return SLP;
-                        case HitMargin.VeryLate: return SVL;
-                        case HitMargin.TooLate: return STL;
-                        default: return 0;
+                    switch(margin) {
+                        case HitMargin.TooEarly:
+                            return STE;
+                        case HitMargin.VeryEarly:
+                            return SVE;
+                        case HitMargin.EarlyPerfect:
+                            return SEP;
+                        case HitMargin.Perfect:
+                            return SP;
+                        case HitMargin.LatePerfect:
+                            return SLP;
+                        case HitMargin.VeryLate:
+                            return SVL;
+                        case HitMargin.TooLate:
+                            return STL;
+                        default:
+                            return 0;
                     }
-                default: return 0;
+                default:
+                    return 0;
             }
         }
     }

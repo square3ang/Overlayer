@@ -7,10 +7,8 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace Overlayer.Core
-{
-    public static class TextManager
-    {
+namespace Overlayer.Core {
+    public static class TextManager {
         public static bool Initialized { get; private set; }
         public static int Count => Texts.Count;
         private static List<OverlayerText> Texts;
@@ -21,7 +19,7 @@ namespace Overlayer.Core
 
             Texts = new List<OverlayerText>();
             string textsPath = Path.Combine(Main.Mod.Path, "Texts.json");
-            List<TextConfig> configs = new List<TextConfig>();
+            List<TextConfig> configs = new();
 
             if(File.Exists(textsPath)) {
                 var content = File.ReadAllText(textsPath);
@@ -46,11 +44,10 @@ namespace Overlayer.Core
             Refresh();
             Initialized = true;
         }
-        public static OverlayerText CreateText(TextConfig config)
-        {
-            if (string.IsNullOrEmpty(config.Name))
+        public static OverlayerText CreateText(TextConfig config) {
+            if(string.IsNullOrEmpty(config.Name))
                 config.Name = (Count + 1).ToString();
-            GameObject go = new GameObject($"OverlayerText_{config.Name}");
+            GameObject go = new($"OverlayerText_{config.Name}");
             var text = go.AddComponent<OverlayerText>();
             text.Init(config);
             Texts.Add(text);
@@ -112,8 +109,7 @@ namespace Overlayer.Core
         }
 
         public static void Remove(int index) => DestroyText(Texts[index]);
-        public static void DestroyText(OverlayerText text)
-        {
+        public static void DestroyText(OverlayerText text) {
             UnityEngine.Object.Destroy(text.gameObject);
             Texts.Remove(text);
             Refresh();
@@ -123,13 +119,12 @@ namespace Overlayer.Core
             string textsPath = Path.Combine(Main.Mod.Path, "Texts.json");
             File.WriteAllText(textsPath, JsonConvert.SerializeObject(array, Formatting.Indented));
         }
-        public static void Refresh()
-        {
+        public static void Refresh() {
             Texts.ForEach(ot => ot.ApplyConfig());
         }
-        public static void Release()
-        {
-            if (!Initialized) return;
+        public static void Release() {
+            if(!Initialized)
+                return;
             Save();
             Texts = null;
             UnityEngine.Object.Destroy(OverlayerText.PCanvasObj);

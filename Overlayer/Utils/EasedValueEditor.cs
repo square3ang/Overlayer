@@ -3,10 +3,7 @@ using Overlayer.Core;
 using Overlayer.Patches;
 using Overlayer.Tags;
 using RapidGUI;
-using System;
-using System.Runtime.InteropServices;
 using UnityEngine;
-using Time = UnityEngine.Time;
 
 namespace Overlayer.Utils {
     internal class EasedValueEditor : MonoBehaviour {
@@ -77,7 +74,7 @@ namespace Overlayer.Utils {
 
         private void PreviewWindow(int windowID) {
             GUI.BringWindowToFront(windowID);
-            GUILayout.Label("<size=40>"+Effect.EasedValue("INTERNAL_TESTER_TAG_1234512345", digits, speed, ease).ToString()+"</size>");
+            GUILayout.Label("<size=40>" + Effect.EasedValue("INTERNAL_TESTER_TAG_1234512345", digits, speed, ease).ToString() + "</size>");
             neoDrawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100, "testvalue");
         }
 

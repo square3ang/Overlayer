@@ -1,12 +1,9 @@
-﻿using System;
-using Overlayer;
+﻿using Overlayer;
 using Overlayer.Core;
 using UnityEngine;
 
-namespace RapidGUI
-{
-    public static class RGUIStyle
-    {
+namespace RapidGUI {
+    public static class RGUIStyle {
         public static GUIStyle flatButton;
         public static GUIStyle popupFlatButton;
         public static GUIStyle popup;
@@ -24,13 +21,11 @@ namespace RapidGUI
         public static Texture2D darkWindowTexNormal;
         public static Texture2D darkWindowTexOnNormal;
 
-        static RGUIStyle()
-        {
+        static RGUIStyle() {
             CreateStyles();
         }
 
-        public static void CreateStyles()
-        {
+        public static void CreateStyles() {
             CreateFlatButton();
             CreateDarkWindow();
             CreatePopupFlatButton();
@@ -40,10 +35,8 @@ namespace RapidGUI
             CreateWarningLabelNoStyle();
         }
 
-        static void CreateFlatButton()
-        {
-            var style = new GUIStyle(GUI.skin.label)
-            {
+        static void CreateFlatButton() {
+            var style = new GUIStyle(GUI.skin.label) {
                 wordWrap = false,
                 alignment = TextAnchor.MiddleCenter
             };
@@ -61,10 +54,8 @@ namespace RapidGUI
             flatButton = style;
         }
 
-        static void CreatePopupFlatButton()
-        {
-            var style = new GUIStyle(flatButton)
-            {
+        static void CreatePopupFlatButton() {
+            var style = new GUIStyle(flatButton) {
                 alignment = GUI.skin.label.alignment,
                 padding = new RectOffset(24, 48, 2, 2),
                 name = nameof(popupFlatButton)
@@ -73,12 +64,10 @@ namespace RapidGUI
             popupFlatButton = style;
         }
 
-        static void CreatePopup()
-        {
+        static void CreatePopup() {
             var style = new GUIStyle(GUI.skin.box);
 
-            if (!Main.Settings.useLegacyTheme)
-            {
+            if(!Main.Settings.useLegacyTheme) {
                 style.border = new RectOffset();
                 popupTex = new Texture2D(1, 1);
                 var brightness = 0.2f;
@@ -89,9 +78,7 @@ namespace RapidGUI
 
                 style.normal.background =
                     style.hover.background = popupTex;
-            }
-            else
-            {
+            } else {
                 style = new GUIStyle(darkWindow);
             }
 
@@ -101,19 +88,15 @@ namespace RapidGUI
         }
 
 
-        public static void CreateDarkWindow()
-        {
+        public static void CreateDarkWindow() {
             var style = new GUIStyle(GUI.skin.window);
 
 
-            if (Main.Settings.useLegacyTheme)
-            {
+            if(Main.Settings.useLegacyTheme) {
                 style.normal.background = darkWindowTexNormal = CreateTexDark(style.normal.background, 0.5f, 1.4f);
                 style.onNormal.background =
                     darkWindowTexOnNormal = CreateTexDark(style.onNormal.background, 0.6f, 1.5f);
-            }
-            else
-            {
+            } else {
                 style.normal.background = Drawer.outlineimg;
                 style.onNormal.background = Drawer.outlineimg;
                 style.border = new RectOffset(2, 2, 2, 2);
@@ -124,10 +107,8 @@ namespace RapidGUI
             darkWindow = style;
         }
 
-        public static void CreateAlignLeftBox()
-        {
-            var style = new GUIStyle(Main.Settings.useLegacyTheme ? GUI.skin.button : Drawer.myButton)
-            {
+        public static void CreateAlignLeftBox() {
+            var style = new GUIStyle(Main.Settings.useLegacyTheme ? GUI.skin.button : Drawer.myButton) {
                 //alignment = TextAnchor.MiddleLeft,
                 name = nameof(alignLeftBox)
             };
@@ -135,8 +116,7 @@ namespace RapidGUI
             alignLeftBox = style;
         }
 
-        public static Texture2D CreateTexDark(Texture2D src, float colorRate, float alphaRate)
-        {
+        public static Texture2D CreateTexDark(Texture2D src, float colorRate, float alphaRate) {
             // copy texture trick.
             // Graphics.CopyTexture(src, dst) must same format src and dst.
             // but src format can't call GetPixels().
@@ -155,8 +135,7 @@ namespace RapidGUI
 
 
             var pixels = dst.GetPixels();
-            for (var i = 0; i < pixels.Length; ++i)
-            {
+            for(var i = 0; i < pixels.Length; ++i) {
                 var col = pixels[i];
                 col.r *= colorRate;
                 col.g *= colorRate;
@@ -173,10 +152,8 @@ namespace RapidGUI
         }
 
 
-        private static void CreateWarningLabel()
-        {
-            var style = new GUIStyle(GUI.skin.box)
-            {
+        private static void CreateWarningLabel() {
+            var style = new GUIStyle(GUI.skin.box) {
                 alignment = GUI.skin.label.alignment,
                 richText = true,
                 name = nameof(warningLabel)
@@ -185,10 +162,8 @@ namespace RapidGUI
             warningLabel = style;
         }
 
-        private static void CreateWarningLabelNoStyle()
-        {
-            var style = new GUIStyle(GUI.skin.label)
-            {
+        private static void CreateWarningLabelNoStyle() {
+            var style = new GUIStyle(GUI.skin.label) {
                 richText = true,
                 name = nameof(warningLabelNoStyle)
             };

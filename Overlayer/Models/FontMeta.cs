@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 
-namespace Overlayer.Models
-{
+namespace Overlayer.Models {
     public class FontMeta : IModel, ICopyable<FontMeta> {
         public string name;
         public float lineSpacing = 1;

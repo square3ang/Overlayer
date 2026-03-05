@@ -2,14 +2,11 @@
 using System.Linq;
 using UnityEngine;
 
-namespace RapidGUI
-{
-    public static class WindowInvoker
-    {
-        static readonly HashSet<IDoGUIWindow> Windows = new HashSet<IDoGUIWindow>();
+namespace RapidGUI {
+    public static class WindowInvoker {
+        static readonly HashSet<IDoGUIWindow> Windows = new();
 
-        static WindowInvoker()
-        {
+        static WindowInvoker() {
             RapidGUIBehaviour.Instance.onGUI += DoGUI;
         }
 
@@ -19,32 +16,27 @@ namespace RapidGUI
 
         static IDoGUIWindow focusedWindow;
 
-        public static void SetFocusedWindow(IDoGUIWindow window)
-        {
+        public static void SetFocusedWindow(IDoGUIWindow window) {
             focusedWindow = window;
         }
 
-        static void DoGUI()
-        {
+        static void DoGUI() {
             Windows.ToList().ForEach(l => l?.DoGUIWindow());
 
             var evt = Event.current;
 
-            if ((evt.type == EventType.KeyUp) 
+            if((evt.type == EventType.KeyUp)
                 && (evt.keyCode == RapidGUIBehaviour.Instance.closeFocusedWindowKey)
                 && (GUIUtility.keyboardControl == 0)
-                )
-            {
-                if (Windows.Contains(focusedWindow))
-                {
+                ) {
+                if(Windows.Contains(focusedWindow)) {
                     focusedWindow.CloseWindow();
                     focusedWindow = null;
                 }
             }
 
 
-            if (Event.current.type == EventType.Repaint)
-            {
+            if(Event.current.type == EventType.Repaint) {
                 Windows.Clear();
             }
         }

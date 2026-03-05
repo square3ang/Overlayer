@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Experimental.Animations;
 
 
-namespace RapidGUI
-{
-    public class WindowLauncher : TitleContent<WindowLauncher>, IDoGUIWindow
-    {
+namespace RapidGUI {
+    public class WindowLauncher : TitleContent<WindowLauncher>, IDoGUIWindow {
         public Rect rect;
 
         public bool isMoved { get; protected set; }
@@ -21,52 +18,41 @@ namespace RapidGUI
 
         public WindowLauncher() : base() { }
 
-        public WindowLauncher(string name, float width = 300f) : base(name)
-        {
+        public WindowLauncher(string name, float width = 300f) : base(name) {
             rect.width = width;
         }
 
-        public WindowLauncher SetWidth(float width)
-        {
+        public WindowLauncher SetWidth(float width) {
             rect.width = width;
             return this;
         }
 
-        public WindowLauncher SetHeight(float height)
-        {
+        public WindowLauncher SetHeight(float height) {
             rect.height = height;
             return this;
         }
 
 
-        public void DoGUI()
-        {
-            if (isEnable)
-            {
+        public void DoGUI() {
+            if(isEnable) {
                 bool changed;
-                using (new GUILayout.HorizontalScope())
-                {
+                using(new GUILayout.HorizontalScope()) {
                     changed = isOpen != GUILayout.Toggle(isOpen, "❏ " + name, Style.toggle);
                     titleAction?.Invoke();
                 }
 
-                if (changed)
-                {
+                if(changed) {
                     isOpen = !isOpen;
-                    if (isOpen)
-                    {
+                    if(isOpen) {
                         isMoved = false;
                         rect.position = RGUIUtility.GetMouseScreenPos() + Vector2.right * 50f;
                         onOpen?.Invoke(this);
-                    }
-                    else
-                    {
+                    } else {
                         CloseWindow();
                     }
                 }
 
-                if (isOpen)
-                {
+                if(isOpen) {
                     WindowInvoker.Add(this);
                 }
             }
@@ -75,30 +61,24 @@ namespace RapidGUI
 
         #region IDoGUIWindow
 
-        public void DoGUIWindow()
-        {
-            if (isOpen && isEnable)
-            {
+        public void DoGUIWindow() {
+            if(isOpen && isEnable) {
                 var pos = rect.position;
                 rect = RGUI.ResizableWindow(GetHashCode(), rect,
-                    (id) =>
-                    {
+                    (id) => {
                         var buttonSize = new Vector2(40f, 15f);
                         var buttonPos = new Vector2(rect.size.x - buttonSize.x, 2f);
                         var buttonRect = new Rect(buttonPos, buttonSize);
-                        if (GUI.Button(buttonRect, "✕", RGUIStyle.flatButton))
-                        {
+                        if(GUI.Button(buttonRect, "✕", RGUIStyle.flatButton)) {
                             CloseWindow();
                         }
-                        
-                        foreach (var func in GetGUIFuncs())
-                        {
+
+                        foreach(var func in GetGUIFuncs()) {
                             func();
                         }
                         GUI.DragWindow();
 
-                        if (Event.current.type == EventType.Used)
-                        {
+                        if(Event.current.type == EventType.Used) {
                             WindowInvoker.SetFocusedWindow(this);
                         }
                     }
@@ -108,8 +88,7 @@ namespace RapidGUI
             }
         }
 
-        public void CloseWindow()
-        {
+        public void CloseWindow() {
             isOpen = false;
             onClose?.Invoke(this);
         }
@@ -119,26 +98,23 @@ namespace RapidGUI
 
         #region Style
 
-        public static class Style
-        {
+        public static class Style {
             public static readonly GUIStyle toggle;
             const int LeftLine = 3;
 
             // GUIStyleState.background will be null 
             // if it set after secound scene load and don't use a few frame
             // to keep textures, set it to other member. at unity2019
-            static readonly List<Texture2D> TexList = new List<Texture2D>();
+            static readonly List<Texture2D> TexList = new();
 
-            static Style()
-            {
-                Color onColor = new Color(0.3f, 0.5f, 0.98f, 0.9f);
+            static Style() {
+                Color onColor = new(0.3f, 0.5f, 0.98f, 0.9f);
 
                 toggle = CreateToggle(onColor);
                 toggle.name = "launcher_unit_toggle";
             }
 
-            static GUIStyle CreateToggle(Color onColor)
-            {
+            static GUIStyle CreateToggle(Color onColor) {
                 var style = new GUIStyle(GUI.skin.button);
                 style.alignment = TextAnchor.MiddleLeft;
                 //style.border = new RectOffset(0, 0, 1, underLine + 1);
@@ -158,16 +134,13 @@ namespace RapidGUI
                 return style;
             }
 
-            static Texture2D CreateToggleOnTex(Color col, Color bg)
-            {
+            static Texture2D CreateToggleOnTex(Color col, Color bg) {
                 //var tex = new Texture2D(1, underLine + 3);
-                var tex = new Texture2D(LeftLine + 3,1);
+                var tex = new Texture2D(LeftLine + 3, 1);
 
-                for (var x = 0; x < tex.width; ++x)
-                {
+                for(var x = 0; x < tex.width; ++x) {
                     var c = (x < LeftLine) ? col : bg;
-                    for (var y = 0; y < tex.height; ++y)
-                    {
+                    for(var y = 0; y < tex.height; ++y) {
                         //var c = (y < underLine) ? col : bg;
                         tex.SetPixel(x, y, c);
                     }
@@ -178,8 +151,7 @@ namespace RapidGUI
                 return tex;
             }
 
-            static Texture2D CreateTex(Color col)
-            {
+            static Texture2D CreateTex(Color col) {
                 var tex = new Texture2D(1, 1);
                 tex.SetPixel(0, 0, col);
                 tex.Apply();

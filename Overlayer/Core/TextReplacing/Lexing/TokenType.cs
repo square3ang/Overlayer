@@ -1,7 +1,5 @@
-﻿namespace Overlayer.Core.TextReplacing.Lexing
-{
-    public enum TokenType
-    {
+﻿namespace Overlayer.Core.TextReplacing.Lexing {
+    public enum TokenType {
         Identifier,
         TagStart,
         TagEnd,

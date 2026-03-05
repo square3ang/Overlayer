@@ -1,8 +1,7 @@
 ﻿using Overlayer.Core.Interfaces;
 using System;
 
-namespace Overlayer.Core
-{
+namespace Overlayer.Core {
     public class MethodDrawable : IDrawable {
         public string Name { get; set; }
         public Action drawerMethod { get; set; }

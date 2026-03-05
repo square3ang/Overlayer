@@ -2,47 +2,35 @@
 using System.Text;
 using UnityEngine;
 
-namespace RapidGUI
-{
-    public static partial class RGUI
-    {
-        static object RecursiveField(object obj)
-        {
+namespace RapidGUI {
+    public static partial class RGUI {
+        static object RecursiveField(object obj) {
             return DoRecursiveSafe(obj, () => DoRecursiveField(obj));
         }
 
-        static object DoRecursiveField(object obj)
-        {
+        static object DoRecursiveField(object obj) {
             var doGuiObj = obj as IDoGUI;
-            if (doGuiObj != null)
-            {
+            if(doGuiObj != null) {
                 GUILayout.EndHorizontal();
 
-                using (new PrefixLabelIndentScope())
-                {
+                using(new PrefixLabelIndentScope()) {
                     doGuiObj.DoGUI();
                 }
 
                 GUILayout.BeginHorizontal();
-            }
-            else
-            {
+            } else {
                 var type = obj.GetType();
 
                 var multiLine = TypeUtility.IsMultiLine(type);
-                if (multiLine)
-                {
+                if(multiLine) {
                     GUILayout.EndHorizontal();
 
-                    using (new PrefixLabelIndentScope())
-                    {
+                    using(new PrefixLabelIndentScope()) {
                         DoFields(obj, type);
                     }
 
                     GUILayout.BeginHorizontal();
-                }
-                else
-                {
+                } else {
                     var tmp = PrefixLabelSetting.width;
                     PrefixLabelSetting.width = 0f;
 
@@ -56,14 +44,13 @@ namespace RapidGUI
             return obj;
         }
 
-        static StringBuilder tmpStringBuilder = new StringBuilder();
-        static void DoFields(object obj, Type type)
-        {
+        static StringBuilder tmpStringBuilder = new();
+        static void DoFields(object obj, Type type) {
             var infos = TypeUtility.GetMemberInfoList(type);
-            for (var i = 0; i < infos.Count; ++i)
-            {
+            for(var i = 0; i < infos.Count; ++i) {
                 var info = infos[i];
-                if (CheckIgnoreField(info.Name)) continue;
+                if(CheckIgnoreField(info.Name))
+                    continue;
 
                 var v = info.GetValue(obj);
                 var range = info.range;
@@ -71,12 +58,9 @@ namespace RapidGUI
                 var elemName = CheckCustomLabel(info.Name) ?? info.label;
 
 
-                if (range != null)
-                {
+                if(range != null) {
                     v = Slider(v, range.min, range.max, memberType, elemName);
-                }
-                else
-                {
+                } else {
                     // for the bug that short label will be strange word wrap at unity2019
                     tmpStringBuilder.Clear();
                     tmpStringBuilder.Append(elemName);
@@ -85,7 +69,8 @@ namespace RapidGUI
                     v = Field(v, memberType, tmpStringBuilder.ToString());
                 }
                 info.SetValue(obj, v);
-            };
+            }
+            ;
         }
     }
 }

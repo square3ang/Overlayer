@@ -4,10 +4,8 @@ using Overlayer.Models;
 using Overlayer.Utils;
 using UnityModManagerNet;
 
-namespace Overlayer
-{
-    public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
-    {
+namespace Overlayer {
+    public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings> {
         public enum EditorUIMode {
             Simple,
             Advanced
@@ -15,7 +13,7 @@ namespace Overlayer
 
         public bool disableLogo = false;
         public bool ChangeFont = false;
-        public FontMeta AdofaiFont = new FontMeta();
+        public FontMeta AdofaiFont = new();
         public string Lang = "Default";
         public float FPSUpdateRate = 100;
         public float FrameTimeUpdateRate = 100;
@@ -52,7 +50,7 @@ namespace Overlayer
             node[nameof(autoPivot)] = autoPivot;
             node[nameof(showTextNameAsDisplayText)] = showTextNameAsDisplayText;
             node[nameof(uiMode)] = uiMode.ToString();
-            node[nameof(isFirstEg)] = isFirstEg;           
+            node[nameof(isFirstEg)] = isFirstEg;
             return node;
         }
         public void Deserialize(JToken node) {
@@ -81,8 +79,7 @@ namespace Overlayer
 
             isFirstEg = node[nameof(isFirstEg)]?.Value<bool>() ?? defaultSettings.isFirstEg;
         }
-        public Settings Copy()
-        {
+        public Settings Copy() {
             var newSettings = new Settings();
             newSettings.disableLogo = disableLogo;
             newSettings.ChangeFont = ChangeFont;

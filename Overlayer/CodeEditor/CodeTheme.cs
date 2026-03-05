@@ -1,11 +1,6 @@
-﻿using UnityEngine;
-using System.Reflection;
+﻿namespace Overlayer.CodeEditor;
 
-
-namespace Overlayer.CodeEditor;
-
-public class CodeTheme
-{
+public class CodeTheme {
     public string background { get; set; }
     public string linenumbg { get; set; }
     public string color { get; set; }

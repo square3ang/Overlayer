@@ -1,14 +1,11 @@
 ﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 
-namespace Overlayer.Models
-{
-    public class GUIStatus : IModel, ICopyable<GUIStatus>
-    {
+namespace Overlayer.Models {
+    public class GUIStatus : IModel, ICopyable<GUIStatus> {
         public bool Expanded = false;
         public bool Enabled = true;
-        public GUIStatus Copy()
-        {
+        public GUIStatus Copy() {
             var status = new GUIStatus();
             status.Expanded = Expanded;
             status.Enabled = Enabled;
