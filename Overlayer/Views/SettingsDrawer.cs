@@ -213,8 +213,9 @@ namespace Overlayer.Views {
                             }
                         }
                         if(Drawer.Button(Main.Lang.Get("LOG_FONT_LIST", "Log Font List"))) {
-                            foreach(var font in FontManager.OSFonts)
+                            foreach(var font in FontManager.OSFonts) {
                                 Main.Logger.Log(font);
+                            }
                         }
                         GUILayout.FlexibleSpace();
                         GUILayout.EndHorizontal();

@@ -434,8 +434,9 @@ namespace RapidGUI {
                 break;
 
                 case EventType.MouseUp: {
-                    if(GUIUtility.hotControl == controlID)
+                    if(GUIUtility.hotControl == controlID) {
                         GUIUtility.hotControl = 0;
+                    }
                 }
                 break;
             }

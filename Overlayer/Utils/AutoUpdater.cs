@@ -70,8 +70,9 @@ namespace Overlayer.Utils {
                         return;
                     }
 
-                    if(!response.IsSuccessStatusCode)
+                    if(!response.IsSuccessStatusCode) {
                         return;
+                    }
 
                     json = content;
                 }
@@ -174,8 +175,10 @@ namespace Overlayer.Utils {
             string zipPath = Path.Combine(tempDir, "Overlayer.zip");
 
             try {
-                if(Directory.Exists(tempDir))
+                if(Directory.Exists(tempDir)) {
                     Directory.Delete(tempDir, true);
+                }
+
                 Directory.CreateDirectory(tempDir);
 
                 using(var client = new WebClient()) {
@@ -205,8 +208,10 @@ namespace Overlayer.Utils {
             } catch(Exception ex) {
                 err?.Invoke(ex.Message);
             } finally {
-                if(File.Exists(zipPath))
+                if(File.Exists(zipPath)) {
                     File.Delete(zipPath);
+                }
+
                 IsUpdating = false;
             }
         }

@@ -17,36 +17,45 @@ namespace Overlayer.Tags {
 
         private static OverlayerTag testerTag = new("INTERNAL_TESTER_TAG_1234512345", () => testerValue, true);
         public static void Load(Assembly ass) {
-            foreach(var t in ass.GetExportedTypes())
+            foreach(var t in ass.GetExportedTypes()) {
                 Load(t);
+            }
         }
         public static void Load(Type type) {
             foreach(var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static)) {
                 var attr = method.GetCustomAttribute<TagAttribute>();
-                if(attr == null)
+                if(attr == null) {
                     continue;
+                }
+
                 SetTag(new OverlayerTag(method, attr));
             }
             foreach(var field in type.GetFields(BindingFlags.Public | BindingFlags.Static)) {
                 var attr = field.GetCustomAttribute<TagAttribute>();
-                if(attr == null)
+                if(attr == null) {
                     continue;
+                }
+
                 SetTag(new OverlayerTag(field, attr));
             }
             foreach(var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Static)) {
                 var attr = prop.GetCustomAttribute<TagAttribute>();
-                if(attr == null)
+                if(attr == null) {
                     continue;
+                }
+
                 SetTag(new OverlayerTag(prop, attr));
             }
         }
         public static void Unload(Assembly ass) {
-            foreach(var t in ass.GetExportedTypes())
+            foreach(var t in ass.GetExportedTypes()) {
                 Unload(t);
+            }
         }
         public static void Unload(Type type) {
-            foreach(var key in tags.Where(kvp => kvp.Value.DeclaringType == type).Select(kvp => kvp.Key).ToList())
+            foreach(var key in tags.Where(kvp => kvp.Value.DeclaringType == type).Select(kvp => kvp.Key).ToList()) {
                 tags.Remove(key);
+            }
         }
         public static OverlayerTag GetTag(string name) {
             if(name.StartsWith("INTERNAL_TESTER_TAG_1234512345")) {
@@ -61,24 +70,30 @@ namespace Overlayer.Tags {
             tags.Remove(name);
         }
         public static void UpdatePatch() {
-            foreach(var tag in All)
-                if(!tag.Referenced)
+            foreach(var tag in All) {
+                if(!tag.Referenced) {
                     LazyPatchManager.UnpatchAll(tag.Name);
-                else
+                } else {
                     LazyPatchManager.PatchAll(tag.Name);
+                }
+            }
         }
         public static bool HasReference(Type declaringType) {
             return tags.Values.Any(tag => tag.Referenced && tag.DeclaringType == declaringType);
         }
         public static void Initialize() {
-            if(Initialized)
+            if(Initialized) {
                 return;
+            }
+
             tags = new Dictionary<string, OverlayerTag>();
             Initialized = true;
         }
         public static void Release() {
-            if(!Initialized)
+            if(!Initialized) {
                 return;
+            }
+
             tags = null;
             Initialized = false;
         }

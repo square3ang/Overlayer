@@ -28,8 +28,9 @@ namespace Overlayer.Core {
 
                     if(token.Type == JTokenType.Array) {
                         foreach(var item in (JArray)token) {
-                            if(item.Type == JTokenType.Object)
+                            if(item.Type == JTokenType.Object) {
                                 configs.Add(TextConfigImporter.Import((JObject)item));
+                            }
                         }
                     } else if(token.Type == JTokenType.Object) {
                         configs.Add(TextConfigImporter.Import((JObject)token));
@@ -45,8 +46,10 @@ namespace Overlayer.Core {
             Initialized = true;
         }
         public static OverlayerText CreateText(TextConfig config) {
-            if(string.IsNullOrEmpty(config.Name))
+            if(string.IsNullOrEmpty(config.Name)) {
                 config.Name = (Count + 1).ToString();
+            }
+
             GameObject go = new($"OverlayerText_{config.Name}");
             var text = go.AddComponent<OverlayerText>();
             text.Init(config);
@@ -62,8 +65,9 @@ namespace Overlayer.Core {
         public static OverlayerText Find(TextConfig configRef) => Texts.Find(ot => ReferenceEquals(ot.Config, configRef));
 
         public static bool MoveTextToIndex(int from, int to) {
-            if(from < 0 || from >= Texts.Count || to < 0 || to >= Texts.Count || from == to)
+            if(from < 0 || from >= Texts.Count || to < 0 || to >= Texts.Count || from == to) {
                 return false;
+            }
 
             var item = Texts[from];
             Texts.RemoveAt(from);
@@ -123,8 +127,10 @@ namespace Overlayer.Core {
             Texts.ForEach(ot => ot.ApplyConfig());
         }
         public static void Release() {
-            if(!Initialized)
+            if(!Initialized) {
                 return;
+            }
+
             Save();
             Texts = null;
             UnityEngine.Object.Destroy(OverlayerText.PCanvasObj);

@@ -27,8 +27,9 @@ namespace RapidGUI {
             var infos = TypeUtility.GetMemberInfoList(type);
             for(var i = 0; i < infos.Count; ++i) {
                 var info = infos[i];
-                if(CheckIgnoreField(info.Name))
+                if(CheckIgnoreField(info.Name)) {
                     continue;
+                }
 
                 var elemValMin = info.GetValue(to.Item1);
                 var elemValMax = info.GetValue(to.Item2);

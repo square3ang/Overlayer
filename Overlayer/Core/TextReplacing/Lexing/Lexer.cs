@@ -9,8 +9,10 @@ namespace Overlayer.Core.TextReplacing.Lexing {
             var invalid = lex.FindIndex(t => t.afterInvalid);
             if(invalid >= 0) {
                 StringBuilder values = new();
-                for(int i = invalid; i < lex.Count; i++)
+                for(int i = invalid; i < lex.Count; i++) {
                     values.Append(lex[i].value);
+                }
+
                 lex.RemoveRange(invalid, lex.Count - invalid);
                 lex.Add(new Token(TokenType.Identifier, values.ToString()));
             }
@@ -34,8 +36,10 @@ namespace Overlayer.Core.TextReplacing.Lexing {
                         sb.Append(c);
                         continue;
                     }
-                    if(sb.Length > 0)
+                    if(sb.Length > 0) {
                         yield return new Token(TokenType.Identifier, sb.ToString());
+                    }
+
                     sb.Clear();
                     if(i + 1 < source.Length && source[i + 1] == config.TagStart) {
                         sb.Append(c);
@@ -51,8 +55,10 @@ namespace Overlayer.Core.TextReplacing.Lexing {
                         sb.Append(c);
                         continue;
                     }
-                    if(sb.Length > 0)
+                    if(sb.Length > 0) {
                         yield return new Token(TokenType.Identifier, sb.ToString());
+                    }
+
                     sb.Clear();
                     yield return new Token(TokenType.TagEnd, c.ToString());
                     lastTagToken.Pop().afterInvalid = false;
@@ -63,8 +69,10 @@ namespace Overlayer.Core.TextReplacing.Lexing {
                         sb.Append(c);
                         continue;
                     }
-                    if(sb.Length > 0)
+                    if(sb.Length > 0) {
                         yield return new Token(TokenType.Identifier, sb.ToString());
+                    }
+
                     sb.Clear();
                     yield return new Token(TokenType.ArgStart, c.ToString());
                 } else if(c == config.TagArgEnd) {
@@ -72,8 +80,10 @@ namespace Overlayer.Core.TextReplacing.Lexing {
                         sb.Append(c);
                         continue;
                     }
-                    if(sb.Length > 0)
+                    if(sb.Length > 0) {
                         yield return new Token(TokenType.Identifier, sb.ToString());
+                    }
+
                     sb.Clear();
                     yield return new Token(TokenType.ArgEnd, c.ToString());
                 } else if(c == config.TagOptSeparator) {
@@ -81,8 +91,10 @@ namespace Overlayer.Core.TextReplacing.Lexing {
                         sb.Append(c);
                         continue;
                     }
-                    if(sb.Length > 0)
+                    if(sb.Length > 0) {
                         yield return new Token(TokenType.Identifier, sb.ToString());
+                    }
+
                     sb.Clear();
                     yield return new Token(TokenType.Colon, c.ToString());
                     colonActivated = true;
@@ -91,22 +103,26 @@ namespace Overlayer.Core.TextReplacing.Lexing {
                         sb.Append(c);
                         continue;
                     }
-                    if(sb.Length > 0)
+                    if(sb.Length > 0) {
                         yield return new Token(TokenType.Identifier, sb.ToString());
+                    }
+
                     sb.Clear();
-                    if(argDepth > 0)
+                    if(argDepth > 0) {
                         yield return new Token(TokenType.Comma, c.ToString());
-                    else {
+                    } else {
                         sb.Append(c);
                         continue;
                     }
-                } else if(c == '\\')
+                } else if(c == '\\') {
                     escaping = true;
-                else
+                } else {
                     sb.Append(c);
+                }
             }
-            if(sb.Length > 0)
+            if(sb.Length > 0) {
                 yield return new Token(TokenType.Identifier, sb.ToString());
+            }
         }
     }
 }

@@ -143,8 +143,9 @@ public class CodeEditor {
         pressedTab = usedTab && Event.current.type == EventType.KeyDown;
         pressedShift = Event.current.shift;
 
-        if(usedTab)
+        if(usedTab) {
             Event.current.Use();
+        }
 
         // Drawing the text area using GUILayout
         GUI.SetNextControlName(controlName);
@@ -156,17 +157,20 @@ public class CodeEditor {
                 if(Event.current.keyCode == KeyCode.Z && Event.current.control) {
                     if(Event.current.shift) {
                         var tx = undoRedoManagers[id].Redo();
-                        if(tx != null)
+                        if(tx != null) {
                             code = tx;
+                        }
                     } else {
                         var tx = undoRedoManagers[id].Undo();
-                        if(tx != null)
+                        if(tx != null) {
                             code = tx;
+                        }
                     }
                 } else if((Event.current.keyCode == KeyCode.Y && Event.current.control) || (Event.current.shift && Event.current.keyCode == KeyCode.Z)) {
                     var tx = undoRedoManagers[id].Redo();
-                    if(tx != null)
+                    if(tx != null) {
                         code = tx;
+                    }
                 }
 
                 if(code != oldcode) {
@@ -274,12 +278,17 @@ public class CodeEditor {
 
                 var special = mvm || cr || ev;
 
-                if(mvm && !Main.Settings.useMovingManEditor)
+                if(mvm && !Main.Settings.useMovingManEditor) {
                     special = false;
-                if(cr && !Main.Settings.useColorRangeEditor)
+                }
+
+                if(cr && !Main.Settings.useColorRangeEditor) {
                     special = false;
-                if(ev && !Main.Settings.useEasedValueEditor)
+                }
+
+                if(ev && !Main.Settings.useEasedValueEditor) {
                     special = false;
+                }
 
                 if(rect.Contains(Event.current.mousePosition)) {
                     var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];

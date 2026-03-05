@@ -130,8 +130,10 @@ namespace Overlayer.Tags {
             if(elapsed < speed) {
                 float lifetime = (float)(elapsed / speed);
                 float eased = DOVirtual.EasedValue(0, 1, lifetime, ease);
-                if(invert)
+                if(invert) {
                     eased = 1 - eased;
+                }
+
                 float changed = (float)(endSize - startSize) * eased;
                 return startSize + changed;
             }

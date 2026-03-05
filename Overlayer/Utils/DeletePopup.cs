@@ -22,8 +22,9 @@ namespace Overlayer.Utils {
 
             foreach(var line in contentLines) {
                 float lineWidth = GUI.skin.label.CalcSize(new GUIContent(line)).x;
-                if(lineWidth > maxWidth)
+                if(lineWidth > maxWidth) {
                     maxWidth = lineWidth;
+                }
             }
             float width = maxWidth + 40;
             float height = (contentLines.Length * 20) + 40;

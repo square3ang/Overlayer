@@ -10,8 +10,9 @@ namespace Overlayer.Utils {
                 using(ZipArchive zipArchive = new(ms, ZipArchiveMode.Update, false, Encoding.UTF8)) {
                     foreach(var rFile in rFiles) {
                         var entry = zipArchive.CreateEntry(rFile.Name);
-                        using(Stream entryStream = entry.Open())
+                        using(Stream entryStream = entry.Open()) {
                             entryStream.Write(rFile.Data, 0, rFile.Data.Length);
+                        }
                     }
                 }
                 return ms.ToArray();

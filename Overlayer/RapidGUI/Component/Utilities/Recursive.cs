@@ -18,14 +18,16 @@ namespace RapidGUI {
 
         static object DoRecursiveSafe(object obj, Func<object> doFunc) {
             ObjStatus GetStatus(object o) {
-                if(o == null)
+                if(o == null) {
                     return ObjStatus.Null;
+                }
 
                 var type = o.GetType();
                 if(type.IsValueType) {
                     return (type == typeof(TupleObject)) ? ObjStatus.Tuple : ObjStatus.ValueType;
-                } else if(recursiveTypeLoopCheck.Contains(o))
+                } else if(recursiveTypeLoopCheck.Contains(o)) {
                     return ObjStatus.Loop;
+                }
 
                 return ObjStatus.Class;
             }

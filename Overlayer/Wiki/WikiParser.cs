@@ -4,8 +4,9 @@ namespace Overlayer.Wiki {
     public static class WikiParser {
 
         public static string ReplacePaired(string text, string marker, string openTag, string closeTag) {
-            if(string.IsNullOrEmpty(text) || string.IsNullOrEmpty(marker))
+            if(string.IsNullOrEmpty(text) || string.IsNullOrEmpty(marker)) {
                 return text;
+            }
 
             bool inCode = false;
             int count = 0;
@@ -24,8 +25,9 @@ namespace Overlayer.Wiki {
                 }
                 i++;
             }
-            if(count < 2 || (count & 1) != 0)
+            if(count < 2 || (count & 1) != 0) {
                 return text;
+            }
 
             var sb = new StringBuilder(text.Length);
             inCode = false;
@@ -63,22 +65,23 @@ namespace Overlayer.Wiki {
                 }
 
                 if(!ignoreHeader) {
-                    if(lines[i].StartsWith("###### "))
+                    if(lines[i].StartsWith("###### ")) {
                         lines[i] = $"<size=10><b>{lines[i].Substring(7).Trim()}</b></size>";
-                    else if(lines[i].StartsWith("##### "))
+                    } else if(lines[i].StartsWith("##### ")) {
                         lines[i] = $"<size=12><b>{lines[i].Substring(6).Trim()}</b></size>";
-                    else if(lines[i].StartsWith("#### "))
+                    } else if(lines[i].StartsWith("#### ")) {
                         lines[i] = $"<size=14><b>{lines[i].Substring(5).Trim()}</b></size>";
-                    else if(lines[i].StartsWith("### "))
+                    } else if(lines[i].StartsWith("### ")) {
                         lines[i] = $"<size=18><b>{lines[i].Substring(4).Trim()}</b></size>";
-                    else if(lines[i].StartsWith("## "))
+                    } else if(lines[i].StartsWith("## ")) {
                         lines[i] = $"<size=24><b>{lines[i].Substring(3).Trim()}</b></size>";
-                    else if(lines[i].StartsWith("# "))
+                    } else if(lines[i].StartsWith("# ")) {
                         lines[i] = $"<size=32><b>{lines[i].Substring(2).Trim()}</b></size>";
-                    else if(lines[i].StartsWith("* ") || lines[i].StartsWith("- "))
+                    } else if(lines[i].StartsWith("* ") || lines[i].StartsWith("- ")) {
                         lines[i] = $"• {lines[i].Substring(2).Trim()}";
-                    else if(lines[i].StartsWith("> "))
+                    } else if(lines[i].StartsWith("> ")) {
                         lines[i] = $"| <i>{lines[i].Substring(2).Trim()}</i>";
+                    }
                 }
                 lines[i] = ReplacePaired(lines[i], "***", "<b><i>", "</i></b>");
                 lines[i] = ReplacePaired(lines[i], "**", "<b>", "</b>");

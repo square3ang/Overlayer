@@ -17,31 +17,35 @@ namespace Overlayer.Models {
         public static readonly Type ro_t = typeof(RectOffset);
         public static readonly Type m4x4_t = typeof(Matrix4x4);
         public static JToken ToNode<T>(object obj) {
-            if(obj == null)
+            if(obj == null) {
                 return JValue.CreateNull();
+            }
+
             Type t = typeof(T);
             switch(Type.GetTypeCode(t)) {
                 case TypeCode.Object:
-                    if(obj is IModel model)
+                    if(obj is IModel model) {
                         return model.Serialize();
-                    else if(obj is Vector2 vec2)
+                    } else if(obj is Vector2 vec2) {
                         return JToken.FromObject(vec2);
-                    else if(obj is Vector3 vec3)
+                    } else if(obj is Vector3 vec3) {
                         return JToken.FromObject(vec3);
-                    else if(obj is Vector4 vec4)
+                    } else if(obj is Vector4 vec4) {
                         return JToken.FromObject(vec4);
-                    else if(obj is Color col)
+                    } else if(obj is Color col) {
                         return JToken.FromObject(col);
-                    else if(obj is Color32 col32)
+                    } else if(obj is Color32 col32) {
                         return JToken.FromObject(col32);
-                    else if(obj is Quaternion quat)
+                    } else if(obj is Quaternion quat) {
                         return JToken.FromObject(quat);
-                    else if(obj is Rect r)
+                    } else if(obj is Rect r) {
                         return JToken.FromObject(r);
-                    else if(obj is RectOffset ro)
+                    } else if(obj is RectOffset ro) {
                         return JToken.FromObject(ro);
-                    else if(obj is Matrix4x4 m4x4)
+                    } else if(obj is Matrix4x4 m4x4) {
                         return JToken.FromObject(m4x4);
+                    }
+
                     goto default;
                 case TypeCode.Boolean:
                     return new JValue((bool)obj);
@@ -79,8 +83,10 @@ namespace Overlayer.Models {
         }
 
         public static object ToObject<T>(JToken token) {
-            if(token == null)
+            if(token == null) {
                 return null;
+            }
+
             Type t = typeof(T);
             switch(Type.GetTypeCode(t)) {
                 case TypeCode.Object:

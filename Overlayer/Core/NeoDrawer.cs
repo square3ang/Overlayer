@@ -160,10 +160,12 @@ namespace Overlayer.Core {
                             value = Convert.ToDecimal(field.ComputedValue);
                             break;
                         case TypeCode.String:
-                            if(float.TryParse(Convert.ToString(field.ComputedValue), out float parsed))
+                            if(float.TryParse(Convert.ToString(field.ComputedValue), out float parsed)) {
                                 value = parsed;
-                            else
+                            } else {
                                 field.State = NeoField.StateType.ERROR;
+                            }
+
                             break;
                         default:
                             field.State = NeoField.StateType.ERROR;

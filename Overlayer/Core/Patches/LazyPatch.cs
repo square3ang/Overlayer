@@ -29,19 +29,25 @@ namespace Overlayer.Core.Patches {
             transpiler = patchType.GetMethod("Transpiler", (BindingFlags)15420);
             finalizer = patchType.GetMethod("Finalizer", (BindingFlags)15420);
             target = attr.Resolve();
-            if(attr.IsCompatible && target == null)
+            if(attr.IsCompatible && target == null) {
                 Main.Logger.Log($"ID:{attr.Id}, {attr.TargetType}.{attr.TargetMethod} Could Not Be Resolved!");
+            }
+
             Patches.Add(attr.Id, this);
         }
         public void Patch(bool force = false) {
-            if(Patched || IgnorePatchCount-- > 0 || target == null || patch != null)
+            if(Patched || IgnorePatchCount-- > 0 || target == null || patch != null) {
                 return;
+            }
+
             if(!force && Locked) {
                 Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Patched!");
                 return;
             }
-            if(force)
+            if(force) {
                 Locked = false;
+            }
+
             var pre_hm = prefix != null ? new HarmonyMethod(prefix) : null;
             var post_hm = postfix != null ? new HarmonyMethod(postfix) : null;
             var trans_hm = transpiler != null ? new HarmonyMethod(transpiler) : null;
@@ -51,14 +57,18 @@ namespace Overlayer.Core.Patches {
             Patched = true;
         }
         public void Unpatch(bool force = false) {
-            if(!Patched || IgnoreUnpatchCount-- > 0 || target == null || patch == null)
+            if(!Patched || IgnoreUnpatchCount-- > 0 || target == null || patch == null) {
                 return;
+            }
+
             if(!force && Locked) {
                 Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Unpatched!");
                 return;
             }
-            if(force)
+            if(force) {
                 Locked = false;
+            }
+
             harmony.Unpatch(target, patch);
             Main.Logger.Log($"ID:{attr.Id} Unpatched!");
             patch = null;

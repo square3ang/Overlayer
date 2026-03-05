@@ -16,16 +16,26 @@ namespace Overlayer.Utils {
             overlayerErrorCanvas.btnSubmit.onClick.RemoveAllListeners();
             overlayerErrorCanvas.btnIgnore.onClick.RemoveAllListeners();
             overlayerErrorCanvas.btnBack.onClick.RemoveAllListeners();
-            if(ecc.supportBtnCallback != null)
+            if(ecc.supportBtnCallback != null) {
                 overlayerErrorCanvas.btnSupport.onClick.AddListener(ecc.supportBtnCallback);
-            if(ecc.logBtnCallback != null)
+            }
+
+            if(ecc.logBtnCallback != null) {
                 overlayerErrorCanvas.btnLog.onClick.AddListener(ecc.logBtnCallback);
-            if(ecc.submitBtnCallback != null)
+            }
+
+            if(ecc.submitBtnCallback != null) {
                 overlayerErrorCanvas.btnSubmit.onClick.AddListener(ecc.submitBtnCallback);
-            if(ecc.ignoreBtnCallback != null)
+            }
+
+            if(ecc.ignoreBtnCallback != null) {
                 overlayerErrorCanvas.btnIgnore.onClick.AddListener(ecc.ignoreBtnCallback);
-            if(ecc.goBackBtnCallback != null)
+            }
+
+            if(ecc.goBackBtnCallback != null) {
                 overlayerErrorCanvas.btnBack.onClick.AddListener(ecc.goBackBtnCallback);
+            }
+
             overlayerErrorCanvas.btnSupport.gameObject.SetActive(ecc.supportBtnCallback != null);
             overlayerErrorCanvas.btnLog.gameObject.SetActive(ecc.logBtnCallback != null);
             overlayerErrorCanvas.btnSubmit.gameObject.SetActive(ecc.submitBtnCallback != null);
@@ -46,16 +56,19 @@ namespace Overlayer.Utils {
         }
         public static int HashMargins(HitMargin[] margins) {
             int bits = 0;
-            for(int i = 0; i < margins.Length; i++)
+            for(int i = 0; i < margins.Length; i++) {
                 bits |= 1 << (int)margins[i];
+            }
+
             return bits;
         }
         public static HitMargin[] UnboxMarginHash(int marginHash) {
             List<HitMargin> margins = new();
             var values = EnumHelper<HitMargin>.GetValues();
             for(int i = 0; i < values.Length; i++) {
-                if((marginHash & (1 << (int)values[i])) != 0)
+                if((marginHash & (1 << (int)values[i])) != 0) {
                     margins.Add(values[i]);
+                }
             }
             return margins.ToArray();
         }

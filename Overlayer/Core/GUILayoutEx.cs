@@ -57,17 +57,19 @@ namespace Overlayer.Core {
                 if(newIsEnabled) {
                     onEnable?.Invoke();
                     newIsExpanded = true;
-                } else
+                } else {
                     onDisable?.Invoke();
+                }
             }
 
             // Handle expand/collapse change
             if(newIsExpanded != expanded) {
                 expanded = newIsExpanded;
-                if(!newIsExpanded)
+                if(!newIsExpanded) {
                     onHide?.Invoke();
-                else
+                } else {
                     onShow?.Invoke();
+                }
             }
 
             // Draw custom options
@@ -75,10 +77,12 @@ namespace Overlayer.Core {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(24f);
                 GUILayout.BeginVertical();
-                if(enabled)
+                if(enabled) {
                     enGui?.Invoke();
-                else
+                } else {
                     disGui?.Invoke();
+                }
+
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
                 GUILayout.Space(12f);
@@ -347,10 +351,12 @@ namespace Overlayer.Core {
                 newValue = Mathf.Round(newValue / roundNearest) * roundNearest;
             }
             GUILayout.Space(8f);
-            if(valueFormat != "{0}")
+            if(valueFormat != "{0}") {
                 GUILayout.Label(string.Format(valueFormat, newValue));
-            else
+            } else {
                 newValue = StringConverter.ToFloat(GUILayout.TextField(newValue.ToString("F4"), Drawer.myTextField));
+            }
+
             GUILayout.FlexibleSpace();
             return newValue;
         }

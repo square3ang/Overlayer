@@ -19,16 +19,18 @@ namespace Overlayer.Core {
                 var fontsDir = Path.Combine(refsDir, "Fonts");
                 Directory.CreateDirectory(refsDir);
 
-                if(refs.Any(r => r.ReferenceType == Reference.Type.Font))
+                if(refs.Any(r => r.ReferenceType == Reference.Type.Font)) {
                     Directory.CreateDirectory(fontsDir);
+                }
 
                 foreach(var @ref in refs) {
                     if(@ref.ReferenceType == Reference.Type.Font) {
                         var targetPath = Path.Combine(fontsDir, @ref.Name);
                         File.WriteAllBytes(targetPath, @ref.Raw.Decompress());
 
-                        if((Path.GetFileName(config.Font?.Replace("{ModDir}", Main.Mod.Path)) ?? "") == @ref.Name)
+                        if((Path.GetFileName(config.Font?.Replace("{ModDir}", Main.Mod.Path)) ?? "") == @ref.Name) {
                             config.Font = targetPath;
+                        }
                     }
                 }
             }
@@ -38,8 +40,9 @@ namespace Overlayer.Core {
         public static JArray GetReferences(TextConfig text) {
             var references = new List<Reference>();
 
-            if(!string.IsNullOrWhiteSpace(text.Font) && text.Font != "Default")
+            if(!string.IsNullOrWhiteSpace(text.Font) && text.Font != "Default") {
                 references.Add(Reference.GetReference(text.Font, Reference.Type.Font));
+            }
 
             if(text.EnableFallbackFonts) {
                 foreach(var fallback in text.FallbackFonts ?? Array.Empty<string>()) {
@@ -69,8 +72,10 @@ namespace Overlayer.Core {
 
             public static Reference GetReference(string path, Type referenceType) {
                 var target = path.Replace("{ModDir}", Main.Mod.Path);
-                if(refCache.TryGetValue(target, out var reference))
+                if(refCache.TryGetValue(target, out var reference)) {
                     return reference;
+                }
+
                 var @ref = new Reference {
                     From = target,
                     Name = Path.GetFileName(target),

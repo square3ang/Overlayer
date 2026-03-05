@@ -31,15 +31,20 @@ namespace Overlayer.Core.TextReplacing {
             }
         }
         public string Replace() {
-            if(!compiled)
-                if(!Compile())
+            if(!compiled) {
+                if(!Compile()) {
                     return null;
+                }
+            }
+
             return compiledMethod();
         }
         public string ReplaceI() => interpretable?.Replace();
         public bool Compile() {
-            if(compiled)
+            if(compiled) {
                 return true;
+            }
+
             try {
                 DynamicMethod dm = new(string.Empty, typeof(string), Type.EmptyTypes, typeof(Replacer), true);
                 ILGenerator il = dm.GetILGenerator();
@@ -51,8 +56,10 @@ namespace Overlayer.Core.TextReplacing {
                         pt.tag.ReferencedCount++;
                         References.Add(pt.tag);
                         parsed.Emit(il);
-                    } else
+                    } else {
                         parsed.Emit(il);
+                    }
+
                     il.Emit(OpCodes.Call, StrBuilder_Append);
                 }
                 il.Emit(OpCodes.Call, StrBuilder_ToString);

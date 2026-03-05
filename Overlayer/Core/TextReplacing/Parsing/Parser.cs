@@ -37,17 +37,20 @@ namespace Overlayer.Core.TextReplacing.Parsing {
                         if(t.type == TokenType.ArgStart || t.type == TokenType.Colon) {
                             while(queue.Count > 0 && t.type != TokenType.ArgEnd && t.type != TokenType.TagEnd) {
                                 t = queue.Dequeue();
-                                if(t.type == TokenType.Identifier)
+                                if(t.type == TokenType.Identifier) {
                                     arguments.Add(t.value);
+                                }
                             }
                         }
                     }
-                    if(tagNotFound)
+                    if(tagNotFound) {
                         yield return new ParsedString(sb.ToString());
-                    else
+                    } else {
                         yield return new ParsedTag(found, arguments);
-                } else
+                    }
+                } else {
                     yield return new ParsedString(t.value);
+                }
             }
         }
     }

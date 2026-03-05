@@ -38,16 +38,17 @@ namespace Overlayer.Core.Patches {
             try {
                 var tt = MiscUtils.TypeByName(TargetType);
                 var tma = TargetMethodArgs?.Select(MiscUtils.TypeByName).ToArray();
-                if(TargetMethod == ".ctor")
+                if(TargetMethod == ".ctor") {
                     return tma != null ?
                         tt?.GetConstructor(bf, null, tma, null) :
                         tt?.GetConstructors(bf).FirstOrDefault();
-                else if(TargetMethod == ".cctor")
+                } else if(TargetMethod == ".cctor") {
                     return tt.TypeInitializer;
-                else
+                } else {
                     return tma != null ?
                         tt?.GetMethod(TargetMethod, bf, null, tma, null) :
                         tt?.GetMethod(TargetMethod, bf);
+                }
             } catch(AmbiguousMatchException) {
                 //foreach (var amMethod in MiscUtils.TypeByName(TargetType).GetMethods(bf).Where(t => t.Name == TargetMethod))
                 //    Main.Logger.Log(amMethod.ToString());

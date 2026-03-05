@@ -102,8 +102,10 @@ namespace Overlayer {
 
         public static IEnumerator LoadCoroutine(ModEntry modEntry) {
             yield return null;
-            while(!RDString.initialized)
+            while(!RDString.initialized) {
                 yield return null;
+            }
+
             TextManager.Initialize();
             yield return null;
         }
@@ -296,8 +298,10 @@ namespace Overlayer {
             get {
                 var ctrl = scrController.instance;
                 var cdt = scrConductor.instance;
-                if(ctrl != null && cdt != null)
+                if(ctrl != null && cdt != null) {
                     return !ctrl.paused && cdt.isGameWorld;
+                }
+
                 return false;
             }
         }

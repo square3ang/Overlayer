@@ -13,8 +13,10 @@ namespace Overlayer.Models {
         public bool Drag {
             get => _drag;
             set {
-                if(_drag == value)
+                if(_drag == value) {
                     return;
+                }
+
                 _drag = value;
                 OnDragChanged?.Invoke(_drag);
             }

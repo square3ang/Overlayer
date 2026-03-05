@@ -41,8 +41,9 @@ namespace RapidGUI {
 
                 rect = RGUI.ResizableWindow(GetHashCode(), rect, (id) => {
                     list.ForEach(l => l.DoGUI());
-                    if(isDraggable)
+                    if(isDraggable) {
                         GUI.DragWindow();
+                    }
                 },
                 name, RGUIStyle.darkWindow, GUILayout.MinWidth(minWidth));
             } else {

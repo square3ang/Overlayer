@@ -10,8 +10,9 @@ namespace Overlayer.Utils {
             NameValues = new Dictionary<string, T>();
             Names = Enum.GetNames(typeof(T));
             Values = (T[])Enum.GetValues(typeof(T));
-            for(int i = 0; i < Names.Length; i++)
+            for(int i = 0; i < Names.Length; i++) {
                 NameValues[Names[i]] = Values[i];
+            }
         }
         public static T Parse(string name) => NameValues.TryGetValue(name, out var value) ? value : default;
         public static bool TryParse(string name, out T value) => NameValues.TryGetValue(name, out value);

@@ -27,15 +27,18 @@ namespace Overlayer.Controllers {
                     drawables.RemoveRange(depth, drawables.Count - depth);
                     drawables.Add(current);
                     depth++;
-                } else
+                } else {
                     drawables[depth++] = current;
+                }
             }
             current = drawable;
             hasOnceCalled = false;
         }
         public void Pop() {
-            if(!isUndoAvailable)
+            if(!isUndoAvailable) {
                 return;
+            }
+
             var cache = current;
             current = drawables[--depth];
             drawables[depth] = cache;
@@ -47,20 +50,24 @@ namespace Overlayer.Controllers {
         public void Draw() {
             if(skipFrames > 0) {
                 skipFrames--;
-                if(onSkipCallbacks.Count > 0)
+                if(onSkipCallbacks.Count > 0) {
                     onSkipCallbacks.Pop()?.Invoke();
+                }
+
                 return;
             }
             GUILayout.BeginHorizontal();
             {
                 if(isUndoAvailable) {
-                    if(Drawer.Button("◀ " + Main.Lang.Get("BACK", "Back") + drawables[depth - 1].Name))
+                    if(Drawer.Button("◀ " + Main.Lang.Get("BACK", "Back") + drawables[depth - 1].Name)) {
                         Pop();
+                    }
                 }
                 if(isRedoAvailable) {
                     var draw = drawables[depth];
-                    if(Drawer.Button(draw.Name + "▶ " + Main.Lang.Get("FORWARD", "Forward")))
+                    if(Drawer.Button(draw.Name + "▶ " + Main.Lang.Get("FORWARD", "Forward"))) {
                         Push(draw);
+                    }
                 }
             }
             GUILayout.FlexibleSpace();
@@ -74,8 +81,10 @@ namespace Overlayer.Controllers {
             current.Draw();
             if(isUndoAvailable) {
                 GUILayout.BeginHorizontal();
-                if(Drawer.Button("◀ " + Main.Lang.Get("BACK", "Back") + drawables[depth - 1].Name))
+                if(Drawer.Button("◀ " + Main.Lang.Get("BACK", "Back") + drawables[depth - 1].Name)) {
                     Pop();
+                }
+
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             }

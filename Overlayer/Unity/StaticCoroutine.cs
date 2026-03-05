@@ -31,8 +31,9 @@ namespace Overlayer.Unity {
             yield break;
         }
         void Update() {
-            while(routines.Count > 0)
+            while(routines.Count > 0) {
                 StartCoroutine(routines.Dequeue());
+            }
         }
     }
 }

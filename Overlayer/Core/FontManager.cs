@@ -41,8 +41,10 @@ namespace Overlayer.Core {
                     FontData newData = defaultFont;
                     Font newFont = new(name);
                     TMP_FontAsset newTMPFont = TMP_FontAsset.CreateFontAsset(newFont);
-                    if(newTMPFont)
+                    if(newTMPFont) {
                         newTMPFont.fallbackFontAssetTable = FallbackTMPFonts.ToList();
+                    }
+
                     newData.font = newFont;
                     newData.fontTMP = newTMPFont ?? defaultFont.fontTMP;
                     Fonts.Add(name, newData);
@@ -54,8 +56,10 @@ namespace Overlayer.Core {
                         FontData newData = defaultFont;
                         Font newFont = Font.CreateDynamicFontFromOSFont(name, defaultFont.font.fontSize);
                         TMP_FontAsset newTMPFont = TMP_FontAsset.CreateFontAsset(new Font(OSFontPaths[index]));
-                        if(newTMPFont)
+                        if(newTMPFont) {
                             newTMPFont.fallbackFontAssetTable = FallbackTMPFonts.ToList();
+                        }
+
                         newData.font = newFont;
                         newData.fontTMP = newTMPFont ?? defaultFont.fontTMP;
                         Fonts.Add(name, newData);

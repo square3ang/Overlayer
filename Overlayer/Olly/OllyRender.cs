@@ -229,8 +229,9 @@ namespace Overlayer.Olly {
             }
             if(face.EffectBit != EffectBit.None) {
                 foreach(EffectBit effect in Enum.GetValues(typeof(EffectBit))) {
-                    if((face.EffectBit & effect) == 0)
+                    if((face.EffectBit & effect) == 0) {
                         continue;
+                    }
 
                     float effectOffsetY = 0f;
                     if(effect == EffectBit.Tear && eyeBlinkTimer > eyeBlinkInterval) {
@@ -299,8 +300,9 @@ namespace Overlayer.Olly {
 
             if(face.EffectForwardBit != EffectForwardBit.None) {
                 foreach(EffectForwardBit effect in Enum.GetValues(typeof(EffectBit))) {
-                    if((face.EffectForwardBit & effect) == 0)
+                    if((face.EffectForwardBit & effect) == 0) {
                         continue;
+                    }
 
                     int idx = OllyUtils.BitIndex((int)effect) - 1;
                     var anchor = Anchor.EffectForwardAnchor[idx];

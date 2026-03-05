@@ -56,10 +56,11 @@ namespace RapidGUI {
             var ret = false;
             var str = Get();
 
-            if(str != null)
+            if(str != null) {
                 try {
                     ret = Convert.ChangeType(str, type).ToString() == str;
                 } catch { }
+            }
 
             return ret;
         }

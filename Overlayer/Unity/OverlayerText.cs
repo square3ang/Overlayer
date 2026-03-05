@@ -39,11 +39,15 @@ namespace Overlayer.Unity {
         }
         #endregion
         public void Init(TextConfig config) {
-            if(Initialized)
+            if(Initialized) {
                 return;
+            }
+
             Config = config;
-            if(string.IsNullOrEmpty(config.Name))
+            if(string.IsNullOrEmpty(config.Name)) {
                 config.Name = $"Text {TextManager.Count + 1}";
+            }
+
             PlayingReplacer = new Replacer(config.PlayingText, TagManager.All.Select(ot => ot.Tag));
             NotPlayingReplacer = new Replacer(config.NotPlayingText, TagManager.NP.Select(ot => ot.Tag));
             DontDestroyOnLoad(gameObject);
@@ -120,10 +124,12 @@ namespace Overlayer.Unity {
             DragObj.SetActive(false);
         }
         public void Update() {
-            if(Main.IsPlaying)
+            if(Main.IsPlaying) {
                 Text.text = PlayingReplacer.Replace();
-            else
+            } else {
                 Text.text = NotPlayingReplacer.Replace();
+            }
+
             if(isDragging) {
                 DragObj.transform.position = Text.gameObject.transform.position;
                 DragObj.transform.rotation = Text.gameObject.transform.rotation;
@@ -159,8 +165,10 @@ namespace Overlayer.Unity {
             OnApplyConfig(this);
         }
         private static void InitMaterial(Material mat) {
-            if(sr_msdf)
+            if(sr_msdf) {
                 mat.shader = sr_msdf;
+            }
+
             mat.EnableKeyword(ShaderUtilities.Keyword_Outline);
             mat.EnableKeyword(ShaderUtilities.Keyword_Underlay);
         }

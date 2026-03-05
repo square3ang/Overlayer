@@ -115,8 +115,9 @@ namespace RapidGUI {
             float sign = visualStart > visualEnd ? -1 : 1;
 
 
-            if(slider == null || thumb == null)
+            if(slider == null || thumb == null) {
                 return;
+            }
 
             // Figure out the rects
             float pixelsPerValue;
@@ -152,8 +153,10 @@ namespace RapidGUI {
             switch(evt.GetTypeForControl(id)) {
                 case EventType.MouseDown:
                     // if the click is outside this control, just bail out...
-                    if(evt.button != 0 || !position.Contains(evt.mousePosition) || minVisual - maxVisual == 0)
+                    if(evt.button != 0 || !position.Contains(evt.mousePosition) || minVisual - maxVisual == 0) {
                         return;
+                    }
+
                     state ??= s_MinMaxSliderState = new MinMaxSliderState();
 
                     // These are required to be set whenever we grab hotcontrol, regardless of if we actually drag or not. (case 585577)
@@ -167,12 +170,13 @@ namespace RapidGUI {
                         state.dragStartValue = value;
                         state.dragStartSize = size;
                         state.dragStartValuesPerPixel = pixelsPerValue;
-                        if(thumbMinRect.Contains(evt.mousePosition))
+                        if(thumbMinRect.Contains(evt.mousePosition)) {
                             state.whereWeDrag = 1;
-                        else if(thumbMaxRect.Contains(evt.mousePosition))
+                        } else if(thumbMaxRect.Contains(evt.mousePosition)) {
                             state.whereWeDrag = 2;
-                        else
+                        } else {
                             state.whereWeDrag = 0;
+                        }
 
                         GUIUtility.hotControl = id;
                         evt.Use();
@@ -180,22 +184,25 @@ namespace RapidGUI {
                     } else {
                         // We're outside the thumb, but inside the trough.
                         // If we have no background, we just bail out.
-                        if(slider == GUIStyle.none)
+                        if(slider == GUIStyle.none) {
                             return;
+                        }
 
                         // If we have a scrollSize, we do pgup/pgdn style movements
                         // if not, we just snap to the current position and begin tracking
                         if(size != 0 && usePageScrollbars) {
                             if(horiz) {
-                                if(mousePosition > thumbRect.xMax - position.x)
+                                if(mousePosition > thumbRect.xMax - position.x) {
                                     value += size * sign * .9f;
-                                else
+                                } else {
                                     value -= size * sign * .9f;
+                                }
                             } else {
-                                if(mousePosition > thumbRect.yMax - position.y)
+                                if(mousePosition > thumbRect.yMax - position.y) {
                                     value += size * sign * .9f;
-                                else
+                                } else {
                                     value -= size * sign * .9f;
+                                }
                             }
                             state.whereWeDrag = 0;
                             GUI.changed = true;
@@ -206,10 +213,12 @@ namespace RapidGUI {
 
                             state.whereWeDrag = mousePos > thumbPos ? 4 : 3;
                         } else {
-                            if(horiz)
+                            if(horiz) {
                                 value = ((float)mousePosition - thumbRect.width * .5f) / pixelsPerValue + minVisual - size * .5f;
-                            else
+                            } else {
                                 value = ((float)mousePosition - thumbRect.height * .5f) / pixelsPerValue + minVisual - size * .5f;
+                            }
+
                             state.dragStartPos = mousePosition;
                             state.dragStartValue = value;
                             state.dragStartSize = size;
@@ -223,8 +232,9 @@ namespace RapidGUI {
                         return;
                     }
                 case EventType.MouseDrag:
-                    if(GUIUtility.hotControl != id)
+                    if(GUIUtility.hotControl != id) {
                         return;
+                    }
 
                     // Recalculate the value from the mouse position. this has the side effect that values are relative to the
                     // click point - no matter where inside the trough the original value was. Also means user can get back original value
@@ -248,10 +258,14 @@ namespace RapidGUI {
                             break;
                         case 2:// max size drag
                             size = state.dragStartSize + deltaVal;
-                            if(value + size > maxLimit)
+                            if(value + size > maxLimit) {
                                 size = maxLimit - value;
-                            if(size < minSize)
+                            }
+
+                            if(size < minSize) {
                                 size = minSize;
+                            }
+
                             break;
                     }
                     GUI.changed = true;
@@ -288,36 +302,45 @@ namespace RapidGUI {
 
                     if(thumbRect.Contains(evt.mousePosition)) {
                         if(state != null && (state.whereWeDrag == 3 || state.whereWeDrag == 4)) // if was scrolling with "through" and the thumb reached mouse - sliding action over
+{
                             GUIUtility.hotControl = 0;
+                        }
+
                         return;
                     }
 
 
-                    if(System.DateTime.Now < s_NextScrollStepTime)
+                    if(System.DateTime.Now < s_NextScrollStepTime) {
                         return;
+                    }
 
                     mousePos = horiz ? evt.mousePosition.x : evt.mousePosition.y;
                     thumbPos = horiz ? thumbRect.x : thumbRect.y;
 
                     int currentSide = mousePos > thumbPos ? 4 : 3;
-                    if(state != null && currentSide != state.whereWeDrag)
+                    if(state != null && currentSide != state.whereWeDrag) {
                         return;
+                    }
 
                     // If we have a scrollSize, we do pgup/pgdn style movements
                     if(size != 0 && usePageScrollbars) {
                         if(horiz) {
-                            if(mousePosition > thumbRect.xMax - position.x)
+                            if(mousePosition > thumbRect.xMax - position.x) {
                                 value += size * sign * .9f;
-                            else
+                            } else {
                                 value -= size * sign * .9f;
+                            }
                         } else {
-                            if(mousePosition > thumbRect.yMax - position.y)
+                            if(mousePosition > thumbRect.yMax - position.y) {
                                 value += size * sign * .9f;
-                            else
+                            } else {
                                 value -= size * sign * .9f;
+                            }
                         }
-                        if(state != null)
+                        if(state != null) {
                             state.whereWeDrag = -1;
+                        }
+
                         GUI.changed = true;
                     }
                     value = Mathf.Clamp(value, minLimit, maxLimit - size);

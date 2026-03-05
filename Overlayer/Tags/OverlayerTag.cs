@@ -48,12 +48,18 @@ namespace Overlayer.Tags {
             DeclaringType = del.Method.DeclaringType;
         }
         private static MethodInfo WrapProcessor(MemberInfo fieldPropMethod, object target, ValueProcessing flags, object flagsArg) {
-            if(fieldPropMethod == null)
+            if(fieldPropMethod == null) {
                 throw new NullReferenceException(nameof(fieldPropMethod));
-            if(fieldPropMethod is MethodInfo meth && flags == ValueProcessing.None)
+            }
+
+            if(fieldPropMethod is MethodInfo meth && flags == ValueProcessing.None) {
                 return meth;
-            if(!IsValid(flags))
+            }
+
+            if(!IsValid(flags)) {
                 throw new InvalidOperationException($"Invalid FieldFlags! ({flags})");
+            }
+
             TypeBuilder t = mod.DefineType($"ValueProcessor_{fieldPropMethod?.Name}${uniqueNum++}", TypeAttributes.Public);
             MethodBuilder m = t.DefineMethod("Getter", MethodAttributes.Public | MethodAttributes.Static);
             FieldBuilder targetField = t.DefineField("target", target?.GetType() ?? typeof(object), FieldAttributes.Public | FieldAttributes.Static);
@@ -61,26 +67,38 @@ namespace Overlayer.Tags {
             Type rt = null;
             List<(Type, string, object)> parameters = new();
             if(fieldPropMethod is FieldInfo field) {
-                if(!field.IsStatic && target == null)
+                if(!field.IsStatic && target == null) {
                     throw new InvalidOperationException($"Field '{field.Name}' Cannot Get Instance Member Without Target!!");
-                if(!field.IsStatic && target != null)
+                }
+
+                if(!field.IsStatic && target != null) {
                     il.Emit(OpCodes.Ldsfld, targetField);
+                }
+
                 il.Emit(OpCodes.Ldsfld, field);
                 rt = field.FieldType;
             }
             if(fieldPropMethod is PropertyInfo property) {
                 MethodInfo getter = property.GetGetMethod();
-                if(getter == null)
+                if(getter == null) {
                     throw new InvalidOperationException($"Property '{property.Name}' Getter Is Not Exist Or Not Public!");
+                }
+
                 fieldPropMethod = getter;
             }
             if(fieldPropMethod is MethodInfo method) {
-                if(method.GetParameters().Length > 0)
+                if(method.GetParameters().Length > 0) {
                     throw new InvalidOperationException($"Method '{method.Name}' Has Parameter!!");
-                if(!method.IsStatic && target == null)
+                }
+
+                if(!method.IsStatic && target == null) {
                     throw new InvalidOperationException($"Method '{method.Name}' Cannot Call Instance Member Without Target!!");
-                if(!method.IsStatic && target != null)
+                }
+
+                if(!method.IsStatic && target != null) {
                     il.Emit(OpCodes.Ldsfld, targetField);
+                }
+
                 il.Emit(OpCodes.Call, method);
                 rt = method.ReturnType;
             }
@@ -90,12 +108,16 @@ namespace Overlayer.Tags {
                 parameters.Add((typeof(string), "accessor", ""));
             }
             if((flags & ValueProcessing.RoundNumber) != 0) {
-                if(rt != typeof(double))
+                if(rt != typeof(double)) {
                     il.Emit(OpCodes.Conv_R8);
+                }
+
                 il.Emit(OpCodes.Ldarg, parameters.Count);
                 il.Emit(OpCodes.Call, round);
-                if(rt != typeof(double))
+                if(rt != typeof(double)) {
                     il.Convert(rt);
+                }
+
                 parameters.Add((typeof(int), "digits", -1));
             } else if((flags & ValueProcessing.TrimString) != 0) {
                 il.Emit(OpCodes.Ldarg, parameters.Count);
@@ -109,44 +131,57 @@ namespace Overlayer.Tags {
             int offset = 0;
             foreach(var (_, name, constant) in parameters) {
                 var paramBuilder = m.DefineParameter(1 + offset++, ParameterAttributes.None, name);
-                if(constant != null)
+                if(constant != null) {
                     paramBuilder.SetConstant(constant);
+                }
             }
             m.SetReturnType(rt);
             var createdType = t.CreateType();
-            if(target != null)
+            if(target != null) {
                 createdType.GetField("target").SetValue(null, target);
+            }
+
             return createdType.GetMethod("Getter", (BindingFlags)15420);
         }
         public static void Initialize() {
-            if(Initialized)
+            if(Initialized) {
                 return;
+            }
+
             uniqueNum = 0;
             ass = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("Overlayer.Tags.FieldTagWrappers"), AssemblyBuilderAccess.RunAndCollect);
             mod = ass.DefineDynamicModule("Overlayer.Tags.FieldTagWrappers");
             Initialized = true;
         }
         public static void Release() {
-            if(!Initialized)
+            if(!Initialized) {
                 return;
+            }
+
             ass = null;
             mod = null;
             Initialized = false;
         }
         private static bool IsValid(ValueProcessing flags) {
             if(flags.HasFlag(ValueProcessing.RoundNumber) &&
-                flags.HasFlag(ValueProcessing.TrimString))
+                flags.HasFlag(ValueProcessing.TrimString)) {
                 return false;
+            }
+
             return true;
         }
         public static object RuntimeAccess(object obj, string accessor = "") {
-            if(obj == null)
+            if(obj == null) {
                 return null;
+            }
+
             bool staticAccess = obj is Type;
             Type objType = obj is Type t ? t : obj.GetType();
             accessor = accessor.TrimEnd('.');
-            if(accessorCache.TryGetValue($"{objType}_Accessor_{accessor}", out var del))
+            if(accessorCache.TryGetValue($"{objType}_Accessor_{accessor}", out var del)) {
                 return del(obj);
+            }
+
             object result = obj;
             string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if(accessors.Length < 1) {
@@ -160,10 +195,11 @@ namespace Overlayer.Tags {
                     StringBuilder sb = new();
                     for(int j = 0; j < members.Length; j++) {
                         MemberInfo m = members[j];
-                        if(m is FieldInfo field)
+                        if(m is FieldInfo field) {
                             sb.AppendLine($"{(field.IsPublic ? "Public" : "Private")}{(field.IsStatic ? " Static" : "")} Field {field.FieldType} '{field.Name}'");
-                        else if(m is PropertyInfo prop && prop.GetGetMethod(true) is MethodInfo getter)
+                        } else if(m is PropertyInfo prop && prop.GetGetMethod(true) is MethodInfo getter) {
                             sb.AppendLine($"{(getter.IsPublic ? "Public" : "Private")}{(getter.IsStatic ? " Static" : "")} Property {prop.PropertyType} '{prop.Name}'");
+                        }
                     }
                     result = sb.ToString();
                     return result;
@@ -171,12 +207,14 @@ namespace Overlayer.Tags {
                 var ignoreCase = type.GetCustomAttribute<IgnoreCaseAttribute>() != null;
                 var foundMembers = ignoreCase ? members.Where(m => m.Name.Equals(accessors[i], StringComparison.OrdinalIgnoreCase)) : members.Where(m => m.Name == accessors[i]);
                 var member = foundMembers.Where(m => m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property).FirstOrDefault();
-                if(member is FieldInfo f)
+                if(member is FieldInfo f) {
                     result = f.GetValue(result);
-                else if(member is PropertyInfo p && p.GetGetMethod(true) != null)
+                } else if(member is PropertyInfo p && p.GetGetMethod(true) != null) {
                     result = p.GetValue(result);
-                else
+                } else {
                     result = null;
+                }
+
                 if(result == null) {
                     result = null;
                     return result;
@@ -188,45 +226,59 @@ namespace Overlayer.Tags {
         }
         public static DynamicMethod CreateMemberAccessor(Type type, string accessor, bool staticAccess) {
             string name = $"{type}_Accessor_{accessor}" + (staticAccess ? "_Static" : "");
-            if(accessorCacheDM.TryGetValue(name, out var dm))
+            if(accessorCacheDM.TryGetValue(name, out var dm)) {
                 return dm;
+            }
+
             string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-            if(accessors.Length < 1)
+            if(accessors.Length < 1) {
                 return null;
+            }
+
             Type t = type;
             MemberInfo result;
             List<MemberInfo> toEmitMembers = new();
             for(int i = 0; i < accessors.Length; i++) {
                 var ignoreCase = t.GetCustomAttribute<IgnoreCaseAttribute>() != null;
-                if(ignoreCase)
+                if(ignoreCase) {
                     result = t?.GetMembers((BindingFlags)15420).Where(m => m.Name.Equals(accessors[i], StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                else
+                } else {
                     result = t?.GetMember(accessors[i], MemberTypes.Field | MemberTypes.Property, (BindingFlags)15420).FirstOrDefault();
-                if(result is FieldInfo f)
+                }
+
+                if(result is FieldInfo f) {
                     t = f.FieldType;
-                else if(result is PropertyInfo p && p.GetGetMethod(true) != null)
+                } else if(result is PropertyInfo p && p.GetGetMethod(true) != null) {
                     t = p.PropertyType;
-                else
+                } else {
                     return null;
+                }
+
                 toEmitMembers.Add(result);
             }
             MemberInfo last = toEmitMembers.Last();
             Type rt = last is FieldInfo ff ? ff.FieldType : last is PropertyInfo pp ? pp.PropertyType : typeof(object);
             accessorCacheDM[name] = dm = new DynamicMethod(name, typeof(object), new[] { typeof(object) }, typeof(OverlayerTag), true);
             ILGenerator il = dm.GetILGenerator();
-            if(!staticAccess)
+            if(!staticAccess) {
                 il.Emit(OpCodes.Ldarg_0);
-            foreach(MemberInfo m in toEmitMembers) {
-                if(m is FieldInfo f)
-                    if(f.IsStatic)
-                        il.Emit(OpCodes.Ldsfld, f);
-                    else
-                        il.Emit(OpCodes.Ldfld, f);
-                else if(m is PropertyInfo p)
-                    il.Emit(OpCodes.Call, p.GetGetMethod(true));
             }
-            if(typeof(object) != rt)
+
+            foreach(MemberInfo m in toEmitMembers) {
+                if(m is FieldInfo f) {
+                    if(f.IsStatic) {
+                        il.Emit(OpCodes.Ldsfld, f);
+                    } else {
+                        il.Emit(OpCodes.Ldfld, f);
+                    }
+                } else if(m is PropertyInfo p) {
+                    il.Emit(OpCodes.Call, p.GetGetMethod(true));
+                }
+            }
+            if(typeof(object) != rt) {
                 il.Emit(OpCodes.Box, rt);
+            }
+
             il.Emit(OpCodes.Ret);
             Main.Logger.Log($"Accessor Method '{name}' Generated!");
             return dm;

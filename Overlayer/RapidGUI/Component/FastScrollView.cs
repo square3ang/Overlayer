@@ -48,8 +48,9 @@ namespace RapidGUI {
                         var endPos = scrollPosition.y + scrollViewHeight;
                         var endIdx = Mathf.Min(yMaxList.Count - 1, yMaxList.FindLastIndex(y => y < endPos) + 1);
 
-                        if(startIdx > 0)
+                        if(startIdx > 0) {
                             GUILayout.Space(yMaxList[startIdx - 1]);
+                        }
 
                         var itemRange = items
                             .Skip(startIdx)
@@ -59,8 +60,9 @@ namespace RapidGUI {
                             doGUIItem(item);
                         }
 
-                        if(endIdx < yMaxList.Count - 1)
+                        if(endIdx < yMaxList.Count - 1) {
                             GUILayout.Space(yMaxList.Last() - yMaxList[endIdx]);
+                        }
 
                         GUILayoutUtility.GetRect(scopeWidth, 0f);
                     }

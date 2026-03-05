@@ -74,8 +74,9 @@ namespace RapidGUI {
                 switch(evt.type) {
                     case EventType.MouseUp: {
                         draggingLR = draggingTB = 0;
-                        if(GUIUtility.hotControl == id)
+                        if(GUIUtility.hotControl == id) {
                             GUIUtility.hotControl = 0;
+                        }
                     }
                     break;
 
@@ -99,14 +100,21 @@ namespace RapidGUI {
                         if((GUIUtility.hotControl == id) && (evt.button == 0)) {
                             var pos = evt.mousePosition;
 
-                            if(draggingLR == -1)
+                            if(draggingLR == -1) {
                                 window.xMin = pos.x;
-                            if(draggingLR == 1)
+                            }
+
+                            if(draggingLR == 1) {
                                 window.xMax = pos.x;
-                            if(draggingTB == -1)
+                            }
+
+                            if(draggingTB == -1) {
                                 window.yMin = pos.y;
-                            if(draggingTB == 1)
+                            }
+
+                            if(draggingTB == 1) {
                                 window.yMax = pos.y;
+                            }
                         }
                         break;
 

@@ -24,8 +24,10 @@ namespace Overlayer.Views {
         public override void Draw() {
             NeoDrawer.StaticInstance.FieldResetId();
 
-            if(Drawer.DrawBool(Drawer.icon_Active, Main.Lang.Get("ACTIVE", "Active"), ref model.Active))
+            if(Drawer.DrawBool(Drawer.icon_Active, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
                 text.gameObject.SetActive(model.Active);
+            }
+
             bool _drag = model.Drag;
             Drawer.DrawBool(Drawer.icon_Drag, Main.Lang.Get("DRAG", "Drag"), ref _drag);
             if(model.Drag != _drag) {
@@ -144,8 +146,9 @@ namespace Overlayer.Views {
             GUI.color = Color.white;
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            if(changed)
+            if(changed) {
                 text.ApplyConfig();
+            }
 
             NeoDrawer.StaticInstance.UpdateFocused();
         }

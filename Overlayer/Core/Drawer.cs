@@ -78,8 +78,10 @@ namespace Overlayer.Core {
             var c = selected != news;
 
             selected = news;
-            if(label != "")
+            if(label != "") {
                 GUILayout.EndHorizontal();
+            }
+
             return c;
         }
 
@@ -94,8 +96,10 @@ namespace Overlayer.Core {
             var c = selected != news;
 
             selected = news;
-            if(label != "")
+            if(label != "") {
                 GUILayout.EndHorizontal();
+            }
+
             return c;
         }
 
@@ -110,16 +114,20 @@ namespace Overlayer.Core {
             var c = selected != news;
 
             selected = news;
-            if(label != "")
+            if(label != "") {
                 GUILayout.EndHorizontal();
+            }
+
             return c;
         }
 
 
         public static bool DrawGColor(ref GColor color, bool canEnableGradient) {
             bool ge = color.gradientEnabled, prevGe = color.gradientEnabled;
-            if(canEnableGradient && DrawBool(icon_Gradation, Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge))
+            if(canEnableGradient && DrawBool(icon_Gradation, Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge)) {
                 color = color with { gradientEnabled = ge };
+            }
+
             color.gradientEnabled &= canEnableGradient;
             bool result = ge != prevGe;
             if(color.gradientEnabled) {
@@ -143,8 +151,9 @@ namespace Overlayer.Core {
                 }
             } else {
                 Color dummy = color.topLeft;
-                if(result = DrawColor(ref dummy))
+                if(result = DrawColor(ref dummy)) {
                     color = dummy;
+                }
             }
 
             return result;
@@ -177,8 +186,10 @@ namespace Overlayer.Core {
 
             var ncol = RGUI.Field(color, "");
 
-            if(!c)
+            if(!c) {
                 c = color != ncol;
+            }
+
             color = ncol;
 
             return c;
@@ -247,15 +258,21 @@ namespace Overlayer.Core {
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
-            if(Drawer.Button("+"))
+            if(Drawer.Button("+")) {
                 Array.Resize(ref array, array.Length + 1);
-            if(array.Length > 0 && Drawer.Button("-"))
+            }
+
+            if(array.Length > 0 && Drawer.Button("-")) {
                 Array.Resize(ref array, array.Length - 1);
+            }
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            for(int i = 0; i < array.Length; i++)
+            for(int i = 0; i < array.Length; i++) {
                 result |= DrawObject($"{i}: ", ref array[i]);
+            }
+
             GUILayout.EndVertical();
             return result;
         }
@@ -265,15 +282,21 @@ namespace Overlayer.Core {
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
-            if(Drawer.Button("+"))
+            if(Drawer.Button("+")) {
                 Array.Resize(ref array, array.Length + 1);
-            if(array.Length > 0 && Drawer.Button("-"))
+            }
+
+            if(array.Length > 0 && Drawer.Button("-")) {
                 Array.Resize(ref array, array.Length - 1);
+            }
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            for(int i = 0; i < array.Length; i++)
+            for(int i = 0; i < array.Length; i++) {
                 result |= DrawString($"{i}: ", ref array[i]);
+            }
+
             GUILayout.EndVertical();
             return result;
         }
@@ -712,28 +735,34 @@ namespace Overlayer.Core {
         }
 
         public static void DrawObject(string label, object value) {
-            if(value == null)
+            if(value == null) {
                 return;
+            }
+
             if(value is IDrawable drawable) {
                 drawable.Draw();
                 return;
             }
 
             Type t = value.GetType();
-            if(!t.IsPrimitive && t != typeof(string))
+            if(!t.IsPrimitive && t != typeof(string)) {
                 return;
+            }
+
             var fields = t.GetFields();
             foreach(var field in fields) {
                 var fValue = field.GetValue(value);
-                if(DrawObject(field.Name, ref fValue))
+                if(DrawObject(field.Name, ref fValue)) {
                     field.SetValue(value, fValue);
+                }
             }
 
             var props = t.GetProperties();
             foreach(var prop in props.Where(p => p.CanRead && p.CanWrite)) {
                 var pValue = prop.GetValue(value);
-                if(DrawObject(prop.Name, ref pValue))
+                if(DrawObject(prop.Name, ref pValue)) {
                     prop.SetValue(value, pValue);
+                }
             }
         }
 
@@ -814,10 +843,12 @@ namespace Overlayer.Core {
             string prev = value;
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
-            if(!textArea)
+            if(!textArea) {
                 value = GUILayout.TextField(value, myTextField);
-            else
+            } else {
                 value = GUILayout.TextArea(value, myTextField);
+            }
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             return prev != value;
@@ -828,10 +859,12 @@ namespace Overlayer.Core {
             GUILayout.BeginHorizontal();
             GUILayout.Label(icon);
             GUILayout.Label(label);
-            if(!textArea)
+            if(!textArea) {
                 value = GUILayout.TextField(value, myTextField);
-            else
+            } else {
                 value = GUILayout.TextArea(value, myTextField);
+            }
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             return prev != value;
@@ -839,10 +872,12 @@ namespace Overlayer.Core {
 
         public static bool DrawOnlyString(ref string value, bool textArea = false) {
             string prev = value;
-            if(!textArea)
+            if(!textArea) {
                 value = GUILayout.TextField(value, myTextField);
-            else
+            } else {
                 value = GUILayout.TextArea(value, myTextField);
+            }
+
             GUILayout.FlexibleSpace();
             return prev != value;
         }
@@ -879,16 +914,20 @@ namespace Overlayer.Core {
 
         public static bool DrawToggleGroup(string[] labels, bool[] toggleGroup) {
             bool result = false;
-            for(int i = 0; i < labels.Length; i++)
+            for(int i = 0; i < labels.Length; i++) {
                 if(DrawBool(labels[i], ref toggleGroup[i])) {
                     result = true;
-                    for(int j = 0; j < toggleGroup.Length; j++)
-                        if(j == i)
+                    for(int j = 0; j < toggleGroup.Length; j++) {
+                        if(j == i) {
                             continue;
-                        else
+                        } else {
                             toggleGroup[j] = false;
+                        }
+                    }
+
                     break;
                 }
+            }
 
             return result;
         }
@@ -1167,8 +1206,10 @@ namespace Overlayer.Core {
                 var highlighted = new List<string>();
 
                 foreach(Match match in highlight.Matches(str)) {
-                    if(highlighted.Contains(match.Groups[1].Value))
+                    if(highlighted.Contains(match.Groups[1].Value)) {
                         continue;
+                    }
+
                     var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
                     if(TagManager.tags.ContainsKey(name)) {
                         if(name == "MovingMan" && Main.Settings.useMovingManEditor || name == "ColorRange" && Main.Settings.useColorRangeEditor || name == "EasedValue" && Main.Settings.useEasedValueEditor) {

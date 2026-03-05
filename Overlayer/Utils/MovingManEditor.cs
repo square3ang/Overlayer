@@ -62,8 +62,10 @@ namespace Overlayer.Utils {
             if(timer >= speed / 1000f) {
                 timer -= (float)speed / 1000f;
                 tester++;
-                if(tester > 100)
+                if(tester > 100) {
                     tester = 0;
+                }
+
                 TagManager.testerValue = tester.ToString();
             }
         }

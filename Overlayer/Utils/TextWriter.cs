@@ -22,8 +22,10 @@ namespace Overlayer.Utils {
         public Brush CustomBrush = null;
 
         public bool TrySetFont(string fileName, int emSize) {
-            if(!File.Exists(fileName))
+            if(!File.Exists(fileName)) {
                 return false;
+            }
+
             using(var fonts = new PrivateFontCollection()) {
                 fonts.AddFontFile(fileName);
                 font = new Font(fonts.Families[0], emSize);

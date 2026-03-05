@@ -20,8 +20,10 @@ namespace Overlayer.Utils {
         public static double Round(this double value, int digits = -1) => digits < 0 ? value : Math.Round(value, digits);
         public static double Round(this float value, int digits = -1) => digits < 0 ? value : Math.Round(value, digits);
         public static string Trim(this string str, int maxLength = -1, string afterTrimStr = DefaultTrimStr) {
-            if(maxLength >= 0 && str.Length > maxLength)
+            if(maxLength >= 0 && str.Length > maxLength) {
                 return str.Substring(0, maxLength) + afterTrimStr?.Replace("$LeftCount", StringConverter.FromInt32(str.Length - maxLength));
+            }
+
             return str;
         }
         public static string ToString(this double value, string format) => value.ToString(format);
@@ -88,8 +90,10 @@ namespace Overlayer.Utils {
             return false;
         }
         public static bool IfTrue(this bool b, Action a) {
-            if(b)
+            if(b) {
                 a();
+            }
+
             return b;
         }
         /// <summary>
@@ -117,16 +121,20 @@ namespace Overlayer.Utils {
         }
         public static byte[] Compress(this byte[] data) {
             using(MemoryStream output = new()) {
-                using(DeflateStream dstream = new(output, CompressionLevel.Optimal))
+                using(DeflateStream dstream = new(output, CompressionLevel.Optimal)) {
                     dstream.Write(data, 0, data.Length);
+                }
+
                 return output.ToArray();
             }
         }
         public static byte[] Decompress(this byte[] data) {
             using(MemoryStream input = new(data)) {
                 using(MemoryStream output = new()) {
-                    using(DeflateStream dstream = new(input, CompressionMode.Decompress))
+                    using(DeflateStream dstream = new(input, CompressionMode.Decompress)) {
                         dstream.CopyTo(output);
+                    }
+
                     return output.ToArray();
                 }
             }

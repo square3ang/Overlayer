@@ -30,8 +30,9 @@ namespace Overlayer.Utils {
 
             foreach(var line in contentLines) {
                 float lineWidth = GUI.skin.label.CalcSize(new GUIContent(line)).x;
-                if(lineWidth > maxWidth)
+                if(lineWidth > maxWidth) {
                     maxWidth = lineWidth;
+                }
             }
             float width = maxWidth + 40;
             float height = (contentLines.Length * 20) + 40;
@@ -90,10 +91,12 @@ namespace Overlayer.Utils {
         }
 
         private void AnimateAndDestroy() {
-            if(isAnimating)
+            if(isAnimating) {
                 return;
-            else
+            } else {
                 isAnimating = true;
+            }
+
             StartCoroutine(DestroyCoroutine());
             DOTween.To(() => windowRect.position, x => windowRect.position = x,
                     new Vector2(windowRect.position.x, Screen.height * -1.3f), 0.4f)

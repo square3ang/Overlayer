@@ -163,10 +163,14 @@ namespace RapidGUI {
                 ns2.active.background = Drawer.dulgray;
                 ns2.hover.background = Drawer.dulgray;
             }
-            if(min is float)
+            if(min is float) {
                 min = (int)(float)min;
-            if(max is float)
+            }
+
+            if(max is float) {
                 max = (int)(float)max;
+            }
+
             var ret = (int)GUILayout.HorizontalSlider((int)v, (int)min, (int)max, ns1, ns2, GUILayout.MinWidth(SliderSetting.minWidth));
             ret = (int)StandardField(ret, v.GetType(), GUILayout.Width(SliderSetting.fieldWidth));
 

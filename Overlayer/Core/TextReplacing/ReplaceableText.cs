@@ -12,18 +12,23 @@ namespace Overlayer.Core.TextReplacing {
         public ReplaceableText(IEnumerable<IParsed> replaceables) {
             Replaceables = replaceables.ToList();
             Replaceables.ForEach(p => {
-                if(p is ParsedTag tag)
+                if(p is ParsedTag tag) {
                     tag.tag.ReferencedCount++;
+                }
             });
         }
         public string Replace() {
-            if(disposed)
+            if(disposed) {
                 throw new ObjectDisposedException(GetType().FullName);
+            }
+
             return Replaceables.Aggregate(new StringBuilder(), (sb, p) => {
-                if(p is ParsedString str)
+                if(p is ParsedString str) {
                     sb.Append(str.str);
-                else if(p is ParsedTag tag)
+                } else if(p is ParsedTag tag) {
                     sb.Append(InvokeTag(tag.tag, tag.args.ToArray()));
+                }
+
                 return sb;
             }).ToString();
         }
@@ -34,11 +39,14 @@ namespace Overlayer.Core.TextReplacing {
             return new ReplaceableText(Parser.Parse(Lexer.Lex(source, config), tags.ToList(), config));
         }
         public void Dispose() {
-            if(disposed)
+            if(disposed) {
                 return;
+            }
+
             Replaceables.ForEach(p => {
-                if(p is ParsedTag tag)
+                if(p is ParsedTag tag) {
                     tag.tag.ReferencedCount--;
+                }
             });
             Replaceables = null;
             GC.SuppressFinalize(this);

@@ -88,10 +88,13 @@ namespace RapidGUI {
                         }
                     }
 
-                    if(addIdx >= 0)
+                    if(addIdx >= 0) {
                         list = AddElement(list, elemType, list[addIdx - 1], addIdx);
-                    if(deleteIdx >= 0)
+                    }
+
+                    if(deleteIdx >= 0) {
                         list = DeleteElement(list, elemType, deleteIdx);
+                    }
 
                     // +/- button
                     using(new GUILayout.HorizontalScope()) {

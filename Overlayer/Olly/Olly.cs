@@ -129,8 +129,9 @@ namespace Overlayer.Olly {
             for(int i = 0; i < lineCount; i++) {
                 Vector2 size = GUI.skin.label.CalcSize(new GUIContent(lines[i]));
                 textHeight += size.y;
-                if(size.x > maxLineWidth)
+                if(size.x > maxLineWidth) {
                     maxLineWidth = size.x;
+                }
             }
 
             float portraitSize = Mathf.Max(OllyResources.Base.width, OllyResources.Base.height);
@@ -166,8 +167,9 @@ namespace Overlayer.Olly {
             float maxWidth = 0f;
             foreach(var choice in currentNode.Choices) {
                 Vector2 size = GUI.skin.button.CalcSize(new GUIContent(choice));
-                if(size.x > maxWidth)
+                if(size.x > maxWidth) {
                     maxWidth = size.x;
+                }
             }
             maxWidth += 20f;
 

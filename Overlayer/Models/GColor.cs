@@ -144,14 +144,18 @@ namespace Overlayer.Models {
         }
 
         private void SetTopLeftColor(Color color) {
-            if(color == _color.topLeft)
+            if(color == _color.topLeft) {
                 return;
+            }
+
             _color.topLeft = color;
             _topLeftHex = ColorUtility.ToHtmlStringRGBA(color);
         }
         private void SetTopLeftHex(string hex) {
-            if(hex == _topLeftHex)
+            if(hex == _topLeftHex) {
                 return;
+            }
+
             if(ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
                 _color.topLeft = parsed;
                 _topLeftHex = hex;
@@ -159,14 +163,18 @@ namespace Overlayer.Models {
         }
 
         private void SetTopRightColor(Color color) {
-            if(color == _color.topRight)
+            if(color == _color.topRight) {
                 return;
+            }
+
             _color.topRight = color;
             _topRightHex = ColorUtility.ToHtmlStringRGBA(color);
         }
         private void SetTopRightHex(string hex) {
-            if(hex == _topRightHex)
+            if(hex == _topRightHex) {
                 return;
+            }
+
             if(ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
                 _color.topRight = parsed;
                 _topRightHex = hex;
@@ -174,14 +182,18 @@ namespace Overlayer.Models {
         }
 
         private void SetBottomLeftColor(Color color) {
-            if(color == _color.bottomLeft)
+            if(color == _color.bottomLeft) {
                 return;
+            }
+
             _color.bottomLeft = color;
             _bottomLeftHex = ColorUtility.ToHtmlStringRGBA(color);
         }
         private void SetBottomLeftHex(string hex) {
-            if(hex == _bottomLeftHex)
+            if(hex == _bottomLeftHex) {
                 return;
+            }
+
             if(ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
                 _color.bottomLeft = parsed;
                 _bottomLeftHex = hex;
@@ -189,14 +201,18 @@ namespace Overlayer.Models {
         }
 
         private void SetBottomRightColor(Color color) {
-            if(color == _color.bottomRight)
+            if(color == _color.bottomRight) {
                 return;
+            }
+
             _color.bottomRight = color;
             _bottomRightHex = ColorUtility.ToHtmlStringRGBA(color);
         }
         private void SetBottomRightHex(string hex) {
-            if(hex == _bottomRightHex)
+            if(hex == _bottomRightHex) {
                 return;
+            }
+
             if(ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
                 _color.bottomRight = parsed;
                 _bottomRightHex = hex;
