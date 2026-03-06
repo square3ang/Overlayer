@@ -15,15 +15,29 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
     public OverlayerText text;
     public TextConfigDrawer(TextConfig config) : base(config) => text = TextManager.Find(config);
 
-    bool isAdvensedMode = false;
+    bool IsAdvensedMode => Main.Settings.uiMode == Settings.EditorUIMode.Advanced;
 
-    public override void OnceCall() {
-        NeoDrawer.StaticInstance.FieldResetDictById();
-        isAdvensedMode = Main.Settings.uiMode == Settings.EditorUIMode.Advanced;
-    }
+    public override void OnceCall() => NeoDrawer.StaticInstance.FieldResetDictById();
 
     public override void Draw() {
         NeoDrawer.StaticInstance.FieldResetId();
+
+        GUILayout.BeginHorizontal();
+        var oldMode = Main.Settings.uiMode;
+        Color old = GUI.color;
+        GUI.color = Main.Settings.uiMode == Settings.EditorUIMode.Simple ? Color.cyan : old;
+        if(Drawer.Button(Main.Lang.Get("UI_SIMPLE", "Simple"), GUILayout.Width(120f), GUILayout.Height(32f))) {
+            Main.Settings.uiMode = Settings.EditorUIMode.Simple;
+        }
+        GUI.color = Main.Settings.uiMode == Settings.EditorUIMode.Advanced ? Color.cyan : old;
+        if(Drawer.Button(Main.Lang.Get("UI_ADVANCED", "Advanced"), GUILayout.Width(120f), GUILayout.Height(32f))) {
+            Main.Settings.uiMode = Settings.EditorUIMode.Advanced;
+        }
+        GUI.color = old;
+        GUILayout.EndHorizontal();
+        if(oldMode != Main.Settings.uiMode) {
+            NeoDrawer.StaticInstance.FieldClear();
+        }
 
         if(Drawer.DrawBool(Drawer.icon_Active, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
             text.gameObject.SetActive(model.Active);
@@ -37,7 +51,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         bool changed = false;
         Drawer.DrawString(Drawer.icon_Pencil, Main.Lang.Get("NAME", "Name"), ref model.Name);
         changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("POSITION", "Position"), ref model.Position, 0, 1);
-        if(isAdvensedMode) {
+        if(IsAdvensedMode) {
             changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("SCALE", "Scale"), ref model.Scale, 0, 2);
             changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("PIVOT", "Pivot"), ref model.Pivot, 0, 1);
             changed |= NeoDrawer.StaticInstance.DrawRotate3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180);
@@ -49,7 +63,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         GUILayout.Label(Main.Lang.Get("FONT", "Font"));
         changed |= Drawer.DrawSelectFont(ref model.Font);
         GUILayout.EndHorizontal();
-        if(isAdvensedMode) {
+        if(IsAdvensedMode) {
             changed |= Drawer.DrawBool(Drawer.icon_FontAlternate, Main.Lang.Get("FALLBACK_FONTS", "Enable Fallback Fonts"), ref model.EnableFallbackFonts);
 
             if(model.EnableFallbackFonts) {
@@ -74,7 +88,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
             }
         }
         changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_FontSize, Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f);
-        if(isAdvensedMode) {
+        if(IsAdvensedMode) {
             changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_LineSpacing, Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f);
             changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_ShadowDilate, Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
             changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_ShadowSoftness, Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
@@ -102,7 +116,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         GUILayout.Label(Main.Lang.Get("ALIGNMENT", "Alignment"));
         if(Drawer.DrawEnumPlus(ref model.Alignment, TranslateTextAlignment)) {
             changed = true;
-            if(Main.Settings.autoPivot || !isAdvensedMode) {
+            if(Main.Settings.autoPivot || !IsAdvensedMode) {
                 model.Pivot = MiscUtils.AlignmentToPivot(model.Alignment);
             }
         }
@@ -111,7 +125,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
 
         if(Drawer.DrawAlignment(ref model.Alignment)) {
             changed = true;
-            if(Main.Settings.autoPivot || !isAdvensedMode) {
+            if(Main.Settings.autoPivot || !IsAdvensedMode) {
                 model.Pivot = MiscUtils.AlignmentToPivot(model.Alignment);
             }
         }

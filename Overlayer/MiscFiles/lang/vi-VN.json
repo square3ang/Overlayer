@@ -340,6 +340,8 @@
     "TOP_JUSTIFIED": "Căn chỉnh trên cùng",
     "TOP_LEFT": "Trên cùng bên trái",
     "TOP_RIGHT": "Trên cùng bên phải",
+    "UI_SIMPLE": "Đơn giản",
+    "UI_ADVANCED": "Nâng cao",
     "UPDATE": "Cập nhật",
     "UPDATE_FAIL": "Update Fail",
     "UPDATE_NEED_TO_RESTART": "Need to Restart!",

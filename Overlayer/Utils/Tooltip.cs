@@ -65,7 +65,7 @@ public class Tooltip {
         ["EASEDVALUE"] = "When the tag value changes, the tag value changes according to the speed.",
         ["EDITORPITCH"] = "Pitch set in the LevelEditor (displayed as 1 when 100%)",
         ["EPHEX"] = "EarlyPerfect Hex Color",
-        ["FAIL"] = "MissCount + Overload",
+        ["FAIL"] = "MissCount + Overloads",
         ["FMHEX"] = "Miss Hex Color",
         ["FOHEX"] = "Overload Hex Color",
         ["FPS"] = "Current FPS of ADOFAI",
