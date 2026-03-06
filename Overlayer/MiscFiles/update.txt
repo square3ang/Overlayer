@@ -1,2 +1,3 @@
-﻿[ Fix ]
-Gradation Editor
+﻿[ Add ]
+UI mode selecter in Text Config
+zh-CN all translated
