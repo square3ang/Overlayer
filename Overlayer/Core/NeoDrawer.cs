@@ -393,9 +393,13 @@ public class NeoDrawer {
                 fieldTL.Str = color.topLeftHex;
                 fieldTL.State = NeoField.StateType.OK;
             }
+            if(fieldTL.State == NeoField.StateType.ERROR) {
+                GUI.color = new Color(1f, 0.5f, 0.5f);
+            }
 
             GUILayout.Space(4f);
             GUILayout.Label("↖", GUILayout.Width(16));
+            GUI.color = old;
 
             // TR
             if(fieldTR.State == NeoField.StateType.ERROR) {
@@ -467,8 +471,13 @@ public class NeoDrawer {
                 fieldBL.State = NeoField.StateType.OK;
             }
 
+            if(fieldBL.State == NeoField.StateType.ERROR) {
+                GUI.color = new Color(1f, 0.5f, 0.5f);
+            }
+
             GUILayout.Space(4f);
             GUILayout.Label("↙", GUILayout.Width(16));
+            GUI.color = old;
 
             // BR
             if(fieldBR.State == NeoField.StateType.ERROR) {
