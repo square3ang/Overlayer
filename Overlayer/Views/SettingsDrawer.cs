@@ -316,8 +316,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     GUILayout.Space(6);
                     GUI.color = new Color(0.8f, 0.8f, 1f);
                     if(Drawer.Button(Drawer.icon_Pencil, GUILayout.Width(46))) {
-                        TextConfigDrawer config = new(text.Config);
-                        Main.GUI.Push(config);
+                        Main.GUI.Push(new TextConfigDrawer(text.Config));
                     }
                     GUI.color = new Color(0.8f, 1f, 0.8f);
                     if(Drawer.Button(Drawer.icon_Copy, GUILayout.Width(46))) {
