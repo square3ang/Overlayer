@@ -1,5 +1,2 @@
-﻿[ Add ]
-Profile
-(Overlayer.Scripting need to Update)
-[ Change ]
-Some Text replaced to icon
+﻿[ Fix ]
+Crazy problem of duplicate references when Profile Export
