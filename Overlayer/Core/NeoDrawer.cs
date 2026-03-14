@@ -149,12 +149,7 @@ public class NeoDrawer {
                         value = Convert.ToDecimal(field.ComputedValue);
                         break;
                     case TypeCode.String:
-                        if(float.TryParse(Convert.ToString(field.ComputedValue), out float parsed)) {
-                            value = parsed;
-                        } else {
-                            field.State = NeoField.StateType.ERROR;
-                        }
-
+                        value = Convert.ToString(field.ComputedValue);
                         break;
                     default:
                         field.State = NeoField.StateType.ERROR;
