@@ -29,14 +29,46 @@ public static class TextConfigImporter {
                     var targetPath = Path.Combine(fontsDir, @ref.Name);
                     File.WriteAllBytes(targetPath, @ref.Raw.Decompress());
 
+                    var relPath = "{ModDir}References/Fonts/" + @ref.Name;
+
                     if((Path.GetFileName(config.Font?.Replace("{ModDir}", Main.Mod.Path)) ?? "") == @ref.Name) {
-                        config.Font = targetPath;
+                        config.Font = relPath;
                     }
                 }
             }
         }
 
         return config;
+    }
+    public static void ImportRef(TextConfig config, JToken node) {
+        var refsNode = node["References"] ?? new JArray();
+        var refs = ModelUtils.UnwrapList<Reference>((JArray)refsNode);
+
+        if(!refs.Any()) {
+            return;
+        }
+
+        var refsDir = Path.Combine(Main.Mod.Path, "References");
+        var fontsDir = Path.Combine(refsDir, "Fonts");
+
+        Directory.CreateDirectory(refsDir);
+
+        if(refs.Any(r => r.ReferenceType == Reference.Type.Font)) {
+            Directory.CreateDirectory(fontsDir);
+        }
+
+        foreach(var @ref in refs) {
+            if(@ref.ReferenceType == Reference.Type.Font) {
+                var targetPath = Path.Combine(fontsDir, @ref.Name);
+                File.WriteAllBytes(targetPath, @ref.Raw.Decompress());
+
+                var relPath = "{ModDir}References/Fonts/" + @ref.Name;
+
+                if((Path.GetFileName(config.Font?.Replace("{ModDir}", Main.Mod.Path)) ?? "") == @ref.Name) {
+                    config.Font = relPath;
+                }
+            }
+        }
     }
     public static JArray GetReferences(TextConfig text) {
         var references = new List<Reference>();

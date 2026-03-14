@@ -267,7 +267,17 @@ public class SettingsDrawer : ModelDrawable<Settings> {
 									return;
 								}
 
-								var content = File.ReadAllText(pf);
+								string targetPath = Path.Combine(Main.ProfilePath, name + ".json");
+
+								if(!string.Equals(
+									Path.GetFullPath(pf),
+									Path.GetFullPath(targetPath),
+									StringComparison.OrdinalIgnoreCase
+								)) {
+									File.Copy(pf, targetPath, true);
+								}
+
+								var content = File.ReadAllText(targetPath);
 								if(string.IsNullOrWhiteSpace(content)) {
 									return;
 								}
@@ -275,24 +285,32 @@ public class SettingsDrawer : ModelDrawable<Settings> {
 								var token = JToken.Parse(content);
 								var cfg = new ProfileConfig();
 								cfg.Deserialize(token);
-								cfg.Path = pf;
+								cfg.Path = targetPath;
 								cfg.Name = name;
 
-								Main.MainThreadDispatcher.Enqueue(() => {
-									try {
-										var profileGO = new GameObject(cfg.Name ?? "Profile");
-										var profile = profileGO.AddComponent<OverlayerProfile>();
-										profile.Config = cfg;
-										profile.Init(cfg.Name);
+                                Main.MainThreadDispatcher.Enqueue(() => {
+                                    try {
+                                        var profileGO = new GameObject(cfg.Name ?? "Profile");
+                                        var profile = profileGO.AddComponent<OverlayerProfile>();
+                                        profile.Config = cfg;
+                                        profile.Init(cfg.Name);
 
-										profile.TextManager.Import(cfg.Texts);
-										ProfileManager.Profiles.Add(profile);
-										dragSoltNeedInit = true;
-									} catch(Exception ex) {
-										Debug.LogError($"Failed to create profile '{pf}' on main thread: {ex}");
-									}
-								});
-							} catch(Exception e) {
+                                        foreach(var t in cfg.Texts) {
+                                            TextConfigImporter.ImportRef(t, token);
+                                        }
+
+                                        profile.TextManager.Import(cfg.Texts);
+
+                                        ProfileManager.Profiles.Add(profile);
+                                        profile.TextManager.Refresh();
+                                        dragSoltNeedInit = true;
+
+                                    } catch(Exception ex) {
+                                        Debug.LogError($"Failed to create profile '{pf}' on main thread: {ex}");
+                                    }
+                                });
+
+                            } catch(Exception e) {
 								Debug.LogError($"Failed to load profile '{pf}': {e}");
 							}
 						});

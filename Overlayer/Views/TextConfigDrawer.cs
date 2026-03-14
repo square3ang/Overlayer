@@ -135,7 +135,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         changed |= Drawer.DrawCodeEditor(Drawer.Icon_Pause, Main.Lang.Get("NOT_PLAYING_TEXT", "Not Playing Text"), model.Name + "NotPlayingText", ref model.NotPlayingText);
         GUILayout.BeginHorizontal();
         GUI.color = new Color(1f, 0.8f, 1f);
-        if(Drawer.Button(Main.Lang.Get("EXPORT", "Export"))) {
+        if(Drawer.Button(Drawer.Icon_Up)) {
             string target = StandaloneFileBrowser.SaveFilePanel(Main.Lang.Get("SELECT_TEXT", "Select Text"), Persistence.GetLastUsedFolder(), $"{model.Name}.json", "json");
             if(!string.IsNullOrWhiteSpace(target)) {
                 JObject node = model.Serialize() as JObject;
@@ -145,12 +145,6 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
                     JsonConvert.SerializeObject(node, Formatting.Indented)
                 );
             }
-        }
-        GUI.color = Color.white;
-        GUI.color = new Color(1f, 1f, 0.8f);
-        if(Drawer.Button(Main.Lang.Get("RESET", "Reset"))) {
-            changed = true;
-            text.Config = model = new TextConfig();
         }
         GUI.color = new Color(1f, 0.8f, 0.8f);
         if(Drawer.Button(Main.Lang.Get("DESTROY", "Destroy"))) {
