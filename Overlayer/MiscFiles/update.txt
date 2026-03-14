@@ -1,3 +1,5 @@
 ﻿[ Add ]
-UI mode selecter in Text Config
-zh-CN all translated
+Profile
+(Overlayer.Scripting need to Update)
+[ Change ]
+Some Text replaced to icon
