@@ -9,19 +9,17 @@ using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace Overlayer.Unity;
 
 public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
     public static event Action<OverlayerText> OnApplyConfig = delegate { };
     public bool Initialized { get; private set; }
+    public OverlayerProfile Parant { get; private set; }
     public TextConfig Config;
     public Replacer PlayingReplacer;
     public Replacer NotPlayingReplacer;
     public TextMeshProUGUI Text;
-    public static GameObject DragObj;
-    public static Image DragImage;
 
     private static bool isAlreadyDragging;
     private static int pointingCount = 0;
@@ -31,28 +29,25 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     private Vector2 initialObjectPosition;
 
     #region Statics
-    public static GameObject PCanvasObj;
-    public static Canvas PublicCanvas;
     public static Shader sr_msdf;
     static OverlayerText() => sr_msdf = (Shader)typeof(ShaderUtilities).GetProperty("ShaderRef_MobileSDF", (BindingFlags)15420).GetValue(null);
     #endregion
-    public void Init(TextConfig config) {
+    public void Init(OverlayerProfile profile, TextConfig config) {
         if(Initialized) {
             return;
         }
 
+        Parant = profile;
         Config = config;
         if(string.IsNullOrEmpty(config.Name)) {
-            config.Name = $"Text {TextManager.Count + 1}";
+            config.Name = $"Text {Parant.TextManager.Count + 1}";
         }
 
         PlayingReplacer = new Replacer(config.PlayingText, TagManager.All.Select(ot => ot.Tag));
         NotPlayingReplacer = new Replacer(config.NotPlayingText, TagManager.NP.Select(ot => ot.Tag));
         DontDestroyOnLoad(gameObject);
-        PublicCanvasInit();
-        DragInit();
         GameObject mainObject = gameObject;
-        mainObject.transform.SetParent(PublicCanvas.transform);
+        mainObject.transform.SetParent(Parant.ProfileCanvas.transform);
         mainObject.MakeFlexible();
         Text = mainObject.AddComponent<TextMeshProUGUI>();
         Text.enableVertexGradient = true;
@@ -67,66 +62,17 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         Text.gameObject.SetActive(config.Active);
         Initialized = true;
     }
-    public static void PublicCanvasInit() {
-        if(PublicCanvas) {
-            return;
-        }
-        GameObject pCanvasObj = PCanvasObj = new GameObject("Overlayer Canvas");
-        PublicCanvas = pCanvasObj.AddComponent<Canvas>();
-        PublicCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        PublicCanvas.sortingOrder = 32760;
-        CanvasScaler scaler = pCanvasObj.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920, 1080);
-        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
-        pCanvasObj.AddComponent<GraphicRaycaster>();
-        DontDestroyOnLoad(PublicCanvas);
-    }
-    public static void DragInit() {
-        if(DragObj != null) {
-            return;
-        }
-        if(PublicCanvas == null) {
-            PublicCanvasInit();
-        }
-        DragObj = new GameObject("Outline");
-        DragObj.transform.SetParent(PublicCanvas.transform);
-        DragObj.transform.localPosition = Vector3.zero;
-        DragImage = DragObj.AddComponent<Image>();
-
-        Texture2D outlinetex = new(3, 3, TextureFormat.RGBA32, false);
-        Color[] outlinetexpixels = new Color[] {
-            Color.white, Color.white, Color.white,
-            Color.white, Color.clear, Color.white,
-            Color.white, Color.white, Color.white,
-        };
-        outlinetex.SetPixels(outlinetexpixels);
-        outlinetex.Apply();
-        outlinetex.filterMode = FilterMode.Point;
-        Sprite outline = Sprite.Create(
-            outlinetex,
-            new Rect(0, 0, 3, 3),
-            new Vector2(0.5f, 0.5f),
-            32f,
-            0,
-            SpriteMeshType.FullRect,
-            new Vector4(1, 1, 1, 1)
-        );
-
-        DragImage.color = new Color(0.0f, 1.0f, 1.0f, 0.8f);
-        DragImage.sprite = outline;
-        DragImage.type = Image.Type.Sliced;
-        DragImage.rectTransform.sizeDelta = Vector2.zero;
-        DragObj.SetActive(false);
-    }
+    
     public void Update() {
-        Text.text = Main.IsPlaying ? PlayingReplacer.Replace() : NotPlayingReplacer.Replace();
+        if(!Initialized || Text == null) return;
 
-        if(isDragging) {
-            DragObj.transform.position = Text.gameObject.transform.position;
-            DragObj.transform.rotation = Text.gameObject.transform.rotation;
-            DragImage.rectTransform.pivot = Text.rectTransform.pivot;
-            DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
+        Text.text = Main.IsPlaying ? PlayingReplacer?.Replace() ?? "" : NotPlayingReplacer?.Replace() ?? "";
+
+        if(isDragging && OverlayerProfile.DragObj != null && OverlayerProfile.DragImage != null) {
+            OverlayerProfile.DragObj.transform.position = Text.gameObject.transform.position;
+            OverlayerProfile.DragObj.transform.rotation = Text.gameObject.transform.rotation;
+            OverlayerProfile.DragImage.rectTransform.pivot = Text.rectTransform.pivot;
+            OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
         }
     }
     public void ApplyConfig() {
@@ -208,20 +154,20 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         isPointing = true;
         pointingCount++;
         if(!isAlreadyDragging) {
-            DragObj.transform.SetParent(Text.transform);
-            DragObj.transform.position = Text.gameObject.transform.position;
-            DragObj.transform.rotation = Text.gameObject.transform.rotation;
-            DragImage.rectTransform.pivot = Text.rectTransform.pivot;
-            DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
+            OverlayerProfile.DragObj.transform.SetParent(Text.transform);
+            OverlayerProfile.DragObj.transform.position = Text.gameObject.transform.position;
+            OverlayerProfile.DragObj.transform.rotation = Text.gameObject.transform.rotation;
+            OverlayerProfile.DragImage.rectTransform.pivot = Text.rectTransform.pivot;
+            OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
         }
-        DragObj.SetActive(true);
+        OverlayerProfile.DragObj.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData e) {
         pointingCount--;
         if(pointingCount == 0) {
             if(!isAlreadyDragging) {
-                DragObj.SetActive(false);
+                OverlayerProfile.DragObj.SetActive(false);
             }
         } else if(pointingCount < 0) {
             pointingCount = 0;

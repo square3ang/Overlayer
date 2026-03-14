@@ -33,6 +33,7 @@ public static class Main {
 
     public static Assembly Ass { get; private set; }
     public static ModEntry Mod { get; private set; }
+    public static string ProfilePath => Path.Combine(Mod.Path, "profiles");
     [Tag(NotPlaying = true)] public static ModLogger Logger { get; private set; }
     [Tag(NotPlaying = true)] public static Settings Settings { get; private set; }
     public static GUIController GUI { get; private set; }
@@ -104,13 +105,11 @@ public static class Main {
             yield return null;
         }
 
-        TextManager.Initialize();
-        yield return null;
+        // ...
     }
+
     public static bool OnToggle(ModEntry modEntry, bool toggle) {
         if(toggle) {
-            StaticCoroutine.Run(null);
-            StaticCoroutine.Run(LoadCoroutine(modEntry));
             Settings = ModSettings.Load<Settings>(modEntry);
             Lang.Language = Settings.Lang;
             Lang.OnInitialize += OnLanguageInitialize;
@@ -130,6 +129,11 @@ public static class Main {
             if(!Settings.disableLogo) {
                 LogoInit(modEntry.Path);
             }
+
+            StaticCoroutine.Run(null);
+            StaticCoroutine.Run(LoadCoroutine(modEntry));
+
+            ProfileManager.Initialize();
 
             GUI.Init(settingsDrawer);
             GUI.Flush();
@@ -154,8 +158,8 @@ public static class Main {
             if(Logo != null) {
                 Logo = null;
             }
+            ProfileManager.Release();
             Tags.System.Free();
-            TextManager.Release();
             FontManager.Release();
             TagManager.Release();
             OverlayerTag.Release();
@@ -229,10 +233,10 @@ public static class Main {
         GUI.Draw();
         GUILayout.Space(30);
         GUILayout.BeginHorizontal();
-        if(Drawer.Button(Drawer.icon_Discord, " Discord")) {
+        if(Drawer.Button(Drawer.Icon_Discord, " Discord")) {
             Application.OpenURL("https://discord.modlist.org/");
         }
-        if(Drawer.Button(Drawer.icon_Github, " GitHub")) {
+        if(Drawer.Button(Drawer.Icon_Github, " GitHub")) {
             Application.OpenURL("https://github.com/modlist-org/Overlayer");
         }
         GUILayout.FlexibleSpace();
@@ -280,7 +284,7 @@ public static class Main {
     }
 
     public static void OnSaveGUI(ModEntry modEntry) {
-        TextManager.Save();
+        ProfileManager.Save();
         ModSettings.Save(Settings, modEntry);
     }
 

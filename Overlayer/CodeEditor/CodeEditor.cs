@@ -86,7 +86,7 @@ public class CodeEditor {
         }
 
         GUILayout.BeginHorizontal();
-        GUILayout.Label(Drawer.icon_Parse);
+        GUILayout.Label(Drawer.Icon_Parse);
         GUILayout.Space(2);
         Drawer.DrawTags(ref selectedtag);
 

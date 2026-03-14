@@ -1,19 +1,22 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.Translation;
 using Overlayer.Models;
+using Overlayer.Unity;
 using Overlayer.Utils;
 using RapidGUI;
 using SFB;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using static Overlayer.Patches.HitFixPatch;
-using Object = UnityEngine.Object;
 
 namespace Overlayer.Views;
 
@@ -47,15 +50,18 @@ public class SettingsDrawer : ModelDrawable<Settings> {
         model.Lang = Main.Lang.Language;
     }
 
+    public override void OnceCall() {
+        NeoDrawer.StaticInstance.FieldResetDictById();
+        LanguageInit();
+    }
+
+    private bool needCreateNewProfile = false;
+
     private int[] dragSoltRange;
     private bool dragSoltNeedInit = true;
     private int dragSoltDragging = -1;
     private int dragSoltInsert = -1;
 
-    public override void OnceCall() {
-        NeoDrawer.StaticInstance.FieldResetDictById();
-        LanguageInit();
-    }
     public override void Draw() {
         NeoDrawer.StaticInstance.FieldResetId();
 
@@ -245,227 +251,214 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
                 break;
         }
-        GUILayout.BeginHorizontal();
-        bool needCreateNewText = Drawer.Button("+ " + Main.Lang.Get("NEW_TEXT", "Create New Text"));
-        if(Drawer.Button(Main.Lang.Get("IMPORT_TEXT", "Import Text"))) {
-            var texts = StandaloneFileBrowser.OpenFilePanel(
-                Main.Lang.Get("SELECT_TEXT", "Select Text"),
-                Main.Mod.Path,
-                new[] { new ExtensionFilter("Text", "json") },
-                true
-            );
 
-            foreach(var text in texts) {
-                var json = JToken.Parse(File.ReadAllText(text));
-                if(json is JArray arr) {
-                    ModelUtils.UnwrapList<TextConfig>(arr).ForEach(t => TextManager.CreateText(t));
-                } else if(json is JObject obj) {
-                    TextManager.CreateText(TextConfigImporter.Import(obj));
-                    dragSoltNeedInit = true;
+        GUILayout.BeginHorizontal();
+        if(Drawer.Button(Main.Lang.Get("IMPORT_PROFILE", "Import Profile"))) {
+            var pfs = StandaloneFileBrowser.OpenFilePanel(Main.Lang.Get("SELECT_PROFILE", "Select Profile"), Main.ProfilePath, new[] { new ExtensionFilter("Overlayer Profile JSON", "json"), }, true);
+            foreach(var pf in pfs) {
+                FileInfo file = new(pf);
+                if(file.Extension == ".json") {
+
                 }
             }
-            TextManager.Refresh();
         }
-        string showAs = model.showTextNameAsDisplayText
-            ? Main.Lang.Get("TEXT_SHOW_AS_DISPLAY", "Show As <color=#808080>Name</color> / Display Text")
-            : Main.Lang.Get("TEXT_SHOW_AS_NAME", "Show As Name / <color=#808080>Display Text</color>");
-        if(Drawer.Button(showAs)) {
-            model.showTextNameAsDisplayText = !model.showTextNameAsDisplayText;
+        if(Drawer.Button(Main.Lang.Get("CREATE_PROFILE", "Create New Profile"))) {
+            needCreateNewProfile = true;
+        }
+        if(Drawer.Button(Main.Lang.Get("OPEN_MOD_DIR", "Open Mod Directory"))) {
+            Application.OpenURL(Path.GetFullPath(Main.Mod.Path));
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
-        if(TextManager.Initialized) {
-            bool isRepaint = Event.current.type == EventType.Repaint;
-            if(dragSoltNeedInit) {
-                dragSoltNeedInit = false;
-                dragSoltRange = new int[TextManager.Count];
+
+        bool isRepaint = Event.current.type == EventType.Repaint;
+        if(dragSoltNeedInit) {
+            dragSoltNeedInit = false;
+            dragSoltRange = new int[ProfileManager.Profiles.Count];
+        }
+
+        for(int i = 0; i < ProfileManager.Profiles.Count; i++) {
+            var profile = ProfileManager.Get(i);
+            if(profile == null) {
+                GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_PROFILE_INDEX", "Unable to load profile data at index {0}"), i.ToString()));
+                continue;
             }
 
-            for(int i = 0; i < TextManager.Count; i++) {
-                var text = TextManager.Get(i);
-                if(text == null) {
-                    GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_TEXT_INDEX", "Unable to load text data at index {0}"), i.ToString()));
-                    continue;
-                }
-
-                if(i != dragSoltDragging) {
-                    if(i == dragSoltInsert) {
-                        GUILayout.BeginHorizontal();
-                        bool dummy = false;
-                        Color oldd = GUI.color;
-                        GUI.color = Color.black;
-                        Drawer.DrawOnlyBool(ref dummy);
-                        GUI.color = oldd;
-                        GUILayout.FlexibleSpace();
-                        GUILayout.EndHorizontal();
-                    }
+            if(i != dragSoltDragging) {
+                if(i == dragSoltInsert) {
                     GUILayout.BeginHorizontal();
-                    if(Drawer.DrawOnlyBool(ref text.Config.Active)) {
-                        text.gameObject.SetActive(text.Config.Active);
-                    }
-                    GUILayout.Label("-==-", GUI.skin.label);
-                    if(dragSoltDragging < 0 && Event.current.type == EventType.MouseDown && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
-                        dragSoltDragging = i;
-                        dragSoltInsert = i;
-                    }
-                    Color old = GUI.color;
-                    GUILayout.Space(6);
-                    GUI.color = new Color(0.8f, 0.8f, 1f);
-                    if(Drawer.Button(Drawer.icon_Pencil, GUILayout.Width(46))) {
-                        Main.GUI.Push(new TextConfigDrawer(text.Config));
-                    }
-                    GUI.color = new Color(0.8f, 1f, 0.8f);
-                    if(Drawer.Button(Drawer.icon_Copy, GUILayout.Width(46))) {
-                        TextManager.CreateText(text.Config.Copy());
-                        dragSoltNeedInit = true;
-                    }
-                    GUI.color = new Color(1f, 0.8f, 0.8f);
-                    if(Drawer.Button(Drawer.icon_X, GUILayout.Width(46))) {
-                        if(Event.current.shift) {
-                            TextManager.DestroyText(text);
-                        } else {
-                            if(Object.FindAnyObjectByType<DeletePopup>() == null) {
-                                var popup = new GameObject().AddComponent<DeletePopup>();
-                                UnityEngine.Object.DontDestroyOnLoad(popup);
-                                popup.Initialize(text, () => dragSoltNeedInit = true);
-                            }
-                        }
-                        return;
-                    }
-                    GUI.color = old;
-                    string textName;
-                    if(model.showTextNameAsDisplayText) {
-                        if(text.Config.Active) {
-                            string current = text.GetCurrentText();
-                            textName = current?.BreakRichTag();
-                            if(string.IsNullOrEmpty(textName)) {
-                                textName = Main.Lang.Get("TEXT_EMPTY", "<color=#808080>[ empty ]</color>");
-                            }
-                            textName = textName.Replace('\n', ' ');
-                            if(textName?.Length > 62) {
-                                textName = textName.Substring(0, 62) + $"<color=#808080>..({textName.Length - 62})</color>"; //TODO: Scroling Name
-                            }
-                        } else {
-                            textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
-                        }
-                    } else {
-                        textName = text.Config.Active ? text.Config.Name : $"<color=#808080>{text.Config.Name}</color>";
-                    }
-                    GUILayout.Label(textName);
-
+                    bool dummy = false;
+                    Color oldd = GUI.color;
+                    GUI.color = Color.black;
+                    Drawer.DrawOnlyBool(ref dummy);
+                    GUI.color = oldd;
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                 }
-                if(Event.current.type == EventType.Repaint) {
-                    dragSoltRange[i] = Mathf.RoundToInt(GUILayoutUtility.GetLastRect().y);
-                }
-            }
-
-            if(dragSoltInsert == TextManager.Count) {
                 GUILayout.BeginHorizontal();
-                bool dummy = false;
-                Color oldd = GUI.color;
-                GUI.color = Color.black;
-                Drawer.DrawOnlyBool(ref dummy);
-                GUI.color = oldd;
+                if(Drawer.DrawOnlyBool(ref profile.Config.Active)) {
+                    profile.gameObject.SetActive(profile.Config.Active);
+                }
+                GUILayout.Label("-==-", GUI.skin.label);
+                if(dragSoltDragging < 0 && Event.current.type == EventType.MouseDown && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition)) {
+                    dragSoltDragging = i;
+                    dragSoltInsert = i;
+                }
+                Color old = GUI.color;
+                GUILayout.Space(6);
+                GUI.color = new Color(0.8f, 0.8f, 1f);
+                if(Drawer.Button(Drawer.Icon_Pencil, GUILayout.Width(46))) {
+                    Main.GUI.Push(new ProfileDrawer(profile));
+                }
+                GUI.color = new Color(1f, 0.8f, 1f);
+                if(Drawer.Button(Drawer.Icon_UpDown, GUILayout.Width(46))) {
+                    string target = StandaloneFileBrowser.SaveFilePanel(
+                        Main.Lang.Get("SELECT_PROFILE", "Select Profile"),
+                        Persistence.GetLastUsedFolder(),
+                        $"{profile.Config.Name}.json",
+                        "json"
+                    );
+
+                    if(!string.IsNullOrWhiteSpace(target)) {
+                        var node = profile.Config.Serialize();
+                        node["References"] = ProfileReferences.GetReferences(profile);
+                        File.WriteAllText(target, node.ToString());
+                    }
+                }
+                GUI.color = new Color(1f, 0.8f, 0.8f);
+                if(Drawer.Button(Drawer.Icon_X, GUILayout.Width(46))) {
+                    if(Event.current.shift) {
+                        ProfileManager.Destroy(profile);
+                    } else {
+                        if(UnityEngine.Object.FindAnyObjectByType<DeletePopup>() == null) {
+                            var popup = new GameObject().AddComponent<DeletePopup>();
+                            UnityEngine.Object.DontDestroyOnLoad(popup);
+                            popup.Initialize(profile, () => {
+                                ProfileManager.Destroy(profile);
+                                dragSoltNeedInit = true;
+                            });
+                        }
+                    }
+                    return;
+                }
+                GUI.color = old;
+                GUILayout.Label(profile.name);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             }
+            if(Event.current.type == EventType.Repaint) {
+                dragSoltRange[i] = Mathf.RoundToInt(GUILayoutUtility.GetLastRect().y);
+            }
+        }
 
-            if(dragSoltDragging >= 0) {
-                if(Event.current.type == EventType.MouseUp) {
-                    TextManager.MoveTextByDrag(dragSoltDragging, dragSoltInsert);
+        if(dragSoltInsert == ProfileManager.Count) {
+            GUILayout.BeginHorizontal();
+            bool dummy = false;
+            Color oldd = GUI.color;
+            GUI.color = Color.black;
+            Drawer.DrawOnlyBool(ref dummy);
+            GUI.color = oldd;
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+        }
 
-                    dragSoltDragging = -1;
-                    dragSoltInsert = -1;
+        if(dragSoltDragging >= 0) {
+            if(Event.current.type == EventType.MouseUp) {
+                ProfileManager.OrderByDrag(dragSoltDragging, dragSoltInsert);
 
-                    GUILayout.BeginArea(Rect.zero);
-                    GUILayout.BeginHorizontal();
-                    GUILayout.EndHorizontal();
-                    GUILayout.EndArea();
-                } else {
-                    if(isRepaint) {
-                        int insertIndex = -1;
-                        for(int i = 0; i < dragSoltRange.Length; i++) {
-                            if(Event.current.mousePosition.y - 14 <= dragSoltRange[i]) {
-                                insertIndex = i;
-                                break;
-                            } else if(i == dragSoltRange.Length - 1) {
-                                insertIndex = dragSoltRange.Length;
-                                break;
-                            }
-                        }
-                        dragSoltInsert = insertIndex;
-                    }
+                dragSoltDragging = -1;
+                dragSoltInsert = -1;
 
-                    float dragWidth = Screen.width;
-                    float dragHeight = 24;
-                    Rect dragRect = new(
-                        GUILayoutUtility.GetLastRect().x,
-                        Event.current.mousePosition.y - (dragHeight * 3),
-                        dragWidth,
-                        dragHeight
-                    );
-
-                    var dtxt = TextManager.Get(dragSoltDragging);
-
-                    GUILayout.BeginArea(dragRect);
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Space(20);
-                    bool dmyActive = dtxt.Config.Active;
-                    Drawer.DrawOnlyBool(ref dmyActive);
-                    GUILayout.Label("-==-", GUI.skin.label);
-                    Color old = GUI.color;
-                    GUILayout.Space(6);
-                    GUI.color = new Color(0.8f, 0.8f, 1f);
-                    Drawer.ButtonDummy(Drawer.icon_Pencil, GUILayout.Width(46));
-                    GUI.color = new Color(0.8f, 1f, 0.8f);
-                    Drawer.ButtonDummy(Drawer.icon_Copy, GUILayout.Width(46));
-                    GUI.color = new Color(1f, 0.8f, 0.8f);
-                    Drawer.ButtonDummy(Drawer.icon_X, GUILayout.Width(46));
-                    GUI.color = old;
-                    string textName;
-                    if(model.showTextNameAsDisplayText) {
-                        if(dtxt.Config.Active) {
-                            string current = dtxt.GetCurrentText();
-                            textName = current?.BreakRichTag();
-                            if(string.IsNullOrEmpty(textName)) {
-                                textName = Main.Lang.Get("TEXT_EMPTY", "<color=#808080>[ empty ]</color>");
-                            }
-                            textName = textName.Replace('\n', ' ');
-                            if(textName?.Length > 62) {
-                                textName = textName.Substring(0, 62) + $"<color=#808080>..({textName.Length - 62})</color>";
-                            }
-                        } else {
-                            textName = Main.Lang.Get("TEXT_INACTIVE", "<i><color=#808080>[ inactive ]</color></i>");
-                        }
-                    } else {
-                        textName = dtxt.Config.Active ? dtxt.Config.Name : $"<color=#808080>{dtxt.Config.Name}</color>";
-                    }
-                    GUILayout.Label(textName);
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
-                    GUILayout.EndArea();
-                }
-            } else {
                 GUILayout.BeginArea(Rect.zero);
                 GUILayout.BeginHorizontal();
                 GUILayout.EndHorizontal();
                 GUILayout.EndArea();
-            }
+            } else {
+                if(isRepaint) {
+                    int insertIndex = -1;
+                    for(int i = 0; i < dragSoltRange.Length; i++) {
+                        if(Event.current.mousePosition.y - 14 <= dragSoltRange[i]) {
+                            insertIndex = i;
+                            break;
+                        } else if(i == dragSoltRange.Length - 1) {
+                            insertIndex = dragSoltRange.Length;
+                            break;
+                        }
+                    }
+                    dragSoltInsert = insertIndex;
+                }
 
-            if(NeedLangInit) {
-                NeedLangInit = false;
-                languages = null;
-                userLanguages = null;
-                LanguageInit();
+                float dragWidth = Screen.width;
+                float dragHeight = 24;
+                Rect dragRect = new(
+                    GUILayoutUtility.GetLastRect().x,
+                    Event.current.mousePosition.y - (dragHeight * 3),
+                    dragWidth,
+                    dragHeight
+                );
+
+                var dpf = ProfileManager.Get(dragSoltDragging);
+
+                GUILayout.BeginArea(dragRect);
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(20);
+                bool dmyActive = dpf.Config.Active;
+                Drawer.DrawOnlyBool(ref dmyActive);
+                GUILayout.Label("-==-", GUI.skin.label);
+                Color old = GUI.color;
+                GUILayout.Space(6);
+                GUI.color = new Color(0.8f, 0.8f, 1f);
+                Drawer.ButtonDummy(Drawer.Icon_Pencil, GUILayout.Width(46));
+                GUI.color = new Color(1f, 0.8f, 1f);
+                Drawer.ButtonDummy(Drawer.Icon_UpDown, GUILayout.Width(46));
+                GUI.color = new Color(1f, 0.8f, 0.8f);
+                Drawer.ButtonDummy(Drawer.Icon_X, GUILayout.Width(46));
+                GUI.color = old;
+                GUILayout.Label(dpf.name);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                GUILayout.EndArea();
             }
-            if(needCreateNewText) {
-                TextManager.CreateText(new TextConfig());
-                TextManager.Refresh();
-                dragSoltNeedInit = true;
-            }
+        } else {
+            GUILayout.BeginArea(Rect.zero);
+            GUILayout.BeginHorizontal();
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
         }
+
+        if(NeedLangInit) {
+            NeedLangInit = false;
+            languages = null;
+            userLanguages = null;
+            LanguageInit();
+        }
+
+        if(needCreateNewProfile) {
+            needCreateNewProfile = false;
+
+            Directory.CreateDirectory(Main.ProfilePath);
+
+            int i = 1;
+            string name;
+            do {
+                name = $"Profile {i}";
+                i++;
+            } while(ProfileManager.Profiles.Any(p => string.Equals(p.Config.Name, name, StringComparison.OrdinalIgnoreCase)));
+
+            string path = Path.Combine(Main.ProfilePath, name + ".json");
+
+            var config = new ProfileConfig {
+                Name = name,
+                Path = name + ".json"
+            };
+
+            File.WriteAllText(path, JsonConvert.SerializeObject(config, Formatting.Indented));
+
+            var profile = ProfileManager.Create(config);
+
+            dragSoltNeedInit = true;
+        }
+
         NeoDrawer.StaticInstance.UpdateFocused();
     }
 

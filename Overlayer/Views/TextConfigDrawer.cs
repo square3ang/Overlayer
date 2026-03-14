@@ -13,7 +13,8 @@ namespace Overlayer.Views;
 
 public class TextConfigDrawer : ModelDrawable<TextConfig> {
     public OverlayerText text;
-    public TextConfigDrawer(TextConfig config) : base(config) => text = TextManager.Find(config);
+
+    public TextConfigDrawer(OverlayerText text) : base(text.Config) => this.text = text;
 
     bool IsAdvensedMode => Main.Settings.uiMode == Settings.EditorUIMode.Advanced;
 
@@ -39,17 +40,17 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
             NeoDrawer.StaticInstance.FieldClear();
         }
 
-        if(Drawer.DrawBool(Drawer.icon_Active, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
+        if(Drawer.DrawBool(Drawer.Icon_Active, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
             text.gameObject.SetActive(model.Active);
         }
 
         bool _drag = model.Drag;
-        Drawer.DrawBool(Drawer.icon_Drag, Main.Lang.Get("DRAG", "Drag"), ref _drag);
+        Drawer.DrawBool(Drawer.Icon_Drag, Main.Lang.Get("DRAG", "Drag"), ref _drag);
         if(model.Drag != _drag) {
             model.Drag = _drag;
         }
         bool changed = false;
-        Drawer.DrawString(Drawer.icon_Pencil, Main.Lang.Get("NAME", "Name"), ref model.Name);
+        Drawer.DrawString(Drawer.Icon_Pencil, Main.Lang.Get("NAME", "Name"), ref model.Name);
         changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("POSITION", "Position"), ref model.Position, 0, 1);
         if(IsAdvensedMode) {
             changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("SCALE", "Scale"), ref model.Scale, 0, 2);
@@ -58,13 +59,13 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
             changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), ref model.ShadowOffset, -1, 1);
         }
         GUILayout.BeginHorizontal();
-        GUILayout.Label(Drawer.icon_Font);
+        GUILayout.Label(Drawer.Icon_Font);
         GUILayout.Space(4);
         GUILayout.Label(Main.Lang.Get("FONT", "Font"));
         changed |= Drawer.DrawSelectFont(ref model.Font);
         GUILayout.EndHorizontal();
         if(IsAdvensedMode) {
-            changed |= Drawer.DrawBool(Drawer.icon_FontAlternate, Main.Lang.Get("FALLBACK_FONTS", "Enable Fallback Fonts"), ref model.EnableFallbackFonts);
+            changed |= Drawer.DrawBool(Drawer.Icon_FontAlternate, Main.Lang.Get("FALLBACK_FONTS", "Enable Fallback Fonts"), ref model.EnableFallbackFonts);
 
             if(model.EnableFallbackFonts) {
                 model.FallbackFonts ??= new string[0];
@@ -87,26 +88,26 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
                 }
             }
         }
-        changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_FontSize, Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f);
+        changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_FontSize, Main.Lang.Get("FONT_SIZE", "Font Size"), ref model.FontSize, 0, 100, 300f);
         if(IsAdvensedMode) {
-            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_LineSpacing, Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f);
-            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_ShadowDilate, Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
-            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_ShadowSoftness, Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
-            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.icon_OutlineWidth, Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
+            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_LineSpacing, Main.Lang.Get("LINE_SPACING", "Line Spacing"), ref model.LineSpacing, -120f, 20f, 300f);
+            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_ShadowDilate, Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), ref model.ShadowDilate, 0, 1, 300f);
+            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_ShadowSoftness, Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
+            changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_OutlineWidth, Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
         }
-        Drawer.DrawBool(Drawer.icon_Color, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref model.TextColor.status.Enabled);
+        Drawer.DrawBool(Drawer.Icon_Color, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref model.TextColor.status.Enabled);
         if(model.TextColor.status.Enabled) {
             changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.TextColor, true);
         } else {
             NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
         }
-        Drawer.DrawBool(Drawer.icon_Shadow, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("SHADOW_COLOR", "Shadow Color")), ref model.ShadowColor.status.Enabled);
+        Drawer.DrawBool(Drawer.Icon_Shadow, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("SHADOW_COLOR", "Shadow Color")), ref model.ShadowColor.status.Enabled);
         if(model.ShadowColor.status.Enabled) {
             changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.ShadowColor, false);
         } else {
             NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
         }
-        Drawer.DrawBool(Drawer.icon_Outline, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("OUTLINE_COLOR", "Outline Color")), ref model.OutlineColor.status.Enabled);
+        Drawer.DrawBool(Drawer.Icon_Outline, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("OUTLINE_COLOR", "Outline Color")), ref model.OutlineColor.status.Enabled);
         if(model.OutlineColor.status.Enabled) {
             changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.OutlineColor, false);
         } else {
@@ -130,8 +131,8 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
             }
         }
 
-        changed |= Drawer.DrawCodeEditor(Drawer.icon_Play, Main.Lang.Get("PLAYING_TEXT", "Playing Text"), model.Name + "PlayingText", ref model.PlayingText);
-        changed |= Drawer.DrawCodeEditor(Drawer.icon_Pause, Main.Lang.Get("NOT_PLAYING_TEXT", "Not Playing Text"), model.Name + "NotPlayingText", ref model.NotPlayingText);
+        changed |= Drawer.DrawCodeEditor(Drawer.Icon_Play, Main.Lang.Get("PLAYING_TEXT", "Playing Text"), model.Name + "PlayingText", ref model.PlayingText);
+        changed |= Drawer.DrawCodeEditor(Drawer.Icon_Pause, Main.Lang.Get("NOT_PLAYING_TEXT", "Not Playing Text"), model.Name + "NotPlayingText", ref model.NotPlayingText);
         GUILayout.BeginHorizontal();
         GUI.color = new Color(1f, 0.8f, 1f);
         if(Drawer.Button(Main.Lang.Get("EXPORT", "Export"))) {
@@ -153,7 +154,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         }
         GUI.color = new Color(1f, 0.8f, 0.8f);
         if(Drawer.Button(Main.Lang.Get("DESTROY", "Destroy"))) {
-            TextManager.DestroyText(text);
+            text.Parant.TextManager.Destroy(text);
             Main.GUI.Skip(frames: 2);
             Main.GUI.Pop();
             return;

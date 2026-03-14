@@ -212,18 +212,18 @@ public class NeoDrawer {
         Color old = GUI.color;
         if(uniqueID == null) {
             GUI.color = new Color(1.0f, 0.68f, 0.68f);
-            changed |= DrawSingleWithSlider(Drawer.icon_XRotate, "X", ref vec3.x, lValue, rValue, 300f);
+            changed |= DrawSingleWithSlider(Drawer.Icon_XRotate, "X", ref vec3.x, lValue, rValue, 300f);
             GUI.color = new Color(0.68f, 1.0f, 0.68f);
-            changed |= DrawSingleWithSlider(Drawer.icon_YRotate, "Y", ref vec3.y, lValue, rValue, 300f);
+            changed |= DrawSingleWithSlider(Drawer.Icon_YRotate, "Y", ref vec3.y, lValue, rValue, 300f);
             GUI.color = new Color(0.68f, 0.68f, 1.0f);
-            changed |= DrawSingleWithSlider(Drawer.icon_ZRotate, "Z", ref vec3.z, lValue, rValue, 300f);
+            changed |= DrawSingleWithSlider(Drawer.Icon_ZRotate, "Z", ref vec3.z, lValue, rValue, 300f);
         } else {
             GUI.color = new Color(1.0f, 0.68f, 0.68f);
-            changed |= DrawSingleWithSlider(Drawer.icon_XRotate, "X", ref vec3.x, lValue, rValue, 300f, uniqueID + "_0");
+            changed |= DrawSingleWithSlider(Drawer.Icon_XRotate, "X", ref vec3.x, lValue, rValue, 300f, uniqueID + "_0");
             GUI.color = new Color(0.68f, 1.0f, 0.68f);
-            changed |= DrawSingleWithSlider(Drawer.icon_YRotate, "Y", ref vec3.y, lValue, rValue, 300f, uniqueID + "_1");
+            changed |= DrawSingleWithSlider(Drawer.Icon_YRotate, "Y", ref vec3.y, lValue, rValue, 300f, uniqueID + "_1");
             GUI.color = new Color(0.68f, 0.68f, 1.0f);
-            changed |= DrawSingleWithSlider(Drawer.icon_ZRotate, "Z", ref vec3.z, lValue, rValue, 300f, uniqueID + "_2");
+            changed |= DrawSingleWithSlider(Drawer.Icon_ZRotate, "Z", ref vec3.z, lValue, rValue, 300f, uniqueID + "_2");
         }
         GUI.color = old;
         return changed;
@@ -248,14 +248,14 @@ public class NeoDrawer {
         Color old = GUI.color;
         if(uniqueID == null) {
             GUI.color = new Color(1.0f, 0.68f, 0.68f);
-            changed |= DrawSingleWithSlider(Drawer.icon_LeftRight, "X", ref vec2.x, lValue, rValue, 300f);
+            changed |= DrawSingleWithSlider(Drawer.Icon_LeftRight, "X", ref vec2.x, lValue, rValue, 300f);
             GUI.color = new Color(0.68f, 1.0f, 0.68f);
-            changed |= DrawSingleWithSlider(Drawer.icon_UpDown, "Y", ref vec2.y, lValue, rValue, 300f);
+            changed |= DrawSingleWithSlider(Drawer.Icon_UpDown, "Y", ref vec2.y, lValue, rValue, 300f);
         } else {
             GUI.color = new Color(1.0f, 0.68f, 0.68f);
-            changed |= DrawSingleWithSlider(Drawer.icon_LeftRight, "X", ref vec2.x, lValue, rValue, 300f, uniqueID + "_0");
+            changed |= DrawSingleWithSlider(Drawer.Icon_LeftRight, "X", ref vec2.x, lValue, rValue, 300f, uniqueID + "_0");
             GUI.color = new Color(0.68f, 1.0f, 0.68f);
-            changed |= DrawSingleWithSlider(Drawer.icon_UpDown, "Y", ref vec2.y, lValue, rValue, 300f, uniqueID + "_1");
+            changed |= DrawSingleWithSlider(Drawer.Icon_UpDown, "Y", ref vec2.y, lValue, rValue, 300f, uniqueID + "_1");
         }
         GUI.color = old;
         return changed;
@@ -315,7 +315,7 @@ public class NeoDrawer {
         bool prevGe = color.gradientEnabled;
         bool ge = prevGe;
 
-        if(canEnableGradient && Drawer.DrawBool(Drawer.icon_Gradation, Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge)) {
+        if(canEnableGradient && Drawer.DrawBool(Drawer.Icon_Gradation, Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge)) {
             color = color with { gradientEnabled = ge };
         }
 

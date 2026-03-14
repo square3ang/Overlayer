@@ -1,67 +1,35 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Overlayer.Models;
+﻿using Overlayer.Models;
 using Overlayer.Unity;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
 
 namespace Overlayer.Core;
 
-public static class TextManager {
-    public static bool Initialized { get; private set; }
-    public static int Count => Texts.Count;
-    private static List<OverlayerText> Texts;
-    public static void Initialize() {
-        if(Initialized) {
-            return;
-        }
+public class TextManager {
+    public int Count => Texts.Count;
 
-        Texts = new List<OverlayerText>();
-        string textsPath = Path.Combine(Main.Mod.Path, "Texts.json");
-        List<TextConfig> configs = new();
+    public List<OverlayerText> Texts = new();
+    public OverlayerProfile ProfileCanvas;
 
-        if(File.Exists(textsPath)) {
-            var content = File.ReadAllText(textsPath);
-            if(!string.IsNullOrWhiteSpace(content)) {
-                var token = JToken.Parse(content);
+    public TextManager(OverlayerProfile profileCanvas) => ProfileCanvas = profileCanvas;
 
-                if(token.Type == JTokenType.Array) {
-                    foreach(var item in (JArray)token) {
-                        if(item.Type == JTokenType.Object) {
-                            configs.Add(TextConfigImporter.Import((JObject)item));
-                        }
-                    }
-                } else if(token.Type == JTokenType.Object) {
-                    configs.Add(TextConfigImporter.Import((JObject)token));
-                }
-            }
-        }
-
-        foreach(var config in configs) {
-            CreateText(config);
-        }
-
-        Refresh();
-        Initialized = true;
-    }
-    public static OverlayerText CreateText(TextConfig config) {
+    public OverlayerText Create(TextConfig config) {
         if(string.IsNullOrEmpty(config.Name)) {
-            config.Name = (Count + 1).ToString();
+            config.Name = $"Text {Count + 1}";
         }
 
-        GameObject go = new($"OverlayerText_{config.Name}");
+        var go = new GameObject($"OverlayerText_{Count + 1}");
         var text = go.AddComponent<OverlayerText>();
-        text.Init(config);
+        text.Init(ProfileCanvas, config);
         Texts.Add(text);
         return text;
     }
-    public static OverlayerText Get(int index) => index < 0 || index >= Texts.Count ? null : Texts[index];
-    public static OverlayerText Find(TextConfig configRef) => Texts.Find(ot => ReferenceEquals(ot.Config, configRef));
 
-    public static bool MoveTextToIndex(int from, int to) {
-        if(from < 0 || from >= Texts.Count || to < 0 || to >= Texts.Count || from == to) {
+    public OverlayerText Get(int index) => (index >= 0 && index < Count) ? Texts[index] : null;
+
+    public bool OrderToIndex(int from, int to) {
+        if(from < 0 || from >= Count || to < 0 || to >= Count || from == to) {
             return false;
         }
 
@@ -70,19 +38,19 @@ public static class TextManager {
         Texts.Insert(to, item);
 
         item.gameObject.transform.SetSiblingIndex(to);
+
         return true;
     }
-    public static bool MoveTextUp(int index) => MoveTextToIndex(index, index - 1);
-    public static bool MoveTextDown(int index) => MoveTextToIndex(index, index + 1);
-    public static bool MoveTextToTop(int index) => MoveTextToIndex(index, 0);
-    public static bool MoveTextToBottom(int index) => MoveTextToIndex(index, Texts.Count - 1);
-
-    public static bool MoveTextByDrag(int fromIndex, int toIndex) {
-        if(fromIndex < 0 || fromIndex >= Texts.Count) {
+    public bool OrderUp(int index) => OrderToIndex(index, index - 1);
+    public bool OrderDown(int index) => OrderToIndex(index, index + 1);
+    public bool OrderToTop(int index) => OrderToIndex(index, 0);
+    public bool OrderToBottom(int index) => OrderToIndex(index, Count - 1);
+    public bool OrderByDrag(int fromIndex, int toIndex) {
+        if(fromIndex < 0 || fromIndex >= Count) {
             return false;
         }
 
-        toIndex = Mathf.Clamp(toIndex, 0, Texts.Count);
+        toIndex = Mathf.Clamp(toIndex, 0, Count);
 
         if(fromIndex == toIndex || fromIndex == toIndex - 1) {
             return false;
@@ -97,29 +65,40 @@ public static class TextManager {
 
         Texts.Insert(toIndex, item);
         item.gameObject.transform.SetSiblingIndex(toIndex);
+
         return true;
     }
 
-    public static void Remove(int index) => DestroyText(Texts[index]);
-    public static void DestroyText(OverlayerText text) {
-        UnityEngine.Object.Destroy(text.gameObject);
-        Texts.Remove(text);
-        Refresh();
-    }
-    public static void Save() {
-        var array = ModelUtils.WrapList(Texts.Select(ot => ot.Config).ToList());
-        string textsPath = Path.Combine(Main.Mod.Path, "Texts.json");
-        File.WriteAllText(textsPath, JsonConvert.SerializeObject(array, Formatting.Indented));
-    }
-    public static void Refresh() => Texts.ForEach(ot => ot.ApplyConfig());
-    public static void Release() {
-        if(!Initialized) {
+    public void Import(List<TextConfig> configs) {
+        if(configs == null) {
             return;
         }
+        foreach(var config in configs) {
+            Create(config);
+        }
+        Refresh();
+    }
 
-        Save();
-        Texts = null;
-        UnityEngine.Object.Destroy(OverlayerText.PCanvasObj);
-        Initialized = false;
+    public List<TextConfig> Export() => Texts.Select(t => t.Config).ToList();
+
+    public void Destroy(OverlayerText text) {
+        Object.Destroy(text.gameObject);
+        Texts.Remove(text);
+        Refresh();
+
+        try {
+            Texts?.Remove(text);
+        } catch { }
+    }
+
+    public void Refresh() => Texts.ForEach(t => t.ApplyConfig());
+
+    public void Release() {
+        foreach(var t in Texts) {
+            if(t) {
+                Object.Destroy(t.gameObject);
+            }
+        }
+        Texts.Clear();
     }
 }
