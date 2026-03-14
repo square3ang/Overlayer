@@ -30,7 +30,7 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
 			profile.gameObject.SetActive(profile.Config.Active);
 		}
         GUILayout.BeginHorizontal();
-		if(NeoDrawer.StaticInstance.DrawPath(Main.Lang.Get("NAME", "Name"), ref model.Name, Main.ProfilePath, "json")) {
+		if(NeoDrawer.StaticInstance.DrawPath(Drawer.Icon_Pencil, Main.Lang.Get("NAME", "Name"), ref model.Name, Main.ProfilePath, "json")) {
             ProfileManager.Rename(profile, model.Name);
 		}
 		GUILayout.FlexibleSpace();

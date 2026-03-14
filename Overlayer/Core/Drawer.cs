@@ -843,21 +843,13 @@ public static class Drawer {
         return result;
     }
 
-    public static bool DrawString(string label, ref string value, bool textArea = false) {
-        string prev = value;
-        GUILayout.BeginHorizontal();
-        GUILayout.Label(label);
-        value = !textArea ? GUILayout.TextField(value, myTextField) : GUILayout.TextArea(value, myTextField);
-
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-        return prev != value;
-    }
-
+    public static bool DrawString(string label, ref string value, bool textArea = false) => DrawString(null, label, ref value, textArea);
     public static bool DrawString(Texture2D icon, string label, ref string value, bool textArea = false) {
         string prev = value;
         GUILayout.BeginHorizontal();
-        GUILayout.Label(icon);
+        if(icon != null) {
+            GUILayout.Label(icon);
+        }
         GUILayout.Label(label);
         value = !textArea ? GUILayout.TextField(value, myTextField) : GUILayout.TextArea(value, myTextField);
 

@@ -837,11 +837,15 @@ public class NeoDrawer {
         return changed;
     }
 
-    public bool DrawPath(string label, ref string name, string path = null, string extension = null, string uniqueID = null) {
+    public bool DrawPath(string label, ref string path, string extension = null, string uniqueID = null) => DrawPath(null, label, ref path, null, extension, uniqueID);
+    public bool DrawPath(Texture2D icon, string label, ref string name, string path = null, string extension = null, string uniqueID = null) {
         NeoField field = FieldGet(uniqueID);
         StrInitialize(ref field, name);
 
         GUILayout.BeginHorizontal();
+        if(icon != null) {
+            GUILayout.Label(icon);
+        }
         GUILayout.Label(label);
         GUILayout.Space(4f);
 
