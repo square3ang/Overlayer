@@ -1,2 +1,2 @@
 ﻿[ Fix ]
-Crazy problem of duplicate references when Profile Export
+Profile Import Reference not imported
