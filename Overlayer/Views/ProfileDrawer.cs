@@ -4,7 +4,6 @@ using Overlayer.Models;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using SFB;
-using System;
 using System.IO;
 using UnityEngine;
 
@@ -25,17 +24,24 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
     public override void Draw() {
         NeoDrawer.StaticInstance.FieldResetId();
 
-        if(NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_LineSpacing, Main.Lang.Get("OPACITY", "Opacity"), ref model.Opacity, 0f, 1f, 300f)) {
+		if(Drawer.DrawBool(Drawer.Icon_Power, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
+			profile.gameObject.SetActive(profile.Config.Active);
+		}
+        GUILayout.BeginHorizontal();
+		if(NeoDrawer.StaticInstance.DrawPath(Main.Lang.Get("NAME", "Name"), ref model.Name, Main.ProfilePath, "json")) {
+            ProfileManager.Rename(profile, model.Name);
+		}
+		GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+		if(NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_Opacity, Main.Lang.Get("OPACITY", "Opacity"), ref model.Opacity, 0f, 1f, 300f)) {
             profile.ApplyConfig();
         }
-
-        GUILayout.BeginHorizontal();
-
-        bool needCreateNewText = Drawer.Button("+ " + Main.Lang.Get("NEW_TEXT", "Create New Text"));
-
-        if(Drawer.Button(Main.Lang.Get("IMPORT_TEXT", "Import Text"))) {
-
-            var texts = StandaloneFileBrowser.OpenFilePanel(
+		Color old = GUI.color;
+		GUILayout.BeginHorizontal();
+        bool needCreateNewText = Drawer.Button(Drawer.Icon_Plus, GUILayout.Width(100));
+		GUI.color = new Color(1f, 1f, 0.8f);
+		if(Drawer.Button(Drawer.Icon_Down, GUILayout.Width(60))) {
+			var texts = StandaloneFileBrowser.OpenFilePanel(
                 Main.Lang.Get("SELECT_TEXT", "Select Text"),
                 Main.Mod.Path,
                 new[] { new ExtensionFilter("Text", "json") },
@@ -57,7 +63,7 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
 
             profile.TextManager.Refresh();
         }
-
+        GUI.color = old;
         string showAs = Main.Settings.showTextNameAsDisplayText
             ? Main.Lang.Get("TEXT_SHOW_AS_DISPLAY", "Show As <color=#808080>Name</color> / Display Text")
             : Main.Lang.Get("TEXT_SHOW_AS_NAME", "Show As Name / <color=#808080>Display Text</color>");
@@ -99,10 +105,9 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                     dragSoltDragging = i;
                     dragSoltInsert = i;
                 }
-                Color old = GUI.color;
                 GUILayout.Space(6);
                 GUI.color = new Color(0.8f, 0.8f, 1f);
-                if(Drawer.Button(Drawer.Icon_Pencil, GUILayout.Width(46))) {
+                if(Drawer.Button(Drawer.Icon_Pencil, GUILayout.Width(80))) {
                     Main.GUI.Push(new TextConfigDrawer(text));
                 }
                 GUI.color = new Color(0.8f, 1f, 0.8f);
@@ -206,10 +211,9 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                 bool dmyActive = dtxt.Config.Active;
                 Drawer.DrawOnlyBool(ref dmyActive);
                 GUILayout.Label("-==-", GUI.skin.label);
-                Color old = GUI.color;
                 GUILayout.Space(6);
                 GUI.color = new Color(0.8f, 0.8f, 1f);
-                Drawer.ButtonDummy(Drawer.Icon_Pencil, GUILayout.Width(46));
+                Drawer.ButtonDummy(Drawer.Icon_Pencil, GUILayout.Width(80));
                 GUI.color = new Color(0.8f, 1f, 0.8f);
                 Drawer.ButtonDummy(Drawer.Icon_Copy, GUILayout.Width(46));
                 GUI.color = new Color(1f, 0.8f, 0.8f);

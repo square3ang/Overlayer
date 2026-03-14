@@ -21,11 +21,25 @@ public class OverlayerProfile : MonoBehaviour {
 
         gameObject.transform.SetParent(PublicCanvas.transform, false);
 
-        ProfileCanvas = gameObject.AddComponent<Canvas>();
+        ProfileCanvas = gameObject.GetComponent<Canvas>() ?? gameObject.AddComponent<Canvas>();
+        ProfileCanvas.renderMode = PublicCanvas.renderMode;
+        ProfileCanvas.worldCamera = PublicCanvas.worldCamera;
+
         Group = gameObject.GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
         Group.alpha = Config.Opacity;
         Group.interactable = true;
         Group.blocksRaycasts = true;
+
+        RectTransform rt = gameObject.GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
+        RectTransform publicRt = PublicCanvas.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = Vector2.zero;
+        rt.sizeDelta = Vector2.zero;
+        rt.localScale = Vector3.one;
+
+        gameObject.AddComponent<GraphicRaycaster>();
 
         DragInit();
 
@@ -44,7 +58,6 @@ public class OverlayerProfile : MonoBehaviour {
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
-        pCanvasObj.AddComponent<GraphicRaycaster>();
         DontDestroyOnLoad(PublicCanvas);
     }
 

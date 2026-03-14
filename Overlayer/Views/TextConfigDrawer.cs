@@ -40,7 +40,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
             NeoDrawer.StaticInstance.FieldClear();
         }
 
-        if(Drawer.DrawBool(Drawer.Icon_Active, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
+        if(Drawer.DrawBool(Drawer.Icon_Power, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
             text.gameObject.SetActive(model.Active);
         }
 

@@ -25,8 +25,8 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     private static int pointingCount = 0;
     private bool isDragging = false;
     private bool isPointing = false;
-    private Vector2 initialPointerPosition;
     private Vector2 initialObjectPosition;
+    private Vector2 initialPointerLocal;
 
     #region Statics
     public static Shader sr_msdf;
@@ -126,9 +126,18 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         if(isAlreadyDragging) {
             return;
         }
+
         isDragging = true;
         isAlreadyDragging = true;
-        initialPointerPosition = e.position;
+
+        RectTransform parentRect = Text.rectTransform.parent as RectTransform;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            parentRect,
+            e.position,
+            e.pressEventCamera,
+            out initialPointerLocal
+        );
+
         initialObjectPosition = Text.rectTransform.anchoredPosition;
     }
 
@@ -140,14 +149,24 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     }
 
     public void OnDrag(PointerEventData e) {
-        if(isDragging) {
-            Vector2 currentPointerPosition = e.position;
-            Vector2 offset = currentPointerPosition - initialPointerPosition;
-            Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
-
-            Vector2 screenSize = new(1920, 1080);
-            Config.Position = (Text.rectTransform.anchoredPosition / screenSize) + new Vector2(0.5f, 0.5f);
+        if(!isDragging) {
+            return;
         }
+
+        RectTransform parentRect = Text.rectTransform.parent as RectTransform;
+        Vector2 currentPointerLocal;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            parentRect,
+            e.position,
+            e.pressEventCamera,
+            out currentPointerLocal
+        );
+
+        Vector2 offset = currentPointerLocal - initialPointerLocal;
+        Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
+
+        Vector2 canvasSize = new Vector2(1920, 1080);
+        Config.Position = (Text.rectTransform.anchoredPosition / canvasSize) + new Vector2(0.5f, 0.5f);
     }
 
     public void OnPointerEnter(PointerEventData e) {
@@ -165,12 +184,11 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     public void OnPointerExit(PointerEventData e) {
         pointingCount--;
-        if(pointingCount == 0) {
+        if(pointingCount <= 0) {
+            pointingCount = 0;
             if(!isAlreadyDragging) {
                 OverlayerProfile.DragObj.SetActive(false);
             }
-        } else if(pointingCount < 0) {
-            pointingCount = 0;
         }
         isPointing = false;
     }

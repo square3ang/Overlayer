@@ -329,6 +329,12 @@ public static class Drawer {
     public static Texture2D Icon_ShadowDilate;
     public static Texture2D Icon_ShadowSoftness;
     public static Texture2D Icon_X;
+    public static Texture2D Icon_Power;
+    public static Texture2D Icon_Plus;
+    public static Texture2D Icon_Opacity;
+
+    public static Texture2D Icon_Up;
+    public static Texture2D Icon_Down;
 
     public static Texture2D Icon_AliLeft;
     public static Texture2D Icon_AliRight;
@@ -438,6 +444,12 @@ public static class Drawer {
         Icon_ShadowDilate = CreateTextureFromByte(ImageManager.GetResourceBytes("shadowdilate.png"));
         Icon_ShadowSoftness = CreateTextureFromByte(ImageManager.GetResourceBytes("shadowsoftness.png"));
         Icon_X = CreateTextureFromByte(ImageManager.GetResourceBytes("x.png"));
+        Icon_Power = CreateTextureFromByte(ImageManager.GetResourceBytes("power.png"));
+        Icon_Plus = CreateTextureFromByte(ImageManager.GetResourceBytes("plus.png"));
+        Icon_Opacity = CreateTextureFromByte(ImageManager.GetResourceBytes("opacity.png"));
+
+        Icon_Up = CreateTextureFromByte(ImageManager.GetResourceBytes("up.png"));
+        Icon_Down = RotateTexture90(RotateTexture90(Icon_Up));
 
         Icon_AliLeft = CreateTextureFromByte(ImageManager.GetResourceBytes("alileft.png"));
         Icon_AliRight = CreateTextureFromByte(ImageManager.GetResourceBytes("aliright.png"));
@@ -1064,7 +1076,7 @@ public static class Drawer {
             if(paths.Length > 0) {
                 string path = paths[0];
 
-                if(path.StartsWith(Main.Mod.Path, StringComparison.OrdinalIgnoreCase)) {
+                if(path.StartsWith(Main.Mod.Path)) {
                     path = path.Replace(Main.Mod.Path, "{ModDir}")
                                .Replace("\\", "/");
                 }
@@ -1074,7 +1086,7 @@ public static class Drawer {
             }
         }
 
-        result |= Drawer.DrawOnlyString(ref fontPath);
+        result |= DrawOnlyString(ref fontPath);
         GUILayout.EndHorizontal();
         return result;
     }

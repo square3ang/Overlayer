@@ -3,7 +3,6 @@ using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.Translation;
 using Overlayer.Models;
-using Overlayer.Unity;
 using Overlayer.Utils;
 using RapidGUI;
 using SFB;
@@ -11,10 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using static Overlayer.Patches.HitFixPatch;
 
@@ -252,8 +249,13 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 break;
         }
 
-        GUILayout.BeginHorizontal();
-        if(Drawer.Button(Main.Lang.Get("IMPORT_PROFILE", "Import Profile"))) {
+		Color old = GUI.color;
+		GUILayout.BeginHorizontal();
+        if(Drawer.Button(Drawer.Icon_Plus, GUILayout.Width(100))) {
+            needCreateNewProfile = true;
+        }
+		GUI.color = new Color(1f, 1f, 0.8f);
+		if(Drawer.Button(Drawer.Icon_Down, GUILayout.Width(60))) {
             var pfs = StandaloneFileBrowser.OpenFilePanel(Main.Lang.Get("SELECT_PROFILE", "Select Profile"), Main.ProfilePath, new[] { new ExtensionFilter("Overlayer Profile JSON", "json"), }, true);
             foreach(var pf in pfs) {
                 FileInfo file = new(pf);
@@ -262,10 +264,8 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 }
             }
         }
-        if(Drawer.Button(Main.Lang.Get("CREATE_PROFILE", "Create New Profile"))) {
-            needCreateNewProfile = true;
-        }
-        if(Drawer.Button(Main.Lang.Get("OPEN_MOD_DIR", "Open Mod Directory"))) {
+        GUI.color = old;
+		if(Drawer.Button(Drawer.Icon_OpenFolder, GUILayout.Width(80))) {
             Application.OpenURL(Path.GetFullPath(Main.Mod.Path));
         }
         GUILayout.FlexibleSpace();
@@ -304,14 +304,15 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     dragSoltDragging = i;
                     dragSoltInsert = i;
                 }
-                Color old = GUI.color;
                 GUILayout.Space(6);
-                GUI.color = new Color(0.8f, 0.8f, 1f);
-                if(Drawer.Button(Drawer.Icon_Pencil, GUILayout.Width(46))) {
-                    Main.GUI.Push(new ProfileDrawer(profile));
-                }
-                GUI.color = new Color(1f, 0.8f, 1f);
-                if(Drawer.Button(Drawer.Icon_UpDown, GUILayout.Width(46))) {
+				GUI.color = profile.Config.Active ? new Color(0.8f, 0.8f, 1f) : Color.gray;
+				GUI.enabled = profile.Config.Active;
+				if(Drawer.Button(Drawer.Icon_Pencil, GUILayout.Width(80))) {
+					Main.GUI.Push(new ProfileDrawer(profile));
+				}
+				GUI.enabled = true;
+				GUI.color = new Color(1f, 0.8f, 1f);
+                if(Drawer.Button(Drawer.Icon_Up, GUILayout.Width(46))) {
                     string target = StandaloneFileBrowser.SaveFilePanel(
                         Main.Lang.Get("SELECT_PROFILE", "Select Profile"),
                         Persistence.GetLastUsedFolder(),
@@ -342,7 +343,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     return;
                 }
                 GUI.color = old;
-                GUILayout.Label(profile.name);
+                GUILayout.Label(profile.Config.Name);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             }
@@ -405,10 +406,9 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 bool dmyActive = dpf.Config.Active;
                 Drawer.DrawOnlyBool(ref dmyActive);
                 GUILayout.Label("-==-", GUI.skin.label);
-                Color old = GUI.color;
                 GUILayout.Space(6);
                 GUI.color = new Color(0.8f, 0.8f, 1f);
-                Drawer.ButtonDummy(Drawer.Icon_Pencil, GUILayout.Width(46));
+                Drawer.ButtonDummy(Drawer.Icon_Pencil, GUILayout.Width(80));
                 GUI.color = new Color(1f, 0.8f, 1f);
                 Drawer.ButtonDummy(Drawer.Icon_UpDown, GUILayout.Width(46));
                 GUI.color = new Color(1f, 0.8f, 0.8f);
@@ -443,7 +443,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
             do {
                 name = $"Profile {i}";
                 i++;
-            } while(ProfileManager.Profiles.Any(p => string.Equals(p.Config.Name, name, StringComparison.OrdinalIgnoreCase)));
+            } while(ProfileManager.Profiles.Any(p => string.Equals(p.Config.Name, name, StringComparison.Ordinal)));
 
             string path = Path.Combine(Main.ProfilePath, name + ".json");
 

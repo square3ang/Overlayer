@@ -3,6 +3,7 @@ using Overlayer.Models;
 using RapidGUI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -824,6 +825,65 @@ public class NeoDrawer {
         object objValue = value;
         if(ApplyFieldValueOnEvent(ref field, fieldName, ref objValue, typeof(int))) {
             value = (int)objValue;
+            changed = true;
+        }
+
+        GUILayout.Space(2f);
+        GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
+
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+
+        return changed;
+    }
+
+    public bool DrawPath(string label, ref string name, string path = null, string extension = null, string uniqueID = null) {
+        NeoField field = FieldGet(uniqueID);
+        StrInitialize(ref field, name);
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(label);
+        GUILayout.Space(4f);
+
+        bool changed = false;
+
+        Color old = GUI.color;
+        ColorbyState(field.State);
+
+        string fieldName = FieldGetName(uniqueID);
+        GUI.SetNextControlName(fieldName);
+        string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
+        GUI.color = old;
+
+        if(newField != field.Str) {
+            field.Str = newField;
+
+            if(field.Str == name) {
+                field.State = NeoField.StateType.OK;
+            } else {
+                char[] invalidChars = System.IO.Path.GetInvalidFileNameChars();
+                if(string.IsNullOrEmpty(field.Str) || field.Str.IndexOfAny(invalidChars) >= 0) {
+                    field.State = NeoField.StateType.ERROR;
+                } else if(!string.IsNullOrEmpty(path)) {
+                    string ext = string.IsNullOrEmpty(extension) ? "" : (extension.StartsWith(".") ? extension : "." + extension);
+                    string fullPath = Path.Combine(path, field.Str + ext);
+
+                    if(File.Exists(fullPath) || Directory.Exists(fullPath)) {
+                        field.State = NeoField.StateType.ERROR;
+                    } else {
+                        field.ComputedValue = field.Str;
+                        field.State = NeoField.StateType.COMPUTE;
+                    }
+                } else {
+                    field.ComputedValue = field.Str;
+                    field.State = NeoField.StateType.COMPUTE;
+                }
+            }
+        }
+
+        object objValue = name;
+        if(ApplyFieldValueOnEvent(ref field, fieldName, ref objValue, typeof(string))) {
+            name = (string)objValue;
             changed = true;
         }
 

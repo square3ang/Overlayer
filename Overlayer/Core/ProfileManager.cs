@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Overlayer.Models;
 using Overlayer.Unity;
 using System;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Overlayer.Core;
 
@@ -155,28 +153,38 @@ public static class ProfileManager {
     }
 
     public static bool Exists(string name)
-        => Profiles.Any(p => string.Equals(p.Config.Name, name, System.StringComparison.OrdinalIgnoreCase));
+        => Profiles.Any(p => string.Equals(p.Config.Name, name, StringComparison.Ordinal));
 
     public static bool Rename(OverlayerProfile profile, string newName) {
-        if(profile == null || string.IsNullOrWhiteSpace(newName) || Exists(newName))
+        if(profile == null || string.IsNullOrWhiteSpace(newName) || Profiles.Any(p => p != profile && string.Equals(p.Config.Name, newName, StringComparison.OrdinalIgnoreCase))) {
             return false;
-
-        Directory.CreateDirectory(Main.ProfilePath);
-        string newPath = Path.Combine(Main.ProfilePath, newName + ".json");
+        }
 
         try {
-            string oldPath = profile.Config.Path ?? string.Empty;
-            if(!Path.IsPathRooted(oldPath)) oldPath = Path.Combine(Main.ProfilePath, oldPath);
-            if(File.Exists(oldPath))
-                File.Move(oldPath, newPath);
+            string oldPath = profile.Config.Path;
+            if(!Path.IsPathRooted(oldPath)) {
+                oldPath = Path.Combine(Main.ProfilePath, oldPath);
+            }
 
-            profile.Config.Path = newPath;
+            string newPath = Path.Combine(Main.ProfilePath, newName + ".json");
+
+            if(File.Exists(oldPath)) {
+                File.Move(oldPath, newPath);
+            }
+
             profile.Config.Name = newName;
+            profile.Config.Path = newPath;
             profile.gameObject.name = newName;
             return true;
-        } catch(System.Exception e) {
+        } catch(Exception e) {
             Debug.LogError("Failed to rename profile: " + e);
             return false;
+        }
+    }
+
+    public static void Refresh() {
+        foreach(var profile in Profiles) {
+            profile.TextManager.Refresh();
         }
     }
 

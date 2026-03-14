@@ -650,6 +650,9 @@
     <EmbeddedResource Include="MiscFiles\images\xrotate.png" />
     <EmbeddedResource Include="MiscFiles\images\zrotate.png" />
     <EmbeddedResource Include="MiscFiles\images\RGUIoutline.png" />
+    <EmbeddedResource Include="MiscFiles\images\plus.png" />
+    <EmbeddedResource Include="MiscFiles\images\up.png" />
+    <EmbeddedResource Include="MiscFiles\images\opacity.png" />
     <Content Include="MiscFiles\ov3_logo.png" />
     <Content Include="MiscFiles\update.txt" />
     <Content Include="RapidGUI\Component\IMColorPicker\Resources\imBorder.png" />
