@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.Translation;
 using Overlayer.Models;
+using Overlayer.Unity;
 using Overlayer.Utils;
 using RapidGUI;
 using SFB;
@@ -166,16 +168,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
         if(Drawer.Button(Main.Lang.Get("EXTRA_MENU", "Extra Menu") + " " + (extraMenu == ExtraMenus.Extra ? "▼" : "▲"))) {
             extraMenu = extraMenu == ExtraMenus.Extra ? ExtraMenus.Closed : ExtraMenus.Extra;
         }
-        /*
-        if(Drawer.Button(Main.Lang.Get("OPEN_WIKI_MENU","Open Wiki Menu"))) {
-            if(Main.Wiki == null) {
-                Main.Wiki = new GameObject().AddComponent<Wiki.Wiki>();
-                UnityEngine.Object.DontDestroyOnLoad(Main.Wiki);
-            } else {
-                Main.Wiki.BringToFrontOnce();
-            }
-        }
-        */
+
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
         switch(extraMenu) {
@@ -256,15 +249,58 @@ public class SettingsDrawer : ModelDrawable<Settings> {
         }
 		GUI.color = new Color(1f, 1f, 0.8f);
 		if(Drawer.Button(Drawer.Icon_Down, GUILayout.Width(60))) {
-            var pfs = StandaloneFileBrowser.OpenFilePanel(Main.Lang.Get("SELECT_PROFILE", "Select Profile"), Main.ProfilePath, new[] { new ExtensionFilter("Overlayer Profile JSON", "json"), }, true);
-            foreach(var pf in pfs) {
-                FileInfo file = new(pf);
-                if(file.Extension == ".json") {
+			StandaloneFileBrowser.OpenFilePanelAsync(
+				Main.Lang.Get("SELECT_PROFILE", "Select Profile"),
+				Main.ProfilePath,
+				new[] { new ExtensionFilter(Main.Lang.Get("OVERLAYER_PROFILE_JSON", "Overlayer Profile JSON"), "json") },
+				true,
+				async (pfs) => {
+					foreach(var pf in pfs) {
+						await Task.Run(() => {
+							try {
+								if(Path.GetExtension(pf) != ".json") {
+									return;
+								}
 
-                }
-            }
-        }
-        GUI.color = old;
+								string name = Path.GetFileNameWithoutExtension(pf);
+								if(ProfileManager.Exists(name)) {
+									return;
+								}
+
+								var content = File.ReadAllText(pf);
+								if(string.IsNullOrWhiteSpace(content)) {
+									return;
+								}
+
+								var token = JToken.Parse(content);
+								var cfg = new ProfileConfig();
+								cfg.Deserialize(token);
+								cfg.Path = pf;
+								cfg.Name = name;
+
+								Main.MainThreadDispatcher.Enqueue(() => {
+									try {
+										var profileGO = new GameObject(cfg.Name ?? "Profile");
+										var profile = profileGO.AddComponent<OverlayerProfile>();
+										profile.Config = cfg;
+										profile.Init(cfg.Name);
+
+										profile.TextManager.Import(cfg.Texts);
+										ProfileManager.Profiles.Add(profile);
+										dragSoltNeedInit = true;
+									} catch(Exception ex) {
+										Debug.LogError($"Failed to create profile '{pf}' on main thread: {ex}");
+									}
+								});
+							} catch(Exception e) {
+								Debug.LogError($"Failed to load profile '{pf}': {e}");
+							}
+						});
+					}
+				}
+			);
+		}
+		GUI.color = old;
 		if(Drawer.Button(Drawer.Icon_OpenFolder, GUILayout.Width(80))) {
             Application.OpenURL(Path.GetFullPath(Main.Mod.Path));
         }

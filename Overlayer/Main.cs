@@ -12,6 +12,7 @@ using Overlayer.Views;
 using RapidGUI;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -95,6 +96,7 @@ public static class Main {
         modEntry.OnGUI = OnGUI;
         modEntry.OnHideGUI = OnHideGUI;
         modEntry.OnSaveGUI = OnSaveGUI;
+        modEntry.OnUpdate = OnUpdate;
         SceneManager.activeSceneChanged += (f, t) => ActiveScene = t;
         MiscUtils.SetAttr(TMPro.TMP_Settings.instance, "m_warningsDisabled", true);
     }
@@ -288,6 +290,8 @@ public static class Main {
         ModSettings.Save(Settings, modEntry);
     }
 
+    public static void OnUpdate(ModEntry modEntry, float delta) => MainThreadDispatcher.Update();
+
     public static bool IsPlaying {
         get {
             var ctrl = scrController.instance;
@@ -321,4 +325,16 @@ public static class Main {
             Logo = null;
         }
     }
+
+	public static class MainThreadDispatcher {
+		private static readonly ConcurrentQueue<Action> queue = new();
+		public static void Enqueue(Action action) {
+			queue.Enqueue(action);
+		}
+		public static void Update() {
+			while(queue.TryDequeue(out var action)) {
+				action.Invoke();
+			}
+		}
+	}
 }

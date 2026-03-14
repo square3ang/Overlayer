@@ -4,7 +4,9 @@ using Overlayer.Models;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using SFB;
+using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Overlayer.Views;
@@ -41,29 +43,51 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
         bool needCreateNewText = Drawer.Button(Drawer.Icon_Plus, GUILayout.Width(100));
 		GUI.color = new Color(1f, 1f, 0.8f);
 		if(Drawer.Button(Drawer.Icon_Down, GUILayout.Width(60))) {
-			var texts = StandaloneFileBrowser.OpenFilePanel(
-                Main.Lang.Get("SELECT_TEXT", "Select Text"),
-                Main.Mod.Path,
-                new[] { new ExtensionFilter("Text", "json") },
-                true
-            );
+			StandaloneFileBrowser.OpenFilePanelAsync(
+				Main.Lang.Get("SELECT_TEXT", "Select Text"),
+				Main.Mod.Path,
+				new[] { new ExtensionFilter(Main.Lang.Get("OVERLAYER_TEXT_JSON", "Overlayer Text JSON"), "json") },
+				true,
+				async (texts) => {
+					foreach(var text in texts) {
+						await Task.Run(() => {
+							try {
+								if(Path.GetExtension(text) != ".json") {
+									return;
+								}
 
-            foreach(var text in texts) {
+								var content = File.ReadAllText(text);
+								if(string.IsNullOrWhiteSpace(content)) {
+									return;
+								}
 
-                var json = JToken.Parse(File.ReadAllText(text));
+								var json = JToken.Parse(content);
 
-                if(json is JArray arr) {
-                    ModelUtils.UnwrapList<TextConfig>(arr)
-                        .ForEach(t => profile.TextManager.Create(t));
-                } else if(json is JObject obj) {
-                    profile.TextManager.Create(TextConfigImporter.Import(obj));
-                    dragSoltNeedInit = true;
-                }
-            }
+								Main.MainThreadDispatcher.Enqueue(() => {
+									try {
+										if(json is JArray arr) {
+											ModelUtils.UnwrapList<TextConfig>(arr)
+												.ForEach(t => profile.TextManager.Create(t));
+										} else if(json is JObject obj) {
+											profile.TextManager.Create(TextConfigImporter.Import(obj));
+										}
 
-            profile.TextManager.Refresh();
-        }
-        GUI.color = old;
+										dragSoltNeedInit = true;
+										profile.TextManager.Refresh();
+									} catch(Exception ex) {
+										Debug.LogError($"Failed to create text from '{text}': {ex}");
+									}
+								});
+
+							} catch(Exception e) {
+								Debug.LogError($"Failed to load text '{text}': {e}");
+							}
+						});
+					}
+				}
+			);
+		}
+		GUI.color = old;
         string showAs = Main.Settings.showTextNameAsDisplayText
             ? Main.Lang.Get("TEXT_SHOW_AS_DISPLAY", "Show As <color=#808080>Name</color> / Display Text")
             : Main.Lang.Get("TEXT_SHOW_AS_NAME", "Show As Name / <color=#808080>Display Text</color>");

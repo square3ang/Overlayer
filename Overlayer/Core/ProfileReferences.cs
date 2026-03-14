@@ -2,13 +2,11 @@
 using Overlayer.Models;
 using Overlayer.Unity;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Overlayer.Core;
 
 public static class ProfileReferences {
-
     public static JArray GetReferences(OverlayerProfile profile) {
         var refs = new List<TextConfigImporter.Reference>();
 
