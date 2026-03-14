@@ -59,6 +59,44 @@ public static class TextConfigImporter {
             .ToList());
     }
 
+    public static JArray GetJustReferences(TextConfig text) {
+        var references = new List<Reference>();
+
+        if(!string.IsNullOrWhiteSpace(text.Font) && text.Font != "Default") {
+            references.Add(new Reference {
+                Name = text.Font,
+                ReferenceType = Reference.Type.Font
+            });
+        }
+
+        if(text.EnableFallbackFonts) {
+            foreach(var fallback in text.FallbackFonts ?? Array.Empty<string>()) {
+                if(!string.IsNullOrWhiteSpace(fallback) && fallback != "Default") {
+                    references.Add(new Reference {
+                        Name = fallback,
+                        ReferenceType = Reference.Type.Font
+                    });
+                }
+            }
+        }
+
+        var set = new HashSet<string>();
+        var result = new List<Reference>();
+
+        foreach(var r in references) {
+            if(r == null) {
+                continue;
+            }
+
+            string key = $"{r.ReferenceType}:{r.Name}";
+            if(set.Add(key)) {
+                result.Add(r);
+            }
+        }
+
+        return ModelUtils.WrapList(result);
+    }
+
     public class Reference : IModel, ICopyable<Reference> {
         public enum Type {
             Font,
