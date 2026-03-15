@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 using Overlayer.Utils;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -35,8 +36,8 @@ public class TextConfig : IModel, ICopyable<TextConfig> {
     public bool EnableFallbackFonts = false;
     public string[] FallbackFonts = null;
     public GColor TextColor = Color.white;
-    public GColor OutlineColor = Color.clear;
-    public GColor ShadowColor = Color.black with { a = 0.5f };
+    public Color OutlineColor = Color.clear;
+    public Color ShadowColor = Color.black with { a = 0.5f };
     public Vector2 Scale = new(1, 1);
     public Vector2 Position = new(0.5f, 0.0175f);
     public Vector2 Pivot = new(0.5f, 0.5f);
@@ -86,8 +87,8 @@ public class TextConfig : IModel, ICopyable<TextConfig> {
             [nameof(ShadowDilate)] = ShadowDilate,
             [nameof(ShadowSoftness)] = ShadowSoftness,
             [nameof(TextColor)] = TextColor.Serialize(),
-            [nameof(OutlineColor)] = OutlineColor.Serialize(),
-            [nameof(ShadowColor)] = ShadowColor.Serialize(),
+            [nameof(OutlineColor)] = ModelUtils.ToNode(OutlineColor),
+            [nameof(ShadowColor)] = ModelUtils.ToNode(ShadowColor),
             [nameof(Scale)] = ModelUtils.ToNode(Scale),
             [nameof(Position)] = ModelUtils.ToNode(Position),
             [nameof(Pivot)] = ModelUtils.ToNode(Pivot),
@@ -117,12 +118,42 @@ public class TextConfig : IModel, ICopyable<TextConfig> {
             ? ModelUtils.Unbox<GColor>(node[nameof(TextColor)])
             : defaultSettings.TextColor;
         TextColor.gradientEnabled = node[nameof(TextColor)]?["gradientEnabled"]?.Value<bool>() ?? TextColor.gradientEnabled;
-        OutlineColor = node[nameof(OutlineColor)] != null
-            ? ModelUtils.Unbox<GColor>(node[nameof(OutlineColor)])
-            : defaultSettings.OutlineColor;
-        ShadowColor = node[nameof(ShadowColor)] != null
-            ? ModelUtils.Unbox<GColor>(node[nameof(ShadowColor)])
-            : defaultSettings.ShadowColor;
+        var outlineToken = node[nameof(OutlineColor)];
+        if(outlineToken != null) {
+            if(outlineToken.Type == JTokenType.Object) {
+                JObject obj = (JObject)outlineToken;
+
+                if(obj.TryGetValue("topLeft", out var legacy)) { // Legacy GColor
+                    OutlineColor = ModelUtils.ToColor(legacy);
+                } else {
+                    OutlineColor = ModelUtils.ToColor(obj);
+                }
+            } else if(outlineToken.Type == JTokenType.Array) {
+                OutlineColor = ModelUtils.ToColor(outlineToken); // [r,g,b,a]
+            } else {
+                OutlineColor = defaultSettings.OutlineColor;
+            }
+        } else {
+            OutlineColor = defaultSettings.OutlineColor;
+        }
+        var shadowToken = node[nameof(ShadowColor)];
+        if(shadowToken != null) {
+            if(shadowToken.Type == JTokenType.Object) {
+                JObject obj = (JObject)shadowToken;
+
+                if(obj.TryGetValue("topLeft", out var legacy)) { // Legacy GColor
+                    ShadowColor = ModelUtils.ToColor(legacy);
+                } else {
+                    ShadowColor = ModelUtils.ToColor(obj);
+                }
+            } else if(shadowToken.Type == JTokenType.Array) {
+                ShadowColor = ModelUtils.ToColor(shadowToken); // [r,g,b,a]
+            } else {
+                ShadowColor = defaultSettings.ShadowColor;
+            }
+        } else {
+            ShadowColor = defaultSettings.ShadowColor;
+        }
         Scale = node[nameof(Scale)] != null
             ? ModelUtils.ToVector2(node[nameof(Scale)])
             : defaultSettings.Scale;

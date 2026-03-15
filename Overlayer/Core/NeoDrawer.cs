@@ -257,6 +257,7 @@ public class NeoDrawer {
         return changed;
     }
 
+    public bool DrawColor(ref Color color, float cWidth = 460f, string uniqueID = null) => DrawColor(null, ref color, cWidth, uniqueID);
     public bool DrawColor(string label, ref Color color, float cWidth = 460f, string uniqueID = null) {
         bool changed = false;
 
@@ -307,19 +308,19 @@ public class NeoDrawer {
         return changed;
     }
 
-    public bool DrawGColor(ref GColor color, bool canEnableGradient, float cWidth = 220f, string uniqueID = null) {
+    public bool DrawGColor(ref GColor color, float cWidth = 220f, string uniqueID = null) {
         bool prevGe = color.gradientEnabled;
         bool ge = prevGe;
 
-        if(canEnableGradient && Drawer.DrawBool(Drawer.Icon_Gradation, Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge)) {
+        if(Drawer.DrawBool(Drawer.Icon_Gradation, Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge)) {
             color = color with { gradientEnabled = ge };
         }
 
-        color = color with { gradientEnabled = color.gradientEnabled && canEnableGradient };
+        color = color with { gradientEnabled = color.gradientEnabled };
 
         bool changed = ge != prevGe;
 
-        if(color.gradientEnabled && canEnableGradient) {
+        if(color.gradientEnabled) {
 
             NeoField fieldTL = FieldGet(uniqueID);
             NeoField fieldTR;

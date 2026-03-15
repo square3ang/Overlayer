@@ -15,26 +15,20 @@ public struct GColor : IModel, ICopyable<GColor> {
 
     public bool gradientEnabled = false;
 
-    public Color topLeft { get => _color.topLeft; set => SetTopLeftColor(value); }
-    public Color topRight { get => _color.topRight; set => SetTopRightColor(value); }
-    public Color bottomLeft { get => _color.bottomLeft; set => SetBottomLeftColor(value); }
-    public Color bottomRight { get => _color.bottomRight; set => SetBottomRightColor(value); }
+    public Color topLeft { readonly get => _color.topLeft; set => SetTopLeftColor(value); }
+    public Color topRight { readonly get => _color.topRight; set => SetTopRightColor(value); }
+    public Color bottomLeft { readonly get => _color.bottomLeft; set => SetBottomLeftColor(value); }
+    public Color bottomRight { readonly get => _color.bottomRight; set => SetBottomRightColor(value); }
 
-    public GUIStatus status;
-    public GUIStatus topLeftStatus;
-    public GUIStatus topRightStatus;
-    public GUIStatus bottomLeftStatus;
-    public GUIStatus bottomRightStatus;
+    public string topLeftHex { readonly get => _topLeftHex; set => SetTopLeftHex(value); }
+    public string topRightHex { readonly get => _topRightHex; set => SetTopRightHex(value); }
+    public string bottomLeftHex { readonly get => _bottomLeftHex; set => SetBottomLeftHex(value); }
+    public string bottomRightHex { readonly get => _bottomRightHex; set => SetBottomRightHex(value); }
 
-    public string topLeftHex { get => _topLeftHex; set => SetTopLeftHex(value); }
-    public string topRightHex { get => _topRightHex; set => SetTopRightHex(value); }
-    public string bottomLeftHex { get => _bottomLeftHex; set => SetBottomLeftHex(value); }
-    public string bottomRightHex { get => _bottomRightHex; set => SetBottomRightHex(value); }
-
-    public float r { get => _color.topLeft.r; set => SetTopLeftColor(_color.topLeft with { r = value }); }
-    public float g { get => _color.topLeft.g; set => SetTopLeftColor(_color.topLeft with { g = value }); }
-    public float b { get => _color.topLeft.b; set => SetTopLeftColor(_color.topLeft with { b = value }); }
-    public float a { get => _color.topLeft.a; set => SetTopLeftColor(_color.topLeft with { a = value }); }
+    public float r { readonly get => _color.topLeft.r; set => SetTopLeftColor(_color.topLeft with { r = value }); }
+    public float g { readonly get => _color.topLeft.g; set => SetTopLeftColor(_color.topLeft with { g = value }); }
+    public float b { readonly get => _color.topLeft.b; set => SetTopLeftColor(_color.topLeft with { b = value }); }
+    public float a { readonly get => _color.topLeft.a; set => SetTopLeftColor(_color.topLeft with { a = value }); }
 
     public GColor(Color color) {
         _color = new VertexGradient(color);
@@ -43,21 +37,6 @@ public struct GColor : IModel, ICopyable<GColor> {
         _topRightHex = hex;
         _bottomLeftHex = hex;
         _bottomRightHex = hex;
-        status = new GUIStatus() {
-            Expanded = false,
-        };
-        topLeftStatus = new GUIStatus() {
-            Expanded = false,
-        };
-        topRightStatus = new GUIStatus() {
-            Expanded = false,
-        };
-        bottomLeftStatus = new GUIStatus() {
-            Expanded = false,
-        };
-        bottomRightStatus = new GUIStatus() {
-            Expanded = false,
-        };
     }
     public GColor(VertexGradient color) {
         _color = color;
@@ -65,22 +44,6 @@ public struct GColor : IModel, ICopyable<GColor> {
         _topRightHex = ColorUtility.ToHtmlStringRGBA(color.topRight);
         _bottomLeftHex = ColorUtility.ToHtmlStringRGBA(color.bottomLeft);
         _bottomRightHex = ColorUtility.ToHtmlStringRGBA(color.bottomRight);
-        status = new GUIStatus() {
-            Expanded = false,
-        };
-        topLeftStatus = new GUIStatus() {
-            Expanded = false,
-        };
-        topRightStatus = new GUIStatus() {
-            Expanded = false,
-        };
-        bottomLeftStatus = new GUIStatus() {
-            Expanded = false,
-        };
-        bottomRightStatus = new GUIStatus() {
-            Expanded = false,
-        };
-
     }
     public GColor Copy() {
         var col = new GColor {
@@ -89,11 +52,6 @@ public struct GColor : IModel, ICopyable<GColor> {
             topRight = topRight,
             bottomLeft = bottomLeft,
             bottomRight = bottomRight,
-            status = status.Copy(),
-            topLeftStatus = topLeftStatus.Copy(),
-            topRightStatus = topRightStatus.Copy(),
-            bottomLeftStatus = bottomLeftStatus.Copy(),
-            bottomRightStatus = bottomRightStatus.Copy()
         };
         return col;
     }
@@ -104,11 +62,6 @@ public struct GColor : IModel, ICopyable<GColor> {
             [nameof(topRight)] = ModelUtils.ToNode(topRight),
             [nameof(bottomLeft)] = ModelUtils.ToNode(bottomLeft),
             [nameof(bottomRight)] = ModelUtils.ToNode(bottomRight),
-            [nameof(status)] = status?.Serialize(),
-            [nameof(topLeftStatus)] = topLeftStatus?.Serialize(),
-            [nameof(topRightStatus)] = topRightStatus?.Serialize(),
-            [nameof(bottomLeftStatus)] = bottomLeftStatus?.Serialize(),
-            [nameof(bottomRightStatus)] = bottomRightStatus?.Serialize()
         };
     }
     public void Deserialize(JToken node) {
@@ -126,23 +79,6 @@ public struct GColor : IModel, ICopyable<GColor> {
         bottomRight = node[nameof(bottomRight)] != null
             ? ModelUtils.ToColor(node[nameof(bottomRight)])
             : default;
-
-        topLeftStatus = node[nameof(topLeftStatus)] != null
-            ? ModelUtils.Unbox<GUIStatus>(node[nameof(topLeftStatus)])
-            : new GUIStatus();
-        topRightStatus = node[nameof(topRightStatus)] != null
-            ? ModelUtils.Unbox<GUIStatus>(node[nameof(topRightStatus)])
-            : new GUIStatus();
-        bottomLeftStatus = node[nameof(bottomLeftStatus)] != null
-            ? ModelUtils.Unbox<GUIStatus>(node[nameof(bottomLeftStatus)])
-            : new GUIStatus();
-        bottomRightStatus = node[nameof(bottomRightStatus)] != null
-            ? ModelUtils.Unbox<GUIStatus>(node[nameof(bottomRightStatus)])
-            : new GUIStatus();
-
-        status = node[nameof(status)] != null
-            ? ModelUtils.Unbox<GUIStatus>(node[nameof(status)])
-            : new GUIStatus();
     }
 
     private void SetTopLeftColor(Color color) {

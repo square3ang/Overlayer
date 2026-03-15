@@ -63,11 +63,6 @@ public static class Drawer {
         return changed;
     }
 
-    public static void DrawGColor(string label, ref GColor color, bool canEnableGradient, Action onChange) {
-        GUILayout.Label(label);
-        DrawGColor(ref color, canEnableGradient).IfTrue(onChange);
-    }
-
     public static bool SelectionPopup(ref int selected, string[] options, string label,
         params GUILayoutOption[] layoutOptions) {
         if(label != "") {
@@ -121,45 +116,6 @@ public static class Drawer {
 
         return c;
     }
-
-    public static bool DrawGColor(ref GColor color, bool canEnableGradient) {
-        bool ge = color.gradientEnabled, prevGe = color.gradientEnabled;
-        if(canEnableGradient && DrawBool(Icon_Gradation, Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge)) {
-            color = color with { gradientEnabled = ge };
-        }
-
-        color.gradientEnabled &= canEnableGradient;
-        bool result = ge != prevGe;
-        if(color.gradientEnabled) {
-            Color tl = color.topLeft,
-                tr = color.topRight,
-                bl = color.bottomLeft,
-                br = color.bottomRight;
-            ExpandableGUI(color.topLeftStatus, Main.Lang.Get("MISC_TOP_LEFT", "Top Left"),
-                () => result |= DrawColor(ref tl));
-            ExpandableGUI(color.topRightStatus, Main.Lang.Get("MISC_TOP_RIGHT", "Top Right"),
-                () => result |= DrawColor(ref tr));
-            ExpandableGUI(color.bottomLeftStatus, Main.Lang.Get("MISC_BOTTOM_LEFT", "Bottom Left"),
-                () => result |= DrawColor(ref bl));
-            ExpandableGUI(color.bottomRightStatus, Main.Lang.Get("MISC_BOTTOM_RIGHT", "Bottom Right"),
-                () => result |= DrawColor(ref br));
-            if(result) {
-                color.topLeft = tl;
-                color.topRight = tr;
-                color.bottomLeft = bl;
-                color.bottomRight = br;
-            }
-        } else {
-            Color dummy = color.topLeft;
-            if(result = DrawColor(ref dummy)) {
-                color = dummy;
-            }
-        }
-
-        return result;
-    }
-
-    public static void ExpandableGUI(GUIStatus status, string label, Action drawer) => GUILayoutEx.ExpandableGUI(drawer, label, ref status.Expanded);
 
     public static bool DrawColor(ref Color color) {
         /*bool result = false;

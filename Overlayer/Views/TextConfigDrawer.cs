@@ -20,6 +20,10 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
 
     public override void OnceCall() => NeoDrawer.StaticInstance.FieldResetDictById();
 
+    bool isColorOpen = false;
+    bool isShadowOpen = false;
+    bool isOutlineOpen = false;
+
     public override void Draw() {
         NeoDrawer.StaticInstance.FieldResetId();
 
@@ -95,21 +99,21 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
             changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_ShadowSoftness, Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), ref model.ShadowSoftness, 0, 1, 300f);
             changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_OutlineWidth, Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), ref model.OutlineWidth, 0, 1, 300f);
         }
-        Drawer.DrawBool(Drawer.Icon_Color, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref model.TextColor.status.Enabled);
-        if(model.TextColor.status.Enabled) {
-            changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.TextColor, true);
+        Drawer.DrawBool(Drawer.Icon_Color, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("TEXT_COLOR", "Text Color")), ref isColorOpen);
+        if(isColorOpen) {
+            changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.TextColor);
         } else {
             NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
         }
-        Drawer.DrawBool(Drawer.Icon_Shadow, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("SHADOW_COLOR", "Shadow Color")), ref model.ShadowColor.status.Enabled);
-        if(model.ShadowColor.status.Enabled) {
-            changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.ShadowColor, false);
+        Drawer.DrawBool(Drawer.Icon_Shadow, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("SHADOW_COLOR", "Shadow Color")), ref isShadowOpen);
+        if(isShadowOpen) {
+            changed |= NeoDrawer.StaticInstance.DrawColor(ref model.ShadowColor);
         } else {
             NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
         }
-        Drawer.DrawBool(Drawer.Icon_Outline, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("OUTLINE_COLOR", "Outline Color")), ref model.OutlineColor.status.Enabled);
-        if(model.OutlineColor.status.Enabled) {
-            changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.OutlineColor, false);
+        Drawer.DrawBool(Drawer.Icon_Outline, string.Format(Main.Lang.Get("EDIT_THIS", "Edit {0}"), Main.Lang.Get("OUTLINE_COLOR", "Outline Color")), ref isOutlineOpen);
+        if(isOutlineOpen) {
+            changed |= NeoDrawer.StaticInstance.DrawColor(ref model.OutlineColor);
         } else {
             NeoDrawer.StaticInstance.FieldSetId(NeoDrawer.StaticInstance.FieldGetId() + 4);
         }
