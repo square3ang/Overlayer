@@ -265,7 +265,7 @@ public static class Main {
                 GUILayout.EndHorizontal();
             }
             if(AutoUpdater.CurrentVersionType == AutoUpdater.VersionType.UnknownBeta) {
-                GUILayout.Label($"You are using an <color=#{Tags.Effect.Rainbow(12)}>SPESIAL BETA!</color>");
+                GUILayout.Label($"You are using an <color=#{Tags.Effect.Rainbow(12)}>SPECIAL BETA!</color>");
             }
         } else if(AutoUpdater.IsRateLimited) {
             GUILayout.Label($"<color=yellow>{Lang.Get("UPDATE_RATE_LIMITED", "Update or Version check Rate Limited!")}</color>");
