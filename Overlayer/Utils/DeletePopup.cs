@@ -128,17 +128,11 @@ internal class DeletePopup : MonoBehaviour {
         GUILayout.FlexibleSpace();
 
         if(Drawer.Button($"<size=18>{Main.Lang.Get("YES", "Yes")}</size>", GUILayout.Width(150), GUILayout.Height(52))) {
-
-            if(obj != null) {
-                obj.Parent.ObjectManager.Destroy(obj);
-            }
+            obj?.Parent.ObjectManager.Destroy(obj);
 
             if(profile != null) {
                 ProfileManager.Destroy(profile);
             }
-
-            Main.GUI.Skip(frames: 2);
-            Main.GUI.Pop();
 
             Destroy(gameObject);
 

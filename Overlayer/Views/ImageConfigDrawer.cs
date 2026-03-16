@@ -151,7 +151,6 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
         GUI.color = new Color(1f, 0.8f, 0.8f);
         if(Drawer.Button(Drawer.Icon_X, GUILayout.Width(46))) {
             image.Parent.ObjectManager.Destroy(image);
-            Main.GUI.Skip(frames: 2);
             Main.GUI.Pop();
             return;
         }

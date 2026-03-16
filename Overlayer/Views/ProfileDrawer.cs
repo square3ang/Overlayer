@@ -171,7 +171,6 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                 }
                 GUI.color = new Color(0.8f, 1f, 0.8f);
                 if(Drawer.Button(Drawer.Icon_Copy, GUILayout.Width(46))) {
-
                     switch(obj.Config) {
                         case TextConfig cfg:
                             profile.ObjectManager.Create((TextConfig)cfg.Copy());
@@ -180,19 +179,16 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                             profile.ObjectManager.Create((ImageConfig)cfg.Copy());
                             break;
                     }
-
                     dragSoltNeedInit = true;
                 }
                 GUI.color = new Color(1f, 0.8f, 0.8f);
                 if(Drawer.Button(Drawer.Icon_X, GUILayout.Width(46))) {
                     if(Event.current.shift) {
                         profile.ObjectManager.Destroy(obj);
-                    } else {
-                        if(UnityEngine.Object.FindAnyObjectByType<DeletePopup>() == null) {
-                            var popup = new GameObject().AddComponent<DeletePopup>();
-                            UnityEngine.Object.DontDestroyOnLoad(popup);
-                            popup.Initialize(obj, () => dragSoltNeedInit = true);
-                        }
+                    } else if(UnityEngine.Object.FindAnyObjectByType<DeletePopup>() == null) {
+                        var popup = new GameObject().AddComponent<DeletePopup>();
+                        UnityEngine.Object.DontDestroyOnLoad(popup);
+                        popup.Initialize(obj, () => dragSoltNeedInit = true);
                     }
                     return;
                 }

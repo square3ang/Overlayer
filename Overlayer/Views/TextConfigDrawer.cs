@@ -168,7 +168,6 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         GUI.color = new Color(1f, 0.8f, 0.8f);
         if(Drawer.Button(Drawer.Icon_X, GUILayout.Width(46))) {
             text.Parent.ObjectManager.Destroy(text);
-            Main.GUI.Skip(frames: 2);
             Main.GUI.Pop();
             return;
         }
