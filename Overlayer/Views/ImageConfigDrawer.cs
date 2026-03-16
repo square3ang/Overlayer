@@ -87,6 +87,9 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
             GUI.color = old;
 
             if(Drawer.Button(Drawer.Icon_OpenFolder, GUILayout.Width(40))) {
+                int index = i;
+                var currentModel = model;
+
                 Task.Run(() => {
                     var extensions = new[] {
                         new ExtensionFilter("Image Files", "png", "jpg", "jpeg"),
@@ -108,7 +111,9 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
 
                         string finalPath = path;
                         Main.MainThreadDispatcher.Enqueue(() => {
-                            model.Images[i] = finalPath;
+                            if(index < currentModel.Images.Count) {
+                                currentModel.Images[index] = finalPath;
+                            }
                             this.image.ApplyImages();
                         });
                     }
