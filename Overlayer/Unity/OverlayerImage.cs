@@ -70,7 +70,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         if(int.TryParse(rawCommand, out idx) && idx >= 0 && idx < Images.Count) {
             _mainImage.sprite = Images[idx];
         } else {
-            _mainImage.sprite = null;
+            _mainImage.sprite = ImageManager.DefaultSprite;
         }
 
         if(isDragging && OverlayerProfile.DragObj != null && OverlayerProfile.DragImage != null) {
@@ -105,7 +105,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
 
     public void ApplyImages() {
         Images.Clear();
-        _mainImage.sprite = null;
+        _mainImage.sprite = ImageManager.DefaultSprite;
         for(int i = 0; i < _config.Images.Count; i++) {
             string imagePath = _config.Images[i];
             Images.Add(ImageManager.GetSpriteSafe(imagePath));

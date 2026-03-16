@@ -127,6 +127,7 @@ public static class Main {
             FontManager.Initialize();
             TagResetter.Postfix();
             Tags.System.Init();
+            ImageManager.Initialize();
             DllImporter.NCalcInitialize();
             if(!Settings.disableLogo) {
                 LogoInit(modEntry.Path);
@@ -161,6 +162,7 @@ public static class Main {
                 Logo = null;
             }
             ProfileManager.Release();
+            ImageManager.Release();
             Tags.System.Free();
             FontManager.Release();
             TagManager.Release();

@@ -53,7 +53,7 @@ public static class ImageManager {
             Texture2D tex = new(2, 2);
             tex.SetPixels(new Color[4] { Color.clear, Color.clear, Color.clear, Color.clear });
             tex.Apply();
-            DefaultSprite = Sprite.Create(tex, new Rect(0, 0, 100, 100), new Vector2(0.5f, 0.5f));
+            DefaultSprite = Sprite.Create(tex, new Rect(0, 0, 2, 2), new Vector2(0.5f, 0.5f));
             Sprites = new Dictionary<string, Sprite>();
             Initialized = true;
         }
