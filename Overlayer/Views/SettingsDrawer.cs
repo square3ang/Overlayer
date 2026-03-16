@@ -291,6 +291,8 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                                 foreach(var obj in cfg.Objects) {
                                     if(obj is TextConfig t) {
                                         TextConfigImporter.ImportRef(t, token);
+                                    } else if(obj is ImageConfig i) {
+                                        ImageConfigImporter.ImportRef(i, token);
                                     }
                                 }
                                 profile.ObjectManager.Import(cfg.Objects);

@@ -78,21 +78,24 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                                 ObjectConfig cfg;
                                 if(string.IsNullOrEmpty(type)) {
                                     cfg = new TextConfig();
+                                } else if(type == "Text") {
+                                    cfg = TextConfigImporter.Import(token);
+                                } else if(type == "Image") {
+                                    cfg = ImageConfigImporter.Import(token);
                                 } else {
-                                    cfg = (ObjectConfig)Activator.CreateInstance(
-                                        Type.GetType($"Overlayer.Models.{type}Config") ?? typeof(TextConfig)
-                                    );
+                                    cfg = new TextConfig();
                                 }
-                                cfg.Deserialize(token);
                                 configsToAdd.Add(cfg);
                             }
                         } else if(json is JObject obj) {
-                            ObjectConfig cfg;
                             string type = obj["Type"]?.Value<string>();
-                            if(string.IsNullOrEmpty(type)) {
-                                cfg = new TextConfig();
-                            } else {
+                            ObjectConfig cfg;
+                            if(string.IsNullOrEmpty(type) || type == "Text") {
                                 cfg = TextConfigImporter.Import(obj);
+                            } else if(type == "Image") {
+                                cfg = ImageConfigImporter.Import(obj);
+                            } else {
+                                cfg = new TextConfig();
                             }
                             configsToAdd.Add(cfg);
                         }
