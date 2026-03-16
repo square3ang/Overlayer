@@ -108,11 +108,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         _mainImage.sprite = null;
         for(int i = 0; i < _config.Images.Count; i++) {
             string imagePath = _config.Images[i];
-            if(imagePath != null) {
-                Images.Add(ImageManager.GetSpriteSafe(imagePath));
-            } else {
-                Images.Add(null);
-            }
+            Images.Add(ImageManager.GetSpriteSafe(imagePath));
         }
     }
 

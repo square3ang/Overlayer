@@ -7,12 +7,16 @@ using UnityEngine;
 namespace Overlayer.Core;
 
 public static class ImageManager {
-    private static Sprite DefaultSprite;
+    public static Sprite DefaultSprite {  get; private set; }
     private static Dictionary<string, Sprite> Sprites = new();
     public static bool Initialized { get; private set; }
-    public static string[] OSImagePaths { get; private set; }
 
-    public static Sprite GetSpriteSafe(string name) => TryGetSprite(name, out Sprite sprite) ? sprite : DefaultSprite;
+    public static Sprite GetSpriteSafe(string name) {
+        if(string.IsNullOrEmpty(name)) {
+            return DefaultSprite;
+        }
+        return TryGetSprite(name, out Sprite sprite) ? sprite : DefaultSprite;
+    }
     public static Sprite GetSprite(string name) => TryGetSprite(name, out Sprite sprite) ? sprite : null;
 
     public static void SetSprite(string name, Sprite sprite) => Sprites[name] = sprite;
@@ -40,14 +44,6 @@ public static class ImageManager {
             }
         }
 
-        int index = Array.IndexOf(OSImagePaths, name);
-        if(index != -1) {
-            Texture2D tex = new Texture2D(2, 2);
-            sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-            Sprites.Add(name, sprite);
-            return true;
-        }
-
         sprite = DefaultSprite;
         return false;
     }
@@ -58,8 +54,6 @@ public static class ImageManager {
             tex.SetPixels(new Color[4] { Color.clear, Color.clear, Color.clear, Color.clear });
             tex.Apply();
             DefaultSprite = Sprite.Create(tex, new Rect(0, 0, 100, 100), new Vector2(0.5f, 0.5f));
-
-            OSImagePaths = Directory.GetFiles(Application.dataPath, "*.png", SearchOption.AllDirectories);
             Sprites = new Dictionary<string, Sprite>();
             Initialized = true;
         }
@@ -68,7 +62,6 @@ public static class ImageManager {
     public static void Release() {
         DefaultSprite = null;
         Sprites = null;
-        OSImagePaths = null;
         Initialized = false;
     }
 }
