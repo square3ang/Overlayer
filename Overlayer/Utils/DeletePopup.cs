@@ -15,20 +15,19 @@ internal class DeletePopup : MonoBehaviour {
     private bool isAnimating = false;
     private bool isSpawn = false;
 
-    private OverlayerText txt;
+    private OverlayerObject obj;
     private OverlayerProfile profile;
 
     private Action OnDelete;
 
-    public void Initialize(OverlayerText txt, Action onDelete = null) {
-
-        this.txt = txt;
+    public void Initialize(OverlayerObject obj, Action onDelete = null) {
+        this.obj = obj;
         this.profile = null;
         this.OnDelete = onDelete;
 
         contentLines = new[] {
             "<size=30>" + Main.Lang.Get("DESTROY_ASK", "Destroy?") + "</size>\n",
-            "<size=20>" + txt.Config.Name + "</size>\n"
+            "<size=20>" + obj.Config.Name + "</size>\n"
         };
 
         SetupWindow();
@@ -37,7 +36,7 @@ internal class DeletePopup : MonoBehaviour {
     public void Initialize(OverlayerProfile profile, Action onDelete = null) {
 
         this.profile = profile;
-        this.txt = null;
+        this.obj = null;
         this.OnDelete = onDelete;
 
         contentLines = new[] {
@@ -130,8 +129,8 @@ internal class DeletePopup : MonoBehaviour {
 
         if(Drawer.Button($"<size=18>{Main.Lang.Get("YES", "Yes")}</size>", GUILayout.Width(150), GUILayout.Height(52))) {
 
-            if(txt != null) {
-                txt.Parant.TextManager.Destroy(txt);
+            if(obj != null) {
+                obj.Parent.ObjectManager.Destroy(obj);
             }
 
             if(profile != null) {

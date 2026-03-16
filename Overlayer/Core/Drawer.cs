@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using HarmonyLib;
 using Overlayer.CodeEditor;
-using Overlayer.Models;
 using Overlayer.Tags;
 using Overlayer.Utils;
 using RapidGUI;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityModManagerNet;
@@ -288,6 +288,7 @@ public static class Drawer {
     public static Texture2D Icon_Power;
     public static Texture2D Icon_Plus;
     public static Texture2D Icon_Opacity;
+    public static Texture2D Icon_Image;
 
     public static Texture2D Icon_Up;
     public static Texture2D Icon_Down;
@@ -366,92 +367,93 @@ public static class Drawer {
         outlineimg = new Texture2D(1, 1, TextureFormat.RGBA32, false, true) {
             filterMode = FilterMode.Point
         };
-        outlineimg.LoadImage(ImageManager.GetResourceBytes("RGUIoutline.png"));
+        outlineimg.LoadImage(ResourceImageManager.GetResourceBytes("RGUIoutline.png"));
 
         black = new Texture2D(1, 1);
         black.SetPixel(0, 0, Color.black);
         black.Apply();
 
-        Icon_Copy = CreateTextureFromByte(ImageManager.GetResourceBytes("copy.png"));
-        Icon_Active = CreateTextureFromByte(ImageManager.GetResourceBytes("active.png"));
-        Icon_Inactive = CreateTextureFromByte(ImageManager.GetResourceBytes("inactive.png"));
-        Icon_Gradation = CreateTextureFromByte(ImageManager.GetResourceBytes("gradation.png"));
-        Icon_UpDown = CreateTextureFromByte(ImageManager.GetResourceBytes("updown.png"));
+        Icon_Copy = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("copy.png"));
+        Icon_Active = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("active.png"));
+        Icon_Inactive = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("inactive.png"));
+        Icon_Gradation = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("gradation.png"));
+        Icon_UpDown = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("updown.png"));
         Icon_LeftRight = RotateTexture90(Icon_UpDown);
-        Icon_XRotate = CreateTextureFromByte(ImageManager.GetResourceBytes("xrotate.png"));
+        Icon_XRotate = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("xrotate.png"));
         Icon_YRotate = RotateTexture90(Icon_XRotate);
-        Icon_ZRotate = CreateTextureFromByte(ImageManager.GetResourceBytes("zrotate.png"));
-        Icon_OpenFolder = CreateTextureFromByte(ImageManager.GetResourceBytes("openfolder.png"));
-        Icon_Color = CreateTextureFromByte(ImageManager.GetResourceBytes("color.png"));
-        Icon_Drag = CreateTextureFromByte(ImageManager.GetResourceBytes("drag.png"));
-        Icon_Discord = CreateTextureFromByte(ImageManager.GetResourceBytes("discord.png"));
-        Icon_Font = CreateTextureFromByte(ImageManager.GetResourceBytes("font.png"));
-        Icon_FontSize = CreateTextureFromByte(ImageManager.GetResourceBytes("fontsize.png"));
-        Icon_FontAlternate = CreateTextureFromByte(ImageManager.GetResourceBytes("fontalternate.png"));
-        Icon_Github = CreateTextureFromByte(ImageManager.GetResourceBytes("github.png"));
-        Icon_LineSpacing = CreateTextureFromByte(ImageManager.GetResourceBytes("linespacing.png"));
-        Icon_Outline = CreateTextureFromByte(ImageManager.GetResourceBytes("outline.png"));
-        Icon_OutlineWidth = CreateTextureFromByte(ImageManager.GetResourceBytes("outlinewidth.png"));
-        Icon_Parse = CreateTextureFromByte(ImageManager.GetResourceBytes("parse.png"));
-        Icon_Pause = CreateTextureFromByte(ImageManager.GetResourceBytes("pause.png"));
-        Icon_Pencil = CreateTextureFromByte(ImageManager.GetResourceBytes("pencil.png"));
-        Icon_Play = CreateTextureFromByte(ImageManager.GetResourceBytes("play.png"));
-        Icon_Shadow = CreateTextureFromByte(ImageManager.GetResourceBytes("shadow.png"));
-        Icon_ShadowDilate = CreateTextureFromByte(ImageManager.GetResourceBytes("shadowdilate.png"));
-        Icon_ShadowSoftness = CreateTextureFromByte(ImageManager.GetResourceBytes("shadowsoftness.png"));
-        Icon_X = CreateTextureFromByte(ImageManager.GetResourceBytes("x.png"));
-        Icon_Power = CreateTextureFromByte(ImageManager.GetResourceBytes("power.png"));
-        Icon_Plus = CreateTextureFromByte(ImageManager.GetResourceBytes("plus.png"));
-        Icon_Opacity = CreateTextureFromByte(ImageManager.GetResourceBytes("opacity.png"));
+        Icon_ZRotate = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("zrotate.png"));
+        Icon_OpenFolder = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("openfolder.png"));
+        Icon_Color = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("color.png"));
+        Icon_Drag = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("drag.png"));
+        Icon_Discord = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("discord.png"));
+        Icon_Font = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("font.png"));
+        Icon_FontSize = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("fontsize.png"));
+        Icon_FontAlternate = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("fontalternate.png"));
+        Icon_Github = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("github.png"));
+        Icon_LineSpacing = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("linespacing.png"));
+        Icon_Outline = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("outline.png"));
+        Icon_OutlineWidth = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("outlinewidth.png"));
+        Icon_Parse = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("parse.png"));
+        Icon_Pause = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("pause.png"));
+        Icon_Pencil = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("pencil.png"));
+        Icon_Play = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("play.png"));
+        Icon_Shadow = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("shadow.png"));
+        Icon_ShadowDilate = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("shadowdilate.png"));
+        Icon_ShadowSoftness = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("shadowsoftness.png"));
+        Icon_X = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("x.png"));
+        Icon_Power = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("power.png"));
+        Icon_Plus = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("plus.png"));
+        Icon_Opacity = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("opacity.png"));
+        Icon_Image = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("image.png"));
 
-        Icon_Up = CreateTextureFromByte(ImageManager.GetResourceBytes("up.png"));
+        Icon_Up = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("up.png"));
         Icon_Down = RotateTexture90(RotateTexture90(Icon_Up));
 
-        Icon_AliLeft = CreateTextureFromByte(ImageManager.GetResourceBytes("alileft.png"));
-        Icon_AliRight = CreateTextureFromByte(ImageManager.GetResourceBytes("aliright.png"));
-        Icon_AliCenter = CreateTextureFromByte(ImageManager.GetResourceBytes("alicenter.png"));
-        Icon_AliJustified = CreateTextureFromByte(ImageManager.GetResourceBytes("alijustified.png"));
-        Icon_AliFlush = CreateTextureFromByte(ImageManager.GetResourceBytes("aliflush.png"));
-        Icon_AliGeometryCenter = CreateTextureFromByte(ImageManager.GetResourceBytes("aligeometrycenter.png"));
-        Icon_AliTop = CreateTextureFromByte(ImageManager.GetResourceBytes("alitop.png"));
-        Icon_AliMiddle = CreateTextureFromByte(ImageManager.GetResourceBytes("alimiddle.png"));
-        Icon_AliBottom = CreateTextureFromByte(ImageManager.GetResourceBytes("alibottom.png"));
-        Icon_AliBaseline = CreateTextureFromByte(ImageManager.GetResourceBytes("alibaseline.png"));
-        Icon_AliMidline = CreateTextureFromByte(ImageManager.GetResourceBytes("alimidline.png"));
-        Icon_AliCapline = CreateTextureFromByte(ImageManager.GetResourceBytes("alicapline.png"));
-        Icon_AliUnknown = CreateTextureFromByte(ImageManager.GetResourceBytes("aliunknown.png"));
+        Icon_AliLeft = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("alileft.png"));
+        Icon_AliRight = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("aliright.png"));
+        Icon_AliCenter = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("alicenter.png"));
+        Icon_AliJustified = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("alijustified.png"));
+        Icon_AliFlush = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("aliflush.png"));
+        Icon_AliGeometryCenter = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("aligeometrycenter.png"));
+        Icon_AliTop = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("alitop.png"));
+        Icon_AliMiddle = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("alimiddle.png"));
+        Icon_AliBottom = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("alibottom.png"));
+        Icon_AliBaseline = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("alibaseline.png"));
+        Icon_AliMidline = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("alimidline.png"));
+        Icon_AliCapline = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("alicapline.png"));
+        Icon_AliUnknown = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("aliunknown.png"));
 
-        Icon_EaseLinear = CreateTextureFromByte(ImageManager.GetResourceBytes("easelinear.png"));
-        Icon_EaseInSine = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinsine.png"));
-        Icon_EaseOutSine = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutsine.png"));
-        Icon_EaseInOutSine = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutsine.png"));
-        Icon_EaseInQuad = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinquad.png"));
-        Icon_EaseOutQuad = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutquad.png"));
-        Icon_EaseInOutQuad = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutquad.png"));
-        Icon_EaseInCubic = CreateTextureFromByte(ImageManager.GetResourceBytes("easeincubic.png"));
-        Icon_EaseOutCubic = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutcubic.png"));
-        Icon_EaseInOutCubic = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutcubic.png"));
-        Icon_EaseInQuart = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinquart.png"));
-        Icon_EaseOutQuart = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutquart.png"));
-        Icon_EaseInOutQuart = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutquart.png"));
-        Icon_EaseInQuint = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinquint.png"));
-        Icon_EaseOutQuint = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutquint.png"));
-        Icon_EaseInOutQuint = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutquint.png"));
-        Icon_EaseInExpo = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinexpo.png"));
-        Icon_EaseOutExpo = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutexpo.png"));
-        Icon_EaseInOutExpo = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutexpo.png"));
-        Icon_EaseInCirc = CreateTextureFromByte(ImageManager.GetResourceBytes("easeincirc.png"));
-        Icon_EaseOutCirc = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutcirc.png"));
-        Icon_EaseInOutCirc = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutcirc.png"));
-        Icon_EaseInElastic = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinelastic.png"));
-        Icon_EaseOutElastic = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutelastic.png"));
-        Icon_EaseInOutElastic = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutelastic.png"));
-        Icon_EaseInBack = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinback.png"));
-        Icon_EaseOutBack = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutback.png"));
-        Icon_EaseInOutBack = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutback.png"));
-        Icon_EaseInBounce = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinbounce.png"));
-        Icon_EaseOutBounce = CreateTextureFromByte(ImageManager.GetResourceBytes("easeoutbounce.png"));
-        Icon_EaseInOutBounce = CreateTextureFromByte(ImageManager.GetResourceBytes("easeinoutbounce.png"));
+        Icon_EaseLinear = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easelinear.png"));
+        Icon_EaseInSine = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinsine.png"));
+        Icon_EaseOutSine = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutsine.png"));
+        Icon_EaseInOutSine = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutsine.png"));
+        Icon_EaseInQuad = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinquad.png"));
+        Icon_EaseOutQuad = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutquad.png"));
+        Icon_EaseInOutQuad = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutquad.png"));
+        Icon_EaseInCubic = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeincubic.png"));
+        Icon_EaseOutCubic = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutcubic.png"));
+        Icon_EaseInOutCubic = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutcubic.png"));
+        Icon_EaseInQuart = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinquart.png"));
+        Icon_EaseOutQuart = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutquart.png"));
+        Icon_EaseInOutQuart = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutquart.png"));
+        Icon_EaseInQuint = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinquint.png"));
+        Icon_EaseOutQuint = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutquint.png"));
+        Icon_EaseInOutQuint = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutquint.png"));
+        Icon_EaseInExpo = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinexpo.png"));
+        Icon_EaseOutExpo = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutexpo.png"));
+        Icon_EaseInOutExpo = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutexpo.png"));
+        Icon_EaseInCirc = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeincirc.png"));
+        Icon_EaseOutCirc = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutcirc.png"));
+        Icon_EaseInOutCirc = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutcirc.png"));
+        Icon_EaseInElastic = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinelastic.png"));
+        Icon_EaseOutElastic = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutelastic.png"));
+        Icon_EaseInOutElastic = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutelastic.png"));
+        Icon_EaseInBack = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinback.png"));
+        Icon_EaseOutBack = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutback.png"));
+        Icon_EaseInOutBack = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutback.png"));
+        Icon_EaseInBounce = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinbounce.png"));
+        Icon_EaseOutBounce = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeoutbounce.png"));
+        Icon_EaseInOutBounce = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutbounce.png"));
 
         isImageInited = true;
 
@@ -1003,40 +1005,33 @@ public static class Drawer {
         return false;
     }
 
-    public static bool DrawSelectFont(ref string fontPath) {
-        bool result = false;
-        GUILayout.BeginHorizontal();
+    public static void DrawSelectFont(System.Action<string> onFontSelected) {
         if(Button(Icon_OpenFolder, GUILayout.Width(40))) {
-            var extensions = new[]
-            {
-                new ExtensionFilter("Font Files", "ttf", "otf"),
-                new ExtensionFilter("All Files", "*")
-            };
-
-            string baseDir = Path.Combine(Main.Mod.Path, "Overlayer");
-            string[] paths = StandaloneFileBrowser.OpenFilePanel(
-                Main.Lang.Get("SELECT_FONT_FILE", "Select Font File"),
-                baseDir,
-                extensions,
-                false
-            );
-
-            if(paths.Length > 0) {
-                string path = paths[0];
-
-                if(path.StartsWith(Main.Mod.Path)) {
-                    path = path.Replace(Main.Mod.Path, "{ModDir}")
-                               .Replace("\\", "/");
+            Task.Run(() => {
+                var extensions = new[] {
+                    new ExtensionFilter("Font Files", "ttf", "otf"),
+                    new ExtensionFilter("All Files", "*")
+                };
+                string baseDir = Path.Combine(Main.Mod.Path, "Overlayer");
+                string[] paths = StandaloneFileBrowser.OpenFilePanel(
+                    Main.Lang.Get("SELECT_FONT_FILE", "Select Font File"),
+                    baseDir,
+                    extensions,
+                    false
+                );
+                if(paths.Length > 0) {
+                    string path = paths[0];
+                    if(path.StartsWith(Main.Mod.Path)) {
+                        path = path.Replace(Main.Mod.Path, "{ModDir}")
+                                   .Replace("\\", "/");
+                    }
+                    string finalPath = path;
+                    Main.MainThreadDispatcher.Enqueue(() => {
+                        onFontSelected?.Invoke(finalPath);
+                    });
                 }
-
-                fontPath = path;
-                result = true;
-            }
+            });
         }
-
-        result |= DrawOnlyString(ref fontPath);
-        GUILayout.EndHorizontal();
-        return result;
     }
 
     public static void Tooltip(string text, bool ignoreWidth = false) {

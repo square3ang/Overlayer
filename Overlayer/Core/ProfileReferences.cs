@@ -12,8 +12,11 @@ public static class ProfileReferences {
     public static JArray GetReferences(OverlayerProfile profile) {
         var justRefs = new List<Reference>();
 
-        foreach(var text in profile.TextManager.Texts) {
-            var arr = GetJustReferences(text.Config);
+        foreach(var obj in profile.ObjectManager.Objects) {
+            if(obj is not OverlayerText text) {
+                continue;
+            }
+            var arr = GetJustReferences((TextConfig)text.Config);
             justRefs.AddRange(ModelUtils.UnwrapList<Reference>(arr));
         }
 

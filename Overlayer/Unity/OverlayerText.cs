@@ -12,11 +12,12 @@ using UnityEngine.EventSystems;
 
 namespace Overlayer.Unity;
 
-public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
+public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
     public static event Action<OverlayerText> OnApplyConfig = delegate { };
     public bool Initialized { get; private set; }
-    public OverlayerProfile Parant { get; private set; }
-    public TextConfig Config;
+    private TextConfig _config;
+    public override ObjectConfig Config => _config;
+    public TextConfig TextConfig => _config;
     public Replacer PlayingReplacer;
     public Replacer NotPlayingReplacer;
     public TextMeshProUGUI Text;
@@ -37,17 +38,17 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             return;
         }
 
-        Parant = profile;
-        Config = config;
+        Parent = profile;
+        _config = config;
         if(string.IsNullOrEmpty(config.Name)) {
-            config.Name = $"Text {Parant.TextManager.Count + 1}";
+            config.Name = $"Text {Parent.ObjectManager.Count + 1}";
         }
 
         PlayingReplacer = new Replacer(config.PlayingText, TagManager.All.Select(ot => ot.Tag));
         NotPlayingReplacer = new Replacer(config.NotPlayingText, TagManager.NP.Select(ot => ot.Tag));
         DontDestroyOnLoad(gameObject);
         GameObject mainObject = gameObject;
-        mainObject.transform.SetParent(Parant.ProfileCanvas.transform);
+        mainObject.transform.SetParent(Parent.ProfileCanvas.transform);
         mainObject.MakeFlexible();
         Text = mainObject.AddComponent<TextMeshProUGUI>();
         Text.enableVertexGradient = true;
@@ -62,9 +63,11 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         Text.gameObject.SetActive(config.Active);
         Initialized = true;
     }
-    
+
     public void Update() {
-        if(!Initialized || Text == null) return;
+        if(!Initialized || Text == null) {
+            return;
+        }
 
         Text.text = Main.IsPlaying ? PlayingReplacer?.Replace() ?? "" : NotPlayingReplacer?.Replace() ?? "";
 
@@ -75,23 +78,23 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(Text.preferredWidth, Text.preferredHeight);
         }
     }
-    public void ApplyConfig() {
-        PlayingReplacer.Source = Config.PlayingText;
-        NotPlayingReplacer.Source = Config.NotPlayingText;
+    public override void ApplyConfig() {
+        PlayingReplacer.Source = _config.PlayingText;
+        NotPlayingReplacer.Source = _config.NotPlayingText;
         PlayingReplacer.UpdateTags(TagManager.All.Select(ot => ot.Tag));
         NotPlayingReplacer.UpdateTags(TagManager.NP.Select(ot => ot.Tag));
         PlayingReplacer.Compile();
         NotPlayingReplacer.Compile();
         TagManager.UpdatePatch();
-        Text.lineSpacing = Config.LineSpacing;
-        Text.lineSpacingAdjustment = Config.LineSpacingAdj;
-        Text.colorGradient = Config.TextColor;
-        Text.rectTransform.pivot = Config.Pivot;
-        Text.rectTransform.localScale = Config.Scale;
-        Text.rectTransform.anchoredPosition = (Config.Position - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
-        Text.rectTransform.eulerAngles = Config.Rotation;
-        Text.fontSize = Config.FontSize;
-        Text.alignment = Config.Alignment;
+        Text.lineSpacing = _config.LineSpacing;
+        Text.lineSpacingAdjustment = _config.LineSpacingAdj;
+        Text.colorGradient = _config.TextColor;
+        Text.rectTransform.pivot = _config.Pivot;
+        Text.rectTransform.localScale = _config.Scale;
+        Text.rectTransform.anchoredPosition = (_config.Position - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
+        Text.rectTransform.eulerAngles = _config.Rotation;
+        Text.fontSize = _config.FontSize;
+        Text.alignment = _config.Alignment;
         SetFont();
         Material[] sharedMaterials = Text.fontSharedMaterials;
         for(int i = 0; i < sharedMaterials.Length; i++) {
@@ -111,13 +114,13 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         mat.EnableKeyword(ShaderUtilities.Keyword_Underlay);
     }
     private void ApplyMaterial(Material mat) {
-        mat.SetColor(ShaderUtilities.ID_OutlineColor, Config.OutlineColor);
-        mat.SetFloat(ShaderUtilities.ID_OutlineWidth, Config.OutlineWidth);
-        mat.SetColor(ShaderUtilities.ID_UnderlayColor, Config.ShadowColor);
-        mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, Config.ShadowOffset.x);
-        mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, Config.ShadowOffset.y);
-        mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - Config.ShadowDilate);
-        mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - Config.ShadowSoftness);
+        mat.SetColor(ShaderUtilities.ID_OutlineColor, _config.OutlineColor);
+        mat.SetFloat(ShaderUtilities.ID_OutlineWidth, _config.OutlineWidth);
+        mat.SetColor(ShaderUtilities.ID_UnderlayColor, _config.ShadowColor);
+        mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, _config.ShadowOffset.x);
+        mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, _config.ShadowOffset.y);
+        mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - _config.ShadowDilate);
+        mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - _config.ShadowSoftness);
     }
 
     public string GetCurrentText() => Text.text;
@@ -166,7 +169,7 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
 
         Vector2 canvasSize = new Vector2(1920, 1080);
-        Config.Position = (Text.rectTransform.anchoredPosition / canvasSize) + new Vector2(0.5f, 0.5f);
+        _config.Position = (Text.rectTransform.anchoredPosition / canvasSize) + new Vector2(0.5f, 0.5f);
     }
 
     public void OnPointerEnter(PointerEventData e) {
@@ -194,11 +197,11 @@ public class OverlayerText : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     }
 
     private void SetFont() {
-        if(FontManager.TryGetFont(Config.Font, out FontData font)) {
+        if(FontManager.TryGetFont(_config.Font, out FontData font)) {
             TMP_FontAsset targetFont = font.fontTMP;
-            if(Config.EnableFallbackFonts) {
+            if(_config.EnableFallbackFonts) {
                 targetFont = TMP_FontAsset.CreateFontAsset(font.font);
-                var fallbacks = Config.FallbackFonts?.Select(FontManager.GetFont).Where(d => d != null);
+                var fallbacks = _config.FallbackFonts?.Select(FontManager.GetFont).Where(d => d != null);
                 targetFont.fallbackFontAssetTable = fallbacks.Select(fd => fd.Value.fontTMP).ToList();
             }
             InitMaterial(targetFont.material);

@@ -1,14 +1,12 @@
 ﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 using Overlayer.Utils;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
 namespace Overlayer.Models;
 
-public class TextConfig : IModel, ICopyable<TextConfig> {
-    public bool Active = true;
+public class TextConfig : ObjectConfig, ICopyable<TextConfig> {
     public delegate void DragChangeHandler(bool state);
     public event DragChangeHandler OnDragChanged;
     private bool _drag;
@@ -23,7 +21,6 @@ public class TextConfig : IModel, ICopyable<TextConfig> {
             OnDragChanged?.Invoke(_drag);
         }
     }
-    public string Name = string.Empty;
     public string Font = "Default";
     public string PlayingText = "<color=#{FOHex}>{Overloads}</color> <color=#{TEHex}>{CTE}</color> <color=#{VEHex}>{CVE}</color> <color=#{EPHex}>{CEP}</color> <color=#{PHex}>{CP}</color> <color=#{LPHex}>{CLP}</color> <color=#{VLHex}>{CVL}</color> <color=#{TLHex}>{CTL}</color> <color=#{FMHex}>{MissCount}</color>";
     public string NotPlayingText = string.Empty;
@@ -44,11 +41,9 @@ public class TextConfig : IModel, ICopyable<TextConfig> {
     public Vector2 ShadowOffset = new(0.5f, -0.5f);
     public Vector3 Rotation = Vector3.zero;
     public TextAlignmentOptions Alignment = TextAlignmentOptions.Center;
-    public TextConfig Copy() {
-        var newConfig = new TextConfig {
-            Active = Active,
+    public override ObjectConfig Copy() {
+        var copy = new TextConfig {
             Drag = Drag,
-            Name = Name,
             Font = Font,
             PlayingText = PlayingText,
             NotPlayingText = NotPlayingText,
@@ -70,111 +65,96 @@ public class TextConfig : IModel, ICopyable<TextConfig> {
             EnableFallbackFonts = EnableFallbackFonts,
             FallbackFonts = FallbackFonts
         };
-        return newConfig;
+        CopyBase(copy);
+        return copy;
     }
-    public JToken Serialize() {
-        var node = new JObject {
-            [nameof(Active)] = Active,
-            [nameof(Drag)] = Drag,
-            [nameof(Name)] = Name,
-            [nameof(Font)] = Font,
-            [nameof(PlayingText)] = PlayingText,
-            [nameof(NotPlayingText)] = NotPlayingText,
-            [nameof(FontSize)] = FontSize,
-            [nameof(OutlineWidth)] = OutlineWidth,
-            [nameof(LineSpacing)] = LineSpacing,
-            [nameof(LineSpacingAdj)] = LineSpacingAdj,
-            [nameof(ShadowDilate)] = ShadowDilate,
-            [nameof(ShadowSoftness)] = ShadowSoftness,
-            [nameof(TextColor)] = TextColor.Serialize(),
-            [nameof(OutlineColor)] = ModelUtils.ToNode(OutlineColor),
-            [nameof(ShadowColor)] = ModelUtils.ToNode(ShadowColor),
-            [nameof(Scale)] = ModelUtils.ToNode(Scale),
-            [nameof(Position)] = ModelUtils.ToNode(Position),
-            [nameof(Pivot)] = ModelUtils.ToNode(Pivot),
-            [nameof(ShadowOffset)] = ModelUtils.ToNode(ShadowOffset),
-            [nameof(Rotation)] = ModelUtils.ToNode(Rotation),
-            [nameof(Alignment)] = Alignment.ToString(),
-            [nameof(EnableFallbackFonts)] = EnableFallbackFonts,
-            [nameof(FallbackFonts)] = new JArray(FallbackFonts)
-        };
+    TextConfig ICopyable<TextConfig>.Copy() => (TextConfig)Copy();
+    public override JToken Serialize() {
+        var node = SerializeBase();
+        node[nameof(Drag)] = Drag;
+        node[nameof(Font)] = Font;
+        node[nameof(PlayingText)] = PlayingText;
+        node[nameof(NotPlayingText)] = NotPlayingText;
+        node[nameof(FontSize)] = FontSize;
+        node[nameof(OutlineWidth)] = OutlineWidth;
+        node[nameof(LineSpacing)] = LineSpacing;
+        node[nameof(LineSpacingAdj)] = LineSpacingAdj;
+        node[nameof(ShadowDilate)] = ShadowDilate;
+        node[nameof(ShadowSoftness)] = ShadowSoftness;
+        node[nameof(TextColor)] = TextColor.Serialize();
+        node[nameof(OutlineColor)] = ModelUtils.ToNode(OutlineColor);
+        node[nameof(ShadowColor)] = ModelUtils.ToNode(ShadowColor);
+        node[nameof(Scale)] = ModelUtils.ToNode(Scale);
+        node[nameof(Position)] = ModelUtils.ToNode(Position);
+        node[nameof(Pivot)] = ModelUtils.ToNode(Pivot);
+        node[nameof(ShadowOffset)] = ModelUtils.ToNode(ShadowOffset);
+        node[nameof(Rotation)] = ModelUtils.ToNode(Rotation);
+        node[nameof(Alignment)] = Alignment.ToString();
+        node[nameof(EnableFallbackFonts)] = EnableFallbackFonts;
+        node[nameof(FallbackFonts)] = FallbackFonts != null ? new JArray(FallbackFonts) : null;
         return node;
     }
-    public void Deserialize(JToken node) {
-        var defaultSettings = new TextConfig();
-        Active = node[nameof(Active)]?.Value<bool>() ?? defaultSettings.Active;
-        Drag = node[nameof(Drag)]?.Value<bool>() ?? defaultSettings.Drag;
-        Name = node[nameof(Name)]?.Value<string>() ?? defaultSettings.Name;
-        Font = node[nameof(Font)]?.Value<string>() ?? defaultSettings.Font;
-        PlayingText = node[nameof(PlayingText)]?.Value<string>() ?? defaultSettings.PlayingText;
-        NotPlayingText = node[nameof(NotPlayingText)]?.Value<string>() ?? defaultSettings.NotPlayingText;
-        FontSize = node[nameof(FontSize)]?.Value<float>() ?? defaultSettings.FontSize;
-        OutlineWidth = node[nameof(OutlineWidth)]?.Value<float>() ?? defaultSettings.OutlineWidth;
-        LineSpacing = node[nameof(LineSpacing)]?.Value<float>() ?? defaultSettings.LineSpacing;
-        LineSpacingAdj = node[nameof(LineSpacingAdj)]?.Value<float>() ?? defaultSettings.LineSpacingAdj;
-        ShadowDilate = node[nameof(ShadowDilate)]?.Value<float>() ?? defaultSettings.ShadowDilate;
-        ShadowSoftness = node[nameof(ShadowSoftness)]?.Value<float>() ?? defaultSettings.ShadowSoftness;
+
+    public override void Deserialize(JToken node) {
+        var defaults = new TextConfig();
+        DeserializeBase(node);
+        Active = node[nameof(Active)]?.Value<bool>() ?? defaults.Active;
+        Drag = node[nameof(Drag)]?.Value<bool>() ?? defaults.Drag;
+        Name = node[nameof(Name)]?.Value<string>() ?? defaults.Name;
+        Font = node[nameof(Font)]?.Value<string>() ?? defaults.Font;
+        PlayingText = node[nameof(PlayingText)]?.Value<string>() ?? defaults.PlayingText;
+        NotPlayingText = node[nameof(NotPlayingText)]?.Value<string>() ?? defaults.NotPlayingText;
+        FontSize = node[nameof(FontSize)]?.Value<float>() ?? defaults.FontSize;
+        OutlineWidth = node[nameof(OutlineWidth)]?.Value<float>() ?? defaults.OutlineWidth;
+        LineSpacing = node[nameof(LineSpacing)]?.Value<float>() ?? defaults.LineSpacing;
+        LineSpacingAdj = node[nameof(LineSpacingAdj)]?.Value<float>() ?? defaults.LineSpacingAdj;
+        ShadowDilate = node[nameof(ShadowDilate)]?.Value<float>() ?? defaults.ShadowDilate;
+        ShadowSoftness = node[nameof(ShadowSoftness)]?.Value<float>() ?? defaults.ShadowSoftness;
         TextColor = node[nameof(TextColor)] != null
             ? ModelUtils.Unbox<GColor>(node[nameof(TextColor)])
-            : defaultSettings.TextColor;
+            : defaults.TextColor;
         TextColor.gradientEnabled = node[nameof(TextColor)]?["gradientEnabled"]?.Value<bool>() ?? TextColor.gradientEnabled;
-        var outlineToken = node[nameof(OutlineColor)];
-        if(outlineToken != null) {
-            if(outlineToken.Type == JTokenType.Object) {
-                JObject obj = (JObject)outlineToken;
-
-                if(obj.TryGetValue("topLeft", out var legacy)) { // Legacy GColor
-                    OutlineColor = ModelUtils.ToColor(legacy);
-                } else {
-                    OutlineColor = ModelUtils.ToColor(obj);
-                }
-            } else if(outlineToken.Type == JTokenType.Array) {
-                OutlineColor = ModelUtils.ToColor(outlineToken); // [r,g,b,a]
-            } else {
-                OutlineColor = defaultSettings.OutlineColor;
-            }
-        } else {
-            OutlineColor = defaultSettings.OutlineColor;
-        }
-        var shadowToken = node[nameof(ShadowColor)];
-        if(shadowToken != null) {
-            if(shadowToken.Type == JTokenType.Object) {
-                JObject obj = (JObject)shadowToken;
-
-                if(obj.TryGetValue("topLeft", out var legacy)) { // Legacy GColor
-                    ShadowColor = ModelUtils.ToColor(legacy);
-                } else {
-                    ShadowColor = ModelUtils.ToColor(obj);
-                }
-            } else if(shadowToken.Type == JTokenType.Array) {
-                ShadowColor = ModelUtils.ToColor(shadowToken); // [r,g,b,a]
-            } else {
-                ShadowColor = defaultSettings.ShadowColor;
-            }
-        } else {
-            ShadowColor = defaultSettings.ShadowColor;
-        }
+        OutlineColor = ParseColorNode(node[nameof(OutlineColor)], defaults.OutlineColor);
+        ShadowColor = ParseColorNode(node[nameof(ShadowColor)], defaults.ShadowColor);
         Scale = node[nameof(Scale)] != null
             ? ModelUtils.ToVector2(node[nameof(Scale)])
-            : defaultSettings.Scale;
+            : defaults.Scale;
         Position = node[nameof(Position)] != null
             ? ModelUtils.ToVector2(node[nameof(Position)])
-            : defaultSettings.Position;
+            : defaults.Position;
         Pivot = node[nameof(Pivot)] != null
             ? ModelUtils.ToVector2(node[nameof(Pivot)])
-            : defaultSettings.Pivot;
+            : defaults.Pivot;
         ShadowOffset = node[nameof(ShadowOffset)] != null
             ? ModelUtils.ToVector2(node[nameof(ShadowOffset)])
-            : defaultSettings.ShadowOffset;
+            : defaults.ShadowOffset;
         Rotation = node[nameof(Rotation)] != null
             ? ModelUtils.ToVector3(node[nameof(Rotation)])
-            : defaultSettings.Rotation;
+            : defaults.Rotation;
         Alignment = node[nameof(Alignment)] != null
             ? EnumHelper<TextAlignmentOptions>.Parse(node[nameof(Alignment)].Value<string>())
-            : defaultSettings.Alignment;
-        EnableFallbackFonts = node[nameof(EnableFallbackFonts)]?.Value<bool>() ?? defaultSettings.EnableFallbackFonts;
+            : defaults.Alignment;
+        EnableFallbackFonts = node[nameof(EnableFallbackFonts)]?.Value<bool>() ?? defaults.EnableFallbackFonts;
         FallbackFonts = node[nameof(FallbackFonts)] != null
             ? node[nameof(FallbackFonts)].ToObject<string[]>()
-            : defaultSettings.FallbackFonts;
+            : defaults.FallbackFonts;
+    }
+
+    private static Color ParseColorNode(JToken token, Color defaultValue) {
+        if(token == null) {
+            return defaultValue;
+        }
+
+        if(token.Type == JTokenType.Object) {
+            JObject obj = (JObject)token;
+            if(obj.TryGetValue("topLeft", out var legacy)) { // Legacy GColor
+                return ModelUtils.ToColor(legacy);
+            } else {
+                return ModelUtils.ToColor(obj);
+            }
+        } else if(token.Type == JTokenType.Array) {
+            return ModelUtils.ToColor(token);
+        }
+        return defaultValue;
     }
 }

@@ -9,7 +9,7 @@ public class OverlayerProfile : MonoBehaviour {
     public Canvas ProfileCanvas;
     public CanvasGroup Group;
     public ProfileConfig Config;
-    public TextManager TextManager;
+    public ObjectManager ObjectManager;
 
     public static GameObject PCanvasObj;
     public static Canvas PublicCanvas;
@@ -43,7 +43,7 @@ public class OverlayerProfile : MonoBehaviour {
 
         DragInit();
 
-        TextManager = new TextManager(this);
+        ObjectManager = new ObjectManager(this);
     }
 
     public static void PublicCanvasInit() {

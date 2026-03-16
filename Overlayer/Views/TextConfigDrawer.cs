@@ -7,6 +7,7 @@ using Overlayer.Utils;
 using SFB;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Overlayer.Views;
@@ -14,7 +15,7 @@ namespace Overlayer.Views;
 public class TextConfigDrawer : ModelDrawable<TextConfig> {
     public OverlayerText text;
 
-    public TextConfigDrawer(OverlayerText text) : base(text.Config) => this.text = text;
+    public TextConfigDrawer(OverlayerText text) : base((TextConfig)text.Config) => this.text = text;
 
     bool IsAdvensedMode => Main.Settings.uiMode == Settings.EditorUIMode.Advanced;
 
@@ -66,7 +67,11 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         GUILayout.Label(Drawer.Icon_Font);
         GUILayout.Space(4);
         GUILayout.Label(Main.Lang.Get("FONT", "Font"));
-        changed |= Drawer.DrawSelectFont(ref model.Font);
+        Drawer.DrawSelectFont(font => {
+            model.Font = font;
+            text.ApplyConfig();
+        });
+        changed |= Drawer.DrawOnlyString(ref model.Font);
         GUILayout.EndHorizontal();
         if(IsAdvensedMode) {
             changed |= Drawer.DrawBool(Drawer.Icon_FontAlternate, Main.Lang.Get("FALLBACK_FONTS", "Enable Fallback Fonts"), ref model.EnableFallbackFonts);
@@ -88,7 +93,13 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
 
                 GUILayout.EndHorizontal();
                 for(int i = 0; i < model.FallbackFonts.Length; i++) {
-                    changed |= Drawer.DrawSelectFont(ref model.FallbackFonts[i]);
+                    GUILayout.BeginHorizontal();
+                    Drawer.DrawSelectFont(font => {
+                        model.FallbackFonts[i] = font;
+                        text.ApplyConfig();
+                    });
+                    changed |= Drawer.DrawOnlyString(ref model.FallbackFonts[i]);
+                    GUILayout.EndHorizontal();
                 }
             }
         }
@@ -139,20 +150,28 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         changed |= Drawer.DrawCodeEditor(Drawer.Icon_Pause, Main.Lang.Get("NOT_PLAYING_TEXT", "Not Playing Text"), model.Name + "NotPlayingText", ref model.NotPlayingText);
         GUILayout.BeginHorizontal();
         GUI.color = new Color(1f, 0.8f, 1f);
-        if(Drawer.Button(Drawer.Icon_Up)) {
-            string target = StandaloneFileBrowser.SaveFilePanel(Main.Lang.Get("SELECT_TEXT", "Select Text"), Persistence.GetLastUsedFolder(), $"{model.Name}.json", "json");
-            if(!string.IsNullOrWhiteSpace(target)) {
-                JObject node = model.Serialize() as JObject;
-                node["References"] = TextConfigImporter.GetReferences(model);
-                File.WriteAllText(
-                    target,
-                    JsonConvert.SerializeObject(node, Formatting.Indented)
+        if(Drawer.Button(Drawer.Icon_Up, GUILayout.Width(46))) {
+            Task.Run(() => {
+                string target = StandaloneFileBrowser.SaveFilePanel(
+                    Main.Lang.Get("EXPORT_TEXT_CONFIG", "Export Text Config"),
+                    Persistence.GetLastUsedFolder(),
+                    $"{model.Name}.json",
+                    "json"
                 );
-            }
+                if(!string.IsNullOrWhiteSpace(target)) {
+                    JObject node = model.Serialize() as JObject;
+                    node["References"] = TextConfigImporter.GetReferences(model);
+
+                    File.WriteAllText(
+                        target,
+                        JsonConvert.SerializeObject(node, Formatting.Indented)
+                    );
+                }
+            });
         }
         GUI.color = new Color(1f, 0.8f, 0.8f);
-        if(Drawer.Button(Main.Lang.Get("DESTROY", "Destroy"))) {
-            text.Parant.TextManager.Destroy(text);
+        if(Drawer.Button(Drawer.Icon_X, GUILayout.Width(46))) {
+            text.Parent.ObjectManager.Destroy(text);
             Main.GUI.Skip(frames: 2);
             Main.GUI.Pop();
             return;

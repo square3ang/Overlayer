@@ -40,7 +40,7 @@ public static class ProfileManager {
             var profile = profileGO.AddComponent<OverlayerProfile>();
             profile.Config = cfg;
             profile.Init(cfg.Name);
-            profile.TextManager.Import(cfg.Texts);
+            profile.ObjectManager.Import(cfg.Objects);
 
             Profiles.Add(profile);
         }
@@ -63,7 +63,7 @@ public static class ProfileManager {
         var profile = profileGO.AddComponent<OverlayerProfile>();
         profile.Config = cfg;
         profile.Init(config.Name);
-        profile.TextManager.Import(cfg.Texts);
+        profile.ObjectManager.Import(cfg.Objects);
 
         Profiles.Add(profile);
 
@@ -129,14 +129,14 @@ public static class ProfileManager {
         } catch {
         }
 
-        profile.TextManager.Release();
+        profile.ObjectManager.Release();
         Profiles.Remove(profile);
         UnityEngine.Object.Destroy(profile.gameObject);
     }
 
     public static void Save() {
         foreach(var profile in Profiles) {
-            profile.Config.Texts = profile.TextManager.Export();
+            profile.Config.Objects = profile.ObjectManager.Export();
             JToken jsonNode = profile.Config.Serialize();
 
             string filePath = profile.Config.Path;
@@ -184,7 +184,7 @@ public static class ProfileManager {
 
     public static void Refresh() {
         foreach(var profile in Profiles) {
-            profile.TextManager.Refresh();
+            profile.ObjectManager.Refresh();
         }
     }
 
@@ -197,7 +197,7 @@ public static class ProfileManager {
 
         if(Profiles != null) {
             foreach(var profile in Profiles) {
-                profile.TextManager.Release();
+                profile.ObjectManager.Release();
             }
             Profiles.Clear();
         }

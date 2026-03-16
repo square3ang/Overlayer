@@ -248,77 +248,66 @@ public class SettingsDrawer : ModelDrawable<Settings> {
             needCreateNewProfile = true;
         }
 		GUI.color = new Color(1f, 1f, 0.8f);
-		if(Drawer.Button(Drawer.Icon_Down, GUILayout.Width(60))) {
-			StandaloneFileBrowser.OpenFilePanelAsync(
-				Main.Lang.Get("SELECT_PROFILE", "Select Profile"),
-				Main.ProfilePath,
-				new[] { new ExtensionFilter(Main.Lang.Get("OVERLAYER_PROFILE_JSON", "Overlayer Profile JSON"), "json") },
-				true,
-				async (pfs) => {
-					foreach(var pf in pfs) {
-						await Task.Run(() => {
-							try {
-								if(Path.GetExtension(pf) != ".json") {
-									return;
-								}
-
-								string name = Path.GetFileNameWithoutExtension(pf);
-								if(ProfileManager.Exists(name)) {
-									return;
-								}
-
-								string targetPath = Path.Combine(Main.ProfilePath, name + ".json");
-
-								if(!string.Equals(
-									Path.GetFullPath(pf),
-									Path.GetFullPath(targetPath),
-									StringComparison.OrdinalIgnoreCase
-								)) {
-									File.Copy(pf, targetPath, true);
-								}
-
-								var content = File.ReadAllText(targetPath);
-								if(string.IsNullOrWhiteSpace(content)) {
-									return;
-								}
-
-								var token = JToken.Parse(content);
-								var cfg = new ProfileConfig();
-								cfg.Deserialize(token);
-								cfg.Path = targetPath;
-								cfg.Name = name;
-
-                                Main.MainThreadDispatcher.Enqueue(() => {
-                                    try {
-                                        var profileGO = new GameObject(cfg.Name ?? "Profile");
-                                        var profile = profileGO.AddComponent<OverlayerProfile>();
-                                        profile.Config = cfg;
-                                        profile.Init(cfg.Name);
-
-                                        foreach(var t in cfg.Texts) {
-                                            TextConfigImporter.ImportRef(t, token);
-                                        }
-
-                                        profile.TextManager.Import(cfg.Texts);
-
-                                        ProfileManager.Profiles.Add(profile);
-                                        profile.TextManager.Refresh();
-                                        dragSoltNeedInit = true;
-
-                                    } catch(Exception ex) {
-                                        Debug.LogError($"Failed to create profile '{pf}' on main thread: {ex}");
+        if(Drawer.Button(Drawer.Icon_Down, GUILayout.Width(60))) {
+            Task.Run(() => {
+                string[] pfs = StandaloneFileBrowser.OpenFilePanel(
+                    Main.Lang.Get("SELECT_PROFILE", "Select Profile"),
+                    Main.ProfilePath,
+                    new[] { new ExtensionFilter(Main.Lang.Get("OVERLAYER_PROFILE_JSON", "Overlayer Profile JSON"), "json") },
+                    true
+                );
+                foreach(var pf in pfs) {
+                    try {
+                        if(Path.GetExtension(pf) != ".json") {
+                            continue;
+                        }
+                        string name = Path.GetFileNameWithoutExtension(pf);
+                        if(ProfileManager.Exists(name)) {
+                            continue;
+                        }
+                        string targetPath = Path.Combine(Main.ProfilePath, name + ".json");
+                        if(!string.Equals(
+                            Path.GetFullPath(pf),
+                            Path.GetFullPath(targetPath),
+                            StringComparison.OrdinalIgnoreCase
+                        )) {
+                            File.Copy(pf, targetPath, true);
+                        }
+                        var content = File.ReadAllText(targetPath);
+                        if(string.IsNullOrWhiteSpace(content)) {
+                            continue;
+                        }
+                        var token = JToken.Parse(content);
+                        var cfg = new ProfileConfig();
+                        cfg.Deserialize(token);
+                        cfg.Path = targetPath;
+                        cfg.Name = name;
+                        Main.MainThreadDispatcher.Enqueue(() => {
+                            try {
+                                var profileGO = new GameObject(cfg.Name ?? "Profile");
+                                var profile = profileGO.AddComponent<OverlayerProfile>();
+                                profile.Config = cfg;
+                                profile.Init(cfg.Name);
+                                foreach(var obj in cfg.Objects) {
+                                    if(obj is TextConfig t) {
+                                        TextConfigImporter.ImportRef(t, token);
                                     }
-                                });
-
-                            } catch(Exception e) {
-								Debug.LogError($"Failed to load profile '{pf}': {e}");
-							}
-						});
-					}
-				}
-			);
-		}
-		GUI.color = old;
+                                }
+                                profile.ObjectManager.Import(cfg.Objects);
+                                ProfileManager.Profiles.Add(profile);
+                                profile.ObjectManager.Refresh();
+                                dragSoltNeedInit = true;
+                            } catch(Exception ex) {
+                                Debug.LogError($"Failed to create profile '{pf}' on main thread: {ex}");
+                            }
+                        });
+                    } catch(Exception e) {
+                        Debug.LogError($"Failed to load profile '{pf}': {e}");
+                    }
+                }
+            });
+        }
+        GUI.color = old;
 		if(Drawer.Button(Drawer.Icon_OpenFolder, GUILayout.Width(80))) {
             Application.OpenURL(Path.GetFullPath(Main.Mod.Path));
         }
@@ -367,18 +356,19 @@ public class SettingsDrawer : ModelDrawable<Settings> {
 				GUI.enabled = true;
 				GUI.color = new Color(1f, 0.8f, 1f);
                 if(Drawer.Button(Drawer.Icon_Up, GUILayout.Width(46))) {
-                    string target = StandaloneFileBrowser.SaveFilePanel(
-                        Main.Lang.Get("SELECT_PROFILE", "Select Profile"),
-                        Persistence.GetLastUsedFolder(),
-                        $"{profile.Config.Name}.json",
-                        "json"
-                    );
-
-                    if(!string.IsNullOrWhiteSpace(target)) {
-                        var node = profile.Config.Serialize();
-                        node["References"] = ProfileReferences.GetReferences(profile);
-                        File.WriteAllText(target, node.ToString());
-                    }
+                    Task.Run(() => {
+                        string target = StandaloneFileBrowser.SaveFilePanel(
+                            Main.Lang.Get("EXPORT_PROFILE", "Export Profile"),
+                            Persistence.GetLastUsedFolder(),
+                            $"{profile.Config.Name}.json",
+                            "json"
+                        );
+                        if(!string.IsNullOrWhiteSpace(target)) {
+                            var node = profile.Config.Serialize();
+                            node["References"] = ProfileReferences.GetReferences(profile);
+                            File.WriteAllText(target, node.ToString());
+                        }
+                    });
                 }
                 GUI.color = new Color(1f, 0.8f, 0.8f);
                 if(Drawer.Button(Drawer.Icon_X, GUILayout.Width(46))) {

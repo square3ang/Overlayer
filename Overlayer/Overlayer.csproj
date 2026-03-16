@@ -405,6 +405,7 @@
     <Compile Include="Core\FontManager.cs" />
     <Compile Include="Core\GUILayoutEx.cs" />
     <Compile Include="Core\ImageManager.cs" />
+    <Compile Include="Core\ResourceImageManager.cs" />
     <Compile Include="Core\Interfaces\ICopyable.cs" />
     <Compile Include="Core\Interfaces\IDrawable.cs" />
     <Compile Include="Core\Interfaces\IModel.cs" />
@@ -413,6 +414,8 @@
     <Compile Include="Core\NeoDrawer.cs" />
     <Compile Include="Core\ProfileReferences.cs" />
     <Compile Include="Core\ProfileManager.cs" />
+    <Compile Include="Models\ImageConfig.cs" />
+    <Compile Include="Models\ObjectConfig.cs" />
     <Compile Include="Models\ProfileConfig.cs" />
     <Compile Include="Olly\OllyDialogue.cs" />
     <Compile Include="Olly\OllyDialogueLines.cs" />
@@ -425,7 +428,7 @@
     <Compile Include="Core\Patches\LazyPatchAttribute.cs" />
     <Compile Include="Core\Patches\LazyPatchManager.cs" />
     <Compile Include="Core\TextConfigImporter.cs" />
-    <Compile Include="Core\TextManager.cs" />
+    <Compile Include="Core\ObjectManager.cs" />
     <Compile Include="Core\TextReplacing\Lexing\LexConfig.cs" />
     <Compile Include="Core\TextReplacing\Parsing\IParsed.cs" />
     <Compile Include="Core\TextReplacing\Lexing\Lexer.cs" />
@@ -539,6 +542,8 @@
     <Compile Include="Tags\Time.cs" />
     <Compile Include="Tags\HitTiming.cs" />
     <Compile Include="Tags\TUF.cs" />
+    <Compile Include="Unity\OverlayerImage.cs" />
+    <Compile Include="Unity\OverlayerObject.cs" />
     <Compile Include="Unity\OverlayerProfile.cs" />
     <Compile Include="Unity\StaticCoroutine.cs" />
     <Compile Include="Utils\Tooltip.cs" />
@@ -559,6 +564,7 @@
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\TextWriter.cs" />
     <Compile Include="Olly\Olly.cs" />
+    <Compile Include="Views\ImageConfigDrawer.cs" />
     <Compile Include="Views\ProfileDrawer.cs" />
     <Compile Include="Views\SettingsDrawer.cs" />
     <Compile Include="Views\TextConfigDrawer.cs" />
@@ -652,6 +658,7 @@
     <EmbeddedResource Include="MiscFiles\images\plus.png" />
     <EmbeddedResource Include="MiscFiles\images\up.png" />
     <EmbeddedResource Include="MiscFiles\images\opacity.png" />
+    <EmbeddedResource Include="MiscFiles\images\image.png" />
     <Content Include="MiscFiles\ov3_logo.png" />
     <Content Include="MiscFiles\update.txt" />
     <Content Include="RapidGUI\Component\IMColorPicker\Resources\imBorder.png" />
