@@ -105,6 +105,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
 
     public void ApplyImages() {
         Images.Clear();
+        _mainImage = null;
         for(int i = 0; i < _config.Images.Count; i++) {
             string imagePath = _config.Images[i];
             if(imagePath != null) {

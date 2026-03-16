@@ -60,6 +60,7 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
                                 ? path.Replace(Main.Mod.Path, "{ModDir}").Replace("\\", "/")
                                 : path;
                             model.Images.Add(p);
+                            this.image.ApplyImages();
                         }
                         changed = true;
                     });
@@ -85,7 +86,6 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
 
             GUI.color = old;
 
-            string image = model.Images[i];
             if(Drawer.Button(Drawer.Icon_OpenFolder, GUILayout.Width(40))) {
                 Task.Run(() => {
                     var extensions = new[] {
@@ -108,14 +108,16 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
 
                         string finalPath = path;
                         Main.MainThreadDispatcher.Enqueue(() => {
-                            image = finalPath;
+                            model.Images[i] = finalPath;
                             this.image.ApplyImages();
                         });
                     }
                 });
             }
 
-            if(Drawer.DrawOnlyString(ref image)) {
+            string img = model.Images[i];
+            if(Drawer.DrawOnlyString(ref img)) {
+                model.Images[i] = img;
                 this.image.ApplyImages();
             }
 
