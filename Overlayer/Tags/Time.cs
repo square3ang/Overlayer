@@ -29,5 +29,7 @@ public static class Time {
     public static int MilliSecond => FastDateTime.Now.Millisecond;
     [Tag(NotPlaying = true)]
     public static double MilliSeconds => TimeSpan.FromTicks(FastDateTime.Now.Ticks).TotalMilliseconds;
+    [Tag(NotPlaying = true)]
+    public static long Ticks => FastDateTime.Now.Ticks;
     public static void Reset() { }
 }
