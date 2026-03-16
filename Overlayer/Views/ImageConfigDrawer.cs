@@ -131,7 +131,6 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
 
         changed |= Drawer.DrawCodeEditor(Drawer.Icon_Play, Main.Lang.Get("PLAYING_COMMAND", "Playing Command"), model.Name + "PlayingCommand", ref model.PlayingCommand);
         changed |= Drawer.DrawCodeEditor(Drawer.Icon_Pause, Main.Lang.Get("NOT_PLAYING_COMMAND", "Not Playing Command"), model.Name + "NotPlayingCommand", ref model.NotPlayingCommand);
-
         GUILayout.BeginHorizontal();
         GUI.color = new Color(1f, 0.8f, 1f);
         if(Drawer.Button(Drawer.Icon_Up, GUILayout.Width(46))) {
@@ -143,6 +142,8 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
                 );
                 if(!string.IsNullOrWhiteSpace(target)) {
                     JObject node = model.Serialize() as JObject;
+                    node["Type"] = "Image";
+                    node["Reference"] = null;
                     File.WriteAllText(target, JsonConvert.SerializeObject(node, Formatting.Indented));
                 }
             });

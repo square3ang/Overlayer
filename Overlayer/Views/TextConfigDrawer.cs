@@ -155,17 +155,13 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
                 string target = StandaloneFileBrowser.SaveFilePanel(
                     Main.Lang.Get("EXPORT_TEXT_CONFIG", "Export Text Config"),
                     Persistence.GetLastUsedFolder(),
-                    $"{model.Name}.json",
-                    "json"
+                    $"{model.Name}.json", "json"
                 );
                 if(!string.IsNullOrWhiteSpace(target)) {
                     JObject node = model.Serialize() as JObject;
+                    node["Type"] = "Text";
                     node["References"] = TextConfigImporter.GetReferences(model);
-
-                    File.WriteAllText(
-                        target,
-                        JsonConvert.SerializeObject(node, Formatting.Indented)
-                    );
+                    File.WriteAllText(target,JsonConvert.SerializeObject(node, Formatting.Indented));
                 }
             });
         }

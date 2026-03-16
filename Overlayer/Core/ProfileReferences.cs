@@ -3,7 +3,6 @@ using Overlayer.Models;
 using Overlayer.Unity;
 using System.Collections.Generic;
 using System.Linq;
-using static Overlayer.Core.TextConfigImporter;
 
 namespace Overlayer.Core;
 
@@ -13,11 +12,13 @@ public static class ProfileReferences {
         var justRefs = new List<Reference>();
 
         foreach(var obj in profile.ObjectManager.Objects) {
-            if(obj is not OverlayerText text) {
-                continue;
+            if(obj is OverlayerText text) {
+                var arr = TextConfigImporter.GetJustReferences((TextConfig)text.Config);
+                justRefs.AddRange(ModelUtils.UnwrapList<Reference>(arr));
+            } else if(obj is OverlayerImage image) {
+                var arr = ImageConfigImporter.GetJustReferences((ImageConfig)image.Config);
+                justRefs.AddRange(ModelUtils.UnwrapList<Reference>(arr));
             }
-            var arr = GetJustReferences((TextConfig)text.Config);
-            justRefs.AddRange(ModelUtils.UnwrapList<Reference>(arr));
         }
 
         var unique = justRefs

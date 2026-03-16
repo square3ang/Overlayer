@@ -404,7 +404,9 @@
     <Compile Include="Core\FastDateTime.cs" />
     <Compile Include="Core\FontManager.cs" />
     <Compile Include="Core\GUILayoutEx.cs" />
+    <Compile Include="Core\ImageConfigImporter.cs" />
     <Compile Include="Core\ImageManager.cs" />
+    <Compile Include="Core\Reference.cs" />
     <Compile Include="Core\ResourceImageManager.cs" />
     <Compile Include="Core\Interfaces\ICopyable.cs" />
     <Compile Include="Core\Interfaces\IDrawable.cs" />
