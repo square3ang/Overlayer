@@ -176,6 +176,9 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                         case TextConfig cfg:
                             profile.ObjectManager.Create((TextConfig)cfg.Copy());
                             break;
+                        case ImageConfig cfg:
+                            profile.ObjectManager.Create((ImageConfig)cfg.Copy());
+                            break;
                     }
 
                     dragSoltNeedInit = true;
