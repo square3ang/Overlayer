@@ -16,8 +16,6 @@ public class ProfileConfig : IModel, ICopyable<ProfileConfig> {
     public ProfileConfig Copy() {
         return new ProfileConfig {
             Active = Active,
-            Name = Name,
-            Path = Path,
             Opacity = Opacity,
             Objects = Objects.Select(o => o.Copy()).ToList()
         };
@@ -26,8 +24,6 @@ public class ProfileConfig : IModel, ICopyable<ProfileConfig> {
     public JToken Serialize() {
         var node = new JObject {
             [nameof(Active)] = Active,
-            [nameof(Name)] = Name,
-            [nameof(Path)] = Path,
             [nameof(Opacity)] = Opacity,
             [nameof(Objects)] = new JArray(
                 Objects.Select(o => {
@@ -48,8 +44,6 @@ public class ProfileConfig : IModel, ICopyable<ProfileConfig> {
         var defaults = new ProfileConfig();
 
         Active = node[nameof(Active)]?.Value<bool>() ?? defaults.Active;
-        Name = node[nameof(Name)]?.Value<string>() ?? defaults.Name;
-        Path = node[nameof(Path)]?.Value<string>();
         Opacity = node[nameof(Opacity)]?.Value<float>() ?? defaults.Opacity;
         Objects = new List<ObjectConfig>();
         var objectTokens = (node[nameof(Objects)] as JArray)
