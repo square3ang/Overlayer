@@ -74,12 +74,10 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         }
 
         if(isDragging && OverlayerProfile.DragObj != null && OverlayerProfile.DragImage != null) {
-            OverlayerProfile.DragObj.transform.position = _mainImage.gameObject.transform.position;
-            OverlayerProfile.DragObj.transform.rotation = _mainImage.gameObject.transform.rotation;
+            OverlayerProfile.DragObj.transform.position = _mainImage.transform.position;
+            OverlayerProfile.DragObj.transform.rotation = _mainImage.transform.rotation;
             OverlayerProfile.DragImage.rectTransform.pivot = _mainImage.rectTransform.pivot;
-            OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(
-                _mainImage.rectTransform.rect.width, _mainImage.rectTransform.rect.height
-            );
+            OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(_mainImage.preferredWidth, _mainImage.preferredHeight) * _config.Scale;
         }
     }
 
@@ -143,9 +141,13 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
     public void OnPointerEnter(PointerEventData e) {
         isPointing = true;
         pointingCount++;
-        if(!isAlreadyDragging && OverlayerProfile.DragObj != null) {
-            OverlayerProfile.DragObj.SetActive(true);
+        if(!isAlreadyDragging) {
+            OverlayerProfile.DragObj.transform.position = _mainImage.transform.position;
+            OverlayerProfile.DragObj.transform.rotation = _mainImage.transform.rotation;
+            OverlayerProfile.DragImage.rectTransform.pivot = _mainImage.rectTransform.pivot;
+            OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(_mainImage.preferredWidth, _mainImage.preferredHeight) * _config.Scale;
         }
+        OverlayerProfile.DragObj.SetActive(true);
     }
     public void OnPointerExit(PointerEventData e) {
         pointingCount--;

@@ -176,7 +176,6 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
         isPointing = true;
         pointingCount++;
         if(!isAlreadyDragging) {
-            OverlayerProfile.DragObj.transform.SetParent(Text.transform);
             OverlayerProfile.DragObj.transform.position = Text.gameObject.transform.position;
             OverlayerProfile.DragObj.transform.rotation = Text.gameObject.transform.rotation;
             OverlayerProfile.DragImage.rectTransform.pivot = Text.rectTransform.pivot;
