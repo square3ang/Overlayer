@@ -233,7 +233,7 @@ public static class Main {
             GUILayout.Space(30);
         }
 
-        tooltip = "";
+        tooltip = null;
         GUI.Draw();
         GUILayout.Space(30);
         GUILayout.BeginHorizontal();
