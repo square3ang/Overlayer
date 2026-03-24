@@ -23,8 +23,8 @@ public class TextConfig : ObjectConfig, ICopyable<TextConfig> {
             OnDragChanged?.Invoke(_drag);
         }
     }
-    public string Font = "Default";
-    public string PlayingText = "<color=#{FOHex}>{Overloads}</color> <color=#{TEHex}>{CTE}</color> <color=#{VEHex}>{CVE}</color> <color=#{EPHex}>{CEP}</color> <color=#{PHex}>{CP}</color> <color=#{LPHex}>{CLP}</color> <color=#{VLHex}>{CVL}</color> <color=#{TLHex}>{CTL}</color> <color=#{FMHex}>{MissCount}</color>";
+    public string Font = string.Empty;
+    public string PlayingText = "<color=#{FOHex}>{Overloads}</color> <color=#{TEHex}>{OTE}</color> <color=#{VEHex}>{OVE}</color> <color=#{EPHex}>{OEP}</color> <color=#{PHex}>{OP}</color> <color=#{LPHex}>{OLP}</color> <color=#{VLHex}>{OVL}</color> <color=#{TLHex}>{OTL}</color> <color=#{FMHex}>{MissCount}</color>";
     public string NotPlayingText = string.Empty;
     public ExprValue<float> FontSize = new(44f);
     public ExprValue<float> OutlineWidth = new(0f);
@@ -115,8 +115,8 @@ public class TextConfig : ObjectConfig, ICopyable<TextConfig> {
         EnableFallbackFonts = node[nameof(EnableFallbackFonts)]?.Value<bool>() ?? defaults.EnableFallbackFonts;
         FallbackFonts = node[nameof(FallbackFonts)] != null ? node[nameof(FallbackFonts)].ToObject<string[]>() : defaults.FallbackFonts;
         TextColor.Deserialize(node[nameof(TextColor)], ModelUtils.Unbox<GColor>);
-        OutlineColor.Deserialize(node[nameof(OutlineColor)], n => ParseColorNode(n, defaults.OutlineColor.DefaultValue));
-        ShadowColor.Deserialize(node[nameof(ShadowColor)], n => ParseColorNode(n, defaults.ShadowColor.DefaultValue));
+        OutlineColor.Deserialize(node[nameof(OutlineColor)], n => ModelUtils.ParseColorNode(n, defaults.OutlineColor.DefaultValue));
+        ShadowColor.Deserialize(node[nameof(ShadowColor)], n => ModelUtils.ParseColorNode(n, defaults.ShadowColor.DefaultValue));
         Scale.Deserialize(node[nameof(Scale)], ModelUtils.ToVector2);
         Position.Deserialize(node[nameof(Position)], ModelUtils.ToVector2);
         Pivot.Deserialize(node[nameof(Pivot)], ModelUtils.ToVector2);
@@ -175,23 +175,5 @@ public class TextConfig : ObjectConfig, ICopyable<TextConfig> {
         if(Pivot.IsExpr) { Pivot.Dispose(); }
         if(ShadowOffset.IsExpr) { ShadowOffset.Dispose(); }
         if(Rotation.IsExpr) { Rotation.Dispose(); }
-    }
-
-    private static Color ParseColorNode(JToken token, Color defaultValue) {
-        if(token == null) {
-            return defaultValue;
-        }
-
-        if(token.Type == JTokenType.Object) {
-            JObject obj = (JObject)token;
-            if(obj.TryGetValue("topLeft", out var legacy)) { // Legacy GColor
-                return ModelUtils.ToColor(legacy);
-            } else {
-                return ModelUtils.ToColor(obj);
-            }
-        } else if(token.Type == JTokenType.Array) {
-            return ModelUtils.ToColor(token);
-        }
-        return defaultValue;
     }
 }

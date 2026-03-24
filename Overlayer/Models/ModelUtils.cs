@@ -211,4 +211,22 @@ public static class ModelUtils {
         }
         return default;
     }
+
+    public static Color ParseColorNode(JToken token, Color defaultValue) {
+        if(token == null) {
+            return defaultValue;
+        }
+
+        if(token.Type == JTokenType.Object) {
+            JObject obj = (JObject)token;
+            if(obj.TryGetValue("topLeft", out var legacy)) { // Legacy GColor
+                return ToColor(legacy);
+            } else {
+                return ToColor(obj);
+            }
+        } else if(token.Type == JTokenType.Array) {
+            return ToColor(token);
+        }
+        return defaultValue;
+    }
 }

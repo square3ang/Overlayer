@@ -1,4 +1,5 @@
 ﻿using Overlayer.Core.TextReplacing.Lexing;
+using Overlayer.Models;
 using Overlayer.Tags.Attributes;
 using System;
 using System.Collections.Generic;
@@ -171,4 +172,68 @@ public static class MiscUtils {
         }
         return _lastRect.Contains(Event.current.mousePosition);
     }
+
+    private static float NextFloat(string s, ref int idx) {
+        int start = idx;
+
+        while(idx < s.Length && s[idx] != ',') {
+            idx++;
+        }
+
+        float v = float.Parse(s.Substring(start, idx - start), System.Globalization.CultureInfo.InvariantCulture);
+        idx++;
+
+        return v;
+    }
+    public static GColor ParseGColor(string s) {
+        int idx = 0;
+
+        return new GColor {
+            topLeft = new Color(
+                NextFloat(s, ref idx), NextFloat(s, ref idx),
+                NextFloat(s, ref idx), NextFloat(s, ref idx)
+            ),
+            topRight = new Color(
+                NextFloat(s, ref idx), NextFloat(s, ref idx),
+                NextFloat(s, ref idx), NextFloat(s, ref idx)
+            ),
+            bottomLeft = new Color(
+                NextFloat(s, ref idx), NextFloat(s, ref idx),
+                NextFloat(s, ref idx), NextFloat(s, ref idx)
+            ),
+            bottomRight = new Color(
+                NextFloat(s, ref idx), NextFloat(s, ref idx),
+                NextFloat(s, ref idx), NextFloat(s, ref idx)
+            ),
+            gradientEnabled = true
+        };
+    }
+    public static Vector2 ParseVec2(string s) {
+        int idx = 0;
+
+        return new Vector2(
+            NextFloat(s, ref idx),
+            float.Parse(s.Substring(idx), System.Globalization.CultureInfo.InvariantCulture)
+        );
+    }
+    public static Vector3 ParseVec3(string s) {
+        int idx = 0;
+
+        float x = NextFloat(s, ref idx);
+        float y = NextFloat(s, ref idx);
+        float z = float.Parse(s.Substring(idx), System.Globalization.CultureInfo.InvariantCulture);
+
+        return new Vector3(x, y, z);
+    }
+    public static Color ParseColor(string s) {
+        int idx = 0;
+
+        float r = NextFloat(s, ref idx);
+        float g = NextFloat(s, ref idx);
+        float b = NextFloat(s, ref idx);
+        float a = float.Parse(s.Substring(idx), System.Globalization.CultureInfo.InvariantCulture);
+
+        return new Color(r, g, b, a);
+    }
+    public static TextAlignmentOptions ParseAlign(string s) => (TextAlignmentOptions)int.Parse(s);
 }

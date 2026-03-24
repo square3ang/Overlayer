@@ -3,9 +3,7 @@ using Newtonsoft.Json.Linq;
 using Overlayer.Core;
 using Overlayer.Models;
 using Overlayer.Unity;
-using Overlayer.Utils;
 using SFB;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -17,12 +15,30 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
 
     public ImageConfigDrawer(OverlayerImage image) : base((ImageConfig)image.Config) => this.image = image;
 
+    bool IsAdvensedMode => Main.Settings.uiMode == Settings.EditorUIMode.Advanced;
+
     public override void OnceCall() => NeoDrawer.StaticInstance.FieldResetDictById();
 
     public override void Draw() {
         NeoDrawer.StaticInstance.FieldResetId();
-
         Color old = GUI.color;
+
+        GUILayout.BeginHorizontal();
+        var oldMode = Main.Settings.uiMode;
+        GUI.color = Main.Settings.uiMode == Settings.EditorUIMode.Simple ? Color.cyan : old;
+        if(Drawer.Button(Main.Lang.Get("UI_SIMPLE", "Simple"), GUILayout.Width(120f), GUILayout.Height(32f))) {
+            Main.Settings.uiMode = Settings.EditorUIMode.Simple;
+        }
+        GUI.color = Main.Settings.uiMode == Settings.EditorUIMode.Advanced ? Color.cyan : old;
+        if(Drawer.Button(Main.Lang.Get("UI_ADVANCED", "Advanced"), GUILayout.Width(120f), GUILayout.Height(32f))) {
+            Main.Settings.uiMode = Settings.EditorUIMode.Advanced;
+        }
+        GUI.color = old;
+        GUILayout.EndHorizontal();
+        if(oldMode != Main.Settings.uiMode) {
+            NeoDrawer.StaticInstance.FieldClear();
+        }
+
         if(Drawer.DrawBool(Drawer.Icon_Power, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
             image.gameObject.SetActive(model.Active);
         }
@@ -33,14 +49,21 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
         }
         Drawer.DrawString(Drawer.Icon_Pencil, Main.Lang.Get("NAME", "Name"), ref model.Name);
         bool changed = false;
-        changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("POSITION", "Position"), ref model.Position, 0, 1);
-        changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("SCALE", "Scale"), ref model.Scale, 0, 10);
-        changed |= NeoDrawer.StaticInstance.DrawSize2(Main.Lang.Get("PIVOT", "Pivot"), ref model.Pivot, 0, 1);
-        changed |= NeoDrawer.StaticInstance.DrawRotate3(Main.Lang.Get("ROTATION", "Rotation"), ref model.Rotation, -180, 180);
-        changed |= NeoDrawer.StaticInstance.DrawColor(ref model.Color);
+        changed |= Drawer.DrawExpr(Main.Lang.Get("POSITION", "Position"), "I_" + nameof(model.Position), ref model.Position, () => { changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Position.Value, 0, 1); });
+        changed |= Drawer.DrawExpr(Main.Lang.Get("SCALE", "Scale"), "I_" + nameof(model.Scale), ref model.Scale, () => { changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Scale.Value, 0, 10); });
+        if(IsAdvensedMode) {
+            changed |= Drawer.DrawExpr(Main.Lang.Get("PIVOT", "Pivot"), "I_" + nameof(model.Pivot), ref model.Pivot, () => { changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Pivot.Value, 0, 1); });
+        }
+        changed |= Drawer.DrawExpr(Main.Lang.Get("ROTATION", "Rotation"), "I_" + nameof(model.Rotation), ref model.Rotation, () => { changed |= NeoDrawer.StaticInstance.DrawRotate3(ref model.Rotation.Value, -180, 180); });
+        changed |= Drawer.DrawExpr(Drawer.Icon_Color, Main.Lang.Get("COLOR", "Color"), "I_" + nameof(model.Color), ref model.Color, () => {
+            GUILayout.BeginHorizontal();
+            changed |= NeoDrawer.StaticInstance.DrawColor(ref model.Color.Value);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+        });
         GUILayout.BeginHorizontal();
         if(Drawer.Button(Drawer.Icon_Image, GUILayout.Width(40))) {
-            System.Threading.Tasks.Task.Run(() => {
+            Task.Run(() => {
                 var extensions = new[]
                 {
                     new ExtensionFilter("Image Files", "png", "jpg", "jpeg"),
@@ -80,7 +103,7 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
                 model.Images.RemoveAt(i);
                 this.image.ApplyImages();
                 i--;
-                GUILayout.EndHorizontal();
+                ImageManager.CleanUp();
                 continue;
             }
 
@@ -128,7 +151,6 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
 
             GUILayout.EndHorizontal();
         }
-
         changed |= Drawer.DrawCodeEditor(Drawer.Icon_Play, Main.Lang.Get("PLAYING_COMMAND", "Playing Command"), model.Name + "PlayingCommand", ref model.PlayingCommand);
         changed |= Drawer.DrawCodeEditor(Drawer.Icon_Pause, Main.Lang.Get("NOT_PLAYING_COMMAND", "Not Playing Command"), model.Name + "NotPlayingCommand", ref model.NotPlayingCommand);
         GUILayout.BeginHorizontal();

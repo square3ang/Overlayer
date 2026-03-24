@@ -1,5 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Discord;
+using Newtonsoft.Json.Linq;
+using Overlayer.Core;
 using Overlayer.Core.Interfaces;
+using Overlayer.Tags;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,16 +23,16 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
         }
     }
 
-    public List<string> Images = new();
-    public Color Color = Color.white;
+    public List<string> Images = ["{ModDir}ov3_logo.png"];
+    public ExprValue<Color> Color = new(UnityEngine.Color.white);
 
-    public Vector2 Scale = new(1, 1);
-    public Vector2 Position = new(0.5f, 0.0175f);
-    public Vector2 Pivot = new(0.5f, 0.5f);
-    public Vector3 Rotation = Vector3.zero;
+    public ExprValue<Vector2> Scale = new(new Vector2(1, 1));
+    public ExprValue<Vector2> Position = new(new Vector2(0.5f, 0.5f));
+    public ExprValue<Vector2> Pivot = new(new Vector2(0.5f, 0.5f));
+    public ExprValue<Vector3> Rotation = new(Vector3.zero);
 
-    public string PlayingCommand = string.Empty;
-    public string NotPlayingCommand = string.Empty;
+    public string PlayingCommand = "0";
+    public string NotPlayingCommand = "0";
 
     public override ObjectConfig Copy() {
         var copy = new ImageConfig {
@@ -53,18 +56,17 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
         var node = SerializeBase();
         node[nameof(Drag)] = Drag;
         node[nameof(Images)] = new JArray(Images);
-        node[nameof(Color)] = ModelUtils.ToNode(Color);
-        node[nameof(Scale)] = ModelUtils.ToNode(Scale);
-        node[nameof(Position)] = ModelUtils.ToNode(Position);
-        node[nameof(Pivot)] = ModelUtils.ToNode(Pivot);
-        node[nameof(Rotation)] = ModelUtils.ToNode(Rotation);
+        node[nameof(Color)] = Color.Serialize(ModelUtils.ToNode);
+        node[nameof(Scale)] = Scale.Serialize(ModelUtils.ToNode);
+        node[nameof(Position)] = Position.Serialize(ModelUtils.ToNode);
+        node[nameof(Pivot)] = Pivot.Serialize(ModelUtils.ToNode);
+        node[nameof(Rotation)] = Rotation.Serialize(ModelUtils.ToNode);
         node[nameof(PlayingCommand)] = PlayingCommand;
         node[nameof(NotPlayingCommand)] = NotPlayingCommand;
         return node;
     }
 
     public override void Deserialize(JToken node) {
-        Main.Logger.Log("Deserializing ImageConfig...");
         var defaults = new ImageConfig();
         DeserializeBase(node);
         Drag = node[nameof(Drag)]?.Value<bool>() ?? defaults.Drag;
@@ -73,12 +75,37 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
         } else {
             Images = defaults.Images.ToList();
         }
-        Color = node[nameof(Color)] != null ? ModelUtils.ToColor(node[nameof(Color)]) : defaults.Color;
-        Scale = node[nameof(Scale)] != null ? ModelUtils.ToVector2(node[nameof(Scale)]) : defaults.Scale;
-        Position = node[nameof(Position)] != null ? ModelUtils.ToVector2(node[nameof(Position)]) : defaults.Position;
-        Pivot = node[nameof(Pivot)] != null ? ModelUtils.ToVector2(node[nameof(Pivot)]) : defaults.Pivot;
-        Rotation = node[nameof(Rotation)] != null ? ModelUtils.ToVector3(node[nameof(Rotation)]) : defaults.Rotation;
+        Color.Deserialize(node[nameof(Color)], n => ModelUtils.ParseColorNode(n, defaults.Color.DefaultValue));
+        Scale.Deserialize(node[nameof(Scale)], ModelUtils.ToVector2);
+        Position.Deserialize(node[nameof(Position)], ModelUtils.ToVector2);
+        Pivot.Deserialize(node[nameof(Pivot)], ModelUtils.ToVector2);
+        Rotation.Deserialize(node[nameof(Rotation)], ModelUtils.ToVector3);
         PlayingCommand = node[nameof(PlayingCommand)]?.Value<string>() ?? defaults.PlayingCommand;
         NotPlayingCommand = node[nameof(NotPlayingCommand)]?.Value<string>() ?? defaults.NotPlayingCommand;
+    }
+
+    public void Init() {
+        if(Color.IsExpr) { Color.Init(); }
+        if(Scale.IsExpr) { Scale.Init(); }
+        if(Position.IsExpr) { Position.Init(); }
+        if(Pivot.IsExpr) { Pivot.Init(); }
+        if(Rotation.IsExpr) { Rotation.Init(); }
+    }
+
+    public void ExprApplyConfig() {
+        if(Color.IsExpr) { Color.ApplyConfig(); }
+        if(Scale.IsExpr) { Scale.ApplyConfig(); }
+        if(Position.IsExpr) { Position.ApplyConfig(); }
+        if(Pivot.IsExpr) { Pivot.ApplyConfig(); }
+        if(Rotation.IsExpr) { Rotation.ApplyConfig(); }
+    }
+
+    public void Release() {
+        TagManager.OnLoadUnload -= ExprApplyConfig;
+        if(Color.IsExpr) { Color.Dispose(); }
+        if(Scale.IsExpr) { Scale.Dispose(); }
+        if(Position.IsExpr) { Position.Dispose(); }
+        if(Pivot.IsExpr) { Pivot.Dispose(); }
+        if(Rotation.IsExpr) { Rotation.Dispose(); }
     }
 }

@@ -642,11 +642,19 @@ public static class Drawer {
         return prev != value;
     }
 
-    public static bool DrawExpr<T>(string label, string id, ref ExprValue<T> value, Action drawNormal, Type tooltip = null) {
+    public static bool DrawExpr<T>(string label, string id, ref ExprValue<T> value, Action drawNormal, Type tooltip = null)
+        => DrawExprInternal(null, label, id, ref value, drawNormal, tooltip);
+    public static bool DrawExpr<T>(Texture2D icon, string label, string id, ref ExprValue<T> value, Action drawNormal, Type tooltip = null)
+        => DrawExprInternal(icon, label, id, ref value, drawNormal, tooltip);
+    private static bool DrawExprInternal<T>(Texture2D icon, string label, string id, ref ExprValue<T> value, Action drawNormal, Type tooltip) {
         bool changed = false;
-        GUILayout.BeginHorizontal();
         Color old = GUI.color;
         bool isExpr = value.IsExpr;
+        GUILayout.BeginHorizontal();
+        if(icon != null) {
+            GUILayout.Label(icon);
+            GUILayout.Space(4);
+        }
         if(Main.Settings.uiMode == Settings.EditorUIMode.Simple) {
             GUILayout.Label(label);
         } else {
@@ -678,22 +686,12 @@ public static class Drawer {
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
+
         if(value.IsExpr) {
-            if(DrawCodeEditor(
-                Icon_Play,
-                Main.Lang.Get("PLAYING_COMMAND", "Playing Command"),
-                id + "_p",
-                ref value.Playing
-            )) {
+            if(DrawCodeEditor(Icon_Play, Main.Lang.Get("PLAYING_COMMAND", "Playing Command"), id + "_P", ref value.Playing)) {
                 value.ApplyConfig();
             }
-
-            if(DrawCodeEditor(
-                Icon_Pause,
-                Main.Lang.Get("NOT_PLAYING_COMMAND", "Not Playing Command"),
-                id + "_n",
-                    ref value.NotPlaying
-            )) {
+            if(DrawCodeEditor(Icon_Pause, Main.Lang.Get("NOT_PLAYING_COMMAND", "Not Playing Command"), id + "_n", ref value.NotPlaying)) {
                 value.ApplyConfig();
             }
         } else {
@@ -877,11 +875,8 @@ public static class Drawer {
     }
 
     public static bool Button(string label, params GUILayoutOption[] options) => GUILayout.Button(label, myButton, options);
-
     public static bool Button(Texture2D icon, string text, params GUILayoutOption[] options) => GUILayout.Button(new GUIContent(text, icon), myButton, options);
-
     public static bool Button(Texture2D icon, params GUILayoutOption[] options) => GUILayout.Button(icon, myButton, options);
-
     public static void ButtonDummy(Texture2D icon, params GUILayoutOption[] options) {
         GUIStyle dummyStyle = new(myButton);
         dummyStyle.normal.background = myButton.normal.background;

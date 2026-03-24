@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Overlayer.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,9 +8,26 @@ using UnityEngine;
 namespace Overlayer.Core;
 
 public static class ImageManager {
-    public static Sprite DefaultSprite {  get; private set; }
-    private static Dictionary<string, Sprite> Sprites = new();
-    public static bool Initialized { get; private set; }
+    public static bool Initialized { get; private set; } = false;
+    public static Sprite DefaultSprite {
+        get {
+            if(_defaultSprite == null) {
+                CreateDefault();
+            }
+            return _defaultSprite;
+        } private set {
+            _defaultSprite = value;
+        }
+    }
+    static Sprite _defaultSprite;
+    private static Dictionary<string, Sprite> Sprites;
+
+    static void CreateDefault() {
+        Texture2D tex = new(2, 2);
+        tex.SetPixels(new Color[4] { Color.clear, Color.clear, Color.clear, Color.clear });
+        tex.Apply();
+        _defaultSprite = Sprite.Create(tex, new Rect(0, 0, 2, 2), new Vector2(0.5f, 0.5f));
+    }
 
     public static Sprite GetSpriteSafe(string name) {
         if(string.IsNullOrEmpty(name)) {
@@ -48,20 +66,49 @@ public static class ImageManager {
         return false;
     }
 
-    public static void Initialize() {
-        if(!Initialized) {
-            Texture2D tex = new(2, 2);
-            tex.SetPixels(new Color[4] { Color.clear, Color.clear, Color.clear, Color.clear });
-            tex.Apply();
-            DefaultSprite = Sprite.Create(tex, new Rect(0, 0, 2, 2), new Vector2(0.5f, 0.5f));
-            Sprites = new Dictionary<string, Sprite>();
-            Initialized = true;
+    public static void CleanUp() {
+        foreach(var pf in ProfileManager.Profiles.OfType<ImageConfig>()) {
+            if(pf.Images == null) {
+                continue;
+            }
+
+            pf.Images.RemoveAll(path => !TryGetSprite(path, out _));
         }
     }
 
+    public static void Initialize() {
+        if(Initialized) {
+            return;
+        }
+        Sprites = new Dictionary<string, Sprite>();
+        Initialized = true;
+    }
+
     public static void Release() {
-        DefaultSprite = null;
-        Sprites = null;
+        if(!Initialized) {
+            return;
+        }
+        if(Sprites != null) {
+            foreach(var sp in Sprites.Values) {
+                if(sp != null) {
+                    if(sp.texture != null) {
+                        UnityEngine.Object.Destroy(sp.texture);
+                    }
+                    UnityEngine.Object.Destroy(sp);
+                }
+            }
+            Sprites.Clear();
+            Sprites = null;
+        }
+
+        if(DefaultSprite != null) {
+            if(DefaultSprite.texture != null) {
+                UnityEngine.Object.Destroy(DefaultSprite.texture);
+            }
+            UnityEngine.Object.Destroy(DefaultSprite);
+            DefaultSprite = null;
+        }
+
         Initialized = false;
     }
 }

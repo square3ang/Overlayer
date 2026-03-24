@@ -29,6 +29,9 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
     private bool isPointing = false;
     private Vector2 initialObjectPosition;
     private Vector2 initialPointerLocal;
+    private Vector2 scaleforDrag = Vector2.zero;
+
+    public bool CanDrag => _config.Drag && !_config.Position.IsExpr;
 
     public void Init(OverlayerProfile profile, ImageConfig config) {
         if(Initialized) {
@@ -53,10 +56,13 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         PlayingReplacer.Compile();
         NotPlayingReplacer.Compile();
 
-        Initialized = true;
-
+        config.Init();
         ApplyConfig();
+        _mainImage.raycastTarget = _config.Drag;
+        _mainImage.rectTransform.anchorMin = Vector2.zero;
+        _mainImage.rectTransform.anchorMax = Vector2.one;
         ApplyImages();
+        Initialized = true;
     }
 
     public void Update() {
@@ -73,14 +79,36 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
             _mainImage.sprite = ImageManager.DefaultSprite;
         }
 
+        if(_config.Color.GetExprValue(MiscUtils.ParseColor, out var color)) {
+            _mainImage.color = color;
+        }
+        if(_config.Pivot.GetExprValue(MiscUtils.ParseVec2, out var pivot)) {
+            _mainImage.rectTransform.pivot = pivot;
+        }
+        if(_config.Position.GetExprValue(MiscUtils.ParseVec2, out var pos)) {
+            _mainImage.rectTransform.anchoredPosition = (pos - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
+        }
+        if(_config.Scale.GetExprValue(MiscUtils.ParseVec2, out var scale)) {
+            _mainImage.rectTransform.localScale = scale;
+            scaleforDrag = scale;
+        }
+        if(_config.Rotation.GetExprValue(MiscUtils.ParseVec3, out var rot)) {
+            _mainImage.rectTransform.rotation = Quaternion.Euler(rot);
+        }
+
         if(isDragging && OverlayerProfile.DragObj != null && OverlayerProfile.DragImage != null) {
             OverlayerProfile.DragObj.transform.position = _mainImage.transform.position;
             OverlayerProfile.DragObj.transform.rotation = _mainImage.transform.rotation;
             OverlayerProfile.DragImage.rectTransform.pivot = _mainImage.rectTransform.pivot;
-            OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(_mainImage.preferredWidth, _mainImage.preferredHeight) * _config.Scale;
+            OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(_mainImage.preferredWidth, _mainImage.preferredHeight) * scaleforDrag;
         }
     }
-
+    private void RefreshTags() {
+        PlayingReplacer.UpdateTags(TagManager.All.Select(ot => ot.Tag));
+        NotPlayingReplacer.UpdateTags(TagManager.NP.Select(ot => ot.Tag));
+        PlayingReplacer.Compile();
+        NotPlayingReplacer.Compile();
+    }
     public override void ApplyConfig() {
         PlayingReplacer.Source = _config.PlayingCommand;
         NotPlayingReplacer.Source = _config.NotPlayingCommand;
@@ -89,15 +117,22 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         PlayingReplacer.Compile();
         NotPlayingReplacer.Compile();
         TagManager.UpdatePatch();
-        _mainImage.color = _config.Color;
-        _mainImage.raycastTarget = _config.Drag;
-        var rt = _mainImage.rectTransform;
-        rt.anchorMin = Vector2.zero;
-        rt.anchorMax = Vector2.one;
-        rt.pivot = _config.Pivot;
-        rt.anchoredPosition = (_config.Position - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
-        rt.localScale = _config.Scale;
-        rt.rotation = Quaternion.Euler(_config.Rotation);
+        if(_config.Color.GetNormalValue(out var color)) {
+            _mainImage.color = color;
+        }
+        if(_config.Pivot.GetNormalValue(out var pivot)) {
+            _mainImage.rectTransform.pivot = pivot;
+        }
+        if(_config.Position.GetNormalValue(out var pos)) {
+            _mainImage.rectTransform.anchoredPosition = (pos - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
+        }
+        if(_config.Scale.GetNormalValue(out var scale)) {
+            _mainImage.rectTransform.localScale = scale;
+            scaleforDrag = scale;
+        }
+        if(_config.Rotation.GetNormalValue(out var rot)) {
+            _mainImage.rectTransform.rotation = Quaternion.Euler(rot);
+        }
         _mainImage.gameObject.SetActive(_config.Active);
     }
 
@@ -111,7 +146,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
     }
 
     public void OnPointerDown(PointerEventData e) {
-        if(isAlreadyDragging) {
+        if(!CanDrag || isAlreadyDragging) {
             return;
         }
         isDragging = true;
@@ -120,14 +155,16 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect, e.position, e.pressEventCamera, out initialPointerLocal);
         initialObjectPosition = _mainImage.rectTransform.anchoredPosition;
     }
+
     public void OnPointerUp(PointerEventData e) {
-        if(isDragging) {
+        if(!CanDrag || isDragging) {
             isDragging = false;
             isAlreadyDragging = false;
         }
     }
+
     public void OnDrag(PointerEventData e) {
-        if(!isDragging) {
+        if(!CanDrag || !isDragging) {
             return;
         }
         RectTransform parentRect = _mainImage.rectTransform.parent as RectTransform;
@@ -135,21 +172,27 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         Vector2 offset = currentPointerLocal - initialPointerLocal;
         _mainImage.rectTransform.anchoredPosition = initialObjectPosition + offset;
         Vector2 canvasSize = new(1920, 1080);
-        _config.Position = (_mainImage.rectTransform.anchoredPosition / canvasSize) + new Vector2(0.5f, 0.5f);
+        _config.Position.Value = (_mainImage.rectTransform.anchoredPosition / canvasSize) + new Vector2(0.5f, 0.5f);
     }
 
     public void OnPointerEnter(PointerEventData e) {
+        if(!CanDrag) {
+            return;
+        }
         isPointing = true;
         pointingCount++;
         if(!isAlreadyDragging) {
             OverlayerProfile.DragObj.transform.position = _mainImage.transform.position;
             OverlayerProfile.DragObj.transform.rotation = _mainImage.transform.rotation;
             OverlayerProfile.DragImage.rectTransform.pivot = _mainImage.rectTransform.pivot;
-            OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(_mainImage.preferredWidth, _mainImage.preferredHeight) * _config.Scale;
+            OverlayerProfile.DragImage.rectTransform.sizeDelta = new Vector2(_mainImage.preferredWidth, _mainImage.preferredHeight) * scaleforDrag;
         }
         OverlayerProfile.DragObj.SetActive(true);
     }
     public void OnPointerExit(PointerEventData e) {
+        if(!CanDrag) {
+            return;
+        }
         pointingCount--;
         if(pointingCount <= 0) {
             pointingCount = 0;
@@ -158,5 +201,9 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
             }
         }
         isPointing = false;
+    }
+
+    private void OnDestroy() {
+        TagManager.OnLoadUnload -= RefreshTags;
     }
 }
