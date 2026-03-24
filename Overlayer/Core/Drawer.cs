@@ -1,12 +1,14 @@
 ﻿using DG.Tweening;
 using HarmonyLib;
 using Overlayer.CodeEditor;
+using Overlayer.Models;
 using Overlayer.Tags;
 using Overlayer.Utils;
 using RapidGUI;
 using SFB;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -14,245 +16,126 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityModManagerNet;
-using IDrawable = Overlayer.Core.Interfaces.IDrawable;
 
 namespace Overlayer.Core;
 
 public static class Drawer {
-    public static bool DrawVector2(string label, ref Vector2 vec2, float lValue, float rValue) {
-        bool changed = false;
-        GUILayout.Label($"<b>{label}</b>");
-        changed |= DrawSingleWithSlider("X", ref vec2.x, lValue, rValue, 300f);
-        changed |= DrawSingleWithSlider("Y", ref vec2.y, lValue, rValue, 300f);
-        return changed;
+    public static CodeEditor.CodeEditor codeEditor = new("OverlayerCodeEditor",
+        new CodeTheme() {
+            background = "#333333",
+            linenumbg = "#222222",
+            color = "#FFFFFF",
+            selection = "#264F78",
+            cursor = "#D4D4D4"
+        });
+
+    public static Regex highlight = new("{(.*?)}", RegexOptions.Compiled);
+    public static Regex color = new("<<b></b>color=(.*?)>", RegexOptions.Compiled);
+    public static GUIStyle myButton;
+    public static GUIStyle myTextField;
+    public static GUIStyle myTextFieldNoPad;
+    public static GUIStyle mySlider;
+    public static GUIStyle myThumb;
+
+    public static void SetStyle(bool legacy) {
+        if(legacy) {
+            myButton.normal.background = GUI.skin.button.normal.background;
+            myButton.active.background = GUI.skin.button.active.background;
+            myButton.hover.background = GUI.skin.button.hover.background;
+            myTextField.normal.background = GUI.skin.textField.normal.background;
+            myTextField.focused.background = GUI.skin.textField.focused.background;
+            myTextField.hover.background = GUI.skin.textField.hover.background;
+            myTextFieldNoPad.normal.background = GUI.skin.textField.normal.background;
+            myTextFieldNoPad.focused.background = GUI.skin.textField.focused.background;
+            myTextFieldNoPad.hover.background = GUI.skin.textField.hover.background;
+            mySlider.normal.background = GUI.skin.horizontalSlider.normal.background;
+            myThumb.normal.background = GUI.skin.horizontalSliderThumb.normal.background;
+            myThumb.active.background = GUI.skin.horizontalSliderThumb.active.background;
+            myThumb.hover.background = GUI.skin.horizontalSliderThumb.hover.background;
+        } else if(isImageInited) {
+            myButton.normal.background = gray;
+            myButton.active.background = dulgray;
+            myButton.hover.background = dulgray;
+            myTextField.normal.background = tfgray;
+            myTextField.focused.background = tfgray;
+            myTextField.hover.background = tfgray;
+            myTextFieldNoPad.normal.background = tfgray;
+            myTextFieldNoPad.focused.background = tfgray;
+            myTextFieldNoPad.hover.background = tfgray;
+            mySlider.normal.background = jittengray;
+            myThumb.normal.background = gray;
+            myThumb.active.background = dulgray;
+            myThumb.hover.background = dulgray;
+        }
     }
 
-    public static bool DrawSize2(string label, ref Vector2 vec2, float lValue, float rValue, string uniqueID = null) {
-        bool changed = false;
-        GUILayout.Label($"<b>{label}</b>");
-        Color old = GUI.color;
-        GUI.color = new Color(1.0f, 0.68f, 0.68f);
-        changed |= DrawSingleWithSlider(Icon_LeftRight, "X", ref vec2.x, lValue, rValue, 300f);
-        GUI.color = new Color(0.68f, 1.0f, 0.68f);
-        changed |= DrawSingleWithSlider(Icon_UpDown, "Y", ref vec2.y, lValue, rValue, 300f);
-        GUI.color = old;
-        return changed;
-    }
+    public static Texture2D veryjittengray;
+    public static Texture2D gray;
+    public static Texture2D dulgray;
+    public static Texture2D jittengray;
+    public static Texture2D tfgray;
+    public static Texture2D outlineimg;
+    public static Texture2D black;
 
-    public static bool DrawVector3(string label, ref Vector3 vec3, float lValue, float rValue) {
-        bool changed = false;
-        GUILayout.Label($"<b>{label}</b>");
-        changed |= DrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f);
-        changed |= DrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f);
-        changed |= DrawSingleWithSlider("Z", ref vec3.z, lValue, rValue, 300f);
-        return changed;
-    }
+    static Drawer() {
+        codeEditor.highlighter = str => {
+            str = str.Replace("<", "<<b></b>");
 
-    public static bool DrawRotate3(string label, ref Vector3 vec3, float lValue, float rValue) {
-        bool changed = false;
-        GUILayout.Label($"<b>{label}</b>");
-        Color old = GUI.color;
-        GUI.color = new Color(1.0f, 0.68f, 0.68f);
-        changed |= DrawSingleWithSlider(Icon_XRotate, "X", ref vec3.x, lValue, rValue, 300f);
-        GUI.color = new Color(0.68f, 1.0f, 0.68f);
-        changed |= DrawSingleWithSlider(Icon_YRotate, "Y", ref vec3.y, lValue, rValue, 300f);
-        GUI.color = new Color(0.68f, 0.68f, 1.0f);
-        changed |= DrawSingleWithSlider(Icon_ZRotate, "Z", ref vec3.z, lValue, rValue, 300f);
-
-        GUI.color = old;
-        return changed;
-    }
-
-    public static bool SelectionPopup(ref int selected, string[] options, string label,
-        params GUILayoutOption[] layoutOptions) {
-        if(label != "") {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
-        }
-
-        var news = RGUI.SelectionPopup(selected, options, null, layoutOptions);
-        var c = selected != news;
-
-        selected = news;
-        if(label != "") {
-            GUILayout.EndHorizontal();
-        }
-
-        return c;
-    }
-
-    public static bool SelectionPopup(ref int selected, string[] options, Texture2D[] images, string label,
-        params GUILayoutOption[] layoutOptions) {
-        if(label != "") {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
-        }
-
-        var news = RGUI.SelectionPopup(selected, options, images, null, layoutOptions);
-        var c = selected != news;
-
-        selected = news;
-        if(label != "") {
-            GUILayout.EndHorizontal();
-        }
-
-        return c;
-    }
-
-    public static bool SelectionPopupWithTooltip(ref int selected, string[] options, string label,
-        Dictionary<string, string> tooltips, params GUILayoutOption[] layoutOptions) {
-        if(label != "") {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
-        }
-
-        var news = RGUI.SelectionPopup(selected, options, tooltips, layoutOptions);
-        var c = selected != news;
-
-        selected = news;
-        if(label != "") {
-            GUILayout.EndHorizontal();
-        }
-
-        return c;
-    }
-
-    public static bool DrawColor(ref Color color) {
-        /*bool result = false;
-        result |= DrawSingleWithSlider("<color=#FF0000>R</color>", ref color.r, 0, 1, 300f);
-        result |= DrawSingleWithSlider("<color=#00FF00>G</color>", ref color.g, 0, 1, 300f);
-        result |= DrawSingleWithSlider("<color=#0000FF>B</color>", ref color.b, 0, 1, 300f);
-        result |= DrawSingleWithSlider("A", ref color.a, 0, 1, 300f);
-        string hex = ColorUtility.ToHtmlStringRGBA(color);
-        if (DrawString("Hex:", ref hex))
-        {
-            result = true;
-            ColorUtility.TryParseHtmlString("#" + hex, out color);
-        }
-
-        return result;*/
-        var c = false;
-        string hex = ColorUtility.ToHtmlStringRGBA(color);
-        if(DrawString("Hex:", ref hex)) {
-            c = true;
-            ColorUtility.TryParseHtmlString("#" + hex, out color);
-        }
-
-        var ncol = RGUI.Field(color, "");
-
-        if(!c) {
-            c = color != ncol;
-        }
-
-        color = ncol;
-
-        return c;
-    }
-
-    public static bool DrawSingleWithSlider(string label, ref float value, float lValue, float rValue, float width) {
-        GUILayout.BeginHorizontal();
-        float newValue = GUILayoutEx.NamedSliderContent(label, value, lValue, rValue, width);
-        GUILayout.EndHorizontal();
-        bool result = newValue != value;
-        value = newValue;
-        return result;
-    }
-
-    public static bool DrawSingleWithSlider(Texture2D icon, string label, ref float value, float lValue, float rValue, float width) {
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label(icon);
-        GUILayout.Space(4f);
-        float newValue = GUILayoutEx.NamedSliderContent(label, value, lValue, rValue, width);
-        GUILayout.EndHorizontal();
-        bool result = newValue != value;
-        value = newValue;
-        return result;
-    }
-
-    public static bool DrawStringArray(ref string[] array, Action<int> arrayResized = null,
-        Action<int> elementRightGUI = null, Action<int, string> onElementChange = null) {
-        bool result = false;
-        GUILayout.BeginHorizontal();
-        if(Drawer.Button("+")) {
-            Array.Resize(ref array, array.Length + 1);
-            arrayResized?.Invoke(array.Length);
-            result = true;
-        }
-
-        if(array.Length > 0 && Drawer.Button("-")) {
-            Array.Resize(ref array, array.Length - 1);
-            arrayResized?.Invoke(array.Length);
-            result = true;
-        }
-
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-        for(int i = 0; i < array.Length; i++) {
-            string cache = array[i];
-            GUILayout.BeginHorizontal();
-            GUILayout.Label($"{i}: ");
-            cache = GUILayout.TextField(cache, myTextField);
-            elementRightGUI?.Invoke(i);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            if(cache != array[i]) {
-                array[i] = cache;
-                onElementChange?.Invoke(i, cache);
-                result = true;
+            var colorHighlighted = new List<string>();
+            foreach(Match m in color.Matches(str)) {
+                if(!colorHighlighted.Contains(m.Groups[1].Value) && ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _)) {
+                    str = str.Replace("<<b></b>color=" + m.Groups[1].Value + ">",
+                        "<<b></b>color=<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>>");
+                    colorHighlighted.Add(m.Groups[1].Value);
+                }
             }
-        }
 
-        return result;
-    }
+            var highlighted = new List<string>();
 
-    public static bool DrawArray(string label, ref object[] array) {
-        bool result = false;
-        GUILayout.Label(label);
-        GUILayout.BeginVertical();
+            foreach(Match match in highlight.Matches(str)) {
+                if(highlighted.Contains(match.Groups[1].Value)) {
+                    continue;
+                }
 
-        GUILayout.BeginHorizontal();
-        if(Drawer.Button("+")) {
-            Array.Resize(ref array, array.Length + 1);
-        }
+                var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
+                if(TagManager.tags.ContainsKey(name)) {
+                    if((Main.Settings.useMovingManEditor && name == "MovingMan") || (Main.Settings.useColorRangeEditor && name == "ColorRange") || (Main.Settings.useEasedValueEditor && name == "EasedValue")) {
+                        str = str.Replace("{" + match.Groups[1].Value + "}",
+                            "<color=orange>{" + match.Groups[1].Value + "}</color>");
+                    } else if(name.EndsWith("Hex")) {
+                        try {
+                            var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
+                                new object[] { "-1", Overlayer.Utils.Extensions.DefaultTrimStr });
+                            str = str.Replace("{" + match.Groups[1].Value + "}",
+                                "<color=#" + val + ">{" + match.Groups[1].Value + "}</color>");
+                        } catch {
+                            str = str.Replace("{" + match.Groups[1].Value + "}",
+                                "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
+                        }
+                    } else {
+                        str = str.Replace("{" + match.Groups[1].Value + "}",
+                            "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
+                    }
+                } else {
+                    str = str.Replace("{" + match.Groups[1].Value + "}",
+                        "<color=red>{" + match.Groups[1].Value + "}</color>");
+                }
 
-        if(array.Length > 0 && Drawer.Button("-")) {
-            Array.Resize(ref array, array.Length - 1);
-        }
+                highlighted.Add(match.Groups[1].Value);
+            }
 
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
+            return str;
+        };
 
-        for(int i = 0; i < array.Length; i++) {
-            result |= DrawObject($"{i}: ", ref array[i]);
-        }
+        InitializeImages();
 
-        GUILayout.EndVertical();
-        return result;
-    }
-
-    public static bool DrawArray(ref string[] array) {
-        bool result = false;
-        GUILayout.BeginVertical();
-
-        GUILayout.BeginHorizontal();
-        if(Drawer.Button("+")) {
-            Array.Resize(ref array, array.Length + 1);
-        }
-
-        if(array.Length > 0 && Drawer.Button("-")) {
-            Array.Resize(ref array, array.Length - 1);
-        }
-
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
-        for(int i = 0; i < array.Length; i++) {
-            result |= DrawString($"{i}: ", ref array[i]);
-        }
-
-        GUILayout.EndVertical();
-        return result;
+        myButton = new GUIStyle(GUI.skin.button);
+        myTextField = new GUIStyle(GUI.skin.textField);
+        myTextFieldNoPad = new GUIStyle(myTextField);
+        myTextField.padding.right = 40;
+        mySlider = new GUIStyle(GUI.skin.horizontalSlider);
+        myThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);
+        SetStyle(Main.Settings.useLegacyTheme);
     }
 
     private static bool isImageInited = false;
@@ -458,7 +341,6 @@ public static class Drawer {
         isImageInited = true;
 
     }
-
     public static Texture2D RotateTexture90(Texture2D tex) {
         int w = tex.width;
         int h = tex.height;
@@ -477,9 +359,8 @@ public static class Drawer {
         rotTex.Apply();
         return rotTex;
     }
-
     public static Texture2D Base64ToTexture(string base64) {
-        byte[] imageBytes = System.Convert.FromBase64String(base64);
+        byte[] imageBytes = Convert.FromBase64String(base64);
 
         Texture2D texture = new(1, 1, TextureFormat.RGBA32, false);
         texture.LoadImage(imageBytes);
@@ -491,11 +372,58 @@ public static class Drawer {
         return texture;
     }
 
-    public static void DrawLabel(Texture2D icon, string label) {
-        GUILayout.BeginHorizontal();
-        GUILayout.Label(icon);
-        GUILayout.Space(4);
-        GUILayout.Label(label);
+    public static bool SelectionPopup(ref int selected, string[] options, string label,
+        params GUILayoutOption[] layoutOptions) {
+        if(label != "") {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+        }
+
+        var news = RGUI.SelectionPopup(selected, options, null, layoutOptions);
+        var c = selected != news;
+
+        selected = news;
+        if(label != "") {
+            GUILayout.EndHorizontal();
+        }
+
+        return c;
+    }
+
+    public static bool SelectionPopup(ref int selected, string[] options, Texture2D[] images, string label,
+        params GUILayoutOption[] layoutOptions) {
+        if(label != "") {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+        }
+
+        var news = RGUI.SelectionPopup(selected, options, images, null, layoutOptions);
+        var c = selected != news;
+
+        selected = news;
+        if(label != "") {
+            GUILayout.EndHorizontal();
+        }
+
+        return c;
+    }
+
+    public static bool SelectionPopupWithTooltip(ref int selected, string[] options, string label,
+        Dictionary<string, string> tooltips, params GUILayoutOption[] layoutOptions) {
+        if(label != "") {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label);
+        }
+
+        var news = RGUI.SelectionPopup(selected, options, tooltips, layoutOptions);
+        var c = selected != news;
+
+        selected = news;
+        if(label != "") {
+            GUILayout.EndHorizontal();
+        }
+
+        return c;
     }
 
     public static bool DrawBool(string label, ref bool value) {
@@ -592,20 +520,6 @@ public static class Drawer {
         return prev != value;
     }
 
-    public static bool DrawByte(string label, ref byte value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToUInt8(str);
-        return result;
-    }
-
-    public static bool DrawDouble(string label, ref double value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToDouble(str);
-        return result;
-    }
-
     public static bool DrawEnum<T>(ref T @enum) where T : Enum {
         int current = EnumHelper<T>.IndexOf(@enum);
         string[] names = EnumHelper<T>.GetNames();
@@ -675,132 +589,6 @@ public static class Drawer {
         return selected != tags.IndexOf(value);
     }
 
-    public static bool DrawInt16(string label, ref short value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToInt16(str);
-        return result;
-    }
-
-    public static bool DrawInt32(string label, ref int value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToInt32(str);
-        return result;
-    }
-
-    public static bool DrawInt64(string label, ref long value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToInt64(str);
-        return result;
-    }
-
-    public static void DrawObject(string label, object value) {
-        if(value == null) {
-            return;
-        }
-
-        if(value is IDrawable drawable) {
-            drawable.Draw();
-            return;
-        }
-
-        Type t = value.GetType();
-        if(!t.IsPrimitive && t != typeof(string)) {
-            return;
-        }
-
-        var fields = t.GetFields();
-        foreach(var field in fields) {
-            var fValue = field.GetValue(value);
-            if(DrawObject(field.Name, ref fValue)) {
-                field.SetValue(value, fValue);
-            }
-        }
-
-        var props = t.GetProperties();
-        foreach(var prop in props.Where(p => p.CanRead && p.CanWrite)) {
-            var pValue = prop.GetValue(value);
-            if(DrawObject(prop.Name, ref pValue)) {
-                prop.SetValue(value, pValue);
-            }
-        }
-    }
-
-    public static bool DrawObject(string label, ref object obj) {
-        bool result = false;
-        switch(obj) {
-            case bool bb:
-                result = DrawBool(label, ref bb);
-                obj = bb;
-                break;
-            case sbyte sb:
-                result = DrawSByte(label, ref sb);
-                obj = sb;
-                break;
-            case byte b:
-                result = DrawByte(label, ref b);
-                obj = b;
-                break;
-            case short s:
-                result = DrawInt16(label, ref s);
-                obj = s;
-                break;
-            case ushort us:
-                result = DrawUInt16(label, ref us);
-                obj = us;
-                break;
-            case int i:
-                result = DrawInt32(label, ref i);
-                obj = i;
-                break;
-            case uint ui:
-                result = DrawUInt32(label, ref ui);
-                obj = ui;
-                break;
-            case long l:
-                result = DrawInt64(label, ref l);
-                obj = l;
-                break;
-            case ulong ul:
-                result = DrawUInt64(label, ref ul);
-                obj = ul;
-                break;
-            case float f:
-                result = DrawSingle(label, ref f);
-                obj = f;
-                break;
-            case double d:
-                result = DrawDouble(label, ref d);
-                obj = d;
-                break;
-            case string str:
-                result = DrawString(label, ref str);
-                obj = str;
-                break;
-            default:
-                GUILayout.Label($"{label}{obj}");
-                break;
-        }
-
-        return result;
-    }
-
-    public static bool DrawSByte(string label, ref sbyte value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToInt8(str);
-        return result;
-    }
-
-    public static bool DrawSingle(string label, ref float value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToFloat(str);
-        return result;
-    }
-
     public static bool DrawString(string label, ref string value, bool textArea = false) => DrawString(null, label, ref value, textArea);
     public static bool DrawString(Texture2D icon, string label, ref string value, bool textArea = false) {
         string prev = value;
@@ -854,45 +642,66 @@ public static class Drawer {
         return prev != value;
     }
 
-    public static bool DrawToggleGroup(string[] labels, bool[] toggleGroup) {
-        bool result = false;
-        for(int i = 0; i < labels.Length; i++) {
-            if(DrawBool(labels[i], ref toggleGroup[i])) {
-                result = true;
-                for(int j = 0; j < toggleGroup.Length; j++) {
-                    if(j == i) {
-                        continue;
-                    } else {
-                        toggleGroup[j] = false;
-                    }
+    public static bool DrawExpr<T>(string label, string id, ref ExprValue<T> value, Action drawNormal, Type tooltip = null) {
+        bool changed = false;
+        GUILayout.BeginHorizontal();
+        Color old = GUI.color;
+        bool isExpr = value.IsExpr;
+        if(Main.Settings.uiMode == Settings.EditorUIMode.Simple) {
+            GUILayout.Label(label);
+        } else {
+            if(isExpr) {
+                GUI.color = Color.cyan;
+            }
+            if(Button(label)) {
+                if(!isExpr) {
+                    value.Init();
+                } else {
+                    value.Dispose();
+                    changed = true;
                 }
-
-                break;
+            }
+            if(isExpr) {
+                GUI.color = old;
+            }
+            if(isExpr && tooltip != null && MiscUtils.IsHovering()) {
+                if(tooltip == typeof(Vector2)) {
+                    Main.tooltip = "X,Y | EX : 1,0.5";
+                } else if(tooltip == typeof(Vector3)) {
+                    Main.tooltip = "X,Y,Z | EX : 1,0.5,0.2";
+                } else if(tooltip == typeof(GColor)) {
+                    Main.tooltip = "R,G,B,A,R,G,B,A,R,G,B,A,R,G,B,A\n↖ ↗ ↙ ↘ | 0 - 1\n EX : 1,0.5,0,1,0,1,0,0.9,0,0,1,1,0,0.24,0,1";
+                } else if(tooltip == typeof(Color)) {
+                    Main.tooltip = "R,G,B,A | 0 - 1 | EX : 1,0.5,0,1";
+                }
             }
         }
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        if(value.IsExpr) {
+            if(DrawCodeEditor(
+                Icon_Play,
+                Main.Lang.Get("PLAYING_COMMAND", "Playing Command"),
+                id + "_p",
+                ref value.Playing
+            )) {
+                value.ApplyConfig();
+            }
 
-        return result;
-    }
+            if(DrawCodeEditor(
+                Icon_Pause,
+                Main.Lang.Get("NOT_PLAYING_COMMAND", "Not Playing Command"),
+                id + "_n",
+                    ref value.NotPlaying
+            )) {
+                value.ApplyConfig();
+            }
+        } else {
+            drawNormal.Invoke();
+            changed = true;
+        }
 
-    public static bool DrawUInt16(string label, ref ushort value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToUInt16(str);
-        return result;
-    }
-
-    public static bool DrawUInt32(string label, ref uint value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToUInt32(str);
-        return result;
-    }
-
-    public static bool DrawUInt64(string label, ref ulong value) {
-        string str = value.ToString();
-        bool result = DrawString(label, ref str);
-        value = StringConverter.ToUInt64(str);
-        return result;
+        return changed;
     }
 
     public static bool DrawAlignment(ref TextAlignmentOptions value) {
@@ -1040,23 +849,25 @@ public static class Drawer {
         } else {
             Vector2 mousePosition = Event.current.mousePosition;
 
-            Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(text));
-            Rect labelPosition = new(mousePosition.x, mousePosition.y - 40, 0, 0);
+            float maxWidth = 300f;
+            float height = GUI.skin.label.CalcHeight(new GUIContent(text), maxWidth);
+            float width = GUI.skin.label.CalcSize(new GUIContent(text)).x;
+            width = Mathf.Min(width, maxWidth);
+
+            Rect labelPosition = new(mousePosition.x, mousePosition.y - height - 20, width + 20, height + 20);
 
             if(!ignoreWidth) {
                 var windowwidth = ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
-                        .GetValue(UnityModManager.UI.Instance))
-                    .width;
+                    .GetValue(UnityModManager.UI.Instance)).width;
                 var scroll = (Vector2[])AccessTools.Field(typeof(UnityModManager.UI), "mScrollPosition")
                     .GetValue(UnityModManager.UI.Instance);
                 windowwidth += scroll[UnityModManager.UI.Instance.tabId].x;
-                if(labelPosition.x + textSize.x + 20 + 20 > windowwidth) {
-                    labelPosition.x = windowwidth - textSize.x - 20 - 20;
+
+                if(labelPosition.x + labelPosition.width > windowwidth) {
+                    labelPosition.x = windowwidth - labelPosition.width;
                 }
             }
 
-            labelPosition.width = textSize.x + 20;
-            labelPosition.height = textSize.y + 20;
             GUI.Box(labelPosition, "", RGUIStyle.darkWindow);
 
             labelPosition.x += 10;
@@ -1065,138 +876,19 @@ public static class Drawer {
         }
     }
 
-    public static CodeEditor.CodeEditor codeEditor = new("OverlayerCodeEditor",
-        new CodeTheme() {
-            background = "#333333",
-            linenumbg = "#222222",
-            color = "#FFFFFF",
-            selection = "#264F78",
-            cursor = "#D4D4D4"
-        });
-
-    public static Regex highlight = new("{(.*?)}", RegexOptions.Compiled);
-    public static Regex color = new("<<b></b>color=(.*?)>", RegexOptions.Compiled);
-    public static GUIStyle myButton;
-    public static GUIStyle myTextField;
-    public static GUIStyle myTextFieldNoPad;
-    public static GUIStyle mySlider;
-    public static GUIStyle myThumb;
-
-    public static void SetStyle(bool legacy) {
-        if(legacy) {
-            myButton.normal.background = GUI.skin.button.normal.background;
-            myButton.active.background = GUI.skin.button.active.background;
-            myButton.hover.background = GUI.skin.button.hover.background;
-            myTextField.normal.background = GUI.skin.textField.normal.background;
-            myTextField.focused.background = GUI.skin.textField.focused.background;
-            myTextField.hover.background = GUI.skin.textField.hover.background;
-            myTextFieldNoPad.normal.background = GUI.skin.textField.normal.background;
-            myTextFieldNoPad.focused.background = GUI.skin.textField.focused.background;
-            myTextFieldNoPad.hover.background = GUI.skin.textField.hover.background;
-            mySlider.normal.background = GUI.skin.horizontalSlider.normal.background;
-            myThumb.normal.background = GUI.skin.horizontalSliderThumb.normal.background;
-            myThumb.active.background = GUI.skin.horizontalSliderThumb.active.background;
-            myThumb.hover.background = GUI.skin.horizontalSliderThumb.hover.background;
-        } else if(isImageInited) {
-            myButton.normal.background = gray;
-            myButton.active.background = dulgray;
-            myButton.hover.background = dulgray;
-            myTextField.normal.background = tfgray;
-            myTextField.focused.background = tfgray;
-            myTextField.hover.background = tfgray;
-            myTextFieldNoPad.normal.background = tfgray;
-            myTextFieldNoPad.focused.background = tfgray;
-            myTextFieldNoPad.hover.background = tfgray;
-            mySlider.normal.background = jittengray;
-            myThumb.normal.background = gray;
-            myThumb.active.background = dulgray;
-            myThumb.hover.background = dulgray;
-        }
-    }
-
-    public static Texture2D veryjittengray;
-    public static Texture2D gray;
-    public static Texture2D dulgray;
-    public static Texture2D jittengray;
-    public static Texture2D tfgray;
-    public static Texture2D outlineimg;
-    public static Texture2D black;
-
-    static Drawer() {
-        codeEditor.highlighter = str => {
-            str = str.Replace("<", "<<b></b>");
-
-            var colorHighlighted = new List<string>();
-            foreach(Match m in color.Matches(str)) {
-                //Main.Logger.Log(m.Groups[1].Value);
-                if(!colorHighlighted.Contains(m.Groups[1].Value) && ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _)) {
-                    str = str.Replace("<<b></b>color=" + m.Groups[1].Value + ">",
-                        "<<b></b>color=<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>>");
-                    colorHighlighted.Add(m.Groups[1].Value);
-                }
-            }
-
-            var highlighted = new List<string>();
-
-            foreach(Match match in highlight.Matches(str)) {
-                if(highlighted.Contains(match.Groups[1].Value)) {
-                    continue;
-                }
-
-                var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                if(TagManager.tags.ContainsKey(name)) {
-                    if((name == "MovingMan" && Main.Settings.useMovingManEditor) || (name == "ColorRange" && Main.Settings.useColorRangeEditor) || (name == "EasedValue" && Main.Settings.useEasedValueEditor)) {
-                        str = str.Replace("{" + match.Groups[1].Value + "}",
-                            "<color=orange>{" + match.Groups[1].Value + "}</color>");
-                    } else if(name.EndsWith("Hex")) {
-                        try {
-                            var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
-                                new object[] { "-1", Overlayer.Utils.Extensions.DefaultTrimStr });
-                            str = str.Replace("{" + match.Groups[1].Value + "}",
-                                "<color=#" + val + ">{" + match.Groups[1].Value + "}</color>");
-                        } catch {
-                            str = str.Replace("{" + match.Groups[1].Value + "}",
-                                "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
-                        }
-                    } else {
-                        str = str.Replace("{" + match.Groups[1].Value + "}",
-                            "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
-                    }
-                } else {
-                    str = str.Replace("{" + match.Groups[1].Value + "}",
-                        "<color=red>{" + match.Groups[1].Value + "}</color>");
-                }
-
-                highlighted.Add(match.Groups[1].Value);
-            }
-
-            return str;
-        };
-
-        InitializeImages();
-
-        myButton = new GUIStyle(GUI.skin.button);
-        myTextField = new GUIStyle(GUI.skin.textField);
-        myTextFieldNoPad = new GUIStyle(myTextField);
-        myTextField.padding.right = 40;
-        mySlider = new GUIStyle(GUI.skin.horizontalSlider);
-        myThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);
-        SetStyle(Main.Settings.useLegacyTheme);
-    }
-
-    public static bool Button(string str, params GUILayoutOption[] options) => GUILayout.Button(str, myButton, options);
+    public static bool Button(string label, params GUILayoutOption[] options) => GUILayout.Button(label, myButton, options);
 
     public static bool Button(Texture2D icon, string text, params GUILayoutOption[] options) => GUILayout.Button(new GUIContent(text, icon), myButton, options);
 
-    public static bool Button(Texture2D texture, params GUILayoutOption[] options) => GUILayout.Button(texture, myButton, options);
+    public static bool Button(Texture2D icon, params GUILayoutOption[] options) => GUILayout.Button(icon, myButton, options);
 
-    public static void ButtonDummy(Texture2D texture, params GUILayoutOption[] options) {
+    public static void ButtonDummy(Texture2D icon, params GUILayoutOption[] options) {
         GUIStyle dummyStyle = new(myButton);
         dummyStyle.normal.background = myButton.normal.background;
         dummyStyle.hover.background = myButton.normal.background;
         dummyStyle.active.background = myButton.normal.background;
         dummyStyle.focused.background = myButton.normal.background;
 
-        GUILayout.Button(texture, dummyStyle, options);
+        GUILayout.Button(icon, dummyStyle, options);
     }
 }

@@ -416,6 +416,7 @@
     <Compile Include="Core\NeoDrawer.cs" />
     <Compile Include="Core\ProfileReferences.cs" />
     <Compile Include="Core\ProfileManager.cs" />
+    <Compile Include="Models\ExprValue.cs" />
     <Compile Include="Models\ImageConfig.cs" />
     <Compile Include="Models\ObjectConfig.cs" />
     <Compile Include="Models\ProfileConfig.cs" />

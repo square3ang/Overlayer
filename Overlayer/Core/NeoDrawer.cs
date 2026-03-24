@@ -188,8 +188,11 @@ public class NeoDrawer {
     }
 
     public bool DrawVector3(string label, ref Vector3 vec3, float lValue, float rValue, string uniqueID = null) {
+        GUILayout.Label(label);
+        return DrawVector3(ref vec3, lValue, rValue, uniqueID);
+    }
+    public bool DrawVector3(ref Vector3 vec3, float lValue, float rValue, string uniqueID = null) {
         bool changed = false;
-        GUILayout.Label($"<b>{label}</b>");
         if(uniqueID == null) {
             changed |= DrawSingleWithSlider("X", ref vec3.x, lValue, rValue, 300f);
             changed |= DrawSingleWithSlider("Y", ref vec3.y, lValue, rValue, 300f);
@@ -203,8 +206,11 @@ public class NeoDrawer {
     }
 
     public bool DrawRotate3(string label, ref Vector3 vec3, float lValue, float rValue, string uniqueID = null) {
+        GUILayout.Label(label);
+        return DrawRotate3(ref vec3, lValue, rValue, uniqueID);
+    }
+    public bool DrawRotate3(ref Vector3 vec3, float lValue, float rValue, string uniqueID = null) {
         bool changed = false;
-        GUILayout.Label($"<b>{label}</b>");
         Color old = GUI.color;
         if(uniqueID == null) {
             GUI.color = new Color(1.0f, 0.68f, 0.68f);
@@ -226,8 +232,11 @@ public class NeoDrawer {
     }
 
     public bool DrawVector2(string label, ref Vector2 vec2, float lValue, float rValue, string uniqueID = null) {
+        GUILayout.Label(label);
+        return DrawVector2(ref vec2, lValue, rValue, uniqueID);
+    }   
+    public bool DrawVector2(ref Vector2 vec2, float lValue, float rValue, string uniqueID = null) {
         bool changed = false;
-        GUILayout.Label($"<b>{label}</b>");
         if(uniqueID == null) {
             changed |= DrawSingleWithSlider("X", ref vec2.x, lValue, rValue, 300f);
             changed |= DrawSingleWithSlider("Y", ref vec2.y, lValue, rValue, 300f);
@@ -239,8 +248,11 @@ public class NeoDrawer {
     }
 
     public bool DrawSize2(string label, ref Vector2 vec2, float lValue, float rValue, string uniqueID = null) {
+        GUILayout.Label(label);
+        return DrawSize2(ref vec2, lValue, rValue, uniqueID);
+    }
+    public bool DrawSize2(ref Vector2 vec2, float lValue, float rValue, string uniqueID = null) {
         bool changed = false;
-        GUILayout.Label($"<b>{label}</b>");
         Color old = GUI.color;
         if(uniqueID == null) {
             GUI.color = new Color(1.0f, 0.68f, 0.68f);
@@ -257,18 +269,21 @@ public class NeoDrawer {
         return changed;
     }
 
-    public bool DrawColor(ref Color color, float cWidth = 460f, string uniqueID = null) => DrawColor(null, ref color, cWidth, uniqueID);
     public bool DrawColor(string label, ref Color color, float cWidth = 460f, string uniqueID = null) {
+        bool changed;
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(label);
+        GUILayout.Space(4f);
+        changed = DrawColor(ref color, cWidth, uniqueID);
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        return changed;
+    }
+    public bool DrawColor(ref Color color, float cWidth = 460f, string uniqueID = null) {
         bool changed = false;
 
         NeoField field = FieldGet(uniqueID);
         StrInitialize(ref field, ColorUtility.ToHtmlStringRGBA(color));
-
-        GUILayout.BeginHorizontal();
-        if(!string.IsNullOrEmpty(label)) {
-            GUILayout.Label(label);
-            GUILayout.Space(4f);
-        }
 
         Color old = GUI.color;
         GUI.color = field.State == NeoField.StateType.ERROR ? new Color(1f, 0.5f, 0.5f) : Color.white;
@@ -295,9 +310,6 @@ public class NeoDrawer {
 
         Color newColor = RGUI.Field(color, "", GUILayout.Width(cWidth));
 
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
         if(newColor != color) {
             color = newColor;
             changed = true;
@@ -308,7 +320,7 @@ public class NeoDrawer {
         return changed;
     }
 
-    public bool DrawGColor(ref GColor color, float cWidth = 220f, string uniqueID = null) {
+    public bool DrawGColor(ref GColor color, float cWidth = 460f, string uniqueID = null) {
         bool prevGe = color.gradientEnabled;
         bool ge = prevGe;
 
@@ -359,7 +371,7 @@ public class NeoDrawer {
             GUILayout.BeginHorizontal();
 
             // TL
-            Color newColorTL = RGUI.Field(color.topLeft, "", GUILayout.Width(cWidth));
+            Color newColorTL = RGUI.Field(color.topLeft, "", GUILayout.Width(cWidth / 2.6f));
             GUILayout.Space(2f);
 
             Color old = GUI.color;
@@ -420,7 +432,7 @@ public class NeoDrawer {
                 }
             }
 
-            Color newColorTR = RGUI.Field(color.topRight, "", GUILayout.Width(cWidth));
+            Color newColorTR = RGUI.Field(color.topRight, "", GUILayout.Width(cWidth / 2.6f));
             if(newColorTR != color.topRight) {
                 color.topRight = newColorTR;
                 changed = true;
@@ -437,7 +449,7 @@ public class NeoDrawer {
             GUILayout.BeginHorizontal();
 
             // BL
-            Color newColorBL = RGUI.Field(color.bottomLeft, "", GUILayout.Width(cWidth));
+            Color newColorBL = RGUI.Field(color.bottomLeft, "", GUILayout.Width(cWidth / 2.6f));
             GUILayout.Space(2f);
 
             if(fieldBL.State == NeoField.StateType.ERROR) {
@@ -498,7 +510,7 @@ public class NeoDrawer {
                 }
             }
 
-            Color newColorBR = RGUI.Field(color.bottomRight, "", GUILayout.Width(cWidth));
+            Color newColorBR = RGUI.Field(color.bottomRight, "", GUILayout.Width(cWidth / 2.6f));
             if(newColorBR != color.bottomRight) {
                 color.bottomRight = newColorBR;
                 changed = true;
@@ -511,90 +523,31 @@ public class NeoDrawer {
             GUILayout.FlexibleSpace();
         } else {
             Color all = color.topLeft;
-            if(changed = DrawColor("", ref all, cWidth, uniqueID)) {
+            GUILayout.BeginHorizontal();
+            if(changed = DrawColor(ref all, cWidth, uniqueID)) {
                 color = all;
             }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
         }
         return changed;
     }
+
 
     public bool DrawSingle(string label, ref float value, string uniqueID = null) {
-        NeoField field = FieldGet(uniqueID);
-        StrInitialize(ref field, value.ToString());
-
+        bool changed;
         GUILayout.BeginHorizontal();
         GUILayout.Label(label);
         GUILayout.Space(4f);
-
-        bool changed = false;
-
-        Color old = GUI.color;
-        ColorbyState(field.State);
-
-        string fieldName = FieldGetName(uniqueID);
-        GUI.SetNextControlName(fieldName);
-        string newField = GUILayout.TextField(field.Str, Drawer.myTextField);
-        GUI.color = old;
-
-        if(newField != field.Str) {
-            field.Str = newField;
-            if(string.IsNullOrEmpty(field.Str)) {
-                field.State = NeoField.StateType.ERROR;
-            } else {
-                if(float.TryParse(newField, out float parsed)) {
-                    value = parsed;
-                    field.ComputedValue = parsed;
-                    field.State = NeoField.StateType.OK;
-                    changed = true;
-                } else {
-                    var result = Calc(field.Str);
-                    if(result == null) {
-                        field.State = NeoField.StateType.ERROR;
-                    } else {
-                        float computed = Convert.ToSingle(result);
-                        field.ComputedValue = computed;
-                        field.State = (float.IsNaN(computed) || float.IsInfinity(computed))
-                            ? NeoField.StateType.WARNING
-                            : NeoField.StateType.COMPUTE;
-                    }
-                }
-            }
-        }
-
-        object objValue = value;
-        if(ApplyFieldValueOnEvent(ref field, fieldName, ref objValue, typeof(float))) {
-            value = (float)objValue;
-            changed = true;
-        }
-
-        GUILayout.Space(2f);
-        GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
-
+        changed = DrawSingle(ref value, uniqueID);
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
-
         return changed;
     }
-
-    public bool DrawSingleWithSlider(string label, ref float value, float lValue, float rValue, float width, string uniqueID = null) {
+    public bool DrawSingle(ref float value, string uniqueID = null) {
         NeoField field = FieldGet(uniqueID);
         StrInitialize(ref field, value.ToString());
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label(label);
-        GUILayout.Space(4f);
-
         bool changed = false;
-
-        float sliderValue = GUILayout.HorizontalSlider(value, lValue, rValue, Drawer.mySlider, Drawer.myThumb, GUILayout.Width(width));
-        if(sliderValue != value) {
-            value = sliderValue;
-            field.Str = value.ToString();
-            field.State = NeoField.StateType.OK;
-            changed = true;
-        }
-
-        GUILayout.Space(8f);
 
         Color old = GUI.color;
         ColorbyState(field.State);
@@ -637,22 +590,33 @@ public class NeoDrawer {
 
         GUILayout.Space(2f);
         GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
-
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
         return changed;
     }
 
     public bool DrawSingleWithSlider(Texture2D icon, string label, ref float value, float lValue, float rValue, float width, string uniqueID = null) {
-        NeoField field = FieldGet(uniqueID);
-        StrInitialize(ref field, value.ToString());
-
+        bool changed;
         GUILayout.BeginHorizontal();
         GUILayout.Label(icon);
         GUILayout.Label(label);
         GUILayout.Space(4f);
-
+        changed = DrawSingleWithSlider(ref value, lValue, rValue, width, uniqueID);
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        return changed;
+    }
+    public bool DrawSingleWithSlider(string label, ref float value, float lValue, float rValue, float width, string uniqueID = null) {
+        bool changed;
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(label);
+        GUILayout.Space(4f);
+        changed = DrawSingleWithSlider(ref value, lValue, rValue, width, uniqueID);
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        return changed;
+    }
+    public bool DrawSingleWithSlider(ref float value, float lValue, float rValue, float width, string uniqueID = null) {
+        NeoField field = FieldGet(uniqueID);
+        StrInitialize(ref field, value.ToString());
         bool changed = false;
 
         float sliderValue = GUILayout.HorizontalSlider(value, lValue, rValue, Drawer.mySlider, Drawer.myThumb, GUILayout.Width(width));
@@ -706,21 +670,23 @@ public class NeoDrawer {
 
         GUILayout.Space(2f);
         GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
-
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
 
         return changed;
     }
 
     public bool DrawDouble(string label, ref double value, string uniqueID = null) {
-        NeoField field = FieldGet(uniqueID);
-        StrInitialize(ref field, value.ToString());
-
+        bool changed;
         GUILayout.BeginHorizontal();
         GUILayout.Label(label);
         GUILayout.Space(4f);
-
+        changed = DrawDouble(ref value, uniqueID);
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        return changed;
+    }
+    public bool DrawDouble(ref double value, string uniqueID = null) {
+        NeoField field = FieldGet(uniqueID);
+        StrInitialize(ref field, value.ToString());
         bool changed = false;
 
         Color old = GUI.color;
@@ -765,20 +731,22 @@ public class NeoDrawer {
         GUILayout.Space(2f);
         GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
 
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
         return changed;
     }
 
     public bool DrawInt32(string label, ref int value, string uniqueID = null) {
-        NeoField field = FieldGet(uniqueID);
-        StrInitialize(ref field, value.ToString());
-
+        bool changed;
         GUILayout.BeginHorizontal();
         GUILayout.Label(label);
         GUILayout.Space(4f);
-
+        changed = DrawInt32(ref value, uniqueID);
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        return changed;
+    }
+    public bool DrawInt32(ref int value, string uniqueID = null) {
+        NeoField field = FieldGet(uniqueID);
+        StrInitialize(ref field, value.ToString());
         bool changed = false;
 
         Color old = GUI.color;
@@ -832,24 +800,33 @@ public class NeoDrawer {
         GUILayout.Space(2f);
         GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
 
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
         return changed;
     }
 
-    public bool DrawPath(string label, ref string path, string extension = null, string uniqueID = null) => DrawPath(null, label, ref path, null, extension, uniqueID);
     public bool DrawPath(Texture2D icon, string label, ref string name, string path = null, string extension = null, string uniqueID = null) {
-        NeoField field = FieldGet(uniqueID);
-        StrInitialize(ref field, name);
-
+        bool changed;
         GUILayout.BeginHorizontal();
-        if(icon != null) {
-            GUILayout.Label(icon);
-        }
+        GUILayout.Label(icon);
         GUILayout.Label(label);
         GUILayout.Space(4f);
-
+        changed = DrawPath(ref name, path, extension, uniqueID);
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        return changed;
+    }
+    public bool DrawPath(string label, ref string name, string path = null, string extension = null, string uniqueID = null) {
+        bool changed;
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(label);
+        GUILayout.Space(4f);
+        changed = DrawPath(ref name, path, extension, uniqueID);
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        return changed;
+    }
+    public bool DrawPath(ref string name, string path = null, string extension = null, string uniqueID = null) {
+        NeoField field = FieldGet(uniqueID);
+        StrInitialize(ref field, name);
         bool changed = false;
 
         Color old = GUI.color;
@@ -894,9 +871,6 @@ public class NeoDrawer {
 
         GUILayout.Space(2f);
         GUILayout.Label(StatebyState(field.State), GUILayout.Width(12));
-
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
 
         return changed;
     }

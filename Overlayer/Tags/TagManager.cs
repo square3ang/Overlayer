@@ -1,5 +1,6 @@
 ﻿using Overlayer.Core.Patches;
 using Overlayer.Tags.Attributes;
+using Overlayer.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ public static class TagManager {
     internal static Dictionary<string, OverlayerTag> tags;
     public static IEnumerable<OverlayerTag> All => tags.Values;
     public static IEnumerable<OverlayerTag> NP => tags.Values.Where(ot => ot.NotPlaying);
+    public static event Action OnLoadUnload = delegate { };
 
     internal static string testerValue;
 
@@ -47,6 +49,7 @@ public static class TagManager {
 
             SetTag(new OverlayerTag(prop, attr));
         }
+        OnLoadUnload?.Invoke();
     }
     public static void Unload(Assembly ass) {
         foreach(var t in ass.GetExportedTypes()) {
@@ -57,6 +60,7 @@ public static class TagManager {
         foreach(var key in tags.Where(kvp => kvp.Value.DeclaringType == type).Select(kvp => kvp.Key).ToList()) {
             tags.Remove(key);
         }
+        OnLoadUnload?.Invoke();
     }
     public static OverlayerTag GetTag(string name) => name.StartsWith("INTERNAL_TESTER_TAG_1234512345") ? testerTag : tags.TryGetValue(name, out var ot) ? ot : null;
     public static void SetTag(OverlayerTag tag) => tags[tag.Name] = tag;

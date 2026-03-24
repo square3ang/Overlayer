@@ -163,4 +163,12 @@ public static class MiscUtils {
 
         return new Vector2(x, y);
     }
+
+    static Rect _lastRect;
+    public static bool IsHovering() {
+        if(Event.current.type == EventType.Repaint) {
+            _lastRect = GUILayoutUtility.GetLastRect();
+        }
+        return _lastRect.Contains(Event.current.mousePosition);
+    }
 }
