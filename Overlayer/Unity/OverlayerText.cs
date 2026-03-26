@@ -253,14 +253,16 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
             return;
         }
         Text.font = targetFont;
+        Text.fontSharedMaterial = targetFont.material;
         if(_instancedMaterials != null) {
             foreach(var m in _instancedMaterials) {
                 if(m) {
-                    DestroyImmediate(m);
+                    Destroy(m);
                 }
             }
             _instancedMaterials = null;
         }
+        RefreshMaterials(Text.fontSharedMaterials);
         _fontChanged = true;
     }
 
@@ -296,30 +298,6 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
         }
         Text.UpdateMeshPadding();
         Text.SetMaterialDirty();
-    }
-
-    private void RefreshInstancedMaterials() {
-        Material[] shared = Text.fontSharedMaterials;
-        if(shared == null || shared.Length == 0) {
-            return;
-        }
-
-        _instancedMaterials = new Material[shared.Length];
-        for(int i = 0; i < shared.Length; i++) {
-            if(shared[i] == null) {
-                continue;
-            }
-
-            _instancedMaterials[i] = new Material(shared[i]);
-            if(sr_msdf) {
-                _instancedMaterials[i].shader = sr_msdf;
-            }
-
-            _instancedMaterials[i].EnableKeyword(ShaderUtilities.Keyword_Outline);
-            _instancedMaterials[i].EnableKeyword(ShaderUtilities.Keyword_Underlay);
-        }
-
-        Text.fontSharedMaterials = _instancedMaterials;
     }
 
     private void RefreshMaterials(Material[] shared) {
@@ -383,7 +361,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
         if(_instancedMaterials != null) {
             foreach(var m in _instancedMaterials) {
                 if(m) {
-                    DestroyImmediate(m);
+                    Destroy(m);
                 }
             }
         }

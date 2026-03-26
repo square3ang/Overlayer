@@ -24,9 +24,9 @@ public static class FontManager {
     public static FontData? GetFont(string name) => TryGetFont(name, out FontData font) ? font : null;
     public static void SetFont(string name, FontData font) => Fonts[name] = font;
     public static bool TryGetFont(string name, out FontData font) {
-        if(string.IsNullOrEmpty(name)) {
+        if(string.IsNullOrWhiteSpace(name)) {
             font = defaultFont;
-            return false;
+            return true;
         }
         if(name == "Default") {
             font = defaultFont;

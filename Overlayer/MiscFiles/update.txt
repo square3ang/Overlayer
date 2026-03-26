@@ -1,7 +1,5 @@
 ﻿[ Add ]
-Image
+Text Config Command system
 
 [ Change ]
-Filebrowser to async
 Some UI
-File System
