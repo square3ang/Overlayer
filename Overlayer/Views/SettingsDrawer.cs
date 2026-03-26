@@ -189,21 +189,26 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 if(model.AutoUpdate) {
                     Drawer.BeginTab();
                     Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.AutoUpdateBeta);
+                    Drawer.HoverTooltip(Main.Lang.Get("AUTO_UPDATE_BETA_DESC", "<color=#ff0000>Not recommended.</color>\nUse this only if you are willing to risk <color=#ff0000>file corruption</color>\nor <color=#ff0000>malfunction</color> in order to access the beta version fast"));
                     Drawer.EndTab();
                 }
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("TOOLTIP", "Tooltip")), ref model.Tooltip);
+                Drawer.HoverTooltip(Main.Lang.Get("TOOLTIP_DESC", "You are currently viewing this"));
                 if(Drawer.DrawBool(Main.Lang.Get("LEGACY_THEME", "Legacy Theme"), ref model.LegacyTheme)) {
                     Drawer.SetStyle(model.LegacyTheme);
                     RGUIStyle.CreateStyles();
                 }
+                Drawer.HoverTooltip(Main.Lang.Get("LEGACY_THEME_DESC", "Reverts Overlayer’s custom clean theme back to Unity’s default OnGUI theme"));
                 Drawer.DrawBool(string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot")), ref model.AutoPivot);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot")), ref model.AutoPivot);
+                Drawer.DrawBool(Main.Lang.Get("INCLUDE_REFERENCES", "Include References"), ref model.IncludeReferences);
+                Drawer.HoverTooltip(Main.Lang.Get("INCLUDE_REFERENCES_DESC", "When this setting is enabled,\nelements that rely on external files(such as fonts and images)\nwill be included directly in the JSON file export.\n\nThis may increase the file size"));
                 Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan)), ref model.MovingManEditor);
                 Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.ColorRange)), ref model.ColorRangeEditor);
                 Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.EasedValue)), ref model.EasedValueEditor);
                 NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
                 NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
                 NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
+                Drawer.HoverTooltip(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE_DESC", "Such as GC usage Tags"));
                 break;
             case ExtraMenus.Adofai:
                 if(Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT", "Change Font"), ref model.ChangeFont)) {
@@ -240,10 +245,11 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     GUILayout.EndHorizontal();
                     Drawer.EndTab();
                 }
-                if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.UseShowTrueAutoJudgment)) {
+                if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.ShowTrueAutoJudgment)) {
                     LazyPatchManager.Unpatch(typeof(ChangeAddHit), true);
                     LazyPatchManager.Patch(typeof(ChangeAddHit));
                 }
+                Drawer.HoverTooltip(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGEMENT_DESC", "Patches the in game judgement line code\nso that judgements are always displayed on the Hit Error Meter even during Autoplay"));
                 break;
         }
         if(extraMenu != ExtraMenus.Closed) {

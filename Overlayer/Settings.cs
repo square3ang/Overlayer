@@ -31,7 +31,7 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
     public EditorUIMode UiMode = EditorUIMode.Simple;
 
     public bool ChangeFont = false;
-    public bool UseShowTrueAutoJudgment = false;
+    public bool ShowTrueAutoJudgment = false;
 
     public bool IsFirstEg = true;
     public JToken Serialize() {
@@ -44,7 +44,7 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
             [nameof(FrameTimeUpdateRate)] = FrameTimeUpdateRate,
             [nameof(SystemTagUpdateRate)] = SystemTagUpdateRate,
             [nameof(LegacyTheme)] = LegacyTheme,
-            [nameof(UseShowTrueAutoJudgment)] = UseShowTrueAutoJudgment,
+            [nameof(ShowTrueAutoJudgment)] = ShowTrueAutoJudgment,
             [nameof(MovingManEditor)] = MovingManEditor,
             [nameof(ColorRangeEditor)] = ColorRangeEditor,
             [nameof(EasedValueEditor)] = EasedValueEditor,
@@ -72,7 +72,7 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
         FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)]?.Value<float>() ?? defaultSettings.FrameTimeUpdateRate;
         SystemTagUpdateRate = node[nameof(SystemTagUpdateRate)]?.Value<int>() ?? defaultSettings.SystemTagUpdateRate;
         LegacyTheme = LegacyUseGet(node, nameof(LegacyTheme))?.Value<bool>() ?? defaultSettings.LegacyTheme;
-        UseShowTrueAutoJudgment = LegacyUseGet(node, nameof(UseShowTrueAutoJudgment))?.Value<bool>() ?? defaultSettings.UseShowTrueAutoJudgment;
+        ShowTrueAutoJudgment = LegacyUseGet(node, nameof(ShowTrueAutoJudgment))?.Value<bool>() ?? defaultSettings.ShowTrueAutoJudgment;
         MovingManEditor = LegacyUseGet(node, nameof(MovingManEditor))?.Value<bool>() ?? defaultSettings.MovingManEditor;
         ColorRangeEditor = LegacyUseGet(node, nameof(ColorRangeEditor))?.Value<bool>() ?? defaultSettings.ColorRangeEditor;
         EasedValueEditor = LegacyUseGet(node, nameof(EasedValueEditor))?.Value<bool>() ?? defaultSettings.EasedValueEditor;
@@ -96,7 +96,7 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
             FrameTimeUpdateRate = FrameTimeUpdateRate,
             SystemTagUpdateRate = SystemTagUpdateRate,
             LegacyTheme = LegacyTheme,
-            UseShowTrueAutoJudgment = UseShowTrueAutoJudgment,
+            ShowTrueAutoJudgment = ShowTrueAutoJudgment,
             MovingManEditor = MovingManEditor,
             ColorRangeEditor = ColorRangeEditor,
             EasedValueEditor = EasedValueEditor,

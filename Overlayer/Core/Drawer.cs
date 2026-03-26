@@ -857,7 +857,7 @@ public static class Drawer {
         } else {
             Vector2 mousePosition = Event.current.mousePosition;
 
-            float maxWidth = 300f;
+            float maxWidth = 660f;
             float height = GUI.skin.label.CalcHeight(new GUIContent(text), maxWidth);
             float width = GUI.skin.label.CalcSize(new GUIContent(text)).x;
             width = Mathf.Min(width, maxWidth);
@@ -882,6 +882,15 @@ public static class Drawer {
             labelPosition.y += 10;
             GUI.Label(labelPosition, text);
         }
+    }
+
+    public static bool HoverTooltip(string tooltip) {
+        bool hover = MiscUtils.IsHovering();
+        if(hover && Main.Settings.Tooltip) {
+            Main.tooltip = tooltip;
+        }
+
+        return hover;
     }
 
     public static bool Button(string label, params GUILayoutOption[] options) => GUILayout.Button(label, myButton, options);

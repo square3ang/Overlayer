@@ -15,7 +15,7 @@ public static class HitFixPatch {
 
             for(int i = 0; i < list.Count; i++) {
                 if(list[i].opcode == OpCodes.Call && list[i].operand is MethodInfo method && method.Name == "get_auto") {
-                    if(Main.Settings.UseShowTrueAutoJudgment) {
+                    if(Main.Settings.ShowTrueAutoJudgment) {
                         list[i].opcode = OpCodes.Ldc_I4_0;
                         list[i].operand = null;
                     }
