@@ -2,11 +2,14 @@
 using Overlayer.Core.Interfaces;
 using Overlayer.Models;
 using Overlayer.Utils;
+using System;
+using System.IO;
+using System.Xml.Serialization;
 using UnityModManagerNet;
 
 namespace Overlayer;
 
-public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings> {
+public class Settings : IModel, ICopyable<Settings> {
     public enum EditorUIMode {
         Simple,
         Advanced
@@ -62,7 +65,7 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
     public void Deserialize(JToken node) {
         var defaultSettings = new Settings();
 
-        DisableLogo = LegacyGet(node, nameof(DisableLogo))?.Value<bool>() ?? defaultSettings.DisableLogo;
+        DisableLogo =node[nameof(DisableLogo)]?.Value<bool>() ?? defaultSettings.DisableLogo;
         ChangeFont = node[nameof(ChangeFont)]?.Value<bool>() ?? defaultSettings.ChangeFont;
         AdofaiFont = node[nameof(AdofaiFont)] != null
             ? ModelUtils.Unbox<FontMeta>(node[nameof(AdofaiFont)])
@@ -71,20 +74,20 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
         FPSUpdateRate = node[nameof(FPSUpdateRate)]?.Value<float>() ?? defaultSettings.FPSUpdateRate;
         FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)]?.Value<float>() ?? defaultSettings.FrameTimeUpdateRate;
         SystemTagUpdateRate = node[nameof(SystemTagUpdateRate)]?.Value<int>() ?? defaultSettings.SystemTagUpdateRate;
-        LegacyTheme = LegacyUseGet(node, nameof(LegacyTheme))?.Value<bool>() ?? defaultSettings.LegacyTheme;
-        ShowTrueAutoJudgment = LegacyUseGet(node, nameof(ShowTrueAutoJudgment))?.Value<bool>() ?? defaultSettings.ShowTrueAutoJudgment;
-        MovingManEditor = LegacyUseGet(node, nameof(MovingManEditor))?.Value<bool>() ?? defaultSettings.MovingManEditor;
-        ColorRangeEditor = LegacyUseGet(node, nameof(ColorRangeEditor))?.Value<bool>() ?? defaultSettings.ColorRangeEditor;
-        EasedValueEditor = LegacyUseGet(node, nameof(EasedValueEditor))?.Value<bool>() ?? defaultSettings.EasedValueEditor;
-        AutoUpdate = LegacyUseGet(node, nameof(AutoUpdate))?.Value<bool>() ?? defaultSettings.AutoUpdate;
-        AutoUpdateBeta = LegacyUseGet(node, nameof(AutoUpdateBeta))?.Value<bool>() ?? defaultSettings.AutoUpdateBeta;
-        Tooltip = LegacyUseGet(node, nameof(Tooltip))?.Value<bool>() ?? defaultSettings.Tooltip;
-        AutoPivot = LegacyGet(node, nameof(AutoPivot))?.Value<bool>() ?? defaultSettings.AutoPivot;
+        LegacyTheme = node[nameof(LegacyTheme)]?.Value<bool>() ?? defaultSettings.LegacyTheme;
+        ShowTrueAutoJudgment = node[nameof(ShowTrueAutoJudgment)]?.Value<bool>() ?? defaultSettings.ShowTrueAutoJudgment;
+        MovingManEditor = node[nameof(MovingManEditor)]?.Value<bool>() ?? defaultSettings.MovingManEditor;
+        ColorRangeEditor = node[nameof(ColorRangeEditor)]?.Value<bool>() ?? defaultSettings.ColorRangeEditor;
+        EasedValueEditor = node[nameof(EasedValueEditor)]?.Value<bool>() ?? defaultSettings.EasedValueEditor;
+        AutoUpdate = node[nameof(AutoUpdate)]?.Value<bool>() ?? defaultSettings.AutoUpdate;
+        AutoUpdateBeta = node[nameof(AutoUpdateBeta)]?.Value<bool>() ?? defaultSettings.AutoUpdateBeta;
+        Tooltip = node[nameof(Tooltip)]?.Value<bool>() ?? defaultSettings.Tooltip;
+        AutoPivot = node[nameof(AutoPivot)]?.Value<bool>() ?? defaultSettings.AutoPivot;
         IncludeReferences = node[nameof(IncludeReferences)]?.Value<bool>() ?? defaultSettings.IncludeReferences;
-        ShowTextNameAsDisplayText = LegacyGet(node, nameof(ShowTextNameAsDisplayText))?.Value<bool>() ?? defaultSettings.ShowTextNameAsDisplayText;
-        UiMode = EnumHelper<EditorUIMode>.Parse(LegacyGet(node, nameof(UiMode))?.Value<string>() ?? defaultSettings.UiMode.ToString());
+        ShowTextNameAsDisplayText = node[nameof(ShowTextNameAsDisplayText)]?.Value<bool>() ?? defaultSettings.ShowTextNameAsDisplayText;
+        UiMode = EnumHelper<EditorUIMode>.Parse(node[nameof(UiMode)]?.Value<string>() ?? defaultSettings.UiMode.ToString());
 
-        IsFirstEg = LegacyGet(node, nameof(IsFirstEg))?.Value<bool>() ?? defaultSettings.IsFirstEg;
+        IsFirstEg = node[nameof(IsFirstEg)]?.Value<bool>() ?? defaultSettings.IsFirstEg;
     }
     public Settings Copy() {
         var newSettings = new Settings {
@@ -110,11 +113,89 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
         return newSettings;
     }
 
-    public static JToken LegacyGet(JToken node, string name) {
-        return node[name] ?? node[char.ToLower(name[0]) + name.Substring(1)];
+    public void Save() {
+        var path = Path.Combine(Main.Mod.Path, "Settings.json");
+        var json = Serialize().ToString();
+        File.WriteAllText(path, json);
     }
 
-    public static JToken LegacyUseGet(JToken node, string name) {
-        return node[name] ?? node["use"+name];
+    public void Load() {
+        if(MigratefromLegacyXmlSettings()) {
+            return;
+        }
+
+        var path = Path.Combine(Main.Mod.Path, "Settings.json");
+        if(File.Exists(path)) {
+            var json = File.ReadAllText(path);
+            var node = JToken.Parse(json);
+            Deserialize(node);
+        }
+    }
+
+    private bool MigratefromLegacyXmlSettings() {
+        var jsonPath = Path.Combine(Main.Mod.Path, "Settings.json");
+        var xmlPath = Path.Combine(Main.Mod.Path, "Settings.xml");
+
+        if(File.Exists(jsonPath)) {
+            return false;
+        }
+
+        if(!File.Exists(xmlPath)) {
+            return false;
+        }
+
+        var serializer = new XmlSerializer(typeof(LegacyXmlSettings));
+        using(var stream = File.OpenRead(xmlPath)) {
+            var legacy = (LegacyXmlSettings)serializer.Deserialize(stream);
+
+            DisableLogo = legacy.disableLogo;
+            ChangeFont = legacy.ChangeFont;
+            AdofaiFont = legacy.AdoFont;
+            Lang = legacy.Lang;
+            FPSUpdateRate = legacy.FPSUpdateRate;
+            FrameTimeUpdateRate = legacy.FrameTimeUpdateRate;
+            SystemTagUpdateRate = legacy.SystemTagUpdateRate;
+            LegacyTheme = legacy.useLegacyTheme;
+            ShowTrueAutoJudgment = legacy.useShowTrueAutoJudgment;
+            MovingManEditor = legacy.useMovingManEditor;
+            ColorRangeEditor = legacy.useColorRangeEditor;
+            EasedValueEditor = legacy.useEasedValueEditor;
+            AutoUpdate = legacy.useAutoUpdate;
+            AutoUpdateBeta = legacy.useAutoUpdateBeta;
+            Tooltip = legacy.useTooltip;
+            AutoPivot = legacy.autoPivot;
+            ShowTextNameAsDisplayText = legacy.showTextNameAsDisplayText;
+            UiMode = legacy.uiMode;
+            IsFirstEg = legacy.isFirstEg;
+        }
+
+        Save();
+
+        File.Delete(xmlPath);
+
+        return true;
+    }
+
+    [Serializable]
+    public class LegacyXmlSettings {
+        public bool disableLogo;
+        public bool ChangeFont;
+        public FontMeta AdoFont;
+        public string Lang;
+        public float FPSUpdateRate;
+        public float FrameTimeUpdateRate;
+        public int SystemTagUpdateRate;
+        public bool useLegacyTheme;
+        public bool useShowTrueAutoJudgment;
+        public bool useMovingManEditor;
+        public bool useColorRangeEditor;
+        public bool useEasedValueEditor;
+        public bool useAutoUpdate;
+        public bool useAutoUpdateBeta;
+        public bool useTooltip;
+        public bool autoPivot;
+        public bool showTextNameAsDisplayText;
+        public Settings.EditorUIMode uiMode;
+        public bool isFirstEg;
     }
 }

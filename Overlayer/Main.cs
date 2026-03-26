@@ -91,6 +91,7 @@ public static class Main {
 
         GUI = new GUIController();
         Lang = new Translator();
+        Settings = new Settings();
         modEntry.OnToggle = OnToggle;
         modEntry.OnShowGUI = OnShowGUI;
         modEntry.OnGUI = OnGUI;
@@ -112,7 +113,7 @@ public static class Main {
 
     public static bool OnToggle(ModEntry modEntry, bool toggle) {
         if(toggle) {
-            Settings = ModSettings.Load<Settings>(modEntry);
+            Settings.Load();
             Lang.Language = Settings.Lang;
             Lang.OnInitialize += OnLanguageInitialize;
             var settingsDrawer = new SettingsDrawer(Settings);
@@ -171,7 +172,7 @@ public static class Main {
             LazyPatchManager.UnloadAll();
             Lang.Release();
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
-            ModSettings.Save(Settings, modEntry);
+            Settings.Save();
         }
 
         return true;
@@ -289,7 +290,7 @@ public static class Main {
 
     public static void OnSaveGUI(ModEntry modEntry) {
         ProfileManager.Save();
-        ModSettings.Save(Settings, modEntry);
+        Settings.Save();
     }
 
     public static void OnUpdate(ModEntry modEntry, float delta) => MainThreadDispatcher.Update();

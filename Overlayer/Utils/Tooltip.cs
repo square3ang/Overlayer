@@ -62,7 +62,7 @@ public class Tooltip {
         ["DEVELOPER"] = "Square3ang & Kkitut",
         ["DIFFICULTY"] = "Current Difficulty",
         ["DIFFICULTYRAW"] = "Fixed difficulty return value regardless of language setting",
-        ["EASEDVALUE"] = "When the tag value changes, the tag value changes according to the speed.",
+        ["EASEDVALUE"] = "When the target tag value changes, the tag value changes according to the speed.",
         ["EDITORPITCH"] = "Pitch set in the LevelEditor (displayed as 1 when 100%)",
         ["EPHEX"] = "EarlyPerfect Hex Color",
         ["FAIL"] = "MissCount + Overloads",

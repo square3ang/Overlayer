@@ -225,7 +225,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 if(model.ChangeFont) {
                     Drawer.BeginTab();
                     Drawer.DrawString(Main.Lang.Get("FONT", "Font"), ref model.AdofaiFont.name);
-                    NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FONT_SCALE", "Font Scale"), ref model.AdofaiFont.fontScale);
+                    NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FONT_SIZE", "Font Scale"), ref model.AdofaiFont.fontScale);
                     NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("LINE_SPACING", "Font Line Spacing"), ref model.AdofaiFont.lineSpacing);
                     GUILayout.BeginHorizontal();
                     if(Drawer.Button(Main.Lang.Get("APPLY", "Apply"))) {
