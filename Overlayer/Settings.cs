@@ -16,7 +16,6 @@ public class Settings : IModel, ICopyable<Settings> {
     }
 
     public bool DisableLogo = false;
-    public FontMeta AdofaiFont = new();
     public string Lang = "en-US";
     public float FPSUpdateRate = 100;
     public float FrameTimeUpdateRate = 100;
@@ -29,10 +28,11 @@ public class Settings : IModel, ICopyable<Settings> {
     public bool AutoUpdateBeta = false;
     public bool Tooltip = true;
     public bool AutoPivot = true;
-    public bool IncludeReferences = true;
     public bool ShowTextNameAsDisplayText = false;
     public EditorUIMode UiMode = EditorUIMode.Simple;
+    public bool IncludeReferences = true;
 
+    public FontMeta AdofaiFont = new();
     public bool ChangeFont = false;
     public bool ShowTrueAutoJudgment = false;
 
@@ -40,14 +40,11 @@ public class Settings : IModel, ICopyable<Settings> {
     public JToken Serialize() {
         var node = new JObject {
             [nameof(DisableLogo)] = DisableLogo,
-            [nameof(ChangeFont)] = ChangeFont,
-            [nameof(AdofaiFont)] = AdofaiFont?.Serialize(),
             [nameof(Lang)] = Lang,
             [nameof(FPSUpdateRate)] = FPSUpdateRate,
             [nameof(FrameTimeUpdateRate)] = FrameTimeUpdateRate,
             [nameof(SystemTagUpdateRate)] = SystemTagUpdateRate,
             [nameof(LegacyTheme)] = LegacyTheme,
-            [nameof(ShowTrueAutoJudgment)] = ShowTrueAutoJudgment,
             [nameof(MovingManEditor)] = MovingManEditor,
             [nameof(ColorRangeEditor)] = ColorRangeEditor,
             [nameof(EasedValueEditor)] = EasedValueEditor,
@@ -56,8 +53,13 @@ public class Settings : IModel, ICopyable<Settings> {
             [nameof(Tooltip)] = Tooltip,
             [nameof(AutoPivot)] = AutoPivot,
             [nameof(ShowTextNameAsDisplayText)] = ShowTextNameAsDisplayText,
-            [nameof(IncludeReferences)] = IncludeReferences,
             [nameof(UiMode)] = UiMode.ToString(),
+            [nameof(IncludeReferences)] = IncludeReferences,
+
+            [nameof(AdofaiFont)] = AdofaiFont?.Serialize(),
+            [nameof(ChangeFont)] = ChangeFont,
+            [nameof(ShowTrueAutoJudgment)] = ShowTrueAutoJudgment,
+
             [nameof(IsFirstEg)] = IsFirstEg
         };
         return node;
@@ -66,16 +68,11 @@ public class Settings : IModel, ICopyable<Settings> {
         var defaultSettings = new Settings();
 
         DisableLogo =node[nameof(DisableLogo)]?.Value<bool>() ?? defaultSettings.DisableLogo;
-        ChangeFont = node[nameof(ChangeFont)]?.Value<bool>() ?? defaultSettings.ChangeFont;
-        AdofaiFont = node[nameof(AdofaiFont)] != null
-            ? ModelUtils.Unbox<FontMeta>(node[nameof(AdofaiFont)])
-            : defaultSettings.AdofaiFont;
         Lang = node[nameof(Lang)]?.Value<string>() ?? defaultSettings.Lang;
         FPSUpdateRate = node[nameof(FPSUpdateRate)]?.Value<float>() ?? defaultSettings.FPSUpdateRate;
         FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)]?.Value<float>() ?? defaultSettings.FrameTimeUpdateRate;
         SystemTagUpdateRate = node[nameof(SystemTagUpdateRate)]?.Value<int>() ?? defaultSettings.SystemTagUpdateRate;
         LegacyTheme = node[nameof(LegacyTheme)]?.Value<bool>() ?? defaultSettings.LegacyTheme;
-        ShowTrueAutoJudgment = node[nameof(ShowTrueAutoJudgment)]?.Value<bool>() ?? defaultSettings.ShowTrueAutoJudgment;
         MovingManEditor = node[nameof(MovingManEditor)]?.Value<bool>() ?? defaultSettings.MovingManEditor;
         ColorRangeEditor = node[nameof(ColorRangeEditor)]?.Value<bool>() ?? defaultSettings.ColorRangeEditor;
         EasedValueEditor = node[nameof(EasedValueEditor)]?.Value<bool>() ?? defaultSettings.EasedValueEditor;
@@ -83,31 +80,40 @@ public class Settings : IModel, ICopyable<Settings> {
         AutoUpdateBeta = node[nameof(AutoUpdateBeta)]?.Value<bool>() ?? defaultSettings.AutoUpdateBeta;
         Tooltip = node[nameof(Tooltip)]?.Value<bool>() ?? defaultSettings.Tooltip;
         AutoPivot = node[nameof(AutoPivot)]?.Value<bool>() ?? defaultSettings.AutoPivot;
-        IncludeReferences = node[nameof(IncludeReferences)]?.Value<bool>() ?? defaultSettings.IncludeReferences;
         ShowTextNameAsDisplayText = node[nameof(ShowTextNameAsDisplayText)]?.Value<bool>() ?? defaultSettings.ShowTextNameAsDisplayText;
         UiMode = EnumHelper<EditorUIMode>.Parse(node[nameof(UiMode)]?.Value<string>() ?? defaultSettings.UiMode.ToString());
+        IncludeReferences = node[nameof(IncludeReferences)]?.Value<bool>() ?? defaultSettings.IncludeReferences;
+
+        ChangeFont = node[nameof(ChangeFont)]?.Value<bool>() ?? defaultSettings.ChangeFont;
+        AdofaiFont = node[nameof(AdofaiFont)] != null
+            ? ModelUtils.Unbox<FontMeta>(node[nameof(AdofaiFont)])
+            : defaultSettings.AdofaiFont;
+        ShowTrueAutoJudgment = node[nameof(ShowTrueAutoJudgment)]?.Value<bool>() ?? defaultSettings.ShowTrueAutoJudgment;
 
         IsFirstEg = node[nameof(IsFirstEg)]?.Value<bool>() ?? defaultSettings.IsFirstEg;
     }
     public Settings Copy() {
         var newSettings = new Settings {
             DisableLogo = DisableLogo,
-            ChangeFont = ChangeFont,
-            AdofaiFont = AdofaiFont.Copy(),
             Lang = Lang,
             FPSUpdateRate = FPSUpdateRate,
             FrameTimeUpdateRate = FrameTimeUpdateRate,
             SystemTagUpdateRate = SystemTagUpdateRate,
             LegacyTheme = LegacyTheme,
-            ShowTrueAutoJudgment = ShowTrueAutoJudgment,
             MovingManEditor = MovingManEditor,
             ColorRangeEditor = ColorRangeEditor,
             EasedValueEditor = EasedValueEditor,
             AutoUpdate = AutoUpdate,
             AutoUpdateBeta = AutoUpdateBeta,
             AutoPivot = AutoPivot,
-            IncludeReferences = IncludeReferences,
             ShowTextNameAsDisplayText = ShowTextNameAsDisplayText,
+            UiMode = UiMode,
+            IncludeReferences = IncludeReferences,
+
+            ChangeFont = ChangeFont,
+            AdofaiFont = AdofaiFont.Copy(),
+            ShowTrueAutoJudgment = ShowTrueAutoJudgment,
+
             IsFirstEg = IsFirstEg
         };
         return newSettings;
@@ -150,7 +156,7 @@ public class Settings : IModel, ICopyable<Settings> {
 
             DisableLogo = legacy.disableLogo;
             ChangeFont = legacy.ChangeFont;
-            AdofaiFont = legacy.AdoFont;
+            AdofaiFont = legacy.AdoFont?.Copy();
             Lang = legacy.Lang;
             FPSUpdateRate = legacy.FPSUpdateRate;
             FrameTimeUpdateRate = legacy.FrameTimeUpdateRate;
@@ -176,7 +182,7 @@ public class Settings : IModel, ICopyable<Settings> {
         return true;
     }
 
-    [Serializable]
+    [XmlRoot("Settings")]
     public class LegacyXmlSettings {
         public bool disableLogo;
         public bool ChangeFont;
@@ -195,7 +201,7 @@ public class Settings : IModel, ICopyable<Settings> {
         public bool useTooltip;
         public bool autoPivot;
         public bool showTextNameAsDisplayText;
-        public Settings.EditorUIMode uiMode;
+        public EditorUIMode uiMode;
         public bool isFirstEg;
     }
 }

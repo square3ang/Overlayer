@@ -168,12 +168,8 @@ public class SettingsDrawer : ModelDrawable<Settings> {
             }
         }
         GUILayout.BeginHorizontal();
-        if(Drawer.Button("Overlayer " + (extraMenu == ExtraMenus.Overlayer ? "▼" : "▲"))) {
-            extraMenu = extraMenu == ExtraMenus.Overlayer ? ExtraMenus.Closed : ExtraMenus.Overlayer;
-        }
-        if(Drawer.Button("ADOFAI " + (extraMenu == ExtraMenus.Adofai ? "▼" : "▲"))) {
-            extraMenu = extraMenu == ExtraMenus.Adofai ? ExtraMenus.Closed : ExtraMenus.Adofai;
-        }
+        DrawMenuButton("Overlayer", ExtraMenus.Overlayer);
+        DrawMenuButton("ADOFAI", ExtraMenus.Adofai);
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
         switch(extraMenu) {
@@ -522,6 +518,16 @@ public class SettingsDrawer : ModelDrawable<Settings> {
         }
 
         NeoDrawer.StaticInstance.UpdateFocused();
+    }
+
+    private void DrawMenuButton(string label, ExtraMenus menu) {
+        var prev = extraMenu;
+        if(Drawer.Button(label + (extraMenu == menu ? "▼" : "▲"))) {
+            extraMenu = extraMenu == menu ? ExtraMenus.Closed : menu;
+            if(extraMenu != prev) {
+                NeoDrawer.StaticInstance.FieldClear();
+            }
+        }
     }
 
     private int egClickCount = 0;
