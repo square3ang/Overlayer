@@ -8,7 +8,6 @@ using RapidGUI;
 using SFB;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -99,7 +98,7 @@ public static class Drawer {
 
                 var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
                 if(TagManager.tags.ContainsKey(name)) {
-                    if((Main.Settings.useMovingManEditor && name == "MovingMan") || (Main.Settings.useColorRangeEditor && name == "ColorRange") || (Main.Settings.useEasedValueEditor && name == "EasedValue")) {
+                    if((Main.Settings.useMovingManEditor && name == nameof(Effect.MovingMan)) || (Main.Settings.useColorRangeEditor && name == nameof(Effect.ColorRange)) || (Main.Settings.useEasedValueEditor && name == nameof(Effect.EasedValue))) {
                         str = str.Replace("{" + match.Groups[1].Value + "}",
                             "<color=orange>{" + match.Groups[1].Value + "}</color>");
                     } else if(name.EndsWith("Hex")) {
@@ -370,6 +369,17 @@ public static class Drawer {
         Texture2D texture = new(1, 1, TextureFormat.RGBA32, false);
         texture.LoadImage(bytes);
         return texture;
+    }
+
+    public static void BeginTab(int tab = 1) {
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(18f * tab);
+        GUILayout.BeginVertical();
+    }
+
+    public static void EndTab() {
+        GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
     }
 
     public static bool SelectionPopup(ref int selected, string[] options, string label,

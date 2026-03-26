@@ -95,6 +95,7 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
             changed = true;
         }
         GUILayout.EndHorizontal();
+        Drawer.BeginTab();
         for(int i = 0; i < model.Images.Count; i++) {
             GUILayout.BeginHorizontal();
 
@@ -151,6 +152,7 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
 
             GUILayout.EndHorizontal();
         }
+        Drawer.EndTab();
         changed |= Drawer.DrawCodeEditor(Drawer.Icon_Play, Main.Lang.Get("PLAYING_COMMAND", "Playing Command"), model.Name + "PlayingCommand", ref model.PlayingCommand);
         changed |= Drawer.DrawCodeEditor(Drawer.Icon_Pause, Main.Lang.Get("NOT_PLAYING_COMMAND", "Not Playing Command"), model.Name + "NotPlayingCommand", ref model.NotPlayingCommand);
         GUILayout.BeginHorizontal();

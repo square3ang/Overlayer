@@ -49,14 +49,13 @@ public class CodeEditor {
         if(!undoRedoManagers.ContainsKey(id)) {
             undoRedoManagers[id] = new UndoRedoManager();
             undoRedoManagers[id].SaveState(code);
-            //Main.Logger.Log("Created UndoRedoManager for " + id);
         }
 
         controlName = id;
         var oldEvent = new Event(Event.current);
         if(movingManEditor) {
             if(editingHash == code.GetHashCode()) {
-                code = movingManEditor.codesBefore + "MovingMan(" + movingManEditor.targetTag + "," +
+                code = movingManEditor.codesBefore + nameof(Effect.MovingMan) + "(" + movingManEditor.targetTag + "," +
                        movingManEditor.startSize + "," + movingManEditor.endSize + "," +
                        movingManEditor.defaultSize + "," + movingManEditor.speed + "," +
                        movingManEditor.invert + "," + movingManEditor.ease + ")" + movingManEditor.codesAfter;
@@ -66,7 +65,7 @@ public class CodeEditor {
 
         if(colorRangeEditor) {
             if(editingHash == code.GetHashCode()) {
-                code = colorRangeEditor.codesBefore + "ColorRange(" + colorRangeEditor.targetTag + "," +
+                code = colorRangeEditor.codesBefore + nameof(Effect.ColorRange) + "(" + colorRangeEditor.targetTag + "," +
                        colorRangeEditor.valueMin + "," + colorRangeEditor.valueMax + "," +
                        ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMin) + "," +
                        ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMax) + "," +
@@ -78,7 +77,7 @@ public class CodeEditor {
 
         if(easedValueEditor) {
             if(editingHash == code.GetHashCode()) {
-                code = easedValueEditor.codesBefore + "EasedValue(" + easedValueEditor.targetTag + "," +
+                code = easedValueEditor.codesBefore + nameof(Effect.EasedValue) + "(" + easedValueEditor.targetTag + "," +
                        easedValueEditor.digits + "," + easedValueEditor.speed + "," +
                        easedValueEditor.ease + ")" + easedValueEditor.codesAfter;
                 editingHash = code.GetHashCode();
@@ -239,16 +238,12 @@ public class CodeEditor {
                     }
                 }*/
 
-                //Main.Logger.Log(lastline);
-
                 var width = style.CalcSize(new GUIContent(lastline)).x;
 
                 /*while (width >= editorw - 5)
                 {
                     width -= editorw - 5;
                 }*/
-
-                //Main.Logger.Log(width + "");
 
                 var y = len * height;
 
@@ -262,11 +257,11 @@ public class CodeEditor {
 
                 rect.height = height;
 
-                var mvm = match.Groups[1].Value.StartsWith("MovingMan");
+                var mvm = match.Groups[1].Value.StartsWith(nameof(Effect.MovingMan));
 
-                var cr = match.Groups[1].Value.StartsWith("ColorRange");
+                var cr = match.Groups[1].Value.StartsWith(nameof(Effect.ColorRange));
 
-                var ev = match.Groups[1].Value.StartsWith("EasedValue");
+                var ev = match.Groups[1].Value.StartsWith(nameof(Effect.EasedValue));
 
                 var special = mvm || cr || ev;
 

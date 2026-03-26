@@ -27,20 +27,20 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
     public override void Draw() {
         NeoDrawer.StaticInstance.FieldResetId();
 
-		if(Drawer.DrawBool(Drawer.Icon_Power, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
-			profile.gameObject.SetActive(profile.Config.Active);
-		}
+        if(Drawer.DrawBool(Drawer.Icon_Power, Main.Lang.Get("ACTIVE", "Active"), ref model.Active)) {
+            profile.gameObject.SetActive(profile.Config.Active);
+        }
         GUILayout.BeginHorizontal();
-		if(NeoDrawer.StaticInstance.DrawPath(Drawer.Icon_Pencil, Main.Lang.Get("NAME", "Name"), ref model.Name, Main.ProfilePath, "json")) {
+        if(NeoDrawer.StaticInstance.DrawPath(Drawer.Icon_Pencil, Main.Lang.Get("NAME", "Name"), ref model.Name, Main.ProfilePath, "json")) {
             ProfileManager.Rename(profile, model.Name);
-		}
-		GUILayout.FlexibleSpace();
+        }
+        GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
-		if(NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_Opacity, Main.Lang.Get("OPACITY", "Opacity"), ref model.Opacity, 0f, 1f, 300f)) {
+        if(NeoDrawer.StaticInstance.DrawSingleWithSlider(Drawer.Icon_Opacity, Main.Lang.Get("OPACITY", "Opacity"), ref model.Opacity, 0f, 1f, 300f)) {
             profile.ApplyConfig();
         }
-		Color old = GUI.color;
-		GUILayout.BeginHorizontal();
+        Color old = GUI.color;
+        GUILayout.BeginHorizontal();
         Type needCreateNewObject = null;
         if(Drawer.Button(Drawer.Icon_Font, GUILayout.Width(60))) {
             needCreateNewObject = typeof(TextConfig);

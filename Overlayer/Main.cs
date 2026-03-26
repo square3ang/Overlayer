@@ -328,15 +328,15 @@ public static class Main {
         }
     }
 
-	public static class MainThreadDispatcher {
-		private static readonly ConcurrentQueue<Action> queue = new();
-		public static void Enqueue(Action action) {
-			queue.Enqueue(action);
-		}
-		public static void Update() {
-			while(queue.TryDequeue(out var action)) {
-				action.Invoke();
-			}
-		}
-	}
+    public static class MainThreadDispatcher {
+        private static readonly ConcurrentQueue<Action> queue = new();
+        public static void Enqueue(Action action) {
+            queue.Enqueue(action);
+        }
+        public static void Update() {
+            while(queue.TryDequeue(out var action)) {
+                action.Invoke();
+            }
+        }
+    }
 }

@@ -1,5 +1,4 @@
 ﻿using Overlayer.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +14,8 @@ public static class ImageManager {
                 CreateDefault();
             }
             return _defaultSprite;
-        } private set {
+        }
+        private set {
             _defaultSprite = value;
         }
     }

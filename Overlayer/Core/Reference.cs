@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using Overlayer;
 using Overlayer.Core.Interfaces;
 using Overlayer.Utils;
 using System;

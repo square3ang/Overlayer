@@ -4,6 +4,7 @@ using Overlayer.Core;
 using Overlayer.Core.Patches;
 using Overlayer.Core.Translation;
 using Overlayer.Models;
+using Overlayer.Tags;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using RapidGUI;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Overlayer.Patches.HitFixPatch;
+using Time = UnityEngine.Time;
 
 namespace Overlayer.Views;
 
@@ -185,9 +187,9 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 }
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("UPDATE", "Update"))), ref model.useAutoUpdate);
                 if(model.useAutoUpdate) {
-                    GUILayoutEx.BeginIndent();
+                    Drawer.BeginTab();
                     Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.useAutoUpdateBeta);
-                    GUILayoutEx.EndIndent();
+                    Drawer.EndTab();
                 }
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("TOOLTIP", "Tooltip")), ref model.useTooltip);
                 if(Drawer.DrawBool(
@@ -197,9 +199,9 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     RGUIStyle.CreateStyles();
                 }
                 Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot"))), ref model.autoPivot);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan")), ref model.useMovingManEditor);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "ColorRange")), ref model.useColorRangeEditor);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "EasedValue")), ref model.useEasedValueEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan))), ref model.useMovingManEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.ColorRange))), ref model.useColorRangeEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.EasedValue))), ref model.useEasedValueEditor);
                 NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
                 NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
                 NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
@@ -217,7 +219,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     }
                 }
                 if(model.ChangeFont) {
-                    GUILayoutEx.BeginIndent();
+                    Drawer.BeginTab();
                     Drawer.DrawString(Main.Lang.Get("FONT", "Font"), ref model.AdofaiFont.name);
                     NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FONT_SCALE", "Font Scale"), ref model.AdofaiFont.fontScale);
                     NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("LINE_SPACING", "Font Line Spacing"), ref model.AdofaiFont.lineSpacing);
@@ -237,7 +239,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
-                    GUILayoutEx.EndIndent();
+                    Drawer.EndTab();
                 }
                 if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
                     LazyPatchManager.Unpatch(typeof(ChangeAddHit), true);
@@ -249,12 +251,12 @@ public class SettingsDrawer : ModelDrawable<Settings> {
             GUILayout.Space(12);
         }
 
-		Color old = GUI.color;
-		GUILayout.BeginHorizontal();
+        Color old = GUI.color;
+        GUILayout.BeginHorizontal();
         if(Drawer.Button(Drawer.Icon_Plus, GUILayout.Width(100))) {
             needCreateNewProfile = true;
         }
-		GUI.color = new Color(1f, 1f, 0.8f);
+        GUI.color = new Color(1f, 1f, 0.8f);
         if(Drawer.Button(Drawer.Icon_Down, GUILayout.Width(60))) {
             Task.Run(() => {
                 string[] pfs = StandaloneFileBrowser.OpenFilePanel(
@@ -317,7 +319,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
             });
         }
         GUI.color = old;
-		if(Drawer.Button(Drawer.Icon_OpenFolder, GUILayout.Width(80))) {
+        if(Drawer.Button(Drawer.Icon_OpenFolder, GUILayout.Width(80))) {
             Application.OpenURL(Path.GetFullPath(Main.Mod.Path));
         }
         GUILayout.FlexibleSpace();
@@ -357,13 +359,13 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     dragSoltInsert = i;
                 }
                 GUILayout.Space(6);
-				GUI.color = profile.Config.Active ? new Color(0.8f, 0.8f, 1f) : Color.gray;
-				GUI.enabled = profile.Config.Active;
-				if(Drawer.Button(Drawer.Icon_Pencil, GUILayout.Width(80))) {
-					Main.GUI.Push(new ProfileDrawer(profile));
-				}
-				GUI.enabled = true;
-				GUI.color = new Color(1f, 0.8f, 1f);
+                GUI.color = profile.Config.Active ? new Color(0.8f, 0.8f, 1f) : Color.gray;
+                GUI.enabled = profile.Config.Active;
+                if(Drawer.Button(Drawer.Icon_Pencil, GUILayout.Width(80))) {
+                    Main.GUI.Push(new ProfileDrawer(profile));
+                }
+                GUI.enabled = true;
+                GUI.color = new Color(1f, 0.8f, 1f);
                 if(Drawer.Button(Drawer.Icon_Up, GUILayout.Width(46))) {
                     Task.Run(() => {
                         string target = StandaloneFileBrowser.SaveFilePanel(

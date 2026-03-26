@@ -1,6 +1,4 @@
-﻿using Discord;
-using Newtonsoft.Json.Linq;
-using Overlayer.Core;
+﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 using Overlayer.Tags;
 using System.Collections.Generic;

@@ -31,7 +31,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     private bool isPointing = false;
     private Vector2 initialObjectPosition;
     private Vector2 initialPointerLocal;
-    
+
     public bool CanDrag => _config.Drag && !_config.Position.IsExpr;
 
     public static Shader sr_msdf;
@@ -104,7 +104,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
         if(_fontChanged || _instancedMaterials == null || _instancedMaterials.Length == 0) {
             Material[] shared = Text.fontSharedMaterials;
             if(shared != null && shared.Length > 0 && shared[0] != null) {
-                RefreshMaterials(shared); 
+                RefreshMaterials(shared);
                 _fontChanged = false;
             }
         }

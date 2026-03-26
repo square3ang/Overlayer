@@ -2,12 +2,13 @@
 using Overlayer.Core;
 using Overlayer.Patches;
 using Overlayer.Tags;
+using Overlayer.Utils;
 using RapidGUI;
 using System;
 using UnityEngine;
 using Time = UnityEngine.Time;
 
-namespace Overlayer.Utils;
+namespace Overlayer.CodeEditor;
 
 internal class MovingManEditor : MonoBehaviour {
     public string codesBefore;
@@ -73,7 +74,7 @@ internal class MovingManEditor : MonoBehaviour {
 
     public void OnGUI() {
         if(isInitaialize) {
-            var fmt = string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), "MovingMan");
+            var fmt = string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan));
             if(!isSpawn && Event.current.type == EventType.Repaint) {
                 windowRect = GUILayout.Window(122, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
                 windowRect.x = (int)((Screen.width * 0.5f) - (windowRect.width * 0.5f));

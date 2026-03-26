@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection.Emit;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
@@ -25,9 +24,6 @@ public static class Extensions {
             ? str.Substring(0, maxLength) + afterTrimStr?.Replace("$LeftCount", StringConverter.FromInt32(str.Length - maxLength))
             : str;
     }
-    public static string ToString(this double value, string format) => value.ToString(format);
-    public static string ToString(this float value, string format) => value.ToString(format);
-    public static string PadZero(double value, int digits) => value.ToString("F" + digits);
     public static T[] SplitParse<T>(this string str, char splitter) where T : Enum {
         string[] split = str.Split(splitter);
         return Array.ConvertAll(split, EnumHelper<T>.Parse);
@@ -88,24 +84,6 @@ public static class Extensions {
         }
         return false;
     }
-    public static bool IfTrue(this bool b, Action a) {
-        if(b) {
-            a();
-        }
-
-        return b;
-    }
-    /// <summary>
-    /// For Avoid Warning
-    /// </summary>
-    /// <param name="task"></param>
-    /// <returns></returns>
-    public static async void Await(this Task task) => await task;
-    public static Vector2 WithRelativeX(this Vector2 vector, float x) => new(vector.x + x, vector.y);
-    public static Vector2 WithRelativeY(this Vector2 vector, float y) => new(vector.x, vector.y + y);
-    public static Vector3 WithRelativeX(this Vector3 vector, float x) => new(vector.x + x, vector.y, vector.z);
-    public static Vector3 WithRelativeY(this Vector3 vector, float y) => new(vector.x, vector.y + y, vector.z);
-    public static Vector3 WithRelativeZ(this Vector3 vector, float z) => new(vector.x, vector.y, vector.z + z);
     public static byte[] Compress(this byte[] data) {
         using(MemoryStream output = new()) {
             using(DeflateStream dstream = new(output, CompressionLevel.Optimal)) {

@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using Overlayer.Core.Interfaces;
 using Overlayer.Models;
 using Overlayer.Utils;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

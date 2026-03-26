@@ -52,14 +52,14 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         }
         bool changed = false;
         Drawer.DrawString(Drawer.Icon_Pencil, Main.Lang.Get("NAME", "Name"), ref model.Name);
-        changed |= Drawer.DrawExpr(Main.Lang.Get("POSITION", "Position"), "T"+nameof(model.Position), ref model.Position, () => {
+        changed |= Drawer.DrawExpr(Main.Lang.Get("POSITION", "Position"), "T" + nameof(model.Position), ref model.Position, () => {
             changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Position.Value, 0, 1);
         }, typeof(Vector2));
         if(IsAdvensedMode) {
-            changed |= Drawer.DrawExpr(Main.Lang.Get("SCALE", "Scale"), "T"+nameof(model.Scale), ref model.Scale, () => changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Scale.Value, 0, 2), typeof(Vector2));
-            changed |= Drawer.DrawExpr(Main.Lang.Get("PIVOT", "Pivot"), "T"+nameof(model.Pivot), ref model.Pivot, () => changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Pivot.Value, 0, 1), typeof(Vector2));
-            changed |= Drawer.DrawExpr(Main.Lang.Get("ROTATION", "Rotation"), "T"+nameof(model.Rotation), ref model.Rotation, () => changed |= NeoDrawer.StaticInstance.DrawRotate3(ref model.Rotation.Value, -180, 180), typeof(Vector3));
-            changed |= Drawer.DrawExpr(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), "T"+nameof(model.ShadowOffset), ref model.ShadowOffset, () => changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.ShadowOffset.Value, -1, 1), typeof(Vector2));
+            changed |= Drawer.DrawExpr(Main.Lang.Get("SCALE", "Scale"), "T" + nameof(model.Scale), ref model.Scale, () => changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Scale.Value, 0, 2), typeof(Vector2));
+            changed |= Drawer.DrawExpr(Main.Lang.Get("PIVOT", "Pivot"), "T" + nameof(model.Pivot), ref model.Pivot, () => changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Pivot.Value, 0, 1), typeof(Vector2));
+            changed |= Drawer.DrawExpr(Main.Lang.Get("ROTATION", "Rotation"), "T" + nameof(model.Rotation), ref model.Rotation, () => changed |= NeoDrawer.StaticInstance.DrawRotate3(ref model.Rotation.Value, -180, 180), typeof(Vector3));
+            changed |= Drawer.DrawExpr(Main.Lang.Get("SHADOW_OFFSET", "Shadow Offset"), "T" + nameof(model.ShadowOffset), ref model.ShadowOffset, () => changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.ShadowOffset.Value, -1, 1), typeof(Vector2));
         }
         GUILayout.BeginHorizontal();
         GUILayout.Label(Drawer.Icon_Font);
@@ -90,6 +90,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
                 }
 
                 GUILayout.EndHorizontal();
+                Drawer.BeginTab();
                 for(int i = 0; i < model.FallbackFonts.Length; i++) {
                     GUILayout.BeginHorizontal();
                     Drawer.DrawSelectFont(font => {
@@ -99,48 +100,49 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
                     changed |= Drawer.DrawOnlyString(ref model.FallbackFonts[i]);
                     GUILayout.EndHorizontal();
                 }
+                Drawer.EndTab();
             }
         }
-        changed |= Drawer.DrawExpr(Drawer.Icon_FontSize, Main.Lang.Get("FONT_SIZE", "Font Size"), "T"+nameof(model.FontSize), ref model.FontSize, () => {
+        changed |= Drawer.DrawExpr(Drawer.Icon_FontSize, Main.Lang.Get("FONT_SIZE", "Font Size"), "T" + nameof(model.FontSize), ref model.FontSize, () => {
             GUILayout.BeginHorizontal();
             changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(ref model.FontSize.Value, 0, 100, 300f);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         });
         if(IsAdvensedMode) {
-            changed |= Drawer.DrawExpr(Drawer.Icon_LineSpacing, Main.Lang.Get("LINE_SPACING", "Line Spacing"), "T"+nameof(model.LineSpacing), ref model.LineSpacing, () => {
+            changed |= Drawer.DrawExpr(Drawer.Icon_LineSpacing, Main.Lang.Get("LINE_SPACING", "Line Spacing"), "T" + nameof(model.LineSpacing), ref model.LineSpacing, () => {
                 GUILayout.BeginHorizontal();
                 changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(ref model.LineSpacing.Value, -120f, 20f, 300f);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             });
-            changed |= Drawer.DrawExpr(Drawer.Icon_ShadowDilate, Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), "T"+nameof(model.ShadowDilate), ref model.ShadowDilate, () => {
+            changed |= Drawer.DrawExpr(Drawer.Icon_ShadowDilate, Main.Lang.Get("SHADOW_DILATE", "Shadow Dilate"), "T" + nameof(model.ShadowDilate), ref model.ShadowDilate, () => {
                 GUILayout.BeginHorizontal();
                 changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(ref model.ShadowDilate.Value, 0, 1, 300f);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             });
-            changed |= Drawer.DrawExpr(Drawer.Icon_ShadowSoftness, Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), "T"+nameof(model.ShadowSoftness), ref model.ShadowSoftness, () => {
+            changed |= Drawer.DrawExpr(Drawer.Icon_ShadowSoftness, Main.Lang.Get("SHADOW_SOFTNESS", "Shadow Softness"), "T" + nameof(model.ShadowSoftness), ref model.ShadowSoftness, () => {
                 GUILayout.BeginHorizontal();
                 changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(ref model.ShadowSoftness.Value, 0, 1, 300f);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             });
-            changed |= Drawer.DrawExpr(Drawer.Icon_OutlineWidth, Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), "T"+nameof(model.OutlineWidth), ref model.OutlineWidth, () => {
+            changed |= Drawer.DrawExpr(Drawer.Icon_OutlineWidth, Main.Lang.Get("OUTLINE_WIDTH", "Outline Width"), "T" + nameof(model.OutlineWidth), ref model.OutlineWidth, () => {
                 GUILayout.BeginHorizontal();
                 changed |= NeoDrawer.StaticInstance.DrawSingleWithSlider(ref model.OutlineWidth.Value, 0, 1, 300f);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             });
         }
-        changed |= Drawer.DrawExpr(Drawer.Icon_Color, Main.Lang.Get("COLOR", "Color"), "T"+nameof(model.TextColor), ref model.TextColor, () => changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.TextColor.Value), typeof(GColor));
-        changed |= Drawer.DrawExpr(Drawer.Icon_Shadow, Main.Lang.Get("SHADOW_COLOR", "Shadow Color"), "T"+nameof(model.ShadowColor), ref model.ShadowColor, () => {
+        changed |= Drawer.DrawExpr(Drawer.Icon_Color, Main.Lang.Get("COLOR", "Color"), "T" + nameof(model.TextColor), ref model.TextColor, () => changed |= NeoDrawer.StaticInstance.DrawGColor(ref model.TextColor.Value), typeof(GColor));
+        changed |= Drawer.DrawExpr(Drawer.Icon_Shadow, Main.Lang.Get("SHADOW_COLOR", "Shadow Color"), "T" + nameof(model.ShadowColor), ref model.ShadowColor, () => {
             GUILayout.BeginHorizontal();
             changed |= NeoDrawer.StaticInstance.DrawColor(ref model.ShadowColor.Value);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }, typeof(Color));
-        changed |= Drawer.DrawExpr(Drawer.Icon_Outline, Main.Lang.Get("OUTLINE_COLOR", "Outline Color"), "T"+nameof(model.OutlineColor), ref model.OutlineColor, () => {
+        changed |= Drawer.DrawExpr(Drawer.Icon_Outline, Main.Lang.Get("OUTLINE_COLOR", "Outline Color"), "T" + nameof(model.OutlineColor), ref model.OutlineColor, () => {
             GUILayout.BeginHorizontal();
             changed |= NeoDrawer.StaticInstance.DrawColor(ref model.OutlineColor.Value);
             GUILayout.FlexibleSpace();
@@ -179,7 +181,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
                     JObject node = model.Serialize() as JObject;
                     node["Type"] = "Text";
                     node["References"] = TextConfigImporter.GetReferences(model);
-                    File.WriteAllText(target,JsonConvert.SerializeObject(node, Formatting.Indented));
+                    File.WriteAllText(target, JsonConvert.SerializeObject(node, Formatting.Indented));
                 }
             });
         }

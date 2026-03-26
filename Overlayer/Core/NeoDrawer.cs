@@ -234,7 +234,7 @@ public class NeoDrawer {
     public bool DrawVector2(string label, ref Vector2 vec2, float lValue, float rValue, string uniqueID = null) {
         GUILayout.Label(label);
         return DrawVector2(ref vec2, lValue, rValue, uniqueID);
-    }   
+    }
     public bool DrawVector2(ref Vector2 vec2, float lValue, float rValue, string uniqueID = null) {
         bool changed = false;
         if(uniqueID == null) {
@@ -324,9 +324,11 @@ public class NeoDrawer {
         bool prevGe = color.gradientEnabled;
         bool ge = prevGe;
 
+        Drawer.BeginTab();
         if(Drawer.DrawBool(Drawer.Icon_Gradation, Main.Lang.Get("MISC_ENABLE_GRADIENT", "Enable Gradient"), ref ge)) {
             color = color with { gradientEnabled = ge };
         }
+        Drawer.EndTab();
 
         color = color with { gradientEnabled = color.gradientEnabled };
 
