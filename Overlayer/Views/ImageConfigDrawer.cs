@@ -167,7 +167,7 @@ public class ImageConfigDrawer : ModelDrawable<ImageConfig> {
                 if(!string.IsNullOrWhiteSpace(target)) {
                     JObject node = model.Serialize() as JObject;
                     node["Type"] = "Image";
-                    node["Reference"] = null;
+                    node["References"] = ImageConfigImporter.GetReferences(model);
                     File.WriteAllText(target, JsonConvert.SerializeObject(node, Formatting.Indented));
                 }
             });

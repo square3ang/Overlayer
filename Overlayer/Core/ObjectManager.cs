@@ -16,6 +16,19 @@ public class ObjectManager {
         ProfileCanvas = profileCanvas;
     }
 
+    public void Create(ObjectConfig cfg) {
+        switch(cfg) {
+            case TextConfig t: {
+                Create(t);
+                break;
+            }
+            case ImageConfig i: {
+                Create(i);
+                break;
+            }
+        }
+    }
+
     public OverlayerText Create(TextConfig config) {
         if(string.IsNullOrEmpty(config.Name)) {
             config.Name = $"Text {Count + 1}";

@@ -89,14 +89,13 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                             }
                         } else if(json is JObject obj) {
                             string type = obj["Type"]?.Value<string>();
-                            ObjectConfig cfg;
-                            if(string.IsNullOrEmpty(type) || type == "Text") {
-                                cfg = TextConfigImporter.Import(obj);
-                            } else if(type == "Image") {
-                                cfg = ImageConfigImporter.Import(obj);
-                            } else {
-                                cfg = new TextConfig();
-                            }
+
+                            ObjectConfig cfg = type switch {
+                                null or "" or "Text" => TextConfigImporter.Import(obj),
+                                "Image" => ImageConfigImporter.Import(obj),
+                                _ => new TextConfig()
+                            };
+
                             configsToAdd.Add(cfg);
                         }
                     } catch(Exception e) {
@@ -105,7 +104,7 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                 }
                 Main.MainThreadDispatcher.Enqueue(() => {
                     foreach(var cfg in configsToAdd) {
-                        profile.ObjectManager.Create((TextConfig)cfg);
+                        profile.ObjectManager.Create(cfg);
                     }
                     dragSoltNeedInit = true;
                     profile.ObjectManager.Refresh();
