@@ -1,5 +1,15 @@
 ﻿[ Add ]
-Text Config Command system
+Text / Image Config Command system
+Some setting tooltips
+Toggle Export Reference Include
 
 [ Change ]
 Some UI
+ko-KR some texts
+XML Settings to JSON Settings (Auto Migrate!), PascalCase
+Slight reduction in DLL size by removing unnecessary functions/files
+Default Text Changed Current -> Official Judgement Tags
+Font Settings Empty values ​​are also treated as Default
+
+[ Fix ]
+ch-ZN mistake
