@@ -265,15 +265,15 @@ public class CodeEditor {
 
                 var special = mvm || cr || ev;
 
-                if(mvm && !Main.Settings.useMovingManEditor) {
+                if(mvm && !Main.Settings.UseMovingManEditor) {
                     special = false;
                 }
 
-                if(cr && !Main.Settings.useColorRangeEditor) {
+                if(cr && !Main.Settings.UseColorRangeEditor) {
                     special = false;
                 }
 
-                if(ev && !Main.Settings.useEasedValueEditor) {
+                if(ev && !Main.Settings.UseEasedValueEditor) {
                     special = false;
                 }
 

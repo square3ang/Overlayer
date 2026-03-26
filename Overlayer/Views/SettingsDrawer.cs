@@ -67,7 +67,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
     public override void Draw() {
         NeoDrawer.StaticInstance.FieldResetId();
 
-        if(Main.Logo != null && !model.disableLogo) {
+        if(Main.Logo != null && !model.DisableLogo) {
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Logo, GUILayout.Width(Main.Logo.width), GUILayout.Height(Main.Logo.height));
             GUILayout.BeginVertical();
@@ -178,30 +178,30 @@ public class SettingsDrawer : ModelDrawable<Settings> {
         GUILayout.EndHorizontal();
         switch(extraMenu) {
             case ExtraMenus.Overlayer:
-                if(Drawer.DrawBool(string.Format(Main.Lang.Get("DISABLE_THIS", "Disable {0}"), Main.Lang.Get("LOGO", "Logo")), ref model.disableLogo)) {
-                    if(model.disableLogo) {
+                if(Drawer.DrawBool(string.Format(Main.Lang.Get("DISABLE_THIS", "Disable {0}"), Main.Lang.Get("LOGO", "Logo")), ref model.DisableLogo)) {
+                    if(model.DisableLogo) {
                         Main.LogoRelease();
                     } else {
                         Main.LogoInit(Main.Mod.Path);
                     }
                 }
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("UPDATE", "Update"))), ref model.useAutoUpdate);
-                if(model.useAutoUpdate) {
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("UPDATE", "Update"))), ref model.UseAutoUpdate);
+                if(model.UseAutoUpdate) {
                     Drawer.BeginTab();
-                    Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.useAutoUpdateBeta);
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.UseAutoUpdateBeta);
                     Drawer.EndTab();
                 }
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("TOOLTIP", "Tooltip")), ref model.useTooltip);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("TOOLTIP", "Tooltip")), ref model.UseTooltip);
                 if(Drawer.DrawBool(
                         string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
-                        ref model.useLegacyTheme)) {
-                    Drawer.SetStyle(model.useLegacyTheme);
+                        ref model.UseLegacyTheme)) {
+                    Drawer.SetStyle(model.UseLegacyTheme);
                     RGUIStyle.CreateStyles();
                 }
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot"))), ref model.autoPivot);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan))), ref model.useMovingManEditor);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.ColorRange))), ref model.useColorRangeEditor);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.EasedValue))), ref model.useEasedValueEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot"))), ref model.AutoPivot);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan))), ref model.UseMovingManEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.ColorRange))), ref model.UseColorRangeEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.EasedValue))), ref model.UseEasedValueEditor);
                 NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
                 NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
                 NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
@@ -241,7 +241,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     GUILayout.EndHorizontal();
                     Drawer.EndTab();
                 }
-                if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.useShowTrueAutoJudgment)) {
+                if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.UseShowTrueAutoJudgment)) {
                     LazyPatchManager.Unpatch(typeof(ChangeAddHit), true);
                     LazyPatchManager.Patch(typeof(ChangeAddHit));
                 }

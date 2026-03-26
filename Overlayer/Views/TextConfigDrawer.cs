@@ -17,7 +17,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
 
     public TextConfigDrawer(OverlayerText text) : base((TextConfig)text.Config) => this.text = text;
 
-    bool IsAdvensedMode => Main.Settings.uiMode == Settings.EditorUIMode.Advanced;
+    bool IsAdvensedMode => Main.Settings.UiMode == Settings.EditorUIMode.Advanced;
 
     public override void OnceCall() => NeoDrawer.StaticInstance.FieldResetDictById();
 
@@ -26,18 +26,18 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         Color old = GUI.color;
 
         GUILayout.BeginHorizontal();
-        var oldMode = Main.Settings.uiMode;
-        GUI.color = Main.Settings.uiMode == Settings.EditorUIMode.Simple ? Color.cyan : old;
+        var oldMode = Main.Settings.UiMode;
+        GUI.color = Main.Settings.UiMode == Settings.EditorUIMode.Simple ? Color.cyan : old;
         if(Drawer.Button(Main.Lang.Get("UI_SIMPLE", "Simple"), GUILayout.Width(120f), GUILayout.Height(32f))) {
-            Main.Settings.uiMode = Settings.EditorUIMode.Simple;
+            Main.Settings.UiMode = Settings.EditorUIMode.Simple;
         }
-        GUI.color = Main.Settings.uiMode == Settings.EditorUIMode.Advanced ? Color.cyan : old;
+        GUI.color = Main.Settings.UiMode == Settings.EditorUIMode.Advanced ? Color.cyan : old;
         if(Drawer.Button(Main.Lang.Get("UI_ADVANCED", "Advanced"), GUILayout.Width(120f), GUILayout.Height(32f))) {
-            Main.Settings.uiMode = Settings.EditorUIMode.Advanced;
+            Main.Settings.UiMode = Settings.EditorUIMode.Advanced;
         }
         GUI.color = old;
         GUILayout.EndHorizontal();
-        if(oldMode != Main.Settings.uiMode) {
+        if(oldMode != Main.Settings.UiMode) {
             NeoDrawer.StaticInstance.FieldClear();
         }
 
@@ -153,7 +153,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         GUILayout.Label(Main.Lang.Get("ALIGNMENT", "Alignment"));
         if(Drawer.DrawEnumPlus(ref model.Alignment, TranslateTextAlignment)) {
             changed = true;
-            if(Main.Settings.autoPivot || !IsAdvensedMode) {
+            if(Main.Settings.AutoPivot || !IsAdvensedMode) {
                 model.Pivot.Value = MiscUtils.AlignmentToPivot(model.Alignment);
             }
         }
@@ -161,7 +161,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         GUILayout.EndHorizontal();
         if(Drawer.DrawAlignment(ref model.Alignment)) {
             changed = true;
-            if(Main.Settings.autoPivot || !IsAdvensedMode) {
+            if(Main.Settings.AutoPivot || !IsAdvensedMode) {
                 model.Pivot.Value = MiscUtils.AlignmentToPivot(model.Alignment);
             }
         }

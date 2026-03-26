@@ -325,7 +325,7 @@ public partial class Olly {
         node5_2_3_1.Next[0] = node1;
         node5_2_3_2.Next[0] = node1;
 
-        if(Main.Settings.isFirstEg) {
+        if(Main.Settings.IsFirstEg) {
             var first1 = new Node(
                 Tr("..oh you found me?", "..절 찾았군요?"),
                 new[] { Tr("What is this??", "이게 뭐야??") },
@@ -389,7 +389,7 @@ public partial class Olly {
             first4.Next[0] = node1;
             first4.Next[1] = node1;
 
-            Main.Settings.isFirstEg = false;
+            Main.Settings.IsFirstEg = false;
 
             return first1;
         } else {

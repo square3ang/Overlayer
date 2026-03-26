@@ -129,7 +129,7 @@ public static class Main {
             Tags.System.Init();
             ImageManager.Initialize();
             DllImporter.NCalcInitialize();
-            if(!Settings.disableLogo) {
+            if(!Settings.DisableLogo) {
                 LogoInit(modEntry.Path);
             }
 
@@ -145,8 +145,8 @@ public static class Main {
                 updateOnce = false;
                 _ = AutoUpdater.InitAndUpdate(
                     Mod,
-                    Settings.useAutoUpdate,
-                    Settings.useAutoUpdateBeta,
+                    Settings.UseAutoUpdate,
+                    Settings.UseAutoUpdateBeta,
                     () => UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Success!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!"),
                     (err) => {
                         Logger.Error("Update Fail: " + err);
@@ -274,7 +274,7 @@ public static class Main {
         }
 
         if(!RGUI.PopupWindow.isOpen) {
-            if(Settings.useTooltip) {
+            if(Settings.UseTooltip) {
                 Drawer.Tooltip(tooltip);
             }
         }

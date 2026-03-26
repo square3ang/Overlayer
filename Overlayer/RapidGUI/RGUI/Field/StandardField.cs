@@ -18,7 +18,7 @@ public static partial class RGUI {
 
         using(new ColorScope(color)) {
             var text = unparsedStr.Get() ?? ((v != null) ? v.ToString() : "");
-            var displayStr = GUILayout.TextField(text, Main.Settings.useLegacyTheme ? GUI.skin.textField : Drawer.myTextField, option ?? fieldWidthMin);
+            var displayStr = GUILayout.TextField(text, Main.Settings.UseLegacyTheme ? GUI.skin.textField : Drawer.myTextField, option ?? fieldWidthMin);
             if(displayStr != text) {
                 try {
                     ret = Convert.ChangeType(displayStr, type);

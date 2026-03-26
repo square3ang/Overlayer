@@ -12,53 +12,53 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
         Advanced
     }
 
-    public bool disableLogo = false;
+    public bool DisableLogo = false;
     public bool ChangeFont = false;
     public FontMeta AdofaiFont = new();
     public string Lang = "Default";
     public float FPSUpdateRate = 100;
     public float FrameTimeUpdateRate = 100;
     public int SystemTagUpdateRate = 100;
-    public bool useLegacyTheme = false;
-    public bool useShowTrueAutoJudgment = false;
-    public bool useMovingManEditor = true;
-    public bool useColorRangeEditor = true;
-    public bool useEasedValueEditor = true;
-    public bool useAutoUpdate = false;
-    public bool useAutoUpdateBeta = false;
-    public bool useTooltip = true;
-    public bool autoPivot = true;
-    public bool showTextNameAsDisplayText = false;
-    public EditorUIMode uiMode = EditorUIMode.Simple;
-    public bool isFirstEg = true;
+    public bool UseLegacyTheme = false;
+    public bool UseShowTrueAutoJudgment = false;
+    public bool UseMovingManEditor = true;
+    public bool UseColorRangeEditor = true;
+    public bool UseEasedValueEditor = true;
+    public bool UseAutoUpdate = false;
+    public bool UseAutoUpdateBeta = false;
+    public bool UseTooltip = true;
+    public bool AutoPivot = true;
+    public bool ShowTextNameAsDisplayText = false;
+    public EditorUIMode UiMode = EditorUIMode.Simple;
+    public bool IsFirstEg = true;
     public JToken Serialize() {
         var node = new JObject {
-            [nameof(disableLogo)] = disableLogo,
+            [nameof(DisableLogo)] = DisableLogo,
             [nameof(ChangeFont)] = ChangeFont,
             [nameof(AdofaiFont)] = AdofaiFont?.Serialize(),
             [nameof(Lang)] = Lang,
             [nameof(FPSUpdateRate)] = FPSUpdateRate,
             [nameof(FrameTimeUpdateRate)] = FrameTimeUpdateRate,
             [nameof(SystemTagUpdateRate)] = SystemTagUpdateRate,
-            [nameof(useLegacyTheme)] = useLegacyTheme,
-            [nameof(useShowTrueAutoJudgment)] = useShowTrueAutoJudgment,
-            [nameof(useMovingManEditor)] = useMovingManEditor,
-            [nameof(useColorRangeEditor)] = useColorRangeEditor,
-            [nameof(useEasedValueEditor)] = useEasedValueEditor,
-            [nameof(useAutoUpdate)] = useAutoUpdate,
-            [nameof(useAutoUpdateBeta)] = useAutoUpdateBeta,
-            [nameof(useTooltip)] = useTooltip,
-            [nameof(autoPivot)] = autoPivot,
-            [nameof(showTextNameAsDisplayText)] = showTextNameAsDisplayText,
-            [nameof(uiMode)] = uiMode.ToString(),
-            [nameof(isFirstEg)] = isFirstEg
+            [nameof(UseLegacyTheme)] = UseLegacyTheme,
+            [nameof(UseShowTrueAutoJudgment)] = UseShowTrueAutoJudgment,
+            [nameof(UseMovingManEditor)] = UseMovingManEditor,
+            [nameof(UseColorRangeEditor)] = UseColorRangeEditor,
+            [nameof(UseEasedValueEditor)] = UseEasedValueEditor,
+            [nameof(UseAutoUpdate)] = UseAutoUpdate,
+            [nameof(UseAutoUpdateBeta)] = UseAutoUpdateBeta,
+            [nameof(UseTooltip)] = UseTooltip,
+            [nameof(AutoPivot)] = AutoPivot,
+            [nameof(ShowTextNameAsDisplayText)] = ShowTextNameAsDisplayText,
+            [nameof(UiMode)] = UiMode.ToString(),
+            [nameof(IsFirstEg)] = IsFirstEg
         };
         return node;
     }
     public void Deserialize(JToken node) {
         var defaultSettings = new Settings();
 
-        disableLogo = node[nameof(disableLogo)]?.Value<bool>() ?? defaultSettings.disableLogo;
+        DisableLogo = LegacyGet(node, nameof(DisableLogo))?.Value<bool>() ?? defaultSettings.DisableLogo;
         ChangeFont = node[nameof(ChangeFont)]?.Value<bool>() ?? defaultSettings.ChangeFont;
         AdofaiFont = node[nameof(AdofaiFont)] != null
             ? ModelUtils.Unbox<FontMeta>(node[nameof(AdofaiFont)])
@@ -67,40 +67,44 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
         FPSUpdateRate = node[nameof(FPSUpdateRate)]?.Value<float>() ?? defaultSettings.FPSUpdateRate;
         FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)]?.Value<float>() ?? defaultSettings.FrameTimeUpdateRate;
         SystemTagUpdateRate = node[nameof(SystemTagUpdateRate)]?.Value<int>() ?? defaultSettings.SystemTagUpdateRate;
-        useLegacyTheme = node[nameof(useLegacyTheme)]?.Value<bool>() ?? defaultSettings.useLegacyTheme;
-        useShowTrueAutoJudgment = node[nameof(useShowTrueAutoJudgment)]?.Value<bool>() ?? defaultSettings.useShowTrueAutoJudgment;
-        useMovingManEditor = node[nameof(useMovingManEditor)]?.Value<bool>() ?? defaultSettings.useMovingManEditor;
-        useColorRangeEditor = node[nameof(useColorRangeEditor)]?.Value<bool>() ?? defaultSettings.useColorRangeEditor;
-        useEasedValueEditor = node[nameof(useEasedValueEditor)]?.Value<bool>() ?? defaultSettings.useEasedValueEditor;
-        useAutoUpdate = node[nameof(useAutoUpdate)]?.Value<bool>() ?? defaultSettings.useAutoUpdate;
-        useAutoUpdateBeta = node[nameof(useAutoUpdateBeta)]?.Value<bool>() ?? defaultSettings.useAutoUpdateBeta;
-        useTooltip = node[nameof(useTooltip)]?.Value<bool>() ?? defaultSettings.useTooltip;
-        autoPivot = node[nameof(autoPivot)]?.Value<bool>() ?? defaultSettings.autoPivot;
-        showTextNameAsDisplayText = node[nameof(showTextNameAsDisplayText)]?.Value<bool>() ?? defaultSettings.showTextNameAsDisplayText;
-        uiMode = EnumHelper<EditorUIMode>.Parse(node[nameof(uiMode)]?.Value<string>() ?? defaultSettings.uiMode.ToString());
+        UseLegacyTheme = LegacyGet(node, nameof(UseLegacyTheme))?.Value<bool>() ?? defaultSettings.UseLegacyTheme;
+        UseShowTrueAutoJudgment = LegacyGet(node, nameof(UseShowTrueAutoJudgment))?.Value<bool>() ?? defaultSettings.UseShowTrueAutoJudgment;
+        UseMovingManEditor = LegacyGet(node, nameof(UseMovingManEditor))?.Value<bool>() ?? defaultSettings.UseMovingManEditor;
+        UseColorRangeEditor = LegacyGet(node, nameof(UseColorRangeEditor))?.Value<bool>() ?? defaultSettings.UseColorRangeEditor;
+        UseEasedValueEditor = LegacyGet(node, nameof(UseEasedValueEditor))?.Value<bool>() ?? defaultSettings.UseEasedValueEditor;
+        UseAutoUpdate = LegacyGet(node, nameof(UseAutoUpdate))?.Value<bool>() ?? defaultSettings.UseAutoUpdate;
+        UseAutoUpdateBeta = LegacyGet(node, nameof(UseAutoUpdateBeta))?.Value<bool>() ?? defaultSettings.UseAutoUpdateBeta;
+        UseTooltip = LegacyGet(node, nameof(UseTooltip))?.Value<bool>() ?? defaultSettings.UseTooltip;
+        AutoPivot = LegacyGet(node, nameof(AutoPivot))?.Value<bool>() ?? defaultSettings.AutoPivot;
+        ShowTextNameAsDisplayText = LegacyGet(node, nameof(ShowTextNameAsDisplayText))?.Value<bool>() ?? defaultSettings.ShowTextNameAsDisplayText;
+        UiMode = EnumHelper<EditorUIMode>.Parse(LegacyGet(node, nameof(UiMode))?.Value<string>() ?? defaultSettings.UiMode.ToString());
 
-        isFirstEg = node[nameof(isFirstEg)]?.Value<bool>() ?? defaultSettings.isFirstEg;
+        IsFirstEg = LegacyGet(node, nameof(IsFirstEg))?.Value<bool>() ?? defaultSettings.IsFirstEg;
     }
     public Settings Copy() {
         var newSettings = new Settings {
-            disableLogo = disableLogo,
+            DisableLogo = DisableLogo,
             ChangeFont = ChangeFont,
             AdofaiFont = AdofaiFont.Copy(),
             Lang = Lang,
             FPSUpdateRate = FPSUpdateRate,
             FrameTimeUpdateRate = FrameTimeUpdateRate,
             SystemTagUpdateRate = SystemTagUpdateRate,
-            useLegacyTheme = useLegacyTheme,
-            useShowTrueAutoJudgment = useShowTrueAutoJudgment,
-            useMovingManEditor = useMovingManEditor,
-            useColorRangeEditor = useColorRangeEditor,
-            useEasedValueEditor = useEasedValueEditor,
-            useAutoUpdate = useAutoUpdate,
-            useAutoUpdateBeta = useAutoUpdateBeta,
-            autoPivot = autoPivot,
-            showTextNameAsDisplayText = showTextNameAsDisplayText,
-            isFirstEg = isFirstEg
+            UseLegacyTheme = UseLegacyTheme,
+            UseShowTrueAutoJudgment = UseShowTrueAutoJudgment,
+            UseMovingManEditor = UseMovingManEditor,
+            UseColorRangeEditor = UseColorRangeEditor,
+            UseEasedValueEditor = UseEasedValueEditor,
+            UseAutoUpdate = UseAutoUpdate,
+            UseAutoUpdateBeta = UseAutoUpdateBeta,
+            AutoPivot = AutoPivot,
+            ShowTextNameAsDisplayText = ShowTextNameAsDisplayText,
+            IsFirstEg = IsFirstEg
         };
         return newSettings;
+    }
+
+    public static JToken LegacyGet(JToken node, string name) {
+        return node[name] ?? node[char.ToLower(name[0]) + name.Substring(1)];
     }
 }

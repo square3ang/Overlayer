@@ -261,7 +261,7 @@ public class IMColorPicker : IDoGUIWindow {
     void DrawSliderMode() {
         using(new GUILayout.HorizontalScope()) {
             GUILayout.FlexibleSpace();
-            var style = new GUIStyle(Main.Settings.useLegacyTheme ? GUI.skin.button : Drawer.myButton) {
+            var style = new GUIStyle(Main.Settings.UseLegacyTheme ? GUI.skin.button : Drawer.myButton) {
                 fontSize = 12
             };
             if(GUILayout.Button(sliderMode.ToString(), style, GUILayout.Width(50f))) {

@@ -66,7 +66,7 @@ public static class RGUIStyle {
     static void CreatePopup() {
         var style = new GUIStyle(GUI.skin.box);
 
-        if(!Main.Settings.useLegacyTheme) {
+        if(!Main.Settings.UseLegacyTheme) {
             style.border = new RectOffset();
             popupTex = new Texture2D(1, 1);
             var brightness = 0.2f;
@@ -87,7 +87,7 @@ public static class RGUIStyle {
     public static void CreateDarkWindow() {
         var style = new GUIStyle(GUI.skin.window);
 
-        if(Main.Settings.useLegacyTheme) {
+        if(Main.Settings.UseLegacyTheme) {
             style.normal.background = darkWindowTexNormal = CreateTexDark(style.normal.background, 0.5f, 1.4f);
             style.onNormal.background =
                 darkWindowTexOnNormal = CreateTexDark(style.onNormal.background, 0.6f, 1.5f);
@@ -103,7 +103,7 @@ public static class RGUIStyle {
     }
 
     public static void CreateAlignLeftBox() {
-        var style = new GUIStyle(Main.Settings.useLegacyTheme ? GUI.skin.button : Drawer.myButton) {
+        var style = new GUIStyle(Main.Settings.UseLegacyTheme ? GUI.skin.button : Drawer.myButton) {
             //alignment = TextAnchor.MiddleLeft,
             name = nameof(alignLeftBox)
         };

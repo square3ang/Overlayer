@@ -119,7 +119,7 @@ public static partial class RGUI {
         var ns1 = new GUIStyle(GUI.skin.horizontalSlider);
         var ns2 = new GUIStyle(GUI.skin.horizontalSliderThumb);
 
-        if(!Main.Settings.useLegacyTheme) {
+        if(!Main.Settings.UseLegacyTheme) {
             ns1.normal.background = Drawer.jittengray;
             ns2.normal.background = Drawer.gray;
             ns2.active.background = Drawer.dulgray;
@@ -143,7 +143,7 @@ public static partial class RGUI {
         var ns1 = new GUIStyle(GUI.skin.horizontalSlider);
         var ns2 = new GUIStyle(GUI.skin.horizontalSliderThumb);
 
-        if(!Main.Settings.useLegacyTheme) {
+        if(!Main.Settings.UseLegacyTheme) {
             ns1.normal.background = Drawer.jittengray;
             ns2.normal.background = Drawer.gray;
             ns2.active.background = Drawer.dulgray;

@@ -98,7 +98,7 @@ public static class Drawer {
 
                 var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
                 if(TagManager.tags.ContainsKey(name)) {
-                    if((Main.Settings.useMovingManEditor && name == nameof(Effect.MovingMan)) || (Main.Settings.useColorRangeEditor && name == nameof(Effect.ColorRange)) || (Main.Settings.useEasedValueEditor && name == nameof(Effect.EasedValue))) {
+                    if((Main.Settings.UseMovingManEditor && name == nameof(Effect.MovingMan)) || (Main.Settings.UseColorRangeEditor && name == nameof(Effect.ColorRange)) || (Main.Settings.UseEasedValueEditor && name == nameof(Effect.EasedValue))) {
                         str = str.Replace("{" + match.Groups[1].Value + "}",
                             "<color=orange>{" + match.Groups[1].Value + "}</color>");
                     } else if(name.EndsWith("Hex")) {
@@ -134,7 +134,7 @@ public static class Drawer {
         myTextField.padding.right = 40;
         mySlider = new GUIStyle(GUI.skin.horizontalSlider);
         myThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);
-        SetStyle(Main.Settings.useLegacyTheme);
+        SetStyle(Main.Settings.UseLegacyTheme);
     }
 
     private static bool isImageInited = false;
@@ -441,7 +441,7 @@ public static class Drawer {
 
         GUILayout.BeginHorizontal();
 
-        if(Main.Settings.useLegacyTheme) {
+        if(Main.Settings.UseLegacyTheme) {
             value = GUILayout.Toggle(value, "");
         } else {
             var old = GUI.backgroundColor;
@@ -474,7 +474,7 @@ public static class Drawer {
 
         GUILayout.BeginHorizontal();
 
-        if(Main.Settings.useLegacyTheme) {
+        if(Main.Settings.UseLegacyTheme) {
             value = GUILayout.Toggle(value, "");
         } else {
             var old = GUI.backgroundColor;
@@ -509,7 +509,7 @@ public static class Drawer {
     public static bool DrawOnlyBool(ref bool value) {
         bool prev = value;
 
-        if(Main.Settings.useLegacyTheme) {
+        if(Main.Settings.UseLegacyTheme) {
             value = GUILayout.Toggle(value, "");
         } else {
             var old = GUI.backgroundColor;
@@ -665,7 +665,7 @@ public static class Drawer {
             GUILayout.Label(icon);
             GUILayout.Space(4);
         }
-        if(Main.Settings.uiMode == Settings.EditorUIMode.Simple) {
+        if(Main.Settings.UiMode == Settings.EditorUIMode.Simple) {
             GUILayout.Label(label);
         } else {
             if(isExpr) {

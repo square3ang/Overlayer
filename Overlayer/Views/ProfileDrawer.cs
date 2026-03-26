@@ -112,11 +112,11 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
             });
         }
         GUI.color = old;
-        string showAs = Main.Settings.showTextNameAsDisplayText
+        string showAs = Main.Settings.ShowTextNameAsDisplayText
             ? Main.Lang.Get("TEXT_SHOW_AS_DISPLAY", "Show As <color=#808080>Name</color> / Display Text")
             : Main.Lang.Get("TEXT_SHOW_AS_NAME", "Show As Name / <color=#808080>Display Text</color>");
         if(Drawer.Button(showAs)) {
-            Main.Settings.showTextNameAsDisplayText = !Main.Settings.showTextNameAsDisplayText;
+            Main.Settings.ShowTextNameAsDisplayText = !Main.Settings.ShowTextNameAsDisplayText;
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
@@ -293,7 +293,7 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
     }
     private string GetObjectName(OverlayerObject obj) {
         if(obj is OverlayerText text) {
-            if(Main.Settings.showTextNameAsDisplayText) {
+            if(Main.Settings.ShowTextNameAsDisplayText) {
                 if(text.Config.Active) {
                     string current = text.GetCurrentText();
                     string objName = current?.BreakRichTag();

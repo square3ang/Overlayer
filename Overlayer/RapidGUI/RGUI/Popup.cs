@@ -222,7 +222,7 @@ public static partial class RGUI {
                 var bakv = GUI.skin.verticalScrollbar.normal.background;
                 var bakvt = GUI.skin.verticalScrollbarThumb.normal.background;
 
-                if(!Main.Settings.useLegacyTheme) {
+                if(!Main.Settings.UseLegacyTheme) {
                     GUI.skin.verticalScrollbar.normal.background = Drawer.jittengray;
 
                     GUI.skin.verticalScrollbarThumb.normal.background = Drawer.gray;
