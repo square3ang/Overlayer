@@ -156,7 +156,7 @@ public class Settings : IModel, ICopyable<Settings> {
 
             DisableLogo = legacy.disableLogo;
             ChangeFont = legacy.ChangeFont;
-            AdofaiFont = legacy.AdoFont?.Copy();
+            AdofaiFont = legacy.AdofaiFont?.Copy() ?? new FontMeta();
             Lang = legacy.Lang;
             FPSUpdateRate = legacy.FPSUpdateRate;
             FrameTimeUpdateRate = legacy.FrameTimeUpdateRate;
@@ -171,7 +171,6 @@ public class Settings : IModel, ICopyable<Settings> {
             Tooltip = legacy.useTooltip;
             AutoPivot = legacy.autoPivot;
             ShowTextNameAsDisplayText = legacy.showTextNameAsDisplayText;
-            UiMode = legacy.uiMode;
             IsFirstEg = legacy.isFirstEg;
         }
 
@@ -186,7 +185,7 @@ public class Settings : IModel, ICopyable<Settings> {
     public class LegacyXmlSettings {
         public bool disableLogo;
         public bool ChangeFont;
-        public FontMeta AdoFont;
+        public FontMeta AdofaiFont;
         public string Lang;
         public float FPSUpdateRate;
         public float FrameTimeUpdateRate;
@@ -201,7 +200,6 @@ public class Settings : IModel, ICopyable<Settings> {
         public bool useTooltip;
         public bool autoPivot;
         public bool showTextNameAsDisplayText;
-        public EditorUIMode uiMode;
         public bool isFirstEg;
     }
 }
