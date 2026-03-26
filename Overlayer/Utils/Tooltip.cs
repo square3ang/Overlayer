@@ -3,14 +3,14 @@
 namespace Overlayer.Utils;
 
 public class Tooltip {
-    public static string GetTooltip(string key) {
+    public static string GetTagDescription(string key) {
         if(string.IsNullOrEmpty(key)) {
             return null;
         }
 
         string keyUpper = key.ToUpperInvariant();
 
-        string langKey = "TOOLTIP_" + keyUpper;
+        string langKey = "TAG_DESC_" + keyUpper;
         string localized = Main.Lang.Get(langKey, null);
         return !string.IsNullOrEmpty(localized)
             ? localized

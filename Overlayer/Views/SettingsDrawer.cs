@@ -185,23 +185,22 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                         Main.LogoInit(Main.Mod.Path);
                     }
                 }
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("UPDATE", "Update"))), ref model.UseAutoUpdate);
-                if(model.UseAutoUpdate) {
+                Drawer.DrawBool(string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("UPDATE", "Update")), ref model.AutoUpdate);
+                if(model.AutoUpdate) {
                     Drawer.BeginTab();
-                    Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.UseAutoUpdateBeta);
+                    Drawer.DrawBool(string.Format(Main.Lang.Get("ALLOW_THIS", "Allow {0}"), Main.Lang.Get("BETA_TEXT", "Beta version")), ref model.AutoUpdateBeta);
                     Drawer.EndTab();
                 }
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("TOOLTIP", "Tooltip")), ref model.UseTooltip);
-                if(Drawer.DrawBool(
-                        string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("LEGACY_THEME", "Legacy Theme")),
-                        ref model.UseLegacyTheme)) {
-                    Drawer.SetStyle(model.UseLegacyTheme);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), Main.Lang.Get("TOOLTIP", "Tooltip")), ref model.Tooltip);
+                if(Drawer.DrawBool(Main.Lang.Get("LEGACY_THEME", "Legacy Theme"), ref model.LegacyTheme)) {
+                    Drawer.SetStyle(model.LegacyTheme);
                     RGUIStyle.CreateStyles();
                 }
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot"))), ref model.AutoPivot);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan))), ref model.UseMovingManEditor);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.ColorRange))), ref model.UseColorRangeEditor);
-                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.EasedValue))), ref model.UseEasedValueEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot")), ref model.AutoPivot);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot")), ref model.AutoPivot);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan)), ref model.MovingManEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.ColorRange)), ref model.ColorRangeEditor);
+                Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.EasedValue)), ref model.EasedValueEditor);
                 NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FPS_UPDATE_RATE", "Fps Update Rate"), ref model.FPSUpdateRate);
                 NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
                 NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
@@ -376,7 +375,9 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                         );
                         if(!string.IsNullOrWhiteSpace(target)) {
                             var node = profile.Config.Serialize();
-                            node["References"] = ProfileReferences.GetReferences(profile);
+                            if(model.IncludeReferences) {
+                                node["References"] = ProfileReferences.GetReferences(profile);
+                            }
                             File.WriteAllText(target, node.ToString());
                         }
                     });

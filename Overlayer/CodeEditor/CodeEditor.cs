@@ -265,21 +265,21 @@ public class CodeEditor {
 
                 var special = mvm || cr || ev;
 
-                if(mvm && !Main.Settings.UseMovingManEditor) {
+                if(mvm && !Main.Settings.MovingManEditor) {
                     special = false;
                 }
 
-                if(cr && !Main.Settings.UseColorRangeEditor) {
+                if(cr && !Main.Settings.ColorRangeEditor) {
                     special = false;
                 }
 
-                if(ev && !Main.Settings.UseEasedValueEditor) {
+                if(ev && !Main.Settings.EasedValueEditor) {
                     special = false;
                 }
 
                 if(rect.Contains(Event.current.mousePosition)) {
                     var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                    Main.tooltip = TagManager.tags.ContainsKey(pars) ? Tooltip.GetTooltip(pars) : Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
+                    Main.tooltip = TagManager.tags.ContainsKey(pars) ? Tooltip.GetTagDescription(pars) : Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
                 }
 
                 if(special) {

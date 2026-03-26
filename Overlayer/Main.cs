@@ -145,8 +145,8 @@ public static class Main {
                 updateOnce = false;
                 _ = AutoUpdater.InitAndUpdate(
                     Mod,
-                    Settings.UseAutoUpdate,
-                    Settings.UseAutoUpdateBeta,
+                    Settings.AutoUpdate,
+                    Settings.AutoUpdateBeta,
                     () => UpdateInfo = Lang.Get("UPDATE_SUCESS", "Update Success!") + " " + Lang.Get("UPDATE_NEED_TO_RESTART", "Need to Restart!"),
                     (err) => {
                         Logger.Error("Update Fail: " + err);
@@ -274,7 +274,7 @@ public static class Main {
         }
 
         if(!RGUI.PopupWindow.isOpen) {
-            if(Settings.UseTooltip) {
+            if(Settings.Tooltip) {
                 Drawer.Tooltip(tooltip);
             }
         }

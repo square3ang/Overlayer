@@ -180,7 +180,9 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
                 if(!string.IsNullOrWhiteSpace(target)) {
                     JObject node = model.Serialize() as JObject;
                     node["Type"] = "Text";
-                    node["References"] = TextConfigImporter.GetReferences(model);
+                    if(Main.Settings.IncludeReferences) {
+                        node["References"] = TextConfigImporter.GetReferences(model);
+                    }
                     File.WriteAllText(target, JsonConvert.SerializeObject(node, Formatting.Indented));
                 }
             });

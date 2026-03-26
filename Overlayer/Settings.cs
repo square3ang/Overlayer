@@ -13,23 +13,26 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
     }
 
     public bool DisableLogo = false;
-    public bool ChangeFont = false;
     public FontMeta AdofaiFont = new();
-    public string Lang = "Default";
+    public string Lang = "en-US";
     public float FPSUpdateRate = 100;
     public float FrameTimeUpdateRate = 100;
     public int SystemTagUpdateRate = 100;
-    public bool UseLegacyTheme = false;
-    public bool UseShowTrueAutoJudgment = false;
-    public bool UseMovingManEditor = true;
-    public bool UseColorRangeEditor = true;
-    public bool UseEasedValueEditor = true;
-    public bool UseAutoUpdate = false;
-    public bool UseAutoUpdateBeta = false;
-    public bool UseTooltip = true;
+    public bool LegacyTheme = false;
+    public bool MovingManEditor = true;
+    public bool ColorRangeEditor = true;
+    public bool EasedValueEditor = true;
+    public bool AutoUpdate = false;
+    public bool AutoUpdateBeta = false;
+    public bool Tooltip = true;
     public bool AutoPivot = true;
+    public bool IncludeReferences = true;
     public bool ShowTextNameAsDisplayText = false;
     public EditorUIMode UiMode = EditorUIMode.Simple;
+
+    public bool ChangeFont = false;
+    public bool UseShowTrueAutoJudgment = false;
+
     public bool IsFirstEg = true;
     public JToken Serialize() {
         var node = new JObject {
@@ -40,16 +43,17 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
             [nameof(FPSUpdateRate)] = FPSUpdateRate,
             [nameof(FrameTimeUpdateRate)] = FrameTimeUpdateRate,
             [nameof(SystemTagUpdateRate)] = SystemTagUpdateRate,
-            [nameof(UseLegacyTheme)] = UseLegacyTheme,
+            [nameof(LegacyTheme)] = LegacyTheme,
             [nameof(UseShowTrueAutoJudgment)] = UseShowTrueAutoJudgment,
-            [nameof(UseMovingManEditor)] = UseMovingManEditor,
-            [nameof(UseColorRangeEditor)] = UseColorRangeEditor,
-            [nameof(UseEasedValueEditor)] = UseEasedValueEditor,
-            [nameof(UseAutoUpdate)] = UseAutoUpdate,
-            [nameof(UseAutoUpdateBeta)] = UseAutoUpdateBeta,
-            [nameof(UseTooltip)] = UseTooltip,
+            [nameof(MovingManEditor)] = MovingManEditor,
+            [nameof(ColorRangeEditor)] = ColorRangeEditor,
+            [nameof(EasedValueEditor)] = EasedValueEditor,
+            [nameof(AutoUpdate)] = AutoUpdate,
+            [nameof(AutoUpdateBeta)] = AutoUpdateBeta,
+            [nameof(Tooltip)] = Tooltip,
             [nameof(AutoPivot)] = AutoPivot,
             [nameof(ShowTextNameAsDisplayText)] = ShowTextNameAsDisplayText,
+            [nameof(IncludeReferences)] = IncludeReferences,
             [nameof(UiMode)] = UiMode.ToString(),
             [nameof(IsFirstEg)] = IsFirstEg
         };
@@ -67,15 +71,16 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
         FPSUpdateRate = node[nameof(FPSUpdateRate)]?.Value<float>() ?? defaultSettings.FPSUpdateRate;
         FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)]?.Value<float>() ?? defaultSettings.FrameTimeUpdateRate;
         SystemTagUpdateRate = node[nameof(SystemTagUpdateRate)]?.Value<int>() ?? defaultSettings.SystemTagUpdateRate;
-        UseLegacyTheme = LegacyGet(node, nameof(UseLegacyTheme))?.Value<bool>() ?? defaultSettings.UseLegacyTheme;
-        UseShowTrueAutoJudgment = LegacyGet(node, nameof(UseShowTrueAutoJudgment))?.Value<bool>() ?? defaultSettings.UseShowTrueAutoJudgment;
-        UseMovingManEditor = LegacyGet(node, nameof(UseMovingManEditor))?.Value<bool>() ?? defaultSettings.UseMovingManEditor;
-        UseColorRangeEditor = LegacyGet(node, nameof(UseColorRangeEditor))?.Value<bool>() ?? defaultSettings.UseColorRangeEditor;
-        UseEasedValueEditor = LegacyGet(node, nameof(UseEasedValueEditor))?.Value<bool>() ?? defaultSettings.UseEasedValueEditor;
-        UseAutoUpdate = LegacyGet(node, nameof(UseAutoUpdate))?.Value<bool>() ?? defaultSettings.UseAutoUpdate;
-        UseAutoUpdateBeta = LegacyGet(node, nameof(UseAutoUpdateBeta))?.Value<bool>() ?? defaultSettings.UseAutoUpdateBeta;
-        UseTooltip = LegacyGet(node, nameof(UseTooltip))?.Value<bool>() ?? defaultSettings.UseTooltip;
+        LegacyTheme = LegacyUseGet(node, nameof(LegacyTheme))?.Value<bool>() ?? defaultSettings.LegacyTheme;
+        UseShowTrueAutoJudgment = LegacyUseGet(node, nameof(UseShowTrueAutoJudgment))?.Value<bool>() ?? defaultSettings.UseShowTrueAutoJudgment;
+        MovingManEditor = LegacyUseGet(node, nameof(MovingManEditor))?.Value<bool>() ?? defaultSettings.MovingManEditor;
+        ColorRangeEditor = LegacyUseGet(node, nameof(ColorRangeEditor))?.Value<bool>() ?? defaultSettings.ColorRangeEditor;
+        EasedValueEditor = LegacyUseGet(node, nameof(EasedValueEditor))?.Value<bool>() ?? defaultSettings.EasedValueEditor;
+        AutoUpdate = LegacyUseGet(node, nameof(AutoUpdate))?.Value<bool>() ?? defaultSettings.AutoUpdate;
+        AutoUpdateBeta = LegacyUseGet(node, nameof(AutoUpdateBeta))?.Value<bool>() ?? defaultSettings.AutoUpdateBeta;
+        Tooltip = LegacyUseGet(node, nameof(Tooltip))?.Value<bool>() ?? defaultSettings.Tooltip;
         AutoPivot = LegacyGet(node, nameof(AutoPivot))?.Value<bool>() ?? defaultSettings.AutoPivot;
+        IncludeReferences = node[nameof(IncludeReferences)]?.Value<bool>() ?? defaultSettings.IncludeReferences;
         ShowTextNameAsDisplayText = LegacyGet(node, nameof(ShowTextNameAsDisplayText))?.Value<bool>() ?? defaultSettings.ShowTextNameAsDisplayText;
         UiMode = EnumHelper<EditorUIMode>.Parse(LegacyGet(node, nameof(UiMode))?.Value<string>() ?? defaultSettings.UiMode.ToString());
 
@@ -90,14 +95,15 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
             FPSUpdateRate = FPSUpdateRate,
             FrameTimeUpdateRate = FrameTimeUpdateRate,
             SystemTagUpdateRate = SystemTagUpdateRate,
-            UseLegacyTheme = UseLegacyTheme,
+            LegacyTheme = LegacyTheme,
             UseShowTrueAutoJudgment = UseShowTrueAutoJudgment,
-            UseMovingManEditor = UseMovingManEditor,
-            UseColorRangeEditor = UseColorRangeEditor,
-            UseEasedValueEditor = UseEasedValueEditor,
-            UseAutoUpdate = UseAutoUpdate,
-            UseAutoUpdateBeta = UseAutoUpdateBeta,
+            MovingManEditor = MovingManEditor,
+            ColorRangeEditor = ColorRangeEditor,
+            EasedValueEditor = EasedValueEditor,
+            AutoUpdate = AutoUpdate,
+            AutoUpdateBeta = AutoUpdateBeta,
             AutoPivot = AutoPivot,
+            IncludeReferences = IncludeReferences,
             ShowTextNameAsDisplayText = ShowTextNameAsDisplayText,
             IsFirstEg = IsFirstEg
         };
@@ -106,5 +112,9 @@ public class Settings : UnityModManager.ModSettings, IModel, ICopyable<Settings>
 
     public static JToken LegacyGet(JToken node, string name) {
         return node[name] ?? node[char.ToLower(name[0]) + name.Substring(1)];
+    }
+
+    public static JToken LegacyUseGet(JToken node, string name) {
+        return node[name] ?? node["use"+name];
     }
 }
