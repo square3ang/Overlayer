@@ -6,14 +6,15 @@ public class OllyState {
     public enum Eyebrow {
         None,
         Normal,
-        Angry,
-        Twist,
-        Curious,
         Sad,
+        Angry,
         AngryMore,
+        Curious,
+        Twist,
         Pity,
         NormalHigh
     }
+
     public enum Eye {
         None,
         Normal,

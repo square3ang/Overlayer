@@ -202,8 +202,7 @@ public class OllyRender {
                 20 + Anchor.MouthAnchor[(int)face.Mouth - 1].y + faceOffset.y,
                 Mouths[(int)face.Mouth - 1].width, Mouths[(int)face.Mouth - 1].height), Mouths[(int)face.Mouth - 1]);
         }
-        GUI.DrawTexture(new Rect(imageX + Anchor.NoseAnchor.x + faceOffset.x,
-            20 + Anchor.NoseAnchor.y + faceOffset.y,
+        GUI.DrawTexture(new Rect(imageX + Anchor.NoseAnchor.x + faceOffset.x, 20 + Anchor.NoseAnchor.y + faceOffset.y,
             Nose.width, Nose.height), Nose);
         if(face.Eye != Eye.None && face.EyeSpecial == EyeSpecial.None) {
             GUI.DrawTexture(new Rect(
@@ -216,8 +215,8 @@ public class OllyRender {
                 20 + Anchor.EyesAnchor[(int)face.Eye - 1].Item1.y + eyeOffset.y,
                 Eyes[(int)face.Eye - 1].left.width, Eyes[(int)face.Eye - 1].left.height), Eyes[(int)face.Eye - 1].left);
         }
+        Vector2 eyelidOffset = Vector2.zero;
         if(face.EyeSpecial == EyeSpecial.None) {
-            Vector2 eyelidOffset = Vector2.zero;
             if(followMouse) {
                 eyelidOffset = eyeOffset * 0.4f;
             }
@@ -230,13 +229,23 @@ public class OllyRender {
         }
         if(face.EffectBit != EffectBit.None) {
             foreach(EffectBit effect in Enum.GetValues(typeof(EffectBit))) {
-                if((face.EffectBit & effect) == 0) {
+                if(effect == EffectBit.None || (face.EffectBit & effect) == 0) {
                     continue;
                 }
 
-                float effectOffsetY = 0f;
-                if(effect == EffectBit.Tear && eyeBlinkTimer > eyeBlinkInterval) {
-                    effectOffsetY += (eyeBlinkInterval - eyeBlinkTimer) * 6f;
+                Vector2 currentOffset = Vector2.zero;
+                float blinkYOffset = 0f;
+                if(effect == EffectBit.Tear) {
+                    if(face.Eye != Eye.Normal) {
+                        continue;
+                    }
+                    if(followMouse) {
+                        currentOffset = eyelidOffset;
+                    }
+                } else {
+                    if(followMouse) {
+                        currentOffset = faceOffset;
+                    }
                 }
 
                 int idx = OllyUtils.BitIndex((int)effect) - 1;
@@ -244,15 +253,19 @@ public class OllyRender {
                 var tex = Effects[idx];
 
                 GUI.DrawTexture(
-                    new Rect(imageX + anchor.x, 20 + anchor.y,
-                    tex.width, tex.height), tex
+                    new Rect(
+                        imageX + anchor.x + currentOffset.x,
+                        20 + anchor.y + currentOffset.y + blinkYOffset,
+                        tex.width,
+                        tex.height
+                    ),
+                    tex
                 );
             }
         }
         if(face.EyeSpecial == EyeSpecial.None) {
             Vector2 leftEyeOffset = Vector2.zero;
             Vector2 rightEyeOffset = Vector2.zero;
-            Vector2 eyelidOffset = Vector2.zero;
             if(face.Eye == Eye.Small) {
                 leftEyeOffset = new Vector2(4f, 6f);
                 rightEyeOffset = new Vector2(0, 5f);
@@ -296,13 +309,25 @@ public class OllyRender {
             GUI.DrawTexture(new Rect(imageX + Anchor.EyebrowAnchor[(int)face.Eyebrow - 1].x + eyebrowOffset.x,
             20 + Anchor.EyebrowAnchor[(int)face.Eyebrow - 1].y + eyebrowOffset.y,
             Eyebrows[(int)face.Eyebrow - 1].width, Eyebrows[(int)face.Eyebrow - 1].height), Eyebrows[(int)face.Eyebrow - 1]);
-
         }
 
         if(face.EffectForwardBit != EffectForwardBit.None) {
-            foreach(EffectForwardBit effect in Enum.GetValues(typeof(EffectBit))) {
-                if((face.EffectForwardBit & effect) == 0) {
+            foreach(EffectForwardBit effect in Enum.GetValues(typeof(EffectForwardBit))) {
+                if(effect == EffectForwardBit.None || (face.EffectForwardBit & effect) == 0) {
                     continue;
+                }
+
+                Vector2 effectForwardOffset = Vector2.zero;
+                if(followMouse) {
+                    switch(effect) {
+                        case EffectForwardBit.Tremble:
+                        case EffectForwardBit.Tendon:
+                            effectForwardOffset = hairOffset;
+                            break;
+                        case EffectForwardBit.BlushBig:
+                            effectForwardOffset = faceOffset;
+                            break;
+                    }
                 }
 
                 int idx = OllyUtils.BitIndex((int)effect) - 1;
@@ -310,8 +335,13 @@ public class OllyRender {
                 var tex = EffectForwards[idx];
 
                 GUI.DrawTexture(
-                    new Rect(imageX + anchor.x, 20 + anchor.y,
-                    tex.width, tex.height), tex
+                    new Rect(
+                        imageX + anchor.x + effectForwardOffset.x,
+                        20 + anchor.y + effectForwardOffset.y,
+                        tex.width,
+                        tex.height
+                    ),
+                    tex
                 );
             }
         }

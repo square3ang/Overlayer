@@ -3,6 +3,7 @@ using RapidGUI;
 using System;
 using UnityEngine;
 using static Overlayer.Olly.OllyRender;
+using static Overlayer.Olly.OllyState;
 
 namespace Overlayer.Olly;
 
@@ -157,6 +158,9 @@ public partial class Olly : MonoBehaviour {
     }
 
     public void DrawChoices() {
+#if DEBUG
+        DrawDebugFace();
+#endif
         if(currentNode == null || currentNode.Choices == null || currentNode.Choices.Length == 0 || IsTalking) {
             return;
         }
@@ -199,4 +203,59 @@ public partial class Olly : MonoBehaviour {
     }
 
     public bool IsTalking => currentNode != null && charIndex < currentNode.Text.Length;
+
+#if DEBUG
+    public void DrawDebugFace() {
+        GUILayout.BeginHorizontal();
+
+        Drawer.DrawEnum(ref face.Eye);
+        Drawer.DrawEnum(ref face.Mouth);
+        Drawer.DrawEnum(ref face.Eyebrow);
+        Drawer.DrawEnum(ref face.EyeSpecial);
+        uint feb = (uint)face.EffectBit;
+        DrawEffectButtons("Effects", ref feb);
+        face.EffectBit = (EffectBit)feb;
+        uint fefb = (uint)face.EffectForwardBit;
+        DrawEffectForwardButtons("Forwards", ref fefb);
+        face.EffectForwardBit = (EffectForwardBit)fefb;
+
+
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+    }
+    private void DrawEffectButtons(string label, ref uint currentBit) {
+        GUILayout.BeginVertical(RGUIStyle.darkWindow);
+        GUILayout.Label($"<b>{label}</b>");
+
+        foreach(EffectBit bitValue in Enum.GetValues(typeof(EffectBit))) {
+            if(bitValue == EffectBit.None)
+                continue;
+
+            uint bit = (uint)bitValue;
+            bool isActive = (currentBit & bit) != 0;
+
+            if(Drawer.Button($"{(isActive ? "●" : "○")} {bitValue}")) {
+                currentBit ^= bit;
+            }
+        }
+        GUILayout.EndVertical();
+    }
+    private void DrawEffectForwardButtons(string label, ref uint currentBit) {
+        GUILayout.BeginVertical(RGUIStyle.darkWindow);
+        GUILayout.Label($"<b>{label}</b>");
+
+        foreach(EffectForwardBit bitValue in Enum.GetValues(typeof(EffectForwardBit))) {
+            if(bitValue == EffectForwardBit.None)
+                continue;
+
+            uint bit = (uint)bitValue;
+            bool isActive = (currentBit & bit) != 0;
+
+            if(Drawer.Button($"{(isActive ? "■" : "□")} {bitValue}")) {
+                currentBit ^= bit;
+            }
+        }
+        GUILayout.EndVertical();
+    }
+#endif
 }
