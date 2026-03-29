@@ -9,6 +9,7 @@
     "ALIGNMENT": "Выравнивание",
     "ALLOW_THIS": "Разрешить {0}",
     "APPLY": "Применить",
+    "AUTO_PIVOT_DESC": "Automatically adjusts the pivot to match the text alignment.\nWhen the editor is in Simple mode, this is always enabled regardless of settings",
     "AUTO_THIS": "Авто {0}",
     "AUTO_UPDATE_BETA_DESC": "<color=#ff0000>Not recommended.</color>\nUse this only if you are willing to risk <color=#ff0000>file corruption</color>\nor <color=#ff0000>malfunction</color> in order to access the beta version fast",
     "AVAILABLE_TAGS": "Доступные Теги",

@@ -10,6 +10,7 @@
     "ALIGNMENT": "对齐方式",
     "ALLOW_THIS": "允许{0}",
     "APPLY": "应用",
+    "AUTO_PIVOT_DESC": "根据文本对齐方式自动调整枢轴点. 当编辑器处于简单模式时, 无论设置如何都会始终启用.",
     "AUTO_THIS": "自动{0}",
     "AUTO_UPDATE_BETA_DESC": "<color=#ff0000>不推荐。</color>\n仅在您愿意承担<color=#ff0000>文件损坏</color>\n或<color=#ff0000>功能异常</color>的风险以尽快体验测试版时使用",
     "AVAILABLE_TAGS": "可用 Tags",

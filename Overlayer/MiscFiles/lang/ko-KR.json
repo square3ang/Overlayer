@@ -9,6 +9,7 @@
     "ALIGNMENT": "정렬",
     "ALLOW_THIS": "{0} 허용",
     "APPLY": "적용",
+    "AUTO_PIVOT_DESC": "글자 정렬에 맞게 중심점도 자동으로 조정합니다.\n편집기가 간편 모드인 경우 설정과 관계없이 항상 활성화됩니다.",
     "AUTO_THIS": "자동 {0}",
     "AUTO_UPDATE_BETA_DESC": "<color=#ff0000>권장하지 않습니다.</color>\n<color=#ff0000>파일 손상</color>이나 <color=#ff0000>오작동</color>과 같은 위험을 감수하여\n빠른 베타 버전을 사용 할 의향이 있는 경우에만 사용하십시오",
     "AVAILABLE_TAGS": "사용 가능한 태그",

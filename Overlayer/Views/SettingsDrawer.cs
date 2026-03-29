@@ -200,6 +200,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 }
                 Drawer.HoverTooltip(Main.Lang.Get("LEGACY_THEME_DESC", "Reverts Overlayer’s custom clean theme back to Unity’s default OnGUI theme"));
                 Drawer.DrawBool(string.Format(Main.Lang.Get("AUTO_THIS", "Auto {0}"), Main.Lang.Get("PIVOT", "Pivot")), ref model.AutoPivot);
+                Drawer.HoverTooltip(Main.Lang.Get("AUTO_PIVOT_DESC", "Automatically adjusts the pivot to match the text alignment.\nWhen the editor is in Simple mode, this is always enabled regardless of settings"));
                 Drawer.DrawBool(Main.Lang.Get("INCLUDE_REFERENCES", "Include References"), ref model.IncludeReferences);
                 Drawer.HoverTooltip(Main.Lang.Get("INCLUDE_REFERENCES_DESC", "When this setting is enabled,\nelements that rely on external files(such as fonts and images)\nwill be included directly in the JSON file export.\n\nThis may increase the file size"));
                 Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan)), ref model.MovingManEditor);
