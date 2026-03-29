@@ -11,7 +11,7 @@ public class ProfileConfig : IModel, ICopyable<ProfileConfig> {
     public string Name = "Profile NULL";
     public string Path = null;
     public float Opacity = 1f;
-    public List<ObjectConfig> Objects = new();
+    public List<ObjectConfig> Objects = [];
 
     public ProfileConfig Copy() {
         return new ProfileConfig {
@@ -45,20 +45,18 @@ public class ProfileConfig : IModel, ICopyable<ProfileConfig> {
 
         Active = node[nameof(Active)]?.Value<bool>() ?? defaults.Active;
         Opacity = node[nameof(Opacity)]?.Value<float>() ?? defaults.Opacity;
-        Objects = new List<ObjectConfig>();
+        Objects = [];
         var objectTokens = (node[nameof(Objects)] as JArray)
             ?? (node["Texts"] as JArray)
-            ?? new JArray();
+            ?? [];
         foreach(var obj in objectTokens) {
             string typeName = obj["Type"]?.Value<string>()?.Trim() ?? "";
             ObjectConfig cfg;
             if(!string.IsNullOrEmpty(typeName)) {
                 var cfgType = Type.GetType($"Overlayer.Models.{typeName}Config");
-                if(cfgType != null && typeof(ObjectConfig).IsAssignableFrom(cfgType)) {
-                    cfg = (ObjectConfig)Activator.CreateInstance(cfgType);
-                } else {
-                    cfg = new TextConfig();
-                }
+                cfg = cfgType != null && typeof(ObjectConfig).IsAssignableFrom(cfgType)
+                    ? (ObjectConfig)Activator.CreateInstance(cfgType)
+                    : new TextConfig();
             } else {
                 cfg = new TextConfig();
             }

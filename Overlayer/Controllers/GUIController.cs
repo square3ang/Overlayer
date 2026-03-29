@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Overlayer.Controllers;
 
 public class GUIController {
-    private List<IDrawable> drawables = new();
+    private List<IDrawable> drawables = [];
     private int depth;
     private bool isUndoAvailable => depth > 0;
     private bool isRedoAvailable => depth < drawables.Count;
@@ -96,7 +96,7 @@ public class GUIController {
     }
     public void Flush() {
         current = first;
-        drawables = new List<IDrawable>();
+        drawables = [];
         depth = 0;
         onSkipCallbacks = new Stack<Action>();
         GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized, false);

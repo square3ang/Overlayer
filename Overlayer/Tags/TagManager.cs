@@ -79,7 +79,7 @@ public static class TagManager {
             return;
         }
 
-        tags = new Dictionary<string, OverlayerTag>();
+        tags = [];
         Initialized = true;
     }
     public static void Release() {

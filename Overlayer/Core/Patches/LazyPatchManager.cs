@@ -8,8 +8,8 @@ namespace Overlayer.Core.Patches;
 
 internal static class LazyPatchManager {
     internal static readonly Harmony Harmony = new("Overlayer.Core.Patches.LazyPatchManager");
-    private static readonly Dictionary<Type, List<LazyPatch>> Patches = new();
-    private static readonly HashSet<string> PatchedTriggers = new();
+    private static readonly Dictionary<Type, List<LazyPatch>> Patches = [];
+    private static readonly HashSet<string> PatchedTriggers = [];
     public static int PatchedTriggersCount => PatchedTriggers.Count;
     public static int Count => Patches.Sum(t => t.Value.Count);
     public static bool IsInternalPatched => PatchedTriggers.Contains(LazyPatch.InternalTrigger);
@@ -18,7 +18,7 @@ internal static class LazyPatchManager {
             var lpas = type.GetCustomAttributes<LazyPatchAttribute>();
             if(lpas.Any()) {
                 if(!Patches.TryGetValue(type, out var list)) {
-                    list = Patches[type] = new List<LazyPatch>();
+                    list = Patches[type] = [];
                 }
 
                 foreach(var patch in lpas) {
@@ -44,7 +44,7 @@ internal static class LazyPatchManager {
     }
     public static void PatchInternal() => PatchAll(LazyPatch.InternalTrigger);
     public static List<LazyPatch> PatchAll(string trigger = null) {
-        List<LazyPatch> patches = new();
+        List<LazyPatch> patches = [];
         if(trigger != null) {
             if(PatchedTriggers.Add(trigger)) {
                 foreach(var patch in patches = Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)).ToList()) {
@@ -59,7 +59,7 @@ internal static class LazyPatchManager {
         return patches;
     }
     public static List<LazyPatch> UnpatchAll(string trigger = null) {
-        List<LazyPatch> patches = new();
+        List<LazyPatch> patches = [];
         if(trigger != null) {
             if(PatchedTriggers.Remove(trigger)) {
                 foreach(var patch in patches = Patches.Values.SelectMany(list => list).Where(p => p.attr.Triggers.Contains(trigger)).ToList()) {

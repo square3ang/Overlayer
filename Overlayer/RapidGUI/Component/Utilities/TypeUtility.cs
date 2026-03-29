@@ -11,7 +11,7 @@ public static partial class TypeUtility {
 
     public static bool IsList(Type type) => GetListInterface(type) != null;
 
-    static Dictionary<Type, bool> multiLineTable = new();
+    static Dictionary<Type, bool> multiLineTable = [];
     public static bool IsMultiLine(Type type) {
         bool ret;
         if(!multiLineTable.TryGetValue(type, out ret)) {
@@ -31,7 +31,7 @@ public static partial class TypeUtility {
         return ret;
     }
 
-    static Dictionary<Type, bool> isRecursiveTable = new();
+    static Dictionary<Type, bool> isRecursiveTable = [];
 
     public static bool IsRecursive(Type type) {
         if(!isRecursiveTable.TryGetValue(type, out var ret)) {

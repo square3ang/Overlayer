@@ -113,8 +113,8 @@ public static class ComboStats {
     }
 
     #endregion
-    public static Dictionary<int, int[]> MComboCache = new();
-    public static Dictionary<int, int[]> MMaxComboCache = new();
+    public static Dictionary<int, int[]> MComboCache = [];
+    public static Dictionary<int, int[]> MMaxComboCache = [];
     public static void SetMarginCombos() {
         foreach(int hash in MComboCache.Keys.ToList()) {
             var hms = ADOUtils.UnboxMarginHash(hash);

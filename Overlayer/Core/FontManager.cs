@@ -13,7 +13,7 @@ public static class FontManager {
     static TMP_FontAsset DefaultTMPFont;
     static Font DefaultFont;
     static FontData defaultFont;
-    static Dictionary<string, FontData> Fonts = new();
+    static Dictionary<string, FontData> Fonts = [];
     public static bool Initialized { get; private set; }
     public static string[] OSFonts { get; private set; }
     public static string[] OSFontPaths { get; private set; }
@@ -87,7 +87,7 @@ public static class FontManager {
             defaultFont.fontTMP = DefaultTMPFont;
             OSFonts = Font.GetOSInstalledFontNames();
             OSFontPaths = Font.GetPathsToOSFonts();
-            Fonts = new Dictionary<string, FontData>();
+            Fonts = [];
             Initialized = true;
         }
     }

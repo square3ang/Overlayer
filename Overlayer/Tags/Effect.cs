@@ -81,17 +81,11 @@ public static class Effect {
     }
     public static string FormatOutput(Color c, int fmt) {
         string h = ColorUtility.ToHtmlStringRGBA(c);
-        if(fmt == 8) {
-            return h;
-        }
-        if(fmt == 6) {
-            return h.Substring(0, 6);
-        }
-        return fmt == 3 ? $"{h[0]}{h[2]}{h[4]}" : fmt == 4 ? h : h;
+        return fmt == 8 ? h : fmt == 6 ? h.Substring(0, 6) : fmt == 3 ? $"{h[0]}{h[2]}{h[4]}" : fmt == 4 ? h : h;
     }
 
-    static Dictionary<string, double> movingMan_tagValueCache = new();
-    static Dictionary<string, long> movingMan_tagStartTimeCache = new();
+    static Dictionary<string, double> movingMan_tagValueCache = [];
+    static Dictionary<string, long> movingMan_tagStartTimeCache = [];
     [JSImplementedBy("Discord@kkitut")]
     [Tag(NotPlaying = true)]
     public static double MovingMan(string rawFunc = nameof(ComboStats.Combo), double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool invert = false, Ease ease = Ease.OutExpo) {

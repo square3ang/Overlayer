@@ -43,7 +43,7 @@ public class CodeEditor {
 
     private string selectedtag = "Developer";
 
-    internal Dictionary<string, UndoRedoManager> undoRedoManagers = new();
+    internal Dictionary<string, UndoRedoManager> undoRedoManagers = [];
 
     public string Draw(string code, GUIStyle style, string id, params GUILayoutOption[] options) {
         if(!undoRedoManagers.ContainsKey(id)) {
@@ -223,7 +223,7 @@ public class CodeEditor {
                 var codesBefore = code.Substring(0, start);
                 var codesAfter = code.Substring(end, code.Length - end);
                 var lines = codesBefore.Split('\n');
-                var lastline = lines[lines.Length - 1];
+                var lastline = lines[^1];
                 var height = style.lineHeight;
 
                 var len = lines.Length - 1;

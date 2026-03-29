@@ -19,7 +19,7 @@ public static class ProfileManager {
             return;
         }
 
-        Profiles = new List<OverlayerProfile>();
+        Profiles = [];
         if(!Directory.Exists(Main.ProfilePath)) {
             Directory.CreateDirectory(Main.ProfilePath);
         }

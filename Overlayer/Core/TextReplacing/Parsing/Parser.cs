@@ -21,7 +21,7 @@ public static class Parser {
                 StringBuilder sb = new();
                 sb.Append(config.TagStart);
                 bool tagNotFound = false;
-                List<string> arguments = new();
+                List<string> arguments = [];
                 while(queue.Count > 0 && t.type != TokenType.TagEnd) {
                     t = queue.Dequeue();
                     if(tagNotFound) {

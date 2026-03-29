@@ -16,9 +16,9 @@ namespace Overlayer.Unity;
 public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
     public static event Action<OverlayerText> OnApplyConfig = delegate { };
     public bool Initialized { get; private set; }
-    private TextConfig _config;
-    public override ObjectConfig Config => _config;
-    public TextConfig TextConfig => _config;
+
+    public override ObjectConfig Config => TextConfig;
+    public TextConfig TextConfig { get; private set; }
     public Replacer PlayingReplacer;
     public Replacer NotPlayingReplacer;
     public TextMeshProUGUI Text;
@@ -32,7 +32,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     private Vector2 initialObjectPosition;
     private Vector2 initialPointerLocal;
 
-    public bool CanDrag => _config.Drag && !_config.Position.IsExpr;
+    public bool CanDrag => TextConfig.Drag && !TextConfig.Position.IsExpr;
 
     public static Shader sr_msdf;
     static OverlayerText() => sr_msdf = (Shader)typeof(ShaderUtilities).GetProperty("ShaderRef_MobileSDF", (BindingFlags)15420).GetValue(null);
@@ -43,7 +43,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
         }
 
         Parent = profile;
-        _config = config;
+        TextConfig = config;
         if(string.IsNullOrEmpty(config.Name)) {
             config.Name = $"Text {Parent.ObjectManager.Count + 1}";
         }
@@ -76,28 +76,28 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
 
         Text.text = Main.IsPlaying ? PlayingReplacer?.Replace() ?? "" : NotPlayingReplacer?.Replace() ?? "";
 
-        if(_config.LineSpacing.GetExprValue(float.Parse, out var ls)) {
+        if(TextConfig.LineSpacing.GetExprValue(float.Parse, out var ls)) {
             Text.lineSpacing = ls;
         }
-        if(_config.LineSpacingAdj.GetExprValue(float.Parse, out var lsa)) {
+        if(TextConfig.LineSpacingAdj.GetExprValue(float.Parse, out var lsa)) {
             Text.lineSpacingAdjustment = lsa;
         }
-        if(_config.TextColor.GetExprValue(MiscUtils.ParseGColor, out var color)) {
+        if(TextConfig.TextColor.GetExprValue(MiscUtils.ParseGColor, out var color)) {
             Text.colorGradient = color;
         }
-        if(_config.Pivot.GetExprValue(MiscUtils.ParseVec2, out var pivot)) {
+        if(TextConfig.Pivot.GetExprValue(MiscUtils.ParseVec2, out var pivot)) {
             Text.rectTransform.pivot = pivot;
         }
-        if(_config.Scale.GetExprValue(MiscUtils.ParseVec2, out var scale)) {
+        if(TextConfig.Scale.GetExprValue(MiscUtils.ParseVec2, out var scale)) {
             Text.rectTransform.localScale = scale;
         }
-        if(_config.Position.GetExprValue(MiscUtils.ParseVec2, out var pos)) {
+        if(TextConfig.Position.GetExprValue(MiscUtils.ParseVec2, out var pos)) {
             Text.rectTransform.anchoredPosition = (pos - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
         }
-        if(_config.Rotation.GetExprValue(MiscUtils.ParseVec3, out var rot)) {
+        if(TextConfig.Rotation.GetExprValue(MiscUtils.ParseVec3, out var rot)) {
             Text.rectTransform.eulerAngles = rot;
         }
-        if(_config.FontSize.GetExprValue(float.Parse, out var fs)) {
+        if(TextConfig.FontSize.GetExprValue(float.Parse, out var fs)) {
             Text.fontSize = fs;
         }
 
@@ -129,36 +129,36 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     }
 
     public override void ApplyConfig() {
-        PlayingReplacer.Source = _config.PlayingText;
-        NotPlayingReplacer.Source = _config.NotPlayingText;
+        PlayingReplacer.Source = TextConfig.PlayingText;
+        NotPlayingReplacer.Source = TextConfig.NotPlayingText;
         RefreshTags();
         TagManager.UpdatePatch();
 
-        if(_config.LineSpacing.GetNormalValue(out var ls)) {
+        if(TextConfig.LineSpacing.GetNormalValue(out var ls)) {
             Text.lineSpacing = ls;
         }
-        if(_config.LineSpacingAdj.GetNormalValue(out var lsa)) {
+        if(TextConfig.LineSpacingAdj.GetNormalValue(out var lsa)) {
             Text.lineSpacingAdjustment = lsa;
         }
-        if(_config.TextColor.GetNormalValue(out var color)) {
+        if(TextConfig.TextColor.GetNormalValue(out var color)) {
             Text.colorGradient = color;
         }
-        if(_config.Pivot.GetNormalValue(out var pivot)) {
+        if(TextConfig.Pivot.GetNormalValue(out var pivot)) {
             Text.rectTransform.pivot = pivot;
         }
-        if(_config.Scale.GetNormalValue(out var scale)) {
+        if(TextConfig.Scale.GetNormalValue(out var scale)) {
             Text.rectTransform.localScale = scale;
         }
-        if(_config.Position.GetNormalValue(out var pos)) {
+        if(TextConfig.Position.GetNormalValue(out var pos)) {
             Text.rectTransform.anchoredPosition = (pos - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
         }
-        if(_config.Rotation.GetNormalValue(out var rot)) {
+        if(TextConfig.Rotation.GetNormalValue(out var rot)) {
             Text.rectTransform.eulerAngles = rot;
         }
-        if(_config.FontSize.GetNormalValue(out var fs)) {
+        if(TextConfig.FontSize.GetNormalValue(out var fs)) {
             Text.fontSize = fs;
         }
-        Text.alignment = _config.Alignment;
+        Text.alignment = TextConfig.Alignment;
 
         SetFont();
         UpdateMaterials();
@@ -210,8 +210,8 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
         Vector2 offset = currentPointerLocal - initialPointerLocal;
         Text.rectTransform.anchoredPosition = initialObjectPosition + offset;
 
-        Vector2 canvasSize = new Vector2(1920, 1080);
-        _config.Position.Value = (Text.rectTransform.anchoredPosition / canvasSize) + new Vector2(0.5f, 0.5f);
+        Vector2 canvasSize = new(1920, 1080);
+        TextConfig.Position.Value = (Text.rectTransform.anchoredPosition / canvasSize) + new Vector2(0.5f, 0.5f);
     }
 
     public void OnPointerEnter(PointerEventData e) {
@@ -244,7 +244,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     }
 
     private void SetFont() {
-        if(!FontManager.TryGetFont(_config.Font, out FontData font)) {
+        if(!FontManager.TryGetFont(TextConfig.Font, out FontData font)) {
             return;
         }
 
@@ -276,23 +276,23 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
                 continue;
             }
 
-            if(_config.OutlineColor.GetNormalValue(out var oc)) {
+            if(TextConfig.OutlineColor.GetNormalValue(out var oc)) {
                 mat.SetColor(ShaderUtilities.ID_OutlineColor, oc);
             }
-            if(_config.OutlineWidth.GetNormalValue(out var ow)) {
+            if(TextConfig.OutlineWidth.GetNormalValue(out var ow)) {
                 mat.SetFloat(ShaderUtilities.ID_OutlineWidth, ow);
             }
-            if(_config.ShadowColor.GetNormalValue(out var sc)) {
+            if(TextConfig.ShadowColor.GetNormalValue(out var sc)) {
                 mat.SetColor(ShaderUtilities.ID_UnderlayColor, sc);
             }
-            if(_config.ShadowOffset.GetNormalValue(out var so)) {
+            if(TextConfig.ShadowOffset.GetNormalValue(out var so)) {
                 mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, so.x);
                 mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, so.y);
             }
-            if(_config.ShadowDilate.GetNormalValue(out var sd)) {
+            if(TextConfig.ShadowDilate.GetNormalValue(out var sd)) {
                 mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - sd);
             }
-            if(_config.ShadowSoftness.GetNormalValue(out var ss)) {
+            if(TextConfig.ShadowSoftness.GetNormalValue(out var ss)) {
                 mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - ss);
             }
         }
@@ -323,28 +323,28 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
                 continue;
             }
 
-            if(_config.OutlineColor.GetExprValue(MiscUtils.ParseColor, out var oc)) {
+            if(TextConfig.OutlineColor.GetExprValue(MiscUtils.ParseColor, out var oc)) {
                 mat.SetColor(ShaderUtilities.ID_OutlineColor, oc);
                 changed = true;
             }
-            if(_config.OutlineWidth.GetExprValue(float.Parse, out var ow)) {
+            if(TextConfig.OutlineWidth.GetExprValue(float.Parse, out var ow)) {
                 mat.SetFloat(ShaderUtilities.ID_OutlineWidth, ow);
                 changed = true;
             }
-            if(_config.ShadowColor.GetExprValue(MiscUtils.ParseColor, out var sc)) {
+            if(TextConfig.ShadowColor.GetExprValue(MiscUtils.ParseColor, out var sc)) {
                 mat.SetColor(ShaderUtilities.ID_UnderlayColor, sc);
                 changed = true;
             }
-            if(_config.ShadowOffset.GetExprValue(MiscUtils.ParseVec2, out var so)) {
+            if(TextConfig.ShadowOffset.GetExprValue(MiscUtils.ParseVec2, out var so)) {
                 mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, so.x);
                 mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, so.y);
                 changed = true;
             }
-            if(_config.ShadowDilate.GetExprValue(float.Parse, out var sd)) {
+            if(TextConfig.ShadowDilate.GetExprValue(float.Parse, out var sd)) {
                 mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1 - sd);
                 changed = true;
             }
-            if(_config.ShadowSoftness.GetExprValue(float.Parse, out var ss)) {
+            if(TextConfig.ShadowSoftness.GetExprValue(float.Parse, out var ss)) {
                 mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 1 - ss);
                 changed = true;
             }

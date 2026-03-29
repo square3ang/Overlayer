@@ -14,8 +14,10 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
     public bool Drag {
         get => _drag;
         set {
-            if(_drag == value)
+            if(_drag == value) {
                 return;
+            }
+
             _drag = value;
             OnDragChanged?.Invoke(_drag);
         }
@@ -68,11 +70,7 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
         var defaults = new ImageConfig();
         DeserializeBase(node);
         Drag = node[nameof(Drag)]?.Value<bool>() ?? defaults.Drag;
-        if(node[nameof(Images)] is JArray imagesToken) {
-            Images = imagesToken.Select(t => t.Value<string>()).ToList();
-        } else {
-            Images = defaults.Images.ToList();
-        }
+        Images = node[nameof(Images)] is JArray imagesToken ? imagesToken.Select(t => t.Value<string>()).ToList() : defaults.Images.ToList();
         Color.Deserialize(node[nameof(Color)], n => ModelUtils.ParseColorNode(n, defaults.Color.DefaultValue));
         Scale.Deserialize(node[nameof(Scale)], ModelUtils.ToVector2);
         Position.Deserialize(node[nameof(Position)], ModelUtils.ToVector2);

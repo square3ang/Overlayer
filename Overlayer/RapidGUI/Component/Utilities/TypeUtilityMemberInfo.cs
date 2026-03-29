@@ -69,13 +69,15 @@ public static partial class TypeUtility {
 
     #endregion
 
-    static Dictionary<Type, List<MemberWrapper>> memberInfoTable = new();
+    static Dictionary<Type, List<MemberWrapper>> memberInfoTable = [];
     public static List<MemberWrapper> GetMemberInfoList(Type type) {
         List<MemberWrapper> list;
         if(!memberInfoTable.TryGetValue(type, out list)) {
-            list = new List<MemberWrapper>();
-            list.AddRange(GetPropertyInfoList(type).Select(info => new MemberPropertyInfo(info)));
-            list.AddRange(GetFieldInfoList(type).Select(info => new MemberFieldInfo(info)));
+            list =
+            [
+                .. GetPropertyInfoList(type).Select(info => new MemberPropertyInfo(info)),
+                .. GetFieldInfoList(type).Select(info => new MemberFieldInfo(info)),
+            ];
 
             memberInfoTable[type] = list;
         }
@@ -105,14 +107,14 @@ public static partial class TypeUtility {
 
         propertyInfoTable.TryGetValue(type, out var piList);
 
-        return piList ?? new List<PropertyInfo>();
+        return piList ?? [];
     }
 
     #endregion
 
     #region Field Info List
 
-    static Dictionary<Type, List<FieldInfo>> fieldInfoTable = new();
+    static Dictionary<Type, List<FieldInfo>> fieldInfoTable = [];
 
     static List<FieldInfo> GetFieldInfoList(Type type) {
         if(!fieldInfoTable.TryGetValue(type, out var fiList)) {

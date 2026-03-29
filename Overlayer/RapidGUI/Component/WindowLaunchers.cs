@@ -53,7 +53,7 @@ public class WindowLaunchers : TitleContents<WindowLauncher> {
 
     #region Auto Layout Windows
 
-    readonly List<WindowLauncher> openLaunchers = new();
+    readonly List<WindowLauncher> openLaunchers = [];
 
     void OnOpen(WindowLauncher launcher) {
         if(isWindow) {

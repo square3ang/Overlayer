@@ -29,7 +29,7 @@ public class NeoDrawer {
     private string LastFocused;
 
     private uint id = 0;
-    private Dictionary<string, NeoField> fields = new();
+    private Dictionary<string, NeoField> fields = [];
 
     public bool StrInitialize(ref NeoField field, string str) {
         if(!field.StrInitialized) {
@@ -534,7 +534,6 @@ public class NeoDrawer {
         }
         return changed;
     }
-
 
     public bool DrawSingle(string label, ref float value, string uniqueID = null) {
         bool changed;

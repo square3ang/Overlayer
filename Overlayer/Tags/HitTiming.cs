@@ -9,7 +9,7 @@ public static class HitTiming {
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TimingAvg;
 
-    public static List<double> Timings = new();
+    public static List<double> Timings = [];
 
     public static void Reset() => Timing = TimingAvg = 0;
 }

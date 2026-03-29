@@ -5,9 +5,9 @@ using System.Collections.Generic;
 namespace Overlayer.Core;
 
 public class EventEase {
-    static Dictionary<string, double> valueCache = new();
-    static Dictionary<string, double> pvalueCache = new();
-    static Dictionary<string, long> startTimeCache = new();
+    static Dictionary<string, double> valueCache = [];
+    static Dictionary<string, double> pvalueCache = [];
+    static Dictionary<string, long> startTimeCache = [];
     public Func<double> Getter { get; }
     public Ease Ease { get; set; }
     public double Speed { get; set; }

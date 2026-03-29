@@ -9,7 +9,7 @@ public static partial class RGUI {
 
     static Stack<HashSet<string>> ignoreFieldStack = new();
 
-    public static void BeginIgnoreField(params string[] fieldNames) => ignoreFieldStack.Push(new HashSet<string>(fieldNames));
+    public static void BeginIgnoreField(params string[] fieldNames) => ignoreFieldStack.Push([.. fieldNames]);
 
     public static void EndIgnoreField() => ignoreFieldStack.Pop();
 

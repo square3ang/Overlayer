@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RapidGUI;
 
 public class Folds : TitleContents<Fold> {
-    List<Fold> folds = new();
+    List<Fold> folds = [];
 
     public bool DoGUI() {
         var ret = false;

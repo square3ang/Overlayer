@@ -1,8 +1,8 @@
 {
-    "Id": "Overlayer",
-    "DisplayName": "Overlayer",
-    "Author": "modlist.org",
-    "Version": "3.45.0",
-    "AssemblyName": "Overlayer.dll",
-    "EntryMethod": "Overlayer.Main.Load"
+  "Id": "Overlayer",
+  "DisplayName": "Overlayer",
+  "Author": "modlist.org",
+  "Version": "3.45.0",
+  "AssemblyName": "Overlayer.Bootstrapper.dll",
+  "EntryMethod": "Overlayer.Bootstrapper.Main.Load"
 }

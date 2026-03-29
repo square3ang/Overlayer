@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 namespace RapidGUI;
 
 public abstract class TitleContents<T> where T : TitleContent<T>, new() {
-    protected readonly Dictionary<string, T> dic = new();
+    protected readonly Dictionary<string, T> dic = [];
     protected bool dicChanged = true;
 
     public T Add(string title, Action guiAction) => Add(title, null, guiAction);

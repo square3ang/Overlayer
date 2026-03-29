@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Overlayer")]
@@ -20,5 +19,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("3.45.0.0")]
 
 [assembly: NeutralResourcesLanguage("")]
-
-[assembly: InternalsVisibleTo("Overlayer.Scripting")]

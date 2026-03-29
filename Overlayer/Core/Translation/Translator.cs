@@ -46,8 +46,8 @@ public class Translator {
     private readonly string ExpectedKTLValue;
 
     // Dictionaries to hold translations.
-    private Dictionary<string, Dictionary<string, string>> translations = new();
-    private Dictionary<string, Dictionary<string, string[]>> translationsArr = new();
+    private Dictionary<string, Dictionary<string, string>> translations = [];
+    private Dictionary<string, Dictionary<string, string[]>> translationsArr = [];
 
     /// <summary>
     /// Constant representing the fallback language code.
@@ -75,7 +75,7 @@ public class Translator {
         if(!useLogging) {
             return;
         }
-        logStacks = new List<string>();
+        logStacks = [];
     }
 
     // Logs a message if logging is enabled.
@@ -174,8 +174,8 @@ public class Translator {
         Log($"{LOG_PREFIX}Starting to load translations from: {baseLangFolderPath}");
 
         // Reset translations before loading.
-        translations = new Dictionary<string, Dictionary<string, string>>();
-        translationsArr = new Dictionary<string, Dictionary<string, string[]>>();
+        translations = [];
+        translationsArr = [];
 
         // Array to hold file paths.
         string[] files = Array.Empty<string>();
@@ -371,7 +371,7 @@ public class Translator {
     /// <returns>An array of language codes.</returns>
     public string[] GetLanguages() {
         // Initialize a list to hold the language codes.
-        List<string> languages = new();
+        List<string> languages = [];
 
         // If there was a failure, add the fallback language to the first position.
         if(IsFail) {
@@ -391,7 +391,7 @@ public class Translator {
     /// <returns>An array of native language names.</returns>
     public string[] GetLanguageNativeNames() {
         // Initialize a list to hold the native names.
-        List<string> names = new();
+        List<string> names = [];
 
         // If there was a failure, add the fallback language to the first position.
         if(IsFail) {

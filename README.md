@@ -11,9 +11,6 @@ Originally made by [c3nb](https://github.com/c3nb).
 [RapidGUI](https://github.com/fuqunaga/RapidGUI) is licensed under the MIT License.   
 [UnityCodeEditor](https://github.com/joshcamas/UnityCodeEditor/) is Unlicensed but it uses MIT Licensed Code.
 
-# 📜 Scripting
-- [Overlayer.Scripting](https://github.com/modlist-org/Overlayer.Scripting) is JS-based scripting for implementing custom tags and features.
-
 # 🌐 Translations are welcome!
 
 You can freely adapt the meaning to fit the style and culture of each language.

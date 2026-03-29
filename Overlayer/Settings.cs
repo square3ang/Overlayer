@@ -2,10 +2,8 @@
 using Overlayer.Core.Interfaces;
 using Overlayer.Models;
 using Overlayer.Utils;
-using System;
 using System.IO;
 using System.Xml.Serialization;
-using UnityModManagerNet;
 
 namespace Overlayer;
 
@@ -32,6 +30,8 @@ public class Settings : IModel, ICopyable<Settings> {
     public EditorUIMode UiMode = EditorUIMode.Simple;
     public bool IncludeReferences = true;
 
+    public int PerfStatUpdateRate = 1000;
+
     public FontMeta AdofaiFont = new();
     public bool ChangeFont = false;
     public bool ShowTrueAutoJudgment = false;
@@ -56,6 +56,8 @@ public class Settings : IModel, ICopyable<Settings> {
             [nameof(UiMode)] = UiMode.ToString(),
             [nameof(IncludeReferences)] = IncludeReferences,
 
+            [nameof(PerfStatUpdateRate)] = PerfStatUpdateRate,
+
             [nameof(AdofaiFont)] = AdofaiFont?.Serialize(),
             [nameof(ChangeFont)] = ChangeFont,
             [nameof(ShowTrueAutoJudgment)] = ShowTrueAutoJudgment,
@@ -67,7 +69,7 @@ public class Settings : IModel, ICopyable<Settings> {
     public void Deserialize(JToken node) {
         var defaultSettings = new Settings();
 
-        DisableLogo =node[nameof(DisableLogo)]?.Value<bool>() ?? defaultSettings.DisableLogo;
+        DisableLogo = node[nameof(DisableLogo)]?.Value<bool>() ?? defaultSettings.DisableLogo;
         Lang = node[nameof(Lang)]?.Value<string>() ?? defaultSettings.Lang;
         FPSUpdateRate = node[nameof(FPSUpdateRate)]?.Value<float>() ?? defaultSettings.FPSUpdateRate;
         FrameTimeUpdateRate = node[nameof(FrameTimeUpdateRate)]?.Value<float>() ?? defaultSettings.FrameTimeUpdateRate;
@@ -83,6 +85,8 @@ public class Settings : IModel, ICopyable<Settings> {
         ShowTextNameAsDisplayText = node[nameof(ShowTextNameAsDisplayText)]?.Value<bool>() ?? defaultSettings.ShowTextNameAsDisplayText;
         UiMode = EnumHelper<EditorUIMode>.Parse(node[nameof(UiMode)]?.Value<string>() ?? defaultSettings.UiMode.ToString());
         IncludeReferences = node[nameof(IncludeReferences)]?.Value<bool>() ?? defaultSettings.IncludeReferences;
+
+        PerfStatUpdateRate = node[nameof(PerfStatUpdateRate)]?.Value<int>() ?? defaultSettings.PerfStatUpdateRate;
 
         ChangeFont = node[nameof(ChangeFont)]?.Value<bool>() ?? defaultSettings.ChangeFont;
         AdofaiFont = node[nameof(AdofaiFont)] != null

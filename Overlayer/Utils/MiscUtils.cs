@@ -17,7 +17,7 @@ public static class MiscUtils {
     public static Assembly[] loadedAsss { get; private set; }
     public static Type[] loadedTypes { get; private set; }
     public static void UpdateAssTypes() {
-        cache = new Dictionary<string, Type>();
+        cache = [];
         loadedAsss = loadedAsss != null ?
             loadedAsss.Union(AppDomain.CurrentDomain.GetAssemblies()).ToArray() :
             AppDomain.CurrentDomain.GetAssemblies();
@@ -68,7 +68,7 @@ public static class MiscUtils {
         val += amount;
         return Color.HSVToRGB(1, 1, val);
     }
-    private static Dictionary<string, Type> cache = new();
+    private static Dictionary<string, Type> cache = [];
     public static Type TypeByName(string typeName) {
         if(cache.TryGetValue(typeName, out var t) && t != null) {
             return t;

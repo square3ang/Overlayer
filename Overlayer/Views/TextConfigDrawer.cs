@@ -52,9 +52,7 @@ public class TextConfigDrawer : ModelDrawable<TextConfig> {
         }
         bool changed = false;
         Drawer.DrawString(Drawer.Icon_Pencil, Main.Lang.Get("NAME", "Name"), ref model.Name);
-        changed |= Drawer.DrawExpr(Main.Lang.Get("POSITION", "Position"), "T" + nameof(model.Position), ref model.Position, () => {
-            changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Position.Value, 0, 1);
-        }, typeof(Vector2));
+        changed |= Drawer.DrawExpr(Main.Lang.Get("POSITION", "Position"), "T" + nameof(model.Position), ref model.Position, () => changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Position.Value, 0, 1), typeof(Vector2));
         if(IsAdvensedMode) {
             changed |= Drawer.DrawExpr(Main.Lang.Get("SCALE", "Scale"), "T" + nameof(model.Scale), ref model.Scale, () => changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Scale.Value, 0, 2), typeof(Vector2));
             changed |= Drawer.DrawExpr(Main.Lang.Get("PIVOT", "Pivot"), "T" + nameof(model.Pivot), ref model.Pivot, () => changed |= NeoDrawer.StaticInstance.DrawSize2(ref model.Pivot.Value, 0, 1), typeof(Vector2));

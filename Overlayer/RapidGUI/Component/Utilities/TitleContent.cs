@@ -17,7 +17,7 @@ public abstract class TitleContent<T> where T : TitleContent<T> {
 
     public bool isOpen { get; protected set; }
     protected Action titleAction;
-    protected List<FuncData> funcDatas = new();
+    protected List<FuncData> funcDatas = [];
 
     public TitleContent() { }
 

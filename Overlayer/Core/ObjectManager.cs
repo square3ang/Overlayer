@@ -9,12 +9,10 @@ namespace Overlayer.Core;
 public class ObjectManager {
     public int Count => Objects.Count;
 
-    public List<OverlayerObject> Objects = new();
+    public List<OverlayerObject> Objects = [];
     public OverlayerProfile ProfileCanvas;
 
-    public ObjectManager(OverlayerProfile profileCanvas) {
-        ProfileCanvas = profileCanvas;
-    }
+    public ObjectManager(OverlayerProfile profileCanvas) => ProfileCanvas = profileCanvas;
 
     public void Create(ObjectConfig cfg) {
         switch(cfg) {
@@ -55,9 +53,7 @@ public class ObjectManager {
         return obj;
     }
 
-    public OverlayerObject Get(int index) {
-        return (index >= 0 && index < Count) ? Objects[index] : null;
-    }
+    public OverlayerObject Get(int index) => (index >= 0 && index < Count) ? Objects[index] : null;
 
     public bool OrderToIndex(int from, int to) {
         if(from < 0 || from >= Count || to < 0 || to >= Count || from == to) {
@@ -124,9 +120,7 @@ public class ObjectManager {
         Refresh();
     }
 
-    public void Refresh() {
-        Objects.ForEach(o => o.ApplyConfig());
-    }
+    public void Refresh() => Objects.ForEach(o => o.ApplyConfig());
 
     public void Release() {
         foreach(var o in Objects) {

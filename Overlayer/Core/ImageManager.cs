@@ -15,9 +15,8 @@ public static class ImageManager {
             }
             return _defaultSprite;
         }
-        private set {
-            _defaultSprite = value;
-        }
+
+        private set => _defaultSprite = value;
     }
     static Sprite _defaultSprite;
     private static Dictionary<string, Sprite> Sprites;
@@ -29,12 +28,7 @@ public static class ImageManager {
         _defaultSprite = Sprite.Create(tex, new Rect(0, 0, 2, 2), new Vector2(0.5f, 0.5f));
     }
 
-    public static Sprite GetSpriteSafe(string name) {
-        if(string.IsNullOrEmpty(name)) {
-            return DefaultSprite;
-        }
-        return TryGetSprite(name, out Sprite sprite) ? sprite : DefaultSprite;
-    }
+    public static Sprite GetSpriteSafe(string name) => string.IsNullOrEmpty(name) ? DefaultSprite : TryGetSprite(name, out Sprite sprite) ? sprite : DefaultSprite;
     public static Sprite GetSprite(string name) => TryGetSprite(name, out Sprite sprite) ? sprite : null;
 
     public static void SetSprite(string name, Sprite sprite) => Sprites[name] = sprite;
@@ -80,7 +74,7 @@ public static class ImageManager {
         if(Initialized) {
             return;
         }
-        Sprites = new Dictionary<string, Sprite>();
+        Sprites = [];
         Initialized = true;
     }
 

@@ -7,7 +7,7 @@ namespace Overlayer.Core.Patches;
 
 internal class LazyPatch {
     public const string InternalTrigger = "INTERNAL";
-    public static readonly Dictionary<string, LazyPatch> Patches = new();
+    public static readonly Dictionary<string, LazyPatch> Patches = [];
     public Type patchType;
     public Harmony harmony;
     public MethodInfo prefix;

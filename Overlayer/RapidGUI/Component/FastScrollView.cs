@@ -13,7 +13,7 @@ public class FastScrollView {
     public Vector2 scrollPosition;
     protected float scrollViewHeight;
     protected float scopeWidth;
-    protected List<float> yMaxList = new();
+    protected List<float> yMaxList = [];
 
     protected bool needUpdateLayout = true;
 

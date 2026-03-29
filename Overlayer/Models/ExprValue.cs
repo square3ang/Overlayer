@@ -14,8 +14,8 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
     public readonly T DefaultValue;
     public T Value;
-    private bool ReplacersInitialized = false;
-    public bool IsExpr => ReplacersInitialized;
+
+    public bool IsExpr { get; private set; } = false;
     public bool HasExpr { get; private set; } = false;
     public Replacer PlayingReplacer;
     public Replacer NotPlayingReplacer;
@@ -49,7 +49,7 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public JToken Serialize(Func<T, JToken> serializer) {
-        if(ReplacersInitialized) {
+        if(IsExpr) {
             JObject obj = new() {
                 [nameof(Playing)] = Playing,
                 [nameof(NotPlaying)] = NotPlaying
@@ -80,14 +80,14 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public void Init() {
-        if(ReplacersInitialized) {
+        if(IsExpr) {
             return;
         }
 
         PlayingReplacer = new Replacer(Playing, TagManager.All.Select(ot => ot.Tag));
         NotPlayingReplacer = new Replacer(NotPlaying, TagManager.NP.Select(ot => ot.Tag));
         ApplyConfig();
-        ReplacersInitialized = true;
+        IsExpr = true;
     }
 
     public T Update(Func<string, T> parser) {
@@ -118,17 +118,17 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public void Dispose() {
-        if(!ReplacersInitialized) {
+        if(!IsExpr) {
             return;
         }
 
         PlayingReplacer?.Dispose();
         NotPlayingReplacer?.Dispose();
-        ReplacersInitialized = false;
+        IsExpr = false;
     }
 
     public bool GetNormalValue(out T value) {
-        if(!ReplacersInitialized) {
+        if(!IsExpr) {
             value = Value;
             return true;
         }
@@ -138,7 +138,7 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public bool GetExprValue(Func<string, T> parser, out T expr) {
-        if(ReplacersInitialized) {
+        if(IsExpr) {
             expr = Update(parser);
             return true;
         }

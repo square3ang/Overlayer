@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RapidGUI;
 
 public static class WindowInvoker {
-    static readonly HashSet<IDoGUIWindow> Windows = new();
+    static readonly HashSet<IDoGUIWindow> Windows = [];
 
     static WindowInvoker() => RapidGUIBehaviour.Instance.onGUI += DoGUI;
 

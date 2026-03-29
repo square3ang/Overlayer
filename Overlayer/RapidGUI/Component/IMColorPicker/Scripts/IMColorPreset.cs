@@ -6,7 +6,7 @@ namespace RapidGUI;
 public class IMColorPreset : ScriptableObject {
 
     [field: SerializeField]
-    public List<Color> Colors { get; } = new();
+    public List<Color> Colors { get; } = [];
 
     public void Save(Color color) => Colors.Add(color);
 

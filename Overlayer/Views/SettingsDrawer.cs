@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using JSNet.Utils;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
+using Overlayer.Core.Scripting;
 using Overlayer.Core.Translation;
 using Overlayer.Models;
 using Overlayer.Tags;
@@ -27,7 +29,8 @@ public class SettingsDrawer : ModelDrawable<Settings> {
     private enum ExtraMenus {
         Closed,
         Overlayer,
-        Adofai
+        Scripting,
+        Adofai,
     }
 
     private ExtraMenus extraMenu = ExtraMenus.Closed;
@@ -169,6 +172,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
         }
         GUILayout.BeginHorizontal();
         DrawMenuButton("Overlayer", ExtraMenus.Overlayer);
+        DrawMenuButton("Scripting", ExtraMenus.Scripting);
         DrawMenuButton("ADOFAI", ExtraMenus.Adofai);
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
@@ -205,6 +209,9 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 NeoDrawer.StaticInstance.DrawSingle(Main.Lang.Get("FRAMETIME_UPDATE_RATE", "FrameTime Update Rate"), ref model.FrameTimeUpdateRate);
                 NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE", "System Tag Update Rate"), ref model.SystemTagUpdateRate);
                 Drawer.HoverTooltip(Main.Lang.Get("SYSTEMTAG_UPDATE_RATE_DESC", "Such as GC usage Tags"));
+                break;
+            case ExtraMenus.Scripting:
+                Scripting.DrawUI();
                 break;
             case ExtraMenus.Adofai:
                 if(Drawer.DrawBool(Main.Lang.Get("CHANGE_FONT", "Change Font"), ref model.ChangeFont)) {

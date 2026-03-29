@@ -14,7 +14,7 @@ public static class ProgressStats {
             return 0;
         }
         var firstFloorTime = listFloors[1].entryTime;
-        var lastFloorTime = listFloors[listFloors.Count - 1].entryTime;
+        var lastFloorTime = listFloors[^1].entryTime;
         var actualProgress = (scrController.instance?.currFloor.entryTime - firstFloorTime) / (lastFloorTime - firstFloorTime) * 100;
         return actualProgress == null ? 0 : (double)Mathf.Clamp((float)actualProgress, 0, 100);
     }

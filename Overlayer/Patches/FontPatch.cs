@@ -45,7 +45,7 @@ public static class FontPatch {
                 yield break;
             }
 
-            List<GameObject> list = new();
+            List<GameObject> list = [];
             try { Main.ActiveScene.GetRootGameObjects(list); } catch { yield break; }
             foreach(var i in list) {
                 if(!i.activeSelf) {

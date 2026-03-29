@@ -18,7 +18,7 @@ public class Reference : IModel, ICopyable<Reference> {
     public string Name;
     public byte[] Raw;
 
-    static Dictionary<string, Reference> refCache = new();
+    static Dictionary<string, Reference> refCache = [];
 
     public static Reference GetReference(string path, Type referenceType) {
         var target = path.Replace("{ModDir}", Main.Mod.Path);

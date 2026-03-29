@@ -255,16 +255,16 @@ Continue:
             return TUInt8;
         } else if(numType == typeof(ushort)) {
             return TUInt16;
-        } else if(numType == typeof(uint)) {
-            return TUInt32;
-        } else if(numType == typeof(ulong)) {
-            return TUInt64;
-        } else if(numType == typeof(float)) {
-            return TFloat;
-        } else if(numType == typeof(double)) {
-            return TDouble;
         } else {
-            return numType == typeof(bool) ? TBool : typeof(Enum).IsAssignableFrom(numType) ? TEnum.MakeGenericMethod(numType) : null;
+            return numType == typeof(uint)
+                ? TUInt32
+                : numType == typeof(ulong)
+                            ? TUInt64
+                            : numType == typeof(float)
+                                        ? TFloat
+                                        : numType == typeof(double)
+                                                    ? TDouble
+                                                    : numType == typeof(bool) ? TBool : typeof(Enum).IsAssignableFrom(numType) ? TEnum.MakeGenericMethod(numType) : null;
         }
     }
     public static MethodInfo GetFromConverter(Type numType) {
@@ -280,16 +280,16 @@ Continue:
             return FUInt8;
         } else if(numType == typeof(ushort)) {
             return FUInt16;
-        } else if(numType == typeof(uint)) {
-            return FUInt32;
-        } else if(numType == typeof(ulong)) {
-            return FUInt64;
-        } else if(numType == typeof(float)) {
-            return FFloat;
-        } else if(numType == typeof(double)) {
-            return FDouble;
         } else {
-            return numType == typeof(bool) ? FBool : typeof(Enum).IsAssignableFrom(numType) ? FEnum.MakeGenericMethod(numType) : FObject;
+            return numType == typeof(uint)
+                ? FUInt32
+                : numType == typeof(ulong)
+                            ? FUInt64
+                            : numType == typeof(float)
+                                        ? FFloat
+                                        : numType == typeof(double)
+                                                    ? FDouble
+                                                    : numType == typeof(bool) ? FBool : typeof(Enum).IsAssignableFrom(numType) ? FEnum.MakeGenericMethod(numType) : FObject;
         }
     }
     public static string FromObject(object s) => s?.ToString();

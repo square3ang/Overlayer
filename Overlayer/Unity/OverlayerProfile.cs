@@ -96,7 +96,5 @@ public class OverlayerProfile : MonoBehaviour {
         DragObj.SetActive(false);
     }
 
-    public void ApplyConfig() {
-        Group.alpha = Config.Opacity;
-    }
+    public void ApplyConfig() => Group.alpha = Config.Opacity;
 }

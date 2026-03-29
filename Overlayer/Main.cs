@@ -1,5 +1,10 @@
-﻿using Overlayer.Controllers;
+﻿using HarmonyLib;
+using JSNet.API;
+using JSNet.Utils;
+using Newtonsoft.Json.Linq;
+using Overlayer.Controllers;
 using Overlayer.Core;
+using Overlayer.Core.Scripting;
 using Overlayer.Core.Patches;
 using Overlayer.Core.TextReplacing;
 using Overlayer.Core.Translation;
@@ -13,12 +18,19 @@ using RapidGUI;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
+using Time = UnityEngine.Time;
 
 namespace Overlayer;
 #if DEBUG
@@ -76,9 +88,9 @@ public static class Main {
     }
 
     public static void Load(ModEntry modEntry) {
+        Mod = modEntry;
         Logger = modEntry.Logger;
         Ass = Assembly.GetExecutingAssembly();
-        Mod = modEntry;
 
         Version needReload = AutoUpdater.UpdateBeforeLoad(modEntry);
         if(needReload != null) {
@@ -129,14 +141,12 @@ public static class Main {
             TagResetter.Postfix();
             Tags.System.Init();
             ImageManager.Initialize();
-            DllImporter.NCalcInitialize();
             if(!Settings.DisableLogo) {
                 LogoInit(modEntry.Path);
             }
-
             StaticCoroutine.Run(null);
             StaticCoroutine.Run(LoadCoroutine(modEntry));
-
+            Scripting.Initalize();
             ProfileManager.Initialize();
 
             GUI.Init(settingsDrawer);
@@ -163,6 +173,7 @@ public static class Main {
                 Logo = null;
             }
             ProfileManager.Release();
+            Scripting.Release();
             ImageManager.Release();
             Tags.System.Free();
             FontManager.Release();
@@ -331,9 +342,7 @@ public static class Main {
 
     public static class MainThreadDispatcher {
         private static readonly ConcurrentQueue<Action> queue = new();
-        public static void Enqueue(Action action) {
-            queue.Enqueue(action);
-        }
+        public static void Enqueue(Action action) => queue.Enqueue(action);
         public static void Update() {
             while(queue.TryDequeue(out var action)) {
                 action.Invoke();

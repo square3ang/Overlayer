@@ -99,7 +99,7 @@ public class WindowLauncher : TitleContent<WindowLauncher>, IDoGUIWindow {
         // GUIStyleState.background will be null 
         // if it set after secound scene load and don't use a few frame
         // to keep textures, set it to other member. at unity2019
-        static readonly List<Texture2D> TexList = new();
+        static readonly List<Texture2D> TexList = [];
 
         static Style() {
             Color onColor = new(0.3f, 0.5f, 0.98f, 0.9f);

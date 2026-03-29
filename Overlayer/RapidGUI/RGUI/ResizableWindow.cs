@@ -13,7 +13,7 @@ public static partial class RGUI {
         static readonly RectOffset overflow = new(detectionRange, detectionRange, 0, detectionRange);
         static GUIStyle defaultStyle;
 
-        static Dictionary<GUIStyle, GUIStyle> customStyleDic = new();
+        static Dictionary<GUIStyle, GUIStyle> customStyleDic = [];
 
         static ResizableWindow_() {
             defaultStyle = new GUIStyle(GUI.skin.window) {
@@ -39,7 +39,7 @@ public static partial class RGUI {
             return ret;
         }
 
-        protected static Dictionary<int, ResizableWindow_> table = new();
+        protected static Dictionary<int, ResizableWindow_> table = [];
 
         public static Rect DoWindow(int id, Rect rect, GUI.WindowFunction func, string text, GUIStyle style = null, params GUILayoutOption[] options) {
             if(!table.TryGetValue(id, out var window)) {

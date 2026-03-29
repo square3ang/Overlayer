@@ -45,8 +45,9 @@ public static class ImageConfigImporter {
         var refsNode = node["References"] ?? new JArray();
         var refs = ModelUtils.UnwrapList<Reference>((JArray)refsNode);
 
-        if(!refs.Any())
+        if(!refs.Any()) {
             return;
+        }
 
         var refsDir = Path.Combine(Main.Mod.Path, "References");
         var imagesDir = Path.Combine(refsDir, "Images");
@@ -98,8 +99,10 @@ public static class ImageConfigImporter {
         var result = new List<Reference>();
 
         foreach(var r in references) {
-            if(r == null)
+            if(r == null) {
                 continue;
+            }
+
             string key = $"{r.ReferenceType}:{r.Name}";
             if(set.Add(key)) {
                 result.Add(r);

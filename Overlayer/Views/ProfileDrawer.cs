@@ -75,16 +75,9 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                         if(json is JArray arr) {
                             foreach(var token in arr) {
                                 string type = token["Type"]?.Value<string>();
-                                ObjectConfig cfg;
-                                if(string.IsNullOrEmpty(type)) {
-                                    cfg = new TextConfig();
-                                } else if(type == "Text") {
-                                    cfg = TextConfigImporter.Import(token);
-                                } else if(type == "Image") {
-                                    cfg = ImageConfigImporter.Import(token);
-                                } else {
-                                    cfg = new TextConfig();
-                                }
+                                ObjectConfig cfg = string.IsNullOrEmpty(type)
+                                    ? new TextConfig()
+                                    : type == "Text" ? TextConfigImporter.Import(token) : type == "Image" ? ImageConfigImporter.Import(token) : new TextConfig();
                                 configsToAdd.Add(cfg);
                             }
                         } else if(json is JObject obj) {
@@ -318,13 +311,5 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
             ? cfg.Name
             : $"<color=#808080>{cfg.Name}</color>";
     }
-    private Texture2D GetObjectIcon(OverlayerObject obj) {
-        if(obj is OverlayerText) {
-            return Drawer.Icon_Font;
-        }
-        if(obj is OverlayerImage) {
-            return Drawer.Icon_Image;
-        }
-        return null;
-    }
+    private Texture2D GetObjectIcon(OverlayerObject obj) => obj is OverlayerText ? Drawer.Icon_Font : obj is OverlayerImage ? Drawer.Icon_Image : null;
 }

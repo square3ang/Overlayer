@@ -53,6 +53,9 @@
     <Reference Include="DOTweenPro">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\DOTweenPro.dll</HintPath>
     </Reference>
+    <Reference Include="JSNet">
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer\lib\JSNet.dll</HintPath>
+    </Reference>
     <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
       <HintPath>..\packages\ncalc.1.3.8\lib\NCalc.dll</HintPath>
     </Reference>
@@ -393,12 +396,14 @@
     <Reference Include="UnityModManager">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
     </Reference>
+    <Reference Include="Vostok.Sys.Metrics.PerfCounters, Version=0.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Vostok.Sys.Metrics.PerfCounters.0.0.8\lib\netstandard2.0\Vostok.Sys.Metrics.PerfCounters.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeEditor\CodeEditor.cs" />
     <Compile Include="CodeEditor\CodeTheme.cs" />
     <Compile Include="Controllers\GUIController.cs" />
-    <Compile Include="Core\DllImporter.cs" />
     <Compile Include="Core\Drawer.cs" />
     <Compile Include="Core\EventEase.cs" />
     <Compile Include="Core\FastDateTime.cs" />
@@ -415,6 +420,7 @@
     <Compile Include="Core\NeoDrawer.cs" />
     <Compile Include="Core\ProfileReferences.cs" />
     <Compile Include="Core\ProfileManager.cs" />
+    <Compile Include="Core\Scripting\Scripting.cs" />
     <Compile Include="Models\ExprValue.cs" />
     <Compile Include="Models\ImageConfig.cs" />
     <Compile Include="Models\ObjectConfig.cs" />
@@ -503,6 +509,12 @@
     <Compile Include="RapidGUI\RGUI\Scope\PrefixLabelIndentScope.cs" />
     <Compile Include="RapidGUI\RGUI\Slider.cs" />
     <Compile Include="RapidGUI\RGUI\Slider\RecursiveSlider.cs" />
+    <Compile Include="Core\Scripting\AudioPlayer.cs" />
+    <Compile Include="Core\Scripting\Expression.cs" />
+    <Compile Include="Core\Scripting\Impl.cs" />
+    <Compile Include="Core\Scripting\PerformanceTags.cs" />
+    <Compile Include="Core\Scripting\ScriptTag.cs" />
+    <Compile Include="Core\Scripting\Sound.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Tags\AccuracyStats.cs" />
     <Compile Include="Tags\ADOFAI.cs" />
@@ -578,8 +590,6 @@
     <None Include="MiscFiles\lang\ko-KR.json" />
     <None Include="MiscFiles\lang\ru-RU.json" />
     <None Include="MiscFiles\lang\vi-VN.json" />
-    <None Include="MiscFiles\wikidocs\basics.json" />
-    <None Include="MiscFiles\wikidocs\extramenu.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -67,7 +67,7 @@ public class OverlayerTag {
         FieldBuilder targetField = t.DefineField("target", target?.GetType() ?? typeof(object), FieldAttributes.Public | FieldAttributes.Static);
         ILGenerator il = m.GetILGenerator();
         Type rt = null;
-        List<(Type, string, object)> parameters = new();
+        List<(Type, string, object)> parameters = [];
         if(fieldPropMethod is FieldInfo field) {
             if(!field.IsStatic && target == null) {
                 throw new InvalidOperationException($"Field '{field.Name}' Cannot Get Instance Member Without Target!!");
@@ -231,7 +231,7 @@ public class OverlayerTag {
 
         Type t = type;
         MemberInfo result;
-        List<MemberInfo> toEmitMembers = new();
+        List<MemberInfo> toEmitMembers = [];
         for(int i = 0; i < accessors.Length; i++) {
             var ignoreCase = t.GetCustomAttribute<IgnoreCaseAttribute>() != null;
             result = ignoreCase
@@ -282,8 +282,8 @@ public class OverlayerTag {
     private static MethodInfo runtimeAccessor;
     private static AssemblyBuilder ass;
     private static ModuleBuilder mod;
-    private static Dictionary<string, Func<object, object>> accessorCache = new();
-    private static Dictionary<string, DynamicMethod> accessorCacheDM = new();
+    private static Dictionary<string, Func<object, object>> accessorCache = [];
+    private static Dictionary<string, DynamicMethod> accessorCacheDM = [];
     static OverlayerTag() {
         runtimeAccessor = typeof(OverlayerTag).GetMethod(nameof(RuntimeAccess), (BindingFlags)15420, null, new[] { typeof(object), typeof(string) }, null);
         round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });

@@ -1,5 +1,4 @@
 ﻿using Overlayer.Core.Patches;
-using System.Collections.Generic;
 
 namespace Overlayer.Tags.Patches;
 
@@ -10,7 +9,7 @@ public class P_scrController : PatchBase<P_scrController> {
     public static class HitTiming__Awake_Rewind {
         public static void Postfix() {
             HitTiming.Timing = 0;
-            HitTiming.Timings = new List<double>();
+            HitTiming.Timings = [];
         }
     }
 

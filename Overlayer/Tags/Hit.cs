@@ -287,19 +287,15 @@ public static class Hit {
         double perfectDeg = GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Perfect, bpmTimesSpeed, conductorPitch, marginScale);
         double pureDeg = GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Pure, bpmTimesSpeed, conductorPitch, marginScale);
 
-        if(angleDeg < -countedDeg) {
-            return HitMargin.TooEarly;
-        }
-        if(angleDeg < -perfectDeg) {
-            return HitMargin.VeryEarly;
-        }
-        if(angleDeg < -pureDeg) {
-            return HitMargin.EarlyPerfect;
-        }
-        if(angleDeg <= pureDeg) {
-            return HitMargin.Perfect;
-        }
-        return angleDeg <= perfectDeg ? HitMargin.LatePerfect : angleDeg <= countedDeg ? HitMargin.VeryLate : HitMargin.TooLate;
+        return angleDeg < -countedDeg
+            ? HitMargin.TooEarly
+            : angleDeg < -perfectDeg
+            ? HitMargin.VeryEarly
+            : angleDeg < -pureDeg
+            ? HitMargin.EarlyPerfect
+            : angleDeg <= pureDeg
+            ? HitMargin.Perfect
+            : angleDeg <= perfectDeg ? HitMargin.LatePerfect : angleDeg <= countedDeg ? HitMargin.VeryLate : HitMargin.TooLate;
     }
 
     public static void Reset() {

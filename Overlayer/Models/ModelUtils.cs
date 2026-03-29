@@ -219,11 +219,7 @@ public static class ModelUtils {
 
         if(token.Type == JTokenType.Object) {
             JObject obj = (JObject)token;
-            if(obj.TryGetValue("topLeft", out var legacy)) { // Legacy GColor
-                return ToColor(legacy);
-            } else {
-                return ToColor(obj);
-            }
+            return obj.TryGetValue("topLeft", out var legacy) ? ToColor(legacy) : ToColor(obj);
         } else if(token.Type == JTokenType.Array) {
             return ToColor(token);
         }

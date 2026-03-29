@@ -55,13 +55,11 @@ public static partial class RGUI {
 
     static FieldFunc DispatchFieldFunc(Type type) {
         if(!fieldFuncTable.TryGetValue(type, out var func)) {
-            if(type.IsEnum) {
-                func = new FieldFunc((obj, t) => EnumField(obj));
-            } else {
-                func = TypeUtility.IsList(type)
+            func = type.IsEnum
+                ? new FieldFunc((obj, t) => EnumField(obj))
+                : TypeUtility.IsList(type)
                     ? ListField
                     : TypeUtility.IsRecursive(type) ? new FieldFunc((obj, t) => RecursiveField(obj)) : StandardField;
-            }
 
             fieldFuncTable[type] = func;
         }

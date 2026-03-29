@@ -18,8 +18,8 @@ public class Replacer {
     public Replacer(List<Tag> tags = null) {
         source = string.Empty;
         compiled = false;
-        Tags = tags ?? new List<Tag>();
-        References = new List<Tag>();
+        Tags = tags ?? [];
+        References = [];
     }
     public Replacer(string source, List<Tag> tags = null) : this(tags) => Source = source;
     public Replacer(IEnumerable<Tag> tags = null) : this(tags.ToList()) { }
@@ -28,8 +28,8 @@ public class Replacer {
         source = other.source;
         compiled = false;
 
-        Tags = new List<Tag>(other.Tags);
-        References = new List<Tag>();
+        Tags = [.. other.Tags];
+        References = [];
     }
     public string Source {
         get => source;

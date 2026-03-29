@@ -62,7 +62,7 @@ public static class ADOUtils {
         return bits;
     }
     public static HitMargin[] UnboxMarginHash(int marginHash) {
-        List<HitMargin> margins = new();
+        List<HitMargin> margins = [];
         var values = EnumHelper<HitMargin>.GetValues();
         for(int i = 0; i < values.Length; i++) {
             if((marginHash & (1 << (int)values[i])) != 0) {

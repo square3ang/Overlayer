@@ -8,7 +8,7 @@ public static class EnumHelper<T> where T : Enum {
     static readonly T[] Values;
     static readonly Dictionary<string, T> NameValues;
     static EnumHelper() {
-        NameValues = new Dictionary<string, T>();
+        NameValues = [];
         Names = Enum.GetNames(typeof(T));
         Values = (T[])Enum.GetValues(typeof(T));
         for(int i = 0; i < Names.Length; i++) {

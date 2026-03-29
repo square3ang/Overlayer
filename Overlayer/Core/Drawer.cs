@@ -843,9 +843,7 @@ public static class Drawer {
                                    .Replace("\\", "/");
                     }
                     string finalPath = path;
-                    Main.MainThreadDispatcher.Enqueue(() => {
-                        onFontSelected?.Invoke(finalPath);
-                    });
+                    Main.MainThreadDispatcher.Enqueue(() => onFontSelected?.Invoke(finalPath));
                 }
             });
         }

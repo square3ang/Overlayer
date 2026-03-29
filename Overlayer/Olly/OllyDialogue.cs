@@ -8,7 +8,7 @@ public class OllyDialogue {
     public class Node {
         public string Text;
         public string[] Choices;
-        public Dictionary<int, Node> Next = new();
+        public Dictionary<int, Node> Next = [];
         public Action<int> OnChoice;
         public Eyebrow Eyebrow;
         public Eye Eye;

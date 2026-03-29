@@ -13,11 +13,11 @@ namespace Overlayer.Unity;
 
 public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler {
     public bool Initialized { get; private set; }
-    private ImageConfig _config;
-    public override ObjectConfig Config => _config;
-    public ImageConfig ImageConfig => _config;
 
-    public List<Sprite> Images = new();
+    public override ObjectConfig Config => ImageConfig;
+    public ImageConfig ImageConfig { get; private set; }
+
+    public List<Sprite> Images = [];
     private Image _mainImage;
 
     public Replacer PlayingReplacer;
@@ -31,7 +31,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
     private Vector2 initialPointerLocal;
     private Vector2 scaleforDrag = Vector2.zero;
 
-    public bool CanDrag => _config.Drag && !_config.Position.IsExpr;
+    public bool CanDrag => ImageConfig.Drag && !ImageConfig.Position.IsExpr;
 
     public void Init(OverlayerProfile profile, ImageConfig config) {
         if(Initialized) {
@@ -39,7 +39,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         }
 
         Parent = profile;
-        _config = config;
+        ImageConfig = config;
 
         DontDestroyOnLoad(gameObject);
         GameObject mainObject = gameObject;
@@ -47,18 +47,18 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         mainObject.MakeFlexible();
 
         _mainImage = mainObject.AddComponent<Image>();
-        _mainImage.raycastTarget = _config.Drag;
+        _mainImage.raycastTarget = ImageConfig.Drag;
 
         config.OnDragChanged += (state) => _mainImage.raycastTarget = state;
 
-        PlayingReplacer = new Replacer(_config.PlayingCommand, TagManager.All.Select(t => t.Tag));
-        NotPlayingReplacer = new Replacer(_config.NotPlayingCommand, TagManager.NP.Select(t => t.Tag));
+        PlayingReplacer = new Replacer(ImageConfig.PlayingCommand, TagManager.All.Select(t => t.Tag));
+        NotPlayingReplacer = new Replacer(ImageConfig.NotPlayingCommand, TagManager.NP.Select(t => t.Tag));
         PlayingReplacer.Compile();
         NotPlayingReplacer.Compile();
 
         config.Init();
         ApplyConfig();
-        _mainImage.raycastTarget = _config.Drag;
+        _mainImage.raycastTarget = ImageConfig.Drag;
         _mainImage.rectTransform.anchorMin = Vector2.zero;
         _mainImage.rectTransform.anchorMax = Vector2.one;
         ApplyImages();
@@ -73,26 +73,22 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         string rawCommand = Main.IsPlaying ? PlayingReplacer?.Replace() ?? "" : NotPlayingReplacer?.Replace() ?? "";
 
         int idx;
-        if(int.TryParse(rawCommand, out idx) && idx >= 0 && idx < Images.Count) {
-            _mainImage.sprite = Images[idx];
-        } else {
-            _mainImage.sprite = ImageManager.DefaultSprite;
-        }
+        _mainImage.sprite = int.TryParse(rawCommand, out idx) && idx >= 0 && idx < Images.Count ? Images[idx] : ImageManager.DefaultSprite;
 
-        if(_config.Color.GetExprValue(MiscUtils.ParseColor, out var color)) {
+        if(ImageConfig.Color.GetExprValue(MiscUtils.ParseColor, out var color)) {
             _mainImage.color = color;
         }
-        if(_config.Pivot.GetExprValue(MiscUtils.ParseVec2, out var pivot)) {
+        if(ImageConfig.Pivot.GetExprValue(MiscUtils.ParseVec2, out var pivot)) {
             _mainImage.rectTransform.pivot = pivot;
         }
-        if(_config.Position.GetExprValue(MiscUtils.ParseVec2, out var pos)) {
+        if(ImageConfig.Position.GetExprValue(MiscUtils.ParseVec2, out var pos)) {
             _mainImage.rectTransform.anchoredPosition = (pos - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
         }
-        if(_config.Scale.GetExprValue(MiscUtils.ParseVec2, out var scale)) {
+        if(ImageConfig.Scale.GetExprValue(MiscUtils.ParseVec2, out var scale)) {
             _mainImage.rectTransform.localScale = scale;
             scaleforDrag = scale;
         }
-        if(_config.Rotation.GetExprValue(MiscUtils.ParseVec3, out var rot)) {
+        if(ImageConfig.Rotation.GetExprValue(MiscUtils.ParseVec3, out var rot)) {
             _mainImage.rectTransform.rotation = Quaternion.Euler(rot);
         }
 
@@ -110,37 +106,37 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         NotPlayingReplacer.Compile();
     }
     public override void ApplyConfig() {
-        PlayingReplacer.Source = _config.PlayingCommand;
-        NotPlayingReplacer.Source = _config.NotPlayingCommand;
+        PlayingReplacer.Source = ImageConfig.PlayingCommand;
+        NotPlayingReplacer.Source = ImageConfig.NotPlayingCommand;
         PlayingReplacer.UpdateTags(TagManager.All.Select(ot => ot.Tag));
         NotPlayingReplacer.UpdateTags(TagManager.NP.Select(ot => ot.Tag));
         PlayingReplacer.Compile();
         NotPlayingReplacer.Compile();
         TagManager.UpdatePatch();
-        if(_config.Color.GetNormalValue(out var color)) {
+        if(ImageConfig.Color.GetNormalValue(out var color)) {
             _mainImage.color = color;
         }
-        if(_config.Pivot.GetNormalValue(out var pivot)) {
+        if(ImageConfig.Pivot.GetNormalValue(out var pivot)) {
             _mainImage.rectTransform.pivot = pivot;
         }
-        if(_config.Position.GetNormalValue(out var pos)) {
+        if(ImageConfig.Position.GetNormalValue(out var pos)) {
             _mainImage.rectTransform.anchoredPosition = (pos - new Vector2(0.5f, 0.5f)) * new Vector2(1920, 1080);
         }
-        if(_config.Scale.GetNormalValue(out var scale)) {
+        if(ImageConfig.Scale.GetNormalValue(out var scale)) {
             _mainImage.rectTransform.localScale = scale;
             scaleforDrag = scale;
         }
-        if(_config.Rotation.GetNormalValue(out var rot)) {
+        if(ImageConfig.Rotation.GetNormalValue(out var rot)) {
             _mainImage.rectTransform.rotation = Quaternion.Euler(rot);
         }
-        _mainImage.gameObject.SetActive(_config.Active);
+        _mainImage.gameObject.SetActive(ImageConfig.Active);
     }
 
     public void ApplyImages() {
         Images.Clear();
         _mainImage.sprite = ImageManager.DefaultSprite;
-        for(int i = 0; i < _config.Images.Count; i++) {
-            string imagePath = _config.Images[i];
+        for(int i = 0; i < ImageConfig.Images.Count; i++) {
+            string imagePath = ImageConfig.Images[i];
             Images.Add(ImageManager.GetSpriteSafe(imagePath));
         }
     }
@@ -172,7 +168,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         Vector2 offset = currentPointerLocal - initialPointerLocal;
         _mainImage.rectTransform.anchoredPosition = initialObjectPosition + offset;
         Vector2 canvasSize = new(1920, 1080);
-        _config.Position.Value = (_mainImage.rectTransform.anchoredPosition / canvasSize) + new Vector2(0.5f, 0.5f);
+        ImageConfig.Position.Value = (_mainImage.rectTransform.anchoredPosition / canvasSize) + new Vector2(0.5f, 0.5f);
     }
 
     public void OnPointerEnter(PointerEventData e) {
@@ -203,7 +199,5 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         isPointing = false;
     }
 
-    private void OnDestroy() {
-        TagManager.OnLoadUnload -= RefreshTags;
-    }
+    private void OnDestroy() => TagManager.OnLoadUnload -= RefreshTags;
 }
