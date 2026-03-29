@@ -410,6 +410,11 @@
     <Compile Include="Core\FontManager.cs" />
     <Compile Include="Core\ImageConfigImporter.cs" />
     <Compile Include="Core\ImageManager.cs" />
+    <Compile Include="Core\Patches\SafeConditionalPatch.cs" />
+    <Compile Include="Core\Patches\SafePatchController.cs" />
+    <Compile Include="Core\Patches\SafePatch.cs" />
+    <Compile Include="Core\Patches\SafePatchAttribute.cs" />
+    <Compile Include="Core\Patches\SafePatchManager.cs" />
     <Compile Include="Core\Reference.cs" />
     <Compile Include="Core\ResourceImageManager.cs" />
     <Compile Include="Core\Interfaces\ICopyable.cs" />
@@ -431,6 +436,7 @@
     <Compile Include="Olly\OllyResources.cs" />
     <Compile Include="Olly\OllyState.cs" />
     <Compile Include="Olly\OllyUtils.cs" />
+    <Compile Include="Patches\HideTitle.cs" />
     <Compile Include="Patches\HitFixPatch.cs" />
     <Compile Include="Core\Patches\LazyPatch.cs" />
     <Compile Include="Core\Patches\LazyPatchAttribute.cs" />

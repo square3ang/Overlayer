@@ -7,7 +7,7 @@ using System.Reflection;
 namespace Overlayer.Core.Patches;
 
 internal static class LazyPatchManager {
-    internal static readonly Harmony Harmony = new("Overlayer.Core.Patches.LazyPatchManager");
+    internal static readonly Harmony Harmony = new($"Overlayer.Core.Patches.{nameof(LazyPatchManager)}");
     private static readonly Dictionary<Type, List<LazyPatch>> Patches = [];
     private static readonly HashSet<string> PatchedTriggers = [];
     public static int PatchedTriggersCount => PatchedTriggers.Count;

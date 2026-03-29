@@ -6,23 +6,25 @@ using System.Reflection.Emit;
 
 namespace Overlayer.Patches;
 
-public static class HitFixPatch {
+public class HitFixPatch : SafeConditionalPatch {
+    public HitFixPatch() : base("HitFixPatch") { }
 
-    [LazyPatch("Patches.HitFixPatch.ChangeAddHit", "scrController", "Hit")]
-    public static class ChangeAddHit {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            var list = new List<CodeInstruction>(instructions);
+    protected override bool ShouldApply() => Main.Settings.ShowTrueAutoJudgment;
 
-            for(int i = 0; i < list.Count; i++) {
-                if(list[i].opcode == OpCodes.Call && list[i].operand is MethodInfo method && method.Name == "get_auto") {
-                    if(Main.Settings.ShowTrueAutoJudgment) {
-                        list[i].opcode = OpCodes.Ldc_I4_0;
-                        list[i].operand = null;
-                    }
-                }
+    protected override MethodBase GetTargetMethod() =>
+        SafePatch.GetMethodSafe("scrController", "Hit");
+
+    protected override HarmonyMethod Transpiler() =>
+        new(typeof(HitFixPatch).GetMethod(nameof(TranspilerImpl), BindingFlags.Static | BindingFlags.NonPublic));
+
+    private static IEnumerable<CodeInstruction> TranspilerImpl(IEnumerable<CodeInstruction> instructions) {
+        var list = new List<CodeInstruction>(instructions);
+        for(int i = 0; i < list.Count; i++) {
+            if(list[i].opcode == OpCodes.Call && list[i].operand is MethodInfo method && method.Name == "get_auto") {
+                list[i].opcode = OpCodes.Ldc_I4_0;
+                list[i].operand = null;
             }
-
-            return list;
         }
+        return list;
     }
 }

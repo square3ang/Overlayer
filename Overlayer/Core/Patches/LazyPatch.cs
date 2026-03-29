@@ -31,7 +31,7 @@ internal class LazyPatch {
         finalizer = patchType.GetMethod("Finalizer", (BindingFlags)15420);
         target = attr.Resolve();
         if(attr.IsCompatible && target == null) {
-            Main.Logger.Log($"ID:{attr.Id}, {attr.TargetType}.{attr.TargetMethod} Could Not Be Resolved!");
+            Main.Logger.Log($"[{nameof(LazyPatch)}] {attr.Id}: {attr.TargetType}.{attr.TargetMethod} Not Resolved");
         }
 
         Patches.Add(attr.Id, this);
@@ -42,7 +42,7 @@ internal class LazyPatch {
         }
 
         if(!force && Locked) {
-            Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Patched!");
+            Main.Logger.Log($"[{nameof(LazyPatch)}] ID:{attr.Id} Locked. Patch skipped");
             return;
         }
         if(force) {
@@ -54,7 +54,7 @@ internal class LazyPatch {
         var trans_hm = transpiler != null ? new HarmonyMethod(transpiler) : null;
         var final_hm = finalizer != null ? new HarmonyMethod(finalizer) : null;
         patch = harmony.Patch(target, pre_hm, post_hm, trans_hm, final_hm);
-        Main.Logger.Log($"ID:{attr.Id} Patched!");
+        Main.Logger.Log($"[{nameof(LazyPatch)}] ID:{attr.Id} Patched");
         Patched = true;
     }
     public void Unpatch(bool force = false) {
@@ -63,7 +63,7 @@ internal class LazyPatch {
         }
 
         if(!force && Locked) {
-            Main.Logger.Log($"ID:{attr.Id} Is Locked! Cannot Be Unpatched!");
+            Main.Logger.Log($"[{nameof(LazyPatch)}] ID:{attr.Id} Is Locked. Unpatch skipped");
             return;
         }
         if(force) {
@@ -71,7 +71,7 @@ internal class LazyPatch {
         }
 
         harmony.Unpatch(target, patch);
-        Main.Logger.Log($"ID:{attr.Id} Unpatched!");
+        Main.Logger.Log($"[{nameof(LazyPatch)}] ID:{attr.Id} Unpatched");
         patch = null;
         Patched = false;
     }

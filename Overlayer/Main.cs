@@ -133,6 +133,7 @@ public static class Main {
             var settingsDrawer = new SettingsDrawer(Settings);
             Lang.OnInitialize += () => settingsDrawer.NeedLangInit = true;
             _ = Lang.Load(Path.Combine(Mod.Path, "lang"));
+            SafePatchController.ApplyAll();
             LazyPatchManager.Load(Ass);
             LazyPatchManager.PatchInternal();
             Tag.InitializeWrapperAssembly();
@@ -183,6 +184,7 @@ public static class Main {
             OverlayerTag.Release();
             Tag.ReleaseWrapperAssembly();
             LazyPatchManager.UnloadAll();
+            SafePatchController.UnloadAll();
             Lang.Release();
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
             Settings.Save();

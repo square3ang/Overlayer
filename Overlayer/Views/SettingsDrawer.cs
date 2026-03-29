@@ -6,6 +6,7 @@ using Overlayer.Core.Patches;
 using Overlayer.Core.Scripting;
 using Overlayer.Core.Translation;
 using Overlayer.Models;
+using Overlayer.Patches;
 using Overlayer.Tags;
 using Overlayer.Unity;
 using Overlayer.Utils;
@@ -18,7 +19,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Overlayer.Patches.HitFixPatch;
 using Time = UnityEngine.Time;
 
 namespace Overlayer.Views;
@@ -256,8 +256,11 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     Drawer.EndTab();
                 }
                 if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGMENT", "Show True Auto Judgment"))), ref model.ShowTrueAutoJudgment)) {
-                    LazyPatchManager.Unpatch(typeof(ChangeAddHit), true);
-                    LazyPatchManager.Patch(typeof(ChangeAddHit));
+                    if(model.ShowTrueAutoJudgment) {
+                        SafePatchManager.ApplyPatch(typeof(HitFixPatch));
+                    } else {
+                        SafePatchManager.RemovePatch(typeof(HitFixPatch));
+                    }
                 }
                 Drawer.HoverTooltip(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGEMENT_DESC", "Patches the in game judgement line code\nso that judgements are always displayed on the Hit Error Meter even during Autoplay"));
                 break;

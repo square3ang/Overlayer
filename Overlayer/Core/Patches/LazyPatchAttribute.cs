@@ -1,4 +1,5 @@
-﻿using Overlayer.Utils;
+﻿using Newgrounds;
+using Overlayer.Utils;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -12,7 +13,7 @@ internal class LazyPatchAttribute : Attribute {
     public string TargetType { get; }
     public string TargetMethod { get; }
     public string[] TargetMethodArgs { get; }
-    public string[] Triggers { get; set; } = new string[] { LazyPatch.InternalTrigger };
+    public string[] Triggers { get; set; } = [LazyPatch.InternalTrigger];
     public int MinVersion { get; set; } = -1;
     public int MaxVersion { get; set; } = -1;
     public BindingFlags ORFlags { get; set; } = BindingFlags.DeclaredOnly;
@@ -32,7 +33,7 @@ internal class LazyPatchAttribute : Attribute {
     public bool IsCompatible => (CurrentVersion >= MinVersion || MinVersion < 0) && (MaxVersion >= CurrentVersion || MaxVersion < 0);
     public MethodBase Resolve() {
         if(!IsCompatible) {
-            Main.Logger.Log($"{Id} Patch Is Not Compatible! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
+            Main.Logger.Error($"[{nameof(LazyPatch)}] {Id} Not Compatible - Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion}");
             return null;
         }
         var bf = ((BindingFlags)15420 | ORFlags) & ~ANDNOTFlags;
@@ -49,9 +50,7 @@ internal class LazyPatchAttribute : Attribute {
                                         tt?.GetMethod(TargetMethod, bf, null, tma, null) :
                                         tt?.GetMethod(TargetMethod, bf);
         } catch(AmbiguousMatchException) {
-            //foreach (var amMethod in MiscUtils.TypeByName(TargetType).GetMethods(bf).Where(t => t.Name == TargetMethod))
-            //    Main.Logger.Log(amMethod.ToString());
-            Main.Logger.Log($"{Id} Patch Is Ambiguous Match! (Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion})");
+            Main.Logger.Error($"[{nameof(LazyPatch)}] {Id} Ambiguous Match - Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion}");
             return null;
         }
     }
