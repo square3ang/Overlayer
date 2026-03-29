@@ -476,7 +476,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 GUI.color = new Color(0.8f, 0.8f, 1f);
                 Drawer.ButtonDummy(Drawer.Icon_Pencil, GUILayout.Width(80));
                 GUI.color = new Color(1f, 0.8f, 1f);
-                Drawer.ButtonDummy(Drawer.Icon_UpDown, GUILayout.Width(46));
+                Drawer.ButtonDummy(Drawer.Icon_Up, GUILayout.Width(46));
                 GUI.color = new Color(1f, 0.8f, 0.8f);
                 Drawer.ButtonDummy(Drawer.Icon_X, GUILayout.Width(46));
                 GUI.color = old;
