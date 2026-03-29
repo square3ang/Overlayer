@@ -851,43 +851,87 @@ public static class Drawer {
         }
     }
 
-    public static void Tooltip(string text, bool ignoreWidth = false) {
+    private static Rect CalculatePosition(Vector2 mousePosition, float width, float height, bool ignoreWidth) {
+        Rect labelPosition = new(mousePosition.x, mousePosition.y - height - 20, width + 20, height + 20);
+
+        if(ignoreWidth) {
+            return labelPosition;
+        }
+
+        var windowwidth = ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
+            .GetValue(UnityModManager.UI.Instance)).width;
+        var scroll = (Vector2[])AccessTools.Field(typeof(UnityModManager.UI), "mScrollPosition")
+            .GetValue(UnityModManager.UI.Instance);
+        windowwidth += scroll[UnityModManager.UI.Instance.tabId].x;
+
+        if(labelPosition.x + labelPosition.width > windowwidth) {
+            labelPosition.x = windowwidth - labelPosition.width;
+        }
+
+        return labelPosition;
+    }
+
+    private static void DrawBackground(Rect rect) => GUI.Box(rect, "", RGUIStyle.darkWindow);
+
+    public static bool Tooltip(string text, bool ignoreWidth = false) {
         if(string.IsNullOrEmpty(text)) {
             GUI.Box(new Rect(0, 0, 0, 0), "");
-        } else {
-            Vector2 mousePosition = Event.current.mousePosition;
-
-            float maxWidth = 660f;
-            float height = GUI.skin.label.CalcHeight(new GUIContent(text), maxWidth);
-            float width = GUI.skin.label.CalcSize(new GUIContent(text)).x;
-            width = Mathf.Min(width, maxWidth);
-
-            Rect labelPosition = new(mousePosition.x, mousePosition.y - height - 20, width + 20, height + 20);
-
-            if(!ignoreWidth) {
-                var windowwidth = ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
-                    .GetValue(UnityModManager.UI.Instance)).width;
-                var scroll = (Vector2[])AccessTools.Field(typeof(UnityModManager.UI), "mScrollPosition")
-                    .GetValue(UnityModManager.UI.Instance);
-                windowwidth += scroll[UnityModManager.UI.Instance.tabId].x;
-
-                if(labelPosition.x + labelPosition.width > windowwidth) {
-                    labelPosition.x = windowwidth - labelPosition.width;
-                }
-            }
-
-            GUI.Box(labelPosition, "", RGUIStyle.darkWindow);
-
-            labelPosition.x += 10;
-            labelPosition.y += 10;
-            GUI.Label(labelPosition, text);
+            return false;
         }
+
+        Vector2 mousePosition = Event.current.mousePosition;
+
+        float maxWidth = 660f;
+        float height = GUI.skin.label.CalcHeight(new GUIContent(text), maxWidth);
+        float width = Mathf.Min(GUI.skin.label.CalcSize(new GUIContent(text)).x, maxWidth);
+
+        Rect pos = CalculatePosition(mousePosition, width, height, ignoreWidth);
+
+        DrawBackground(pos);
+
+        GUI.Label(new Rect(pos.x + 10, pos.y + 10, width, height), text);
+        return true;
+    }
+
+    public static bool Tooltip(Texture2D image, bool ignoreWidth = false) {
+        if(image == null) {
+            GUI.Box(new Rect(0, 0, 0, 0), "");
+            return false;
+        }
+
+        Vector2 mousePosition = Event.current.mousePosition;
+
+        float maxWidth = 660f;
+        float width = image.width;
+        float height = image.height;
+
+        if(width > maxWidth) {
+            float ratio = maxWidth / width;
+            width = maxWidth;
+            height *= ratio;
+        }
+
+        Rect pos = CalculatePosition(mousePosition, width, height, ignoreWidth);
+
+        DrawBackground(pos);
+
+        GUI.DrawTexture(new Rect(pos.x + 10, pos.y + 10, width, height), image, ScaleMode.ScaleToFit);
+        return true;
     }
 
     public static bool HoverTooltip(string tooltip) {
         bool hover = MiscUtils.IsHovering();
         if(hover && Main.Settings.Tooltip) {
             Main.tooltip = tooltip;
+        }
+
+        return hover;
+    }
+
+    public static bool HoverTooltip(Texture2D tooltip) {
+        bool hover = MiscUtils.IsHovering();
+        if(hover && Main.Settings.Tooltip) {
+            Main.tooltipImage = tooltip;
         }
 
         return hover;

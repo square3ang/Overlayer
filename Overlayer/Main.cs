@@ -57,6 +57,8 @@ public static class Main {
     private static UpdatePopup popup;
 
     public static string tooltip = "";
+    public static Texture2D tooltipImage = null;
+
     public static string UpdateInfo = "";
 
     private static bool updateOnce = true;
@@ -246,6 +248,8 @@ public static class Main {
         }
 
         tooltip = null;
+        tooltipImage = null;
+
         GUI.Draw();
         GUILayout.Space(30);
         GUILayout.BeginHorizontal();
@@ -291,7 +295,9 @@ public static class Main {
 
         if(!RGUI.PopupWindow.isOpen) {
             if(Settings.Tooltip) {
-                Drawer.Tooltip(tooltip);
+                if(!Drawer.Tooltip(tooltip)) {
+                    Drawer.Tooltip(tooltipImage);
+                }
             }
         }
     }
