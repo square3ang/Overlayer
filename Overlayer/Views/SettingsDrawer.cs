@@ -81,7 +81,13 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 Event.current.Use();
             }
             GUILayout.Label($"<size=26>{Main.Lang.Get("SLOGAN_TEXT", "Display everything as you wish.")}</size>");
-            GUILayout.Label($"<size=16>{Main.Mod.Version}, by <color=#{Tags.Effect.Rainbow()}>Square3ang & Kkitut</color></size>");
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"<size=16>{Main.Mod.Version}, by </size>");
+            GUILayout.Label($"<size=16><color=#{Effect.Rainbow(11.0)}>Square3ang</color></size>");
+            GUILayout.Label($"<size=16> & </size>");
+            GUILayout.Label($"<size=16><color=#{Effect.Rainbow(9.0)}>Kkitut</color></size>");
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
             if(Main.EgEnabled) {
                 Main.Eg.DrawChoices();
             }
