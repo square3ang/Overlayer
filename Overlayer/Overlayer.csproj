@@ -669,6 +669,7 @@
     <EmbeddedResource Include="MiscFiles\images\up.png" />
     <EmbeddedResource Include="MiscFiles\images\opacity.png" />
     <EmbeddedResource Include="MiscFiles\images\image.png" />
+    <EmbeddedResource Include="MiscFiles\images\wiki.png" />
     <Content Include="MiscFiles\ov3_logo.png" />
     <Content Include="MiscFiles\update.txt" />
     <Content Include="RapidGUI\Component\IMColorPicker\Resources\imBorder.png" />

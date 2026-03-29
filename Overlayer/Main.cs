@@ -252,8 +252,12 @@ public static class Main {
         if(Drawer.Button(Drawer.Icon_Discord, " Discord")) {
             Application.OpenURL("https://discord.modlist.org/");
         }
+        Drawer.HoverTooltip("modlist.org");
         if(Drawer.Button(Drawer.Icon_Github, " GitHub")) {
             Application.OpenURL("https://github.com/modlist-org/Overlayer");
+        }
+        if(Drawer.Button(Drawer.Icon_Wiki, " Wiki")) {
+            Application.OpenURL("https://github.com/modlist-org/Overlayer/wiki");
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();

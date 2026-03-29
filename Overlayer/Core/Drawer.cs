@@ -171,6 +171,7 @@ public static class Drawer {
     public static Texture2D Icon_Plus;
     public static Texture2D Icon_Opacity;
     public static Texture2D Icon_Image;
+    public static Texture2D Icon_Wiki;
 
     public static Texture2D Icon_Up;
     public static Texture2D Icon_Down;
@@ -287,6 +288,7 @@ public static class Drawer {
         Icon_Plus = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("plus.png"));
         Icon_Opacity = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("opacity.png"));
         Icon_Image = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("image.png"));
+        Icon_Wiki = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("wiki.png"));
 
         Icon_Up = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("up.png"));
         Icon_Down = RotateTexture90(RotateTexture90(Icon_Up));
