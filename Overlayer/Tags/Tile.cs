@@ -23,7 +23,7 @@ public static class Tile {
             IsStarted = true;
             if(controller.gameworld) {
                 StartProgress = controller.percentComplete * 100;
-                StartTile = controller.currentSeqID + 1;
+                StartTile = controller.currentSeqID;
             }
         }
     }

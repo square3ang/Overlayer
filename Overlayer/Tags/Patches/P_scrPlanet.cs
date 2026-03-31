@@ -66,7 +66,7 @@ public class P_scrPlanet : PatchBase<P_scrPlanet> {
     public static class Tile__SwitchChosen {
         public static void Postfix() {
             if(Main.IsPlaying) {
-                Tile.CurTile = scrController.instance.currentSeqID + 1;
+                Tile.CurTile = scrController.instance.currentSeqID;
                 Tile.TotalTile = ADOBase.lm.listFloors.Count;
                 Tile.LeftTile = Tile.TotalTile - Tile.CurTile;
             }

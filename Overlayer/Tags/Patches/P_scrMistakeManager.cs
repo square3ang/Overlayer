@@ -44,7 +44,7 @@ public class P_scrMistakeManager : PatchBase<P_scrMistakeManager> {
                 Tile.CurTile >= 0 && Tile.CurTile < ADOBase.lm.listFloors.Count &&
                 ADOBase.lm.listFloors[Tile.CurTile] != null) {
 
-                int lefttile = Tile.LeftTile - 1 - (ADOBase.lm.listFloors[Tile.CurTile].midSpin ? 1 : 0);
+                int lefttile = Tile.LeftTile - (ADOBase.lm.listFloors[Tile.CurTile].midSpin ? 1 : 0);
 
                 int mxsucess = lefttile + perfect + auto + earlyPerfect + latePerfect;
                 int mxtotal = scrMistakesManager.hitMargins.Count + lefttile + failMiss + failOverload;
@@ -54,12 +54,12 @@ public class P_scrMistakeManager : PatchBase<P_scrMistakeManager> {
                 AccuracyStats.MaxAccuracy = 100.0 * (mxratio + mxbonus);
 
                 double possibleHitsX =
-                    lefttile + perfect + auto + Tile.StartTile - 1 +
+                    lefttile + perfect + auto +
                     (0.75 * (earlyPerfect + latePerfect)) +
                     (0.4 * (veryEarly + veryLate)) +
                     (0.2 * (tooEarly + tooLate));
 
-                double denomX = Tile.TotalTile - 1 + tooEarly + tooLate;
+                double denomX = lefttile + totalHits;
                 AccuracyStats.AbsMaxXAccuracy = 100.0 * (possibleHitsX / denomX);
                 AccuracyStats.MaxXAccuracy = AccuracyStats.AbsMaxXAccuracy * checkpointminus;
             }
