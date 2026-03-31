@@ -31,12 +31,12 @@ public class FileAttemptSavePatch : SafeConditionalPatch {
     protected override HarmonyMethod Postfix() =>
         new(typeof(FileAttemptSavePatch).GetMethod(nameof(PostfixImpl), BindingFlags.Static | BindingFlags.NonPublic));
 
-    private static void PostfixImpl() {
+    private static void PostfixImpl(scrController __instance) {
         if(Main.FileAttempt == null) {
             return;
         }
-        Main.FileAttempt.Attempts++;
-
+        Main.FileAttempt.IncreaseAttempts();
+        Main.FileAttempt.IncreaseTileAttempts(__instance.currentSeqID);
         Main.FileAttempt.Save();
     }
 }

@@ -6,8 +6,20 @@ using System.IO;
 namespace Overlayer.Models;
 
 public class FileAttempt : IModel, ICopyable<FileAttempt>  {
-    public int Attempts { get; private set; } = 0;
-    public List<int[]> TileAttempts { get; set; } = [];
+    private int Attempts = 0;
+    private List<int[]> TileAttempts = [];
+
+    public int GetAttempts() => Attempts;
+
+    public int GetTileAttempts(int tile) {
+        foreach(var t in TileAttempts) {
+            if(t[0] == tile) {
+                return t[1];
+            }
+        }
+
+        return 0;
+    }
 
     public void IncreaseAttempts() => Attempts++;
     public void IncreaseTileAttempts(int tile) {

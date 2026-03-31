@@ -56,9 +56,9 @@ public static class Status {
     }
 
     [Tag]
-    public static int FileAttempts => Main.FileAttempt?.Attempts ?? -1;
+    public static int FileAttempts() => Main.FileAttempt?.GetAttempts() ?? -1;
     [Tag]
-    public static int FileTileAttempts => Main.FileAttempt?.TileAttempts ?? -1;
+    public static int FileTileAttempts(int tile) => Main.FileAttempt?.GetTileAttempts(tile) ?? -1;
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double Pitch => GCS.currentSpeedTrial;
