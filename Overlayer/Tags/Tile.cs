@@ -29,7 +29,7 @@ public static class Tile {
     }
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double MarginScale => scrController.instance?.currFloor?.marginScale ?? 0;
+    public static double MarginScale => (scrController.instance?.currFloor?.marginScale ?? 0) * 100d;
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TileAngle;
