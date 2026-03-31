@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
+using Overlayer.Tags;
 using System.Collections.Generic;
 using System.IO;
 
@@ -75,27 +76,45 @@ public class FileAttempt : IModel, ICopyable<FileAttempt>  {
     const string FileAttemptsFileName = "Overlayer_Attempts.json";
 
     public bool Save() {
-        if(scnGame.instance == null) {
+        var path = GetPath();
+        if(path == null) {
             return false;
         }
 
-        var path = Path.Combine(scnGame.instance.levelPath, FileAttemptsFileName);
-        var json = Serialize().ToString();
+        var json = Serialize().ToString(Newtonsoft.Json.Formatting.None);
         File.WriteAllText(path, json);
         return true;
     }
 
     public bool Load() {
-        if(scnGame.instance == null) {
+        var path = GetPath();
+        if(path == null) {
             return false;
         }
 
-        var path = Path.Combine(scnGame.instance.levelPath, FileAttemptsFileName);
         if(File.Exists(path)) {
             var json = File.ReadAllText(path);
             var node = JToken.Parse(json);
             Deserialize(node);
         }
         return true;
+    }
+
+    private static string GetPath() {
+        if(scnGame.instance == null) {
+            return null;
+        }
+
+        string level = scnGame.instance.levelPath;
+        if(string.IsNullOrEmpty(level)) {
+            return null;
+        }
+
+        var dir = Path.GetDirectoryName(level);
+        if(string.IsNullOrEmpty(dir)) {
+            return null;
+        }
+
+        return Path.Combine(dir, FileAttemptsFileName);
     }
 }

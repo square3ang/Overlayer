@@ -1,4 +1,6 @@
-﻿using Overlayer.Core.Patches;
+﻿using MonsterLove.StateMachine;
+using Overlayer.Core.Patches;
+using System;
 
 namespace Overlayer.Tags.Patches;
 
@@ -38,5 +40,16 @@ public class P_scrController : PatchBase<P_scrController> {
     })]
     public static class ProgressStats__OnLandOnPortal {
         public static void Postfix() => ProgressStats.BestProgress_Fix();
+    }
+
+    [LazyPatch("Tags.P_scrController.Tile__ChangeState__Restart", "scrController", "WaitForStartCo",
+        ["System.Enum"], Triggers = new string[] {
+        nameof(Tile.StartTile), nameof(Tile.StartProgress),
+
+        // Dependency
+        nameof(AccuracyStats.MaxXAccuracy), nameof(AccuracyStats.AbsMaxXAccuracy), nameof(Status.FileTileAttempts),
+    })]
+    public static class Tile__Restart {
+        public static void Postfix(scrController __instance, int seqID = 0) => Tile.SetStartValues(__instance, seqID);
     }
 }

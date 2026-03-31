@@ -16,16 +16,9 @@ public static class Tile {
     [Tag]
     public static bool IsStarted;
 
-    public static void Started_Reset(scrController controller) => IsStarted = false;
-
-    public static void Start_Init(scrController controller) {
-        if(!IsStarted) {
-            IsStarted = true;
-            if(controller.gameworld) {
-                StartProgress = controller.percentComplete * 100;
-                StartTile = controller.currentSeqID;
-            }
-        }
+    public static void SetStartValues(scrController controller, int tile) {
+        StartProgress = controller.percentComplete * 100;
+        StartTile = tile;
     }
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]

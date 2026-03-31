@@ -209,6 +209,14 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 Drawer.HoverTooltip(Main.Lang.Get("AUTO_PIVOT_DESC", "Automatically adjusts the pivot to match the text alignment.\nWhen the editor is in Simple mode, this is always enabled regardless of settings"));
                 Drawer.DrawBool(Main.Lang.Get("INCLUDE_REFERENCES", "Include References"), ref model.IncludeReferences);
                 Drawer.HoverTooltip(Main.Lang.Get("INCLUDE_REFERENCES_DESC", "When this setting is enabled,\nelements that rely on external files(such as fonts and images)\nwill be included directly in the JSON file export.\n\nThis may increase the file size"));
+                if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("FILE_ATTEMPT", "File Attempt"))), ref model.FileAttempt)) {
+                    if(model.FileAttempt) {
+                        SafePatchManager.ApplyPatch(typeof(FileAttempt));
+                    } else {
+                        SafePatchManager.RemovePatch(typeof(FileAttempt));
+                    }
+                }
+                Drawer.HoverTooltip(Main.Lang.Get("FILE_ATTEMPT_DESC", "You can use FileAttempts & FileTileAttempts Tags when enabled"));
                 Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan)), ref model.MovingManEditor);
                 Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.ColorRange)), ref model.ColorRangeEditor);
                 Drawer.DrawBool(string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.EasedValue)), ref model.EasedValueEditor);
@@ -263,14 +271,6 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     }
                 }
                 Drawer.HoverTooltip(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGEMENT_DESC", "Patches the in game judgement line code\nso that judgements are always displayed on the Hit Error Meter even during Autoplay"));
-                if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("FILE_ATTEMPT", "File Attempt"))), ref model.FileAttempt)) {
-                    if(model.FileAttempt) {
-                        SafePatchManager.ApplyPatch(typeof(FileAttempt));
-                    } else {
-                        SafePatchManager.RemovePatch(typeof(FileAttempt));
-                    }
-                }
-                Drawer.HoverTooltip(Main.Lang.Get("FILE_ATTEMPT_DESC", "You can use FileAttempts & FileTileAttempts Tags when enabled"));
                 break;
         }
         if(extraMenu != ExtraMenus.Closed) {

@@ -48,9 +48,9 @@ public class P_scnGame : PatchBase<P_scnGame> {
     }
 
     [LazyPatch("Tags.P_scnGame.Tile__ResetScene", "scnGame", "ResetScene", Triggers = new string[] {
-        nameof(Tile.StartTile), nameof(Tile.StartProgress)
+         nameof(Tile.IsStarted),
     })]
     public static class Tile__ResetScene {
-        public static void Postfix(scrController __instance) => Tile.Started_Reset(__instance);
+        public static void Postfix(scrController __instance) => Tile.IsStarted = false;
     }
 }

@@ -18,9 +18,9 @@ public class P_scnEditor : PatchBase<P_scnEditor> {
     }
 
     [LazyPatch("Tags.P_scnEditor.Tile__ResetScene", "scnEditor", "ResetScene", Triggers = new string[] {
-        nameof(Tile.StartTile), nameof(Tile.StartProgress)
+        nameof(Tile.IsStarted),
     })]
     public static class Tile__ResetScene {
-        public static void Postfix(scrController __instance) => Tile.Started_Reset(__instance);
+        public static void Postfix(scrController __instance) => Tile.IsStarted = false;
     }
 }
