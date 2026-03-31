@@ -29,6 +29,7 @@ public class Settings : IModel, ICopyable<Settings> {
     public bool ShowTextNameAsDisplayText = false;
     public EditorUIMode UiMode = EditorUIMode.Simple;
     public bool IncludeReferences = true;
+    public bool FileAttempt = false;
 
     public int PerfStatUpdateRate = 1000;
 
@@ -55,6 +56,7 @@ public class Settings : IModel, ICopyable<Settings> {
             [nameof(ShowTextNameAsDisplayText)] = ShowTextNameAsDisplayText,
             [nameof(UiMode)] = UiMode.ToString(),
             [nameof(IncludeReferences)] = IncludeReferences,
+            [nameof(FileAttempt)] = FileAttempt,
 
             [nameof(PerfStatUpdateRate)] = PerfStatUpdateRate,
 
@@ -85,6 +87,7 @@ public class Settings : IModel, ICopyable<Settings> {
         ShowTextNameAsDisplayText = node[nameof(ShowTextNameAsDisplayText)]?.Value<bool>() ?? defaultSettings.ShowTextNameAsDisplayText;
         UiMode = EnumHelper<EditorUIMode>.Parse(node[nameof(UiMode)]?.Value<string>() ?? defaultSettings.UiMode.ToString());
         IncludeReferences = node[nameof(IncludeReferences)]?.Value<bool>() ?? defaultSettings.IncludeReferences;
+        FileAttempt = node[nameof(FileAttempt)]?.Value<bool>() ?? defaultSettings.FileAttempt;
 
         PerfStatUpdateRate = node[nameof(PerfStatUpdateRate)]?.Value<int>() ?? defaultSettings.PerfStatUpdateRate;
 
@@ -113,6 +116,7 @@ public class Settings : IModel, ICopyable<Settings> {
             ShowTextNameAsDisplayText = ShowTextNameAsDisplayText,
             UiMode = UiMode,
             IncludeReferences = IncludeReferences,
+            FileAttempt = FileAttempt,
 
             ChangeFont = ChangeFont,
             AdofaiFont = AdofaiFont.Copy(),

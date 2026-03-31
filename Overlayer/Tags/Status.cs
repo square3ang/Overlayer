@@ -1,4 +1,7 @@
-﻿using Overlayer.Tags.Attributes;
+﻿using GDMiniJSON;
+using Newtonsoft.Json.Linq;
+using Overlayer.Tags.Attributes;
+using System.IO;
 
 namespace Overlayer.Tags;
 
@@ -51,6 +54,11 @@ public static class Status {
             ? Persistence.GetWorldAttempts(scrController.currentWorld)
             : 0;
     }
+
+    [Tag]
+    public static int FileAttempts => Main.FileAttempt?.Attempts ?? -1;
+    [Tag]
+    public static int FileTileAttempts => Main.FileAttempt?.TileAttempts ?? -1;
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double Pitch => GCS.currentSpeedTrial;

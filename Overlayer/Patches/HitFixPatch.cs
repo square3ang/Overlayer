@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 namespace Overlayer.Patches;
 
 public class HitFixPatch : SafeConditionalPatch {
-    public HitFixPatch() : base("HitFixPatch") { }
+    public HitFixPatch() : base(nameof(HitFixPatch)) { }
 
     protected override bool ShouldApply() => Main.Settings.ShowTrueAutoJudgment;
 

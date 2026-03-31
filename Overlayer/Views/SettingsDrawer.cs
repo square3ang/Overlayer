@@ -263,6 +263,14 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                     }
                 }
                 Drawer.HoverTooltip(Main.Lang.Get("SHOW_TRUE_AUTO_JUDGEMENT_DESC", "Patches the in game judgement line code\nso that judgements are always displayed on the Hit Error Meter even during Autoplay"));
+                if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("FILE_ATTEMPT", "File Attempt"))), ref model.FileAttempt)) {
+                    if(model.FileAttempt) {
+                        SafePatchManager.ApplyPatch(typeof(FileAttempt));
+                    } else {
+                        SafePatchManager.RemovePatch(typeof(FileAttempt));
+                    }
+                }
+                Drawer.HoverTooltip(Main.Lang.Get("FILE_ATTEMPT_DESC", "You can use FileAttempts & FileTileAttempts Tags when enabled"));
                 break;
         }
         if(extraMenu != ExtraMenus.Closed) {

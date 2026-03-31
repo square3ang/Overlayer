@@ -1,8 +1,4 @@
-﻿using HarmonyLib;
-using JSNet.API;
-using JSNet.Utils;
-using Newtonsoft.Json.Linq;
-using Overlayer.Controllers;
+﻿using Overlayer.Controllers;
 using Overlayer.Core;
 using Overlayer.Core.Scripting;
 using Overlayer.Core.Patches;
@@ -18,19 +14,13 @@ using RapidGUI;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
-using Time = UnityEngine.Time;
+using Overlayer.Models;
 
 namespace Overlayer;
 #if DEBUG
@@ -49,6 +39,7 @@ public static class Main {
     public static string ProfilePath => Path.Combine(Mod.Path, "profiles");
     [Tag(NotPlaying = true)] public static ModLogger Logger { get; private set; }
     [Tag(NotPlaying = true)] public static Settings Settings { get; private set; }
+    public static FileAttempt FileAttempt;
     public static GUIController GUI { get; private set; }
     public static Scene ActiveScene { get; private set; }
     [Tag(NotPlaying = true)] public static Translator Lang { get; internal set; }
@@ -150,6 +141,9 @@ public static class Main {
             StaticCoroutine.Run(null);
             StaticCoroutine.Run(LoadCoroutine(modEntry));
             Scripting.Initalize();
+            if(Settings.FileAttempt) {
+                FileAttempt = new FileAttempt();
+            }
             ProfileManager.Initialize();
 
             GUI.Init(settingsDrawer);
@@ -176,6 +170,7 @@ public static class Main {
                 Logo = null;
             }
             ProfileManager.Release();
+            FileAttempt = null;
             Scripting.Release();
             ImageManager.Release();
             Tags.System.Free();

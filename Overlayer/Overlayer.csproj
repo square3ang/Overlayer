@@ -426,6 +426,8 @@
     <Compile Include="Core\ProfileReferences.cs" />
     <Compile Include="Core\ProfileManager.cs" />
     <Compile Include="Core\Scripting\Scripting.cs" />
+    <Compile Include="Models\TileAttempt.cs" />
+    <Compile Include="Models\FileAttempt.cs" />
     <Compile Include="Models\ExprValue.cs" />
     <Compile Include="Models\ImageConfig.cs" />
     <Compile Include="Models\ObjectConfig.cs" />
@@ -437,6 +439,7 @@
     <Compile Include="Olly\OllyState.cs" />
     <Compile Include="Olly\OllyUtils.cs" />
     <Compile Include="Patches\HideTitle.cs" />
+    <Compile Include="Patches\FileAttemptPatch.cs" />
     <Compile Include="Patches\HitFixPatch.cs" />
     <Compile Include="Core\Patches\LazyPatch.cs" />
     <Compile Include="Core\Patches\LazyPatchAttribute.cs" />
