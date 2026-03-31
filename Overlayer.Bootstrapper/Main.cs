@@ -16,10 +16,14 @@ public static class Main {
     ];
     private static readonly string FailName = "Overlayer [FAIL]";
     public static void Load(ModEntry modEntry) {
+        void SetFail() {
+            SetFail();
+        }
+
         string libPath = Path.Combine(modEntry.Path, "lib");
         if(!Directory.Exists(libPath)) {
             modEntry.Logger.Log("/lib/ folder does not exist.");
-            modEntry.Info.DisplayName = FailName;
+            SetFail();
             return;
         }
 
@@ -45,7 +49,7 @@ public static class Main {
                 loadedTitles.Add(assembly.GetName().Name);
             } catch(Exception e) {
                 modEntry.Logger.Log($"Failed to load {dllPath}: {e}");
-                modEntry.Info.DisplayName = FailName;
+                SetFail();
             }
         }
 
@@ -54,7 +58,7 @@ public static class Main {
                !AppDomain.CurrentDomain.GetAssemblies().Any(a => a.GetName().Name.Equals(required, StringComparison.OrdinalIgnoreCase))) {
 
                 modEntry.Logger.Log($"[ERROR] Required assembly '{required}' not loaded.");
-                modEntry.Info.DisplayName = FailName;
+                SetFail();
                 return;
             }
         }
@@ -62,27 +66,19 @@ public static class Main {
         string mainPath = Path.Combine(modEntry.Path, "Overlayer.dll");
         if(!File.Exists(mainPath)) {
             modEntry.Logger.Log("Overlayer.dll not found");
-            modEntry.Info.DisplayName = FailName;
+            SetFail();
             return;
         }
 
         try {
             var mainAss = Assembly.Load(File.ReadAllBytes(mainPath));
             modEntry.Logger.Log("Loaded Overlayer.dll successfully");
-
-            typeof(ModEntry)
-                .GetField("mAssembly", (BindingFlags)15420)
-                .SetValue(modEntry, mainAss);
-
-            mainAss
-                .GetType("Overlayer.Main")
-                .GetMethod("Load")
-                .Invoke(null, [modEntry]);
-
+            typeof(ModEntry).GetField("mAssembly", (BindingFlags)15420).SetValue(modEntry, mainAss);
+            mainAss.GetType("Overlayer.Main").GetMethod("Load").Invoke(null, [modEntry]);
             modEntry.Logger.Log("Overlayer.Main.Load invoked successfully");
         } catch(Exception e) {
             modEntry.Logger.Log($"Failed to load or invoke Overlayer.dll: {e}");
-            modEntry.Info.DisplayName = FailName;
+            SetFail();
         }
     }
 }
