@@ -40,17 +40,24 @@ public class P_scnGame : PatchBase<P_scnGame> {
         }
     }
 
-    [LazyPatch("Tags.P_scnGame.Status__Play", "scnGame", "Play", Triggers = new string[] {
+    [LazyPatch("Tags.P_scnGame.Play", "scnGame", "Play", Triggers = new string[] {
         nameof(CheckPointStats.TotalCheckPoints), nameof(CheckPointStats.CurCheckPoint),
+        nameof(Tile.StartTile), nameof(Tile.StartProgress),
+
+        // Dependency
+        nameof(AccuracyStats.MaxXAccuracy), nameof(AccuracyStats.AbsMaxXAccuracy), nameof(Status.FileTileAttempts),
     })]
-    public static class Status__Play {
-        public static void Postfix() => CheckPointStats.InterCheckPoints_Update();
+    public static class Play {
+        public static void Postfix(int seqID = 0) {
+            CheckPointStats.InterCheckPoints_Update();
+            Tile.SetStartValues(scrController.instance, seqID);
+        }
     }
 
     [LazyPatch("Tags.P_scnGame.Tile__ResetScene", "scnGame", "ResetScene", Triggers = new string[] {
          nameof(Tile.IsStarted),
     })]
     public static class Tile__ResetScene {
-        public static void Postfix(scrController __instance) => Tile.IsStarted = false;
+        public static void Postfix() => Tile.IsStarted = false;
     }
 }

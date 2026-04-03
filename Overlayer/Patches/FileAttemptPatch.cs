@@ -32,12 +32,12 @@ public class FileAttemptSavePatch : SafeConditionalPatch {
     protected override HarmonyMethod Postfix() =>
         new(typeof(FileAttemptSavePatch).GetMethod(nameof(PostfixImpl), BindingFlags.Static | BindingFlags.NonPublic));
 
-    private static void PostfixImpl(scnGame __instance) {
+    private static void PostfixImpl(scnGame __instance, int seqID = 0) {
         if(Main.FileAttempt == null || string.IsNullOrEmpty(__instance.levelPath)) {
             return;
         }
         Main.FileAttempt.IncreaseAttempts();
-        Main.FileAttempt.IncreaseTileAttempts(Tile.StartTile);
+        Main.FileAttempt.IncreaseTileAttempts(seqID);
         Main.FileAttempt.Save();
     }
 }
