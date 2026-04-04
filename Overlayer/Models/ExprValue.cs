@@ -96,7 +96,7 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
         if(string.IsNullOrEmpty(raw)) {
             return default;
         }
-        if(true) {
+        if(Main.Settings.SafeCommandParse) {
             try {
                 return parser(raw);
             } catch {

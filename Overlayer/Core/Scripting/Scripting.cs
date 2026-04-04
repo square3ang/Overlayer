@@ -49,12 +49,9 @@ public static class Scripting {
         };
 
         RunScriptsNonBlocking();
-        PerformanceTags.Initialize();
     }
 
     public static void Release() {
-        Expression.expressions.Clear();
-        PerformanceTags.Release();
         Impl.Release();
         JSApi = null;
     }
@@ -99,7 +96,6 @@ public static class Scripting {
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
         GUILayout.Label($"{Main.Lang.Get("RESULT", "Result")}:\n{SandboxResult}");
-        NeoDrawer.StaticInstance.DrawInt32(Main.Lang.Get("PERFORMANCE_STATUS_UPDATE_RATE", "Performance Status Update Rate"), ref Main.Settings.PerfStatUpdateRate);
     }
 
     public static async Task RunScripts() {

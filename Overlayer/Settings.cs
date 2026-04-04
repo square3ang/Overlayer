@@ -29,9 +29,8 @@ public class Settings : IModel, ICopyable<Settings> {
     public bool ShowTextNameAsDisplayText = false;
     public EditorUIMode UiMode = EditorUIMode.Simple;
     public bool IncludeReferences = true;
+    public bool SafeCommandParse = true;
     public bool FileAttempt = false;
-
-    public int PerfStatUpdateRate = 1000;
 
     public FontMeta AdofaiFont = new();
     public bool ChangeFont = false;
@@ -56,9 +55,8 @@ public class Settings : IModel, ICopyable<Settings> {
             [nameof(ShowTextNameAsDisplayText)] = ShowTextNameAsDisplayText,
             [nameof(UiMode)] = UiMode.ToString(),
             [nameof(IncludeReferences)] = IncludeReferences,
+            [nameof(SafeCommandParse)] = SafeCommandParse,
             [nameof(FileAttempt)] = FileAttempt,
-
-            [nameof(PerfStatUpdateRate)] = PerfStatUpdateRate,
 
             [nameof(AdofaiFont)] = AdofaiFont?.Serialize(),
             [nameof(ChangeFont)] = ChangeFont,
@@ -87,9 +85,8 @@ public class Settings : IModel, ICopyable<Settings> {
         ShowTextNameAsDisplayText = node[nameof(ShowTextNameAsDisplayText)]?.Value<bool>() ?? defaultSettings.ShowTextNameAsDisplayText;
         UiMode = EnumHelper<EditorUIMode>.Parse(node[nameof(UiMode)]?.Value<string>() ?? defaultSettings.UiMode.ToString());
         IncludeReferences = node[nameof(IncludeReferences)]?.Value<bool>() ?? defaultSettings.IncludeReferences;
+        SafeCommandParse = node[nameof(SafeCommandParse)]?.Value<bool>() ?? defaultSettings.SafeCommandParse;
         FileAttempt = node[nameof(FileAttempt)]?.Value<bool>() ?? defaultSettings.FileAttempt;
-
-        PerfStatUpdateRate = node[nameof(PerfStatUpdateRate)]?.Value<int>() ?? defaultSettings.PerfStatUpdateRate;
 
         ChangeFont = node[nameof(ChangeFont)]?.Value<bool>() ?? defaultSettings.ChangeFont;
         AdofaiFont = node[nameof(AdofaiFont)] != null
@@ -116,6 +113,7 @@ public class Settings : IModel, ICopyable<Settings> {
             ShowTextNameAsDisplayText = ShowTextNameAsDisplayText,
             UiMode = UiMode,
             IncludeReferences = IncludeReferences,
+            SafeCommandParse = SafeCommandParse,
             FileAttempt = FileAttempt,
 
             ChangeFont = ChangeFont,

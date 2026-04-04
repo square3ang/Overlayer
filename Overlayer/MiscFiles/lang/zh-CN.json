@@ -123,6 +123,8 @@
     "RESULT": "Result",
     "RIGHT": "对齐右边",
     "ROTATION": "旋转",
+    "SAFE_COMMAND_PARSE": "安全的命令解析",
+    "SAFE_COMMAND_PARSE_DESC": "通过捕获错误来安全地解析命令.\n在失败时返回默认值而不是抛出异常.\n\n可能会隐藏底层错误",
     "SCALE": "大小",
     "SELECTLANGUAGE": "选择语言",
     "SELECT_FONT_FILE": "选择字体文件",

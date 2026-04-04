@@ -122,6 +122,8 @@
     "RESULT": "결과",
     "RIGHT": "오른쪽",
     "ROTATION": "회전",
+    "SAFE_COMMAND_PARSE": "안전한 명령어 구문 분석",
+    "SAFE_COMMAND_PARSE_DESC": "오류를 포착하여 명령어를 안전하게 분석합니다.\n실패 시 예외를 던지는 대신 기본 값을 반환합니다.\n\n기본적인 오류를 숨길 수 있습니다",
     "SCALE": "크기",
     "SELECTLANGUAGE": "언어 선택",
     "SELECT_FONT_FILE": "서체 파일 선택",

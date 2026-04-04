@@ -208,6 +208,8 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 Drawer.HoverTooltip(Main.Lang.Get("AUTO_PIVOT_DESC", "Automatically adjusts the pivot to match the text alignment.\nWhen the editor is in Simple mode, this is always enabled regardless of settings"));
                 Drawer.DrawBool(Main.Lang.Get("INCLUDE_REFERENCES", "Include References"), ref model.IncludeReferences);
                 Drawer.HoverTooltip(Main.Lang.Get("INCLUDE_REFERENCES_DESC", "When this setting is enabled,\nelements that rely on external files(such as fonts and images)\nwill be included directly in the JSON file export.\n\nThis may increase the file size"));
+                Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("SAFE_COMMAND_PARSE", "Safe Command Parse"))), ref model.FileAttempt);
+                Drawer.HoverTooltip(Main.Lang.Get("SAFE_COMMAND_PARSE_DESC", "Parses commands safely by catching errors.\nReturns a default value instead of throwing exceptions on failure.\n\nMay hide underlying errors"));
                 if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("FILE_ATTEMPT", "File Attempt"))), ref model.FileAttempt)) {
                     if(model.FileAttempt) {
                         SafePatchManager.ApplyPatch(typeof(FileAttempt));

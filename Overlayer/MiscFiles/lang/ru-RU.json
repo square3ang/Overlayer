@@ -122,6 +122,8 @@
     "RESULT": "Result",
     "RIGHT": "Вправо",
     "ROTATION": "Вращение",
+    "SAFE_COMMAND_PARSE": "Safe Command Parsing",
+    "SAFE_COMMAND_PARSE_DESC": "Parses commands safely by catching errors.\nReturns a default value instead of throwing exceptions on failure.\n\nMay hide underlying errors",
     "SCALE": "Масштаб",
     "SELECTLANGUAGE": "Выбрать Язык",
     "SELECT_FONT_FILE": "Select Font File",

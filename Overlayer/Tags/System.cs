@@ -1,7 +1,11 @@
 ﻿using Overlayer.Tags.Attributes;
+using Overlayer.Utils;
 using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using UnityEngine.Profiling;
+using Vostok.Sys.Metrics.PerfCounters;
 
 namespace Overlayer.Tags;
 
@@ -15,21 +19,19 @@ public static class System {
 
     [Tag("GCMemAllocRate", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemAllocRate;
-    [Tag("GCMemAllocRateGB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double GCMemAllocRateGB;
-    [Tag("GCMemAllocRateKB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double GCMemAllocRateKB;
 
     [Tag("UnityMemUsage", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double UnityMemUsage;
-    [Tag("UnityMemUsageGB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double UnityMemUsageGB;
-    [Tag("UnityMemUsageKB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double UnityMemUsageKB;
 
-    private static long lastGCAllocatedMemory = GC.GetTotalMemory(false);
+    public static int ProcessorCount;
+    public static double CpuUsage;
+    public static double TotalCpuUsage;
+    public static double MemoryUsage;
+    public static double TotalMemoryUsage;
 
-    private static Thread Update;
+    private static long lastGCAllocatedMemory;
+    private static Thread updateThread;
+    private static volatile bool running;
     public static bool inited { get; private set; }
 
     public static void Init() {
@@ -37,38 +39,89 @@ public static class System {
             return;
         }
 
-        Update = new Thread(() => {
-            while(true) {
-                long GCmem = GC.GetTotalMemory(false);
-                GCMemUsage = GCmem / 1024d / 1024d;
-                GCMemUsageGB = GCmem / 1024d / 1024d / 1024d;
-                GCMemUsageKB = GCmem / 1024d;
-                double gcmemalloc = GCMemoryAllocRateCheck(GCmem);
-                GCMemAllocRate = gcmemalloc / 1024d / 1024d;
-                GCMemAllocRateGB = gcmemalloc / 1024d / 1024d / 1024d;
-                GCMemAllocRateKB = gcmemalloc / 1024d;
-                double unitymem = Profiler.GetTotalAllocatedMemoryLong();
-                UnityMemUsage = unitymem / 1024d / 1024d;
-                UnityMemUsageGB = unitymem / 1024d / 1024d / 1024d;
-                UnityMemUsageKB = unitymem / 1024d;
+        ProcessorCount = Environment.ProcessorCount;
+        lastGCAllocatedMemory = GC.GetTotalMemory(false);
+
+        IPerformanceCounter<double> cpu = null;
+        IPerformanceCounter<double> totCpu = null;
+        IPerformanceCounter<double> mem = null;
+        IPerformanceCounter<double> totMem = null;
+        ulong totalMemMB = 0;
+
+        if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+            var proc = Process.GetCurrentProcess();
+            totalMemMB = MemoryStatus.GetMemoryStatus().TotalPhysicalMemorySize / 1048576;
+
+            cpu = PerformanceCounterFactory.Default.CreateCounter("Process", "% Processor Time", proc.ProcessName);
+            mem = PerformanceCounterFactory.Default.CreateCounter("Process", "Working Set", proc.ProcessName);
+            totCpu = PerformanceCounterFactory.Default.CreateCounter("Processor", "% Processor Time", "_Total");
+            totMem = PerformanceCounterFactory.Default.CreateCounter("Memory", "Available MBytes");
+        }
+
+        running = true;
+        updateThread = new Thread(() => {
+            while(running) {
+                long gc = GC.GetTotalMemory(false);
+                GCMemUsage = gc / 1024d / 1024d;
+                GCMemUsageGB = gc / 1024d / 1024d / 1024d;
+                GCMemUsageKB = gc / 1024d;
+
+                long delta = gc - lastGCAllocatedMemory;
+                lastGCAllocatedMemory = gc;
+                GCMemAllocRate = delta / 1024d / 1024d;
+
+                double unity = Profiler.GetTotalAllocatedMemoryLong();
+                UnityMemUsage = unity / 1024d / 1024d;
+
+                if(cpu != null) {
+                    CpuUsage = cpu.Observe() / ProcessorCount;
+                    TotalCpuUsage = totCpu.Observe();
+
+                    var memUsage = mem.Observe() / 1048576;
+                    var usedTotal = totalMemMB - totMem.Observe();
+
+                    MemoryUsage = memUsage / totalMemMB * 100d;
+                    TotalMemoryUsage = usedTotal / totalMemMB * 100d;
+                }
+
                 Thread.Sleep(Main.Settings.SystemTagUpdateRate);
             }
         });
-        Update.Start();
+
+        updateThread.Start();
         inited = true;
     }
 
-    private static double GCMemoryAllocRateCheck(long currentMemory) {
-        long rate = currentMemory - lastGCAllocatedMemory;
-        lastGCAllocatedMemory = currentMemory;
-        return rate;
+    public static void Free() {
+        if(!inited) {
+            return;
+        }
+
+        running = false;
+        updateThread?.Join();
+        updateThread = null;
+        inited = false;
     }
 
-    public static void Free() {
-        inited = false;
-        try {
-            Update?.Abort();
-            Update = null;
-        } catch { } finally { Update = null; }
+    [StructLayout(LayoutKind.Sequential)]
+    public class MemoryStatus {
+        public uint Length = (uint)Marshal.SizeOf<MemoryStatus>();
+        public uint MemoryLoad;
+        public ulong TotalPhysicalMemorySize;
+        public ulong AvailablePhysicalMemorySize;
+        public ulong TotalPageFileSize;
+        public ulong AvailablePageFileSize;
+        public ulong TotalVirtualMemorySize;
+        public ulong AvailableVirtualMemorySize;
+        public ulong AvailableExtendedVirtualMemorySize;
+
+        [DllImport("kernel32.dll")]
+        static extern bool GlobalMemoryStatusEx([In, Out] MemoryStatus lpBuffer);
+
+        public static MemoryStatus GetMemoryStatus() {
+            var s = new MemoryStatus();
+            GlobalMemoryStatusEx(s);
+            return s;
+        }
     }
 }

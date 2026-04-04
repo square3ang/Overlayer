@@ -172,6 +172,7 @@ public static class Main {
             ProfileManager.Release();
             FileAttempt = null;
             Scripting.Release();
+            Expression.expressions.Clear();
             ImageManager.Release();
             Tags.System.Free();
             FontManager.Release();
