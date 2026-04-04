@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Overlayer.Core.Patches;
-using Overlayer.Tags;
 using System.Reflection;
 
 namespace Overlayer.Patches;
@@ -16,9 +15,7 @@ public class FileAttemptLoadPatch : SafeConditionalPatch {
     protected override HarmonyMethod Postfix() =>
         new(typeof(FileAttemptLoadPatch).GetMethod(nameof(PostfixImpl), BindingFlags.Static | BindingFlags.NonPublic));
 
-    private static void PostfixImpl() {
-        Main.FileAttempt?.Load();
-    }
+    private static void PostfixImpl() => Main.FileAttempt?.Load();
 }
 
 public class FileAttemptSavePatch : SafeConditionalPatch {

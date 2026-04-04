@@ -297,13 +297,11 @@ public static class StringHelper {
         if(numType == typeof(ushort)) {
             return TUInt16;
         }
-        if(numType == typeof(uint)) {
-            return TUInt32;
-        }
-        if(numType == typeof(ulong)) {
-            return TUInt64;
-        }
-        return numType == typeof(float)
+        return numType == typeof(uint)
+            ? TUInt32
+            : numType == typeof(ulong)
+            ? TUInt64
+            : numType == typeof(float)
             ? TFloat
             : numType == typeof(double)
             ? TDouble
@@ -329,13 +327,11 @@ public static class StringHelper {
         if(numType == typeof(ushort)) {
             return FUInt16;
         }
-        if(numType == typeof(uint)) {
-            return FUInt32;
-        }
-        if(numType == typeof(ulong)) {
-            return FUInt64;
-        }
-        return numType == typeof(float)
+        return numType == typeof(uint)
+            ? FUInt32
+            : numType == typeof(ulong)
+            ? FUInt64
+            : numType == typeof(float)
             ? FFloat
             : numType == typeof(double)
             ? FDouble

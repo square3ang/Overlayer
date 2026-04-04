@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
-using Overlayer.Tags;
 using System.Collections.Generic;
 using System.IO;
 
 namespace Overlayer.Models;
 
-public class FileAttempt : IModel, ICopyable<FileAttempt>  {
+public class FileAttempt : IModel, ICopyable<FileAttempt> {
     private int Attempts = 0;
     private List<int[]> TileAttempts = [];
 
@@ -111,10 +110,6 @@ public class FileAttempt : IModel, ICopyable<FileAttempt>  {
         }
 
         var dir = Path.GetDirectoryName(level);
-        if(string.IsNullOrEmpty(dir)) {
-            return null;
-        }
-
-        return Path.Combine(dir, FileAttemptsFileName);
+        return string.IsNullOrEmpty(dir) ? null : Path.Combine(dir, FileAttemptsFileName);
     }
 }

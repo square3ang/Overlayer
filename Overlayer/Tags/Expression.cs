@@ -15,15 +15,7 @@ public static class Expression {
     [Tag("Expression", NotPlaying = true)]
     public static object Expr(string expr) {
         if(expressions.TryGetValue(expr, out var res)) {
-            if(res.IsFaulted || !res.prepared.IsValid) {
-                return null;
-            }
-
-            if(res.HasValue) {
-                return res.LastValue;
-            }
-
-            return res.Run();
+            return res.IsFaulted || !res.prepared.IsValid ? null : (object)(res.HasValue ? res.LastValue : res.Run());
         }
 
         var prepared = Engine.PrepareScript(JSUtils.RemoveImports(expr));

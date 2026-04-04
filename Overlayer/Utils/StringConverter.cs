@@ -251,20 +251,20 @@ Continue:
             return TInt32;
         } else if(numType == typeof(long)) {
             return TInt64;
-        } else if(numType == typeof(byte)) {
-            return TUInt8;
-        } else if(numType == typeof(ushort)) {
-            return TUInt16;
         } else {
-            return numType == typeof(uint)
-                ? TUInt32
-                : numType == typeof(ulong)
-                            ? TUInt64
-                            : numType == typeof(float)
-                                        ? TFloat
-                                        : numType == typeof(double)
-                                                    ? TDouble
-                                                    : numType == typeof(bool) ? TBool : typeof(Enum).IsAssignableFrom(numType) ? TEnum.MakeGenericMethod(numType) : null;
+            return numType == typeof(byte)
+                ? TUInt8
+                : numType == typeof(ushort)
+                            ? TUInt16
+                            : numType == typeof(uint)
+                                        ? TUInt32
+                                        : numType == typeof(ulong)
+                                                    ? TUInt64
+                                                    : numType == typeof(float)
+                                                                ? TFloat
+                                                                : numType == typeof(double)
+                                                                            ? TDouble
+                                                                            : numType == typeof(bool) ? TBool : typeof(Enum).IsAssignableFrom(numType) ? TEnum.MakeGenericMethod(numType) : null;
         }
     }
     public static MethodInfo GetFromConverter(Type numType) {
@@ -276,20 +276,20 @@ Continue:
             return FInt32;
         } else if(numType == typeof(long)) {
             return FInt64;
-        } else if(numType == typeof(byte)) {
-            return FUInt8;
-        } else if(numType == typeof(ushort)) {
-            return FUInt16;
         } else {
-            return numType == typeof(uint)
-                ? FUInt32
-                : numType == typeof(ulong)
-                            ? FUInt64
-                            : numType == typeof(float)
-                                        ? FFloat
-                                        : numType == typeof(double)
-                                                    ? FDouble
-                                                    : numType == typeof(bool) ? FBool : typeof(Enum).IsAssignableFrom(numType) ? FEnum.MakeGenericMethod(numType) : FObject;
+            return numType == typeof(byte)
+                ? FUInt8
+                : numType == typeof(ushort)
+                            ? FUInt16
+                            : numType == typeof(uint)
+                                        ? FUInt32
+                                        : numType == typeof(ulong)
+                                                    ? FUInt64
+                                                    : numType == typeof(float)
+                                                                ? FFloat
+                                                                : numType == typeof(double)
+                                                                            ? FDouble
+                                                                            : numType == typeof(bool) ? FBool : typeof(Enum).IsAssignableFrom(numType) ? FEnum.MakeGenericMethod(numType) : FObject;
         }
     }
     public static string FromObject(object s) => s?.ToString();

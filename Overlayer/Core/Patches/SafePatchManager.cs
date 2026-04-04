@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Overlayer.Core.Patches; 
+namespace Overlayer.Core.Patches;
 
 public static class SafePatchManager {
     internal static readonly Harmony Harmony = new($"Overlayer.Core.Patches.{nameof(SafePatchManager)}");

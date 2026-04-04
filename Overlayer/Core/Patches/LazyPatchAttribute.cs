@@ -1,5 +1,4 @@
-﻿using Newgrounds;
-using Overlayer.Utils;
+﻿using Overlayer.Utils;
 using System;
 using System.Linq;
 using System.Reflection;

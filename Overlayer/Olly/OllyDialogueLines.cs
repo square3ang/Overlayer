@@ -25,10 +25,7 @@ public partial class Olly {
             eye: Eye.Normal,
             mouth: Mouth.Normal,
             eyebrow: Eyebrow.Normal,
-            onChoice: _ => {
-                FollowMouse = false;
-            }
-        );
+            onChoice: _ => FollowMouse = false);
         faceNode.Next[0] = node1;
 
         var node2 = new Node(

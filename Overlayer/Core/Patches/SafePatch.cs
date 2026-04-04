@@ -2,7 +2,8 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Overlayer.Core.Patches; 
+namespace Overlayer.Core.Patches;
+
 public static class SafePatch {
     public static MethodBase GetMethodSafe(string typeName, string methodName, Type[] args = null, bool allowStatic = false) {
         var type = AppDomain.CurrentDomain.GetAssemblies()
@@ -15,12 +16,10 @@ public static class SafePatch {
         }
 
         if(methodName == ".ctor") {
-            if(args != null) {
-                return type.GetConstructor(bf, null, args, null)
-                    ?? throw new Exception($"[{nameof(SafePatch)}] Constructor with specified args not found in {typeName}");
-            }
-
-            return type.GetConstructors(bf).FirstOrDefault()
+            return args != null
+                ? type.GetConstructor(bf, null, args, null)
+                    ?? throw new Exception($"[{nameof(SafePatch)}] Constructor with specified args not found in {typeName}")
+                : type.GetConstructors(bf).FirstOrDefault()
                 ?? throw new Exception($"[{nameof(SafePatch)}] No constructors found in {typeName}");
         }
 

@@ -1,9 +1,10 @@
 ﻿using Overlayer.Controllers;
 using Overlayer.Core;
-using Overlayer.Core.Scripting;
 using Overlayer.Core.Patches;
+using Overlayer.Core.Scripting;
 using Overlayer.Core.TextReplacing;
 using Overlayer.Core.Translation;
+using Overlayer.Models;
 using Overlayer.Patches;
 using Overlayer.Tags;
 using Overlayer.Tags.Attributes;
@@ -20,7 +21,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityModManagerNet.UnityModManager;
 using static UnityModManagerNet.UnityModManager.ModEntry;
-using Overlayer.Models;
 
 namespace Overlayer;
 #if DEBUG

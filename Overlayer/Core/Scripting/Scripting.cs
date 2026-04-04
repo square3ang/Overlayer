@@ -19,9 +19,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityModManagerNet.UnityModManager.Param;
 
 namespace Overlayer.Core.Scripting;
+
 public static class Scripting {
     public static string ScriptPath => Path.Combine(Main.Mod.Path, "Scripts");
     public static string ScriptProxyPath => Path.Combine(ScriptPath, "Proxies");
@@ -299,7 +299,7 @@ public static class Scripting {
     }
 
     private static ScriptTag ResolveScriptTag(Tag tag) => TagManager.All.Where(ot => ot.Name == tag.Name).FirstOrDefault() as ScriptTag;
-    
+
     public static Type[] unityTypes =
     [
         typeof(Scene),
