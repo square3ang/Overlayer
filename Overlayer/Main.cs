@@ -37,12 +37,12 @@ public static class Main {
     public static Assembly Ass { get; private set; }
     public static ModEntry Mod { get; private set; }
     public static string ProfilePath => Path.Combine(Mod.Path, "profiles");
-    [Tag(NotPlaying = true)] public static ModLogger Logger { get; private set; }
-    [Tag(NotPlaying = true)] public static Settings Settings { get; private set; }
+    public static ModLogger Logger { get; private set; }
+    public static Settings Settings { get; private set; }
     public static FileAttempt FileAttempt;
     public static GUIController GUI { get; private set; }
     public static Scene ActiveScene { get; private set; }
-    [Tag(NotPlaying = true)] public static Translator Lang { get; internal set; }
+    public static Translator Lang { get; internal set; }
     [Tag(NotPlaying = true)] public static Version ModVersion => Mod.Version;
     public static bool IsShowGUI { get; private set; } = false;
     private static UpdatePopup popup;

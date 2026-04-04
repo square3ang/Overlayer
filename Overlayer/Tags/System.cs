@@ -10,29 +10,43 @@ using Vostok.Sys.Metrics.PerfCounters;
 namespace Overlayer.Tags;
 
 public static class System {
-    [Tag("GCMemUsage", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemUsage;
-    [Tag("GCMemUsageGB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemUsageGB;
-    [Tag("GCMemUsageKB", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemUsageKB;
 
-    [Tag("GCMemAllocRate", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemAllocRate;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double GCMemAllocRateGB;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double GCMemAllocRateKB;
 
-    [Tag("UnityMemUsage", NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double UnityMemUsage;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double UnityMemUsageGB;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double UnityMemUsageKB;
 
+    [Tag(NotPlaying = true)]
     public static int ProcessorCount;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double CpuUsage;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TotalCpuUsage;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double MemoryUsage;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TotalMemoryUsage;
 
     private static long lastGCAllocatedMemory;
     private static Thread updateThread;
     private static volatile bool running;
-    public static bool inited { get; private set; }
+
+    private static bool inited;
 
     public static void Init() {
         if(inited) {
@@ -69,9 +83,13 @@ public static class System {
                 long delta = gc - lastGCAllocatedMemory;
                 lastGCAllocatedMemory = gc;
                 GCMemAllocRate = delta / 1024d / 1024d;
+                GCMemAllocRateGB = delta / 1024d / 1024d / 1024d;
+                GCMemAllocRateKB = delta / 1024d;
 
                 double unity = Profiler.GetTotalAllocatedMemoryLong();
                 UnityMemUsage = unity / 1024d / 1024d;
+                UnityMemUsageGB = unity / 1024d / 1024d / 1024d;
+                UnityMemUsageKB = unity / 1024d;
 
                 if(cpu != null) {
                     CpuUsage = cpu.Observe() / ProcessorCount;

@@ -92,6 +92,7 @@ public class Tooltip {
         ["LEVELNAMETEXTCOLOR"] = "The color of the text displayed at the top of the level.",
         ["LEVELNAMETEXTRAW"] = "The name text displayed at the top of the level. (with rich tags)",
         ["LEVELNAMETEXTSHADOW"] = "The shadow color of the text displayed at the top of the level.",
+        ["LEVELNAMETEXTSHADOWCOLOR"] = "The shadow color of the text displayed at the top of the level.",
         ["LFAST"] = "Fast judgment in Lenient difficulty",
         ["LHIT"] = "Lenient Hit",
         ["LHITRAW"] = "Lenient Hit Raw",
