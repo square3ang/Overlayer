@@ -1,15 +1,16 @@
 ﻿[ Add ]
-Text / Image Config Command system
-Some setting tooltips
-Toggle Export Reference Include
+Bootstrap
+
+{ Tag }
+FileAttempts
+FileTileAttempts
 
 [ Change ]
-Some UI
-ko-KR some texts
-XML Settings to JSON Settings (Auto Migrate!), PascalCase
-Slight reduction in DLL size by removing unnecessary functions/files
-Default Text Changed Current -> Official Judgement Tags
-Font Settings Empty values ​​are also treated as Default
+SCRIPTING MERGE
+- !! PLEASE REMOVE Overlayer.Scripting MOD !!
+- Perfomance Tag UpdateRate merged to System Tag UpdateRate
+MarginScale now multiplies 100
 
 [ Fix ]
-ch-ZN mistake
+Show True Auto Judgement
+Some Transitions
