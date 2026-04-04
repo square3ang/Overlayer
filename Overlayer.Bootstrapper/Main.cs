@@ -10,15 +10,15 @@ namespace Overlayer.Bootstrapper;
 public static class Main {
     private static readonly string[] requiredDlls = [
         "System.Memory",
+        "System.Runtime.CompilerServices.Unsafe",
+        "Jint",
+        "Acornima",
         "NCalc",
-        "JSNet",
         "Vostok.Sys.Metrics.PerfCounters"
     ];
     private static readonly string FailName = "Overlayer [FAIL]";
     public static void Load(ModEntry modEntry) {
-        void SetFail() {
-            SetFail();
-        }
+        void SetFail() => modEntry.Info.DisplayName = FailName;
 
         string libPath = Path.Combine(modEntry.Path, "lib");
         if(!Directory.Exists(libPath)) {

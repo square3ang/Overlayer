@@ -1,12 +1,13 @@
 ﻿using Acornima.Ast;
 using Jint;
 using Jint.Native;
-using JSNet.Utils;
+using Overlayer.Core.Scripting;
+using Overlayer.Core.Scripting.JSNet.Utils;
 using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
 using System.Collections.Generic;
 
-namespace Overlayer.Core.Scripting;
+namespace Overlayer.Tags;
 
 public static class Expression {
     public static readonly Dictionary<string, ExprContext> expressions = [];
@@ -14,7 +15,15 @@ public static class Expression {
     [Tag("Expression", NotPlaying = true)]
     public static object Expr(string expr) {
         if(expressions.TryGetValue(expr, out var res)) {
-            return res == null || !res.prepared.IsValid ? null : (object)res.Run();
+            if(res.IsFaulted || !res.prepared.IsValid) {
+                return null;
+            }
+
+            if(res.HasValue) {
+                return res.LastValue;
+            }
+
+            return res.Run();
         }
 
         var prepared = Engine.PrepareScript(JSUtils.RemoveImports(expr));
@@ -34,7 +43,10 @@ public static class Expression {
     public class ExprContext {
         public Engine engine;
         public Prepared<Script> prepared;
+
         public bool IsFaulted;
+        public bool HasValue;
+        public JsValue LastValue;
 
         public ExprContext(Engine engine, Prepared<Script> prepared) {
             this.engine = engine;
@@ -42,9 +54,24 @@ public static class Expression {
         }
 
         public JsValue Run() {
-            return IsFaulted || engine == null || !prepared.IsValid
-                ? JsValue.Null
-                : MiscUtils.ExecuteSafe(() => engine.Evaluate(prepared), out var ex) ?? JsValue.Null;
+            if(IsFaulted || engine == null || !prepared.IsValid) {
+                return JsValue.Null;
+            }
+
+            var result = MiscUtils.ExecuteSafe(
+                () => engine.Evaluate(prepared),
+                out var ex
+            );
+
+            if(ex != null) {
+                IsFaulted = true;
+                return JsValue.Null;
+            }
+
+            HasValue = true;
+            LastValue = result ?? JsValue.Null;
+
+            return LastValue;
         }
     }
 }

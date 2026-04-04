@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using JSNet.API;
-using JSNet.Utils;
 using Newtonsoft.Json.Linq;
 using Overlayer.Core.Patches;
+using Overlayer.Core.Scripting.JSNet.API;
+using Overlayer.Core.Scripting.JSNet.Utils;
 using Overlayer.Core.TextReplacing;
 using Overlayer.Tags;
 using Overlayer.Unity;

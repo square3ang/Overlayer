@@ -223,7 +223,7 @@ public class CodeEditor {
                 var codesBefore = code.Substring(0, start);
                 var codesAfter = code.Substring(end, code.Length - end);
                 var lines = codesBefore.Split('\n');
-                var lastline = lines[^1];
+                var lastline = lines[lines.Length - 1];
                 var height = style.lineHeight;
 
                 var len = lines.Length - 1;

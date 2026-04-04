@@ -6,11 +6,11 @@ using Jint.Native;
 using Jint.Native.Function;
 using Jint.Runtime.Interop;
 using Jint.Runtime.Interop.Attributes;
-using JSNet.API;
-using JSNet.Utils;
 using Newtonsoft.Json.Linq;
 using Overlayer.Core;
 using Overlayer.Core.Patches;
+using Overlayer.Core.Scripting.JSNet.API;
+using Overlayer.Core.Scripting.JSNet.Utils;
 using Overlayer.Models;
 using Overlayer.Tags;
 using Overlayer.Tags.Attributes;
@@ -20,11 +20,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using Expression = Overlayer.Tags.Expression;
 
 namespace Overlayer.Core.Scripting;
 
