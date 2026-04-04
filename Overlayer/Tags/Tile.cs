@@ -17,6 +17,14 @@ public static class Tile {
     public static bool IsStarted;
 
     public static void SetStartValues(scrController controller, int tile) {
+        if(controller == null ||
+           ADOBase.controller == null ||
+           ADOBase.lm == null ||
+           ADOBase.lm.listFloors == null ||
+           ADOBase.lm.listFloors.Count == 0) {
+            return;
+        }
+
         StartProgress = controller.percentComplete * 100;
         StartTile = tile;
     }
