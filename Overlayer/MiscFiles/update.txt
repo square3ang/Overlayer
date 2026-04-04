@@ -14,3 +14,8 @@ MarginScale now multiplies 100
 [ Fix ]
 Show True Auto Judgement
 Some Transitions
+
+--- 3.46.1 ---
+
+[ Fix ]
+Safe Command Parse Settings GUI
