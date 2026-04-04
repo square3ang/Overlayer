@@ -17,9 +17,9 @@ public static class Tile {
     public static bool IsStarted;
 
     public static void SetStartValues(scrController controller, int tile) {
-        if(controller == null ||
-           ADOBase.controller == null ||
-           ADOBase.lm == null ||
+        if(!controller ||
+           !ADOBase.controller ||
+           !ADOBase.lm ||
            ADOBase.lm.listFloors == null ||
            ADOBase.lm.listFloors.Count == 0) {
             return;
