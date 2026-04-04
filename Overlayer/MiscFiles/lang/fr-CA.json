@@ -302,7 +302,7 @@
     "TAG_DESC_PHEX": "Perfect Hex Color",
     "TAG_DESC_PITCH": "Speed set in CLS (displayed as 1 when at 1x speed)",
     "TAG_DESC_PROGRESS": "Current progress",
-    "TAG_DESC_PROCESSORCOUNT": "Number of processors on the current computer.\nOnly Windows Available",
+    "TAG_DESC_PROSESSORCOUNT": "Number of processors on the current computer.\nOnly Windows Available",
     "TAG_DESC_RAINBOW": "Rainbow",
     "TAG_DESC_RECKPS": "Recommended KPS",
     "TAG_DESC_RECKPSWITHOUTPITCH": "Recommended KPS (without pitch)",

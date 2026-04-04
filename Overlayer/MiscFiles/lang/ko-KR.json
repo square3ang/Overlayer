@@ -302,7 +302,7 @@
     "TAG_DESC_PHEX": "정확 16진 색상",
     "TAG_DESC_PITCH": "CLS에서 설정된 속도(1배속일 때 1로 표시됨)",
     "TAG_DESC_PROGRESS": "현재 진행도",
-    "TAG_DESC_PROCESSORCOUNT": "현재 컴퓨터의 프로세서 개수를 표시합니다.\n윈도우에서만 사용 가능",
+    "TAG_DESC_PROSESSORCOUNT": "Number of processors on the current computer.\nOnly Windows Available",
     "TAG_DESC_RAINBOW": "레인보우",
     "TAG_DESC_RECKPS": "체감 KPS",
     "TAG_DESC_RECKPSWITHOUTPITCH": "피치를 제거한 체감 KPS",
