@@ -210,6 +210,7 @@
     "TAG_DESC_HOUR": "Hour on current computer",
     "TAG_DESC_HOURS": "Total hours so far",
     "TAG_DESC_ISAUTOENABLED": "Displays true if auto is enabled, false otherwise",
+    "TAG_DESC_ISAUTOTILE": "Displays true if the current tile is an autotile, false otherwise",
     "TAG_DESC_ISNOFAILENABLED": "Displays true if No-fail Mode is enabled, false if disabled",
     "TAG_DESC_ISOLDAUTOENABLED": "Displays true if Old Auto is enabled, false if disabled",
     "TAG_DESC_ISPRACTICEMODEENABLED": "Displays true if practice mode is enabled, false otherwise",

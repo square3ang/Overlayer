@@ -211,6 +211,7 @@
     "TAG_DESC_HOUR": "当前电脑上的小时",
     "TAG_DESC_HOURS": "从公元元年起到现在的小时数 (只显示小时部分)",
     "TAG_DESC_ISAUTOENABLED": "当自动播放打开时显示 True, 否则显示 False",
+    "TAG_DESC_ISAUTOTILE": "Displays true if the current tile is an autotile, false otherwise",
     "TAG_DESC_ISNOFAILENABLED": "当不死模式打开时显示 True, 否则显示 False",
     "TAG_DESC_ISOLDAUTOENABLED": "当旧版自动播放打开时显示 True, 禁用时显示 False",
     "TAG_DESC_ISPRACTICEMODEENABLED": "当在练习模式时显示 True, 否则显示 False",

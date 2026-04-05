@@ -6,6 +6,8 @@ public static class Status {
     [Tag]
     public static bool IsAutoEnabled => ADOFAI.RDC?.auto ?? false;
     [Tag]
+    public static bool IsAutoTile => scrLevelMaker.instance?.listFloors[Tile.CurTile]?.auto ?? false;
+    [Tag]
     public static bool IsOldAutoEnabled => ADOFAI.RDC?.useOldAuto ?? false;
     [Tag]
     public static bool IsPracticeModeEnabled => ADOFAI.RDC?.practice ?? false;

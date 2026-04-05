@@ -210,6 +210,7 @@
     "TAG_DESC_HOUR": "현재 컴퓨터 시간",
     "TAG_DESC_HOURS": "현재까지의 총 시간",
     "TAG_DESC_ISAUTOENABLED": "자동 플레이가 활성화되었으면 true, 그렇지 않으면 false를 표시",
+    "TAG_DESC_ISAUTOTILE": "현재 타일이 자동 플레이 타일이면 true, 그렇지 않으면 false를 표시",
     "TAG_DESC_ISNOFAILENABLED": "무적 모드가 활성화되었으면 true, 그렇지 않으면 false를 표시",
     "TAG_DESC_ISOLDAUTOENABLED": "약화된 자동 플레이가 활성화되었으면 true, 비활성화되었으면 false를 표시",
     "TAG_DESC_ISPRACTICEMODEENABLED": "연습 모드가 활성화되었으면 true, 그렇지 않으면 false를 표시",
