@@ -3,6 +3,7 @@ using RapidGUI;
 using System;
 using UnityEngine;
 using static Overlayer.Olly.OllyRender;
+using static Overlayer.Olly.OllyState;
 
 namespace Overlayer.Olly;
 
