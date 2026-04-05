@@ -248,6 +248,7 @@
     "TAG_DESC_MARGINSCALE": "Level's judgment range",
     "TAG_DESC_MAXACCURACY": "The highest achievable Accuracy in the current tile",
     "TAG_DESC_MAXCOMBO": "Maximum Combo",
+    "TAG_DESC_MAXTILEBPM": "The highest BPM in the level",
     "TAG_DESC_MAXXACCURACY": "The highest achievable XAccuracy in the current tile",
     "TAG_DESC_MEMORYUSAGE": "Shows the current memory usage of the ADOFAI process.\nOnly Windows Available",
     "TAG_DESC_MILLISECOND": "Milliseconds on current computer",

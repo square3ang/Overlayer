@@ -6,6 +6,8 @@ public static class Bpm {
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TileBpm;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static double MaxTileBpm => scnGame.instance.highestBPM;
+    [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double CurBpm;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double RecKPS;

@@ -248,6 +248,7 @@
     "TAG_DESC_MARGINSCALE": "레벨의 판정 범위",
     "TAG_DESC_MAXACCURACY": "현재 타일에서 달성 가능한 최대 정확도",
     "TAG_DESC_MAXCOMBO": "최대 콤보",
+    "TAG_DESC_MAXTILEBPM": "레벨에서 가장 높은 BPM",
     "TAG_DESC_MAXXACCURACY": "현재 타일에서 달성 가능한 최대 절대 정확도",
     "TAG_DESC_MEMORYUSAGE": "현재 얼불춤의 메모리 사용률을 백분율로 표시합니다.\n윈도우에서만 사용 가능",
     "TAG_DESC_MILLISECOND": "현재 컴퓨터 밀리초",

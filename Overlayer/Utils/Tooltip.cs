@@ -116,6 +116,7 @@ public class Tooltip {
         ["MARGINSCALE"] = "Level's judgment range",
         ["MAXACCURACY"] = "The highest achievable Accuracy in the current tile",
         ["MAXCOMBO"] = "Maximum Combo",
+        ["MAXTILEBPM"] = "The highest BPM in the level",
         ["MAXXACCURACY"] = "The highest achievable XAccuracy in the current tile",
         ["MILLISECOND"] = "Milliseconds on current computer",
         ["MILLISECONDS"] = "Total milliseconds so far",

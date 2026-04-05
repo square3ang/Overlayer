@@ -249,6 +249,7 @@
     "TAG_DESC_MARGINSCALE": "关卡的判定区间",
     "TAG_DESC_MAXACCURACY": "当前 Tile 可达到的最高精准度",
     "TAG_DESC_MAXCOMBO": "最大连击数量",
+    "TAG_DESC_MAXTILEBPM": "The highest BPM in the level",
     "TAG_DESC_MAXXACCURACY": "当前 Tile 可达到的最高 X-精准度",
     "TAG_DESC_MEMORYUSAGE": "显示 ADOFAI 进程当前的内存使用量。\n仅适用于 Windows",
     "TAG_DESC_MILLISECOND": "当前电脑上的毫秒",
