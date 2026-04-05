@@ -33,8 +33,8 @@ public static class Main {
     public static string MipaNyang => "MipaNyang is God";
     [Tag(NotPlaying = true)]
     public static string Kyulio => "Kyulio is Sexy";
-    [Tag(NotPlaying = true)]
-    public static string imBBBT => "imBBBT is not beepbit futures";
+    [Tag("imBBBT", NotPlaying = true)]
+    public static string ImBBBT => "imBBBT is not beepbit futures";
 
     public static Assembly Ass { get; private set; }
     public static ModEntry Mod { get; private set; }
