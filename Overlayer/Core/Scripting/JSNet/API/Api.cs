@@ -1,10 +1,13 @@
 using Jint;
+using Jint.Native;
+using Jint.Runtime;
 using Jint.Runtime.Interop.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using UnityEngine;
 
 namespace Overlayer.Core.Scripting.JSNet.API;
 
@@ -126,13 +129,63 @@ public class Api {
         foreach(var (apiAttribute, methodInfo) in Methods) {
             var name = apiAttribute.Name ?? methodInfo.Name;
 
-            engine.SetValue(name, CreateDelegate(methodInfo));
+            engine.SetValue(name, CreateFunction(methodInfo, engine));
         }
 
         return engine;
     }
 
-    private static Delegate CreateDelegate(MethodInfo method) => new Func<object[], object>(args => method.Invoke(null, args));
+    private static Delegate CreateFunction(MethodInfo method, Engine engine) {
+        return new Func<JsValue, JsValue[], JsValue>((thisObj, jsArgs) => {
+            try {
+                var parameters = method.GetParameters();
+                int pCount = parameters.Length;
+                var finalArgs = new object[pCount];
+                jsArgs ??= [];
+
+                bool hasParams = pCount > 0 && parameters[pCount - 1].GetCustomAttribute<ParamArrayAttribute>() != null;
+                int normalCount = hasParams ? pCount - 1 : pCount;
+
+                for(int i = 0; i < normalCount; i++) {
+                    var p = parameters[i];
+                    if(p.ParameterType == typeof(Engine)) {
+                        finalArgs[i] = engine;
+                        continue;
+                    }
+
+                    if(i < jsArgs.Length) {
+                        finalArgs[i] = engine.TypeConverter.Convert(jsArgs[i], p.ParameterType, null);
+                    } else if(p.HasDefaultValue) {
+                        finalArgs[i] = p.DefaultValue;
+                    } else {
+                        finalArgs[i] = p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType) : null;
+                    }
+                }
+
+                if(hasParams) {
+                    var lastParam = parameters[pCount - 1];
+                    var elementType = lastParam.ParameterType.GetElementType();
+                    int remainingJsArgs = Math.Max(0, jsArgs.Length - normalCount);
+
+                    var paramArray = Array.CreateInstance(elementType, remainingJsArgs);
+                    for(int i = 0; i < remainingJsArgs; i++) {
+                        var val = engine.TypeConverter.Convert(jsArgs[normalCount + i], elementType, null);
+                        paramArray.SetValue(val, i);
+                    }
+
+                    finalArgs[pCount - 1] = paramArray;
+                }
+
+                var result = method.Invoke(null, finalArgs);
+                return result == null ? JsValue.Null : JsValue.FromObject(engine, result);
+
+            } catch(TargetInvocationException tie) {
+                throw tie.InnerException ?? tie;
+            } catch(Exception e) {
+                throw new JavaScriptException(engine.Intrinsics.Error, e.Message);
+            }
+        });
+    }
 
     public static ApiAttribute Get(Type t, Api api = null) => api?.Types.Find(((ApiAttribute, Type) tup) => tup.Item2 == t).Item1 ?? t.GetCustomAttribute<ApiAttribute>();
 

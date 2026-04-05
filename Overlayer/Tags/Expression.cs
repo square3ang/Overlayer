@@ -15,7 +15,7 @@ public static class Expression {
     [Tag("Expression", NotPlaying = true)]
     public static object Expr(string expr) {
         if(expressions.TryGetValue(expr, out var res)) {
-            return res.IsFaulted || !res.prepared.IsValid ? null : (object)(res.HasValue ? res.LastValue : res.Run());
+            return res.IsFaulted || !res.prepared.IsValid ? null : (object)res.Run();
         }
 
         var prepared = Engine.PrepareScript(JSUtils.RemoveImports(expr));
@@ -32,18 +32,11 @@ public static class Expression {
         return ctx.Run();
     }
 
-    public class ExprContext {
-        public Engine engine;
-        public Prepared<Script> prepared;
+    public class ExprContext(Engine engine, Prepared<Script> prepared) {
+        public Engine engine = engine;
+        public Prepared<Script> prepared = prepared;
 
         public bool IsFaulted;
-        public bool HasValue;
-        public JsValue LastValue;
-
-        public ExprContext(Engine engine, Prepared<Script> prepared) {
-            this.engine = engine;
-            this.prepared = prepared;
-        }
 
         public JsValue Run() {
             if(IsFaulted || engine == null || !prepared.IsValid) {
@@ -60,10 +53,7 @@ public static class Expression {
                 return JsValue.Null;
             }
 
-            HasValue = true;
-            LastValue = result ?? JsValue.Null;
-
-            return LastValue;
+            return result ?? JsValue.Null;
         }
     }
 }
