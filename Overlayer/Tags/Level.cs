@@ -21,7 +21,7 @@ public static class Level {
     public static string LevelNameTextRaw;
 
     public static void Init() {
-        if(scnGame.instance != null) {
+        if(scnGame.instance) {
             if(ADOBase.isOfficialLevel) {
                 _titleRaw = ADOFAI.LevelData?.song;
                 _authorRaw = ADOFAI.LevelData?.author;

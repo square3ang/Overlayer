@@ -24,7 +24,7 @@ public static class CheckPointStats {
     }
 
     public static int GetCheckPointIndex(scrFloor floor) {
-        if(floor == null) {
+        if(!floor) {
             return 0;
         }
         int i = 0;

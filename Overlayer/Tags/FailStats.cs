@@ -7,9 +7,9 @@ public static class FailStats {
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float OverloadCounter() {
         var controller = scrController.instance;
-        return controller == null
+        return !controller
             ? float.NaN
-            : controller.failbar == null
+            : !controller.failbar
             ? float.NaN
             : IsImmortal(controller) ? 100f : CalculateFailValue(controller.failbar.overloadCounter);
     }
@@ -17,9 +17,9 @@ public static class FailStats {
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float MultipressCounter() {
         var controller = scrController.instance;
-        return controller == null
+        return !controller
             ? float.NaN
-            : controller.failbar == null
+            : !controller.failbar
             ? float.NaN
             : IsImmortal(controller) ? 100f : CalculateFailValue(controller.failbar.multipressCounter);
     }

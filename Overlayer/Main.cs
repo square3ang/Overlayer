@@ -168,7 +168,7 @@ public static class Main {
             if(EgEnabled) {
                 EgEnabled = false;
             }
-            if(Logo != null) {
+            if(Logo) {
                 Logo = null;
             }
             ProfileManager.Release();
@@ -320,7 +320,7 @@ public static class Main {
         get {
             var ctrl = scrController.instance;
             var cdt = scrConductor.instance;
-            return ctrl != null && cdt != null && !ctrl.paused && cdt.isGameWorld;
+            return ctrl && cdt && !ctrl.paused && cdt.isGameWorld;
         }
     }
 

@@ -605,7 +605,7 @@ public static class Drawer {
     public static bool DrawString(Texture2D icon, string label, ref string value, bool textArea = false) {
         string prev = value;
         GUILayout.BeginHorizontal();
-        if(icon != null) {
+        if(icon) {
             GUILayout.Label(icon);
         }
         GUILayout.Label(label);
@@ -894,7 +894,7 @@ public static class Drawer {
     }
 
     public static bool Tooltip(Texture2D image, bool ignoreWidth = false) {
-        if(image == null) {
+        if(!image) {
             GUI.Box(new Rect(0, 0, 0, 0), "");
             return false;
         }

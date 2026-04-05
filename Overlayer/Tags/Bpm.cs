@@ -21,11 +21,11 @@ public static class Bpm {
     public static float bpm, pitch, bpmwithoutpitch, playbackSpeed = 1;
 
     public static void Init(scrController __instance) {
-        if(scnGame.instance == null && scnEditor.instance == null && !(scrController.instance?.gameworld ?? false)) {
+        if(!scnGame.instance && scnEditor.instance == null && !(scrController.instance?.gameworld ?? false)) {
             return;
         }
 
-        if(scnGame.instance != null) {
+        if(scnGame.instance) {
             pitch = (float)scnGame.instance.levelData.pitch / 100;
             if(ADOBase.isOfficialLevel) {
                 pitch *= scrConductor.instance.song.pitch;
@@ -33,7 +33,7 @@ public static class Bpm {
             if(ADOBase.isCLSLevel) {
                 pitch *= GCS.currentSpeedTrial;
             }
-            if(scnEditor.instance != null) {
+            if(scnEditor.instance) {
                 pitch *= scnEditor.instance.playbackSpeed;
             }
             bpm = scnGame.instance.levelData.bpm * pitch;
@@ -54,13 +54,13 @@ public static class Bpm {
     }
 
     public static double GetRealBpm(scrFloor floor, float bpm) {
-        return floor == null
+        return !floor
             ? (double)bpm
-            : floor.nextfloor == null ? scrController.instance.speed * bpm : 60.0 / (floor.nextfloor.entryTime - floor.entryTime);
+            : !floor.nextfloor ? scrController.instance.speed * bpm : 60.0 / (floor.nextfloor.entryTime - floor.entryTime);
     }
 
     public static void Update(scrFloor floor) {
-        if(floor.nextfloor == null) {
+        if(!floor.nextfloor) {
             return;
         }
 

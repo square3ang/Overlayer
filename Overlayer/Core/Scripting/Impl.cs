@@ -408,7 +408,7 @@ public static class Impl {
     [Api("getText")]
     public static OverlayerText GetText(int index, OverlayerProfile profile = null) {
         profile ??= ProfileManager.Profiles.FirstOrDefault(p => p.Config.Active);
-        if(profile == null) {
+        if(!profile) {
             return null;
         }
         object obj = index < 0 || index >= profile.ObjectManager.Count ? null : profile.ObjectManager.Get(index);
@@ -417,7 +417,7 @@ public static class Impl {
     [Api("getTextByName")]
     public static OverlayerText GetTextByName(string name, OverlayerProfile profile = null) {
         profile ??= ProfileManager.Profiles.FirstOrDefault(p => p.Config.Active);
-        if(profile == null) {
+        if(!profile) {
             return null;
         }
         for(int i = 0; i < profile.ObjectManager.Count; i++) {
@@ -438,7 +438,7 @@ public static class Impl {
     [Api("createTextFromJson")]
     public static OverlayerText CreateTextFromJson(string json, OverlayerProfile profile = null) {
         profile ??= ProfileManager.Profiles.FirstOrDefault(p => p.Config.Active);
-        if(profile == null) {
+        if(!profile) {
             return null;
         }
 
@@ -821,7 +821,7 @@ public static class Impl {
         }
         private static void ScaleAll(Transform[] t, Vector2 vec) {
             for(int i = 0; i < t.Length; i++) {
-                if(t[i] != null) {
+                if(t[i]) {
                     t[i].localScale = vec;
                 }
             }

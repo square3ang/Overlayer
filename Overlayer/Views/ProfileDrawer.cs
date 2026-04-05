@@ -121,7 +121,7 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
 
         for(int i = 0; i < profile.ObjectManager.Count; i++) {
             var obj = profile.ObjectManager.Get(i);
-            if(obj == null) {
+            if(!obj) {
                 GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " +
                     string.Format(Main.Lang.Get("ERROR_THIS_OBJECT_INDEX", "Unable to load object data at index {0}"), i));
                 continue;

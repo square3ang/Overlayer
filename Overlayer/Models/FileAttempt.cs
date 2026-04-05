@@ -100,7 +100,7 @@ public class FileAttempt : IModel, ICopyable<FileAttempt> {
     }
 
     private static string GetPath() {
-        if(scnGame.instance == null) {
+        if(!scnGame.instance) {
             return null;
         }
 

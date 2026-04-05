@@ -70,7 +70,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     }
 
     public void Update() {
-        if(!Initialized || Text == null) {
+        if(!Initialized || !Text) {
             return;
         }
 
@@ -249,7 +249,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
         }
 
         TMP_FontAsset targetFont = font.fontTMP;
-        if(targetFont == null) {
+        if(!targetFont) {
             return;
         }
         Text.font = targetFont;
@@ -303,7 +303,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     private void RefreshMaterials(Material[] shared) {
         _instancedMaterials = new Material[shared.Length];
         for(int i = 0; i < shared.Length; i++) {
-            if(shared[i] == null) {
+            if(!shared[i]) {
                 continue;
             }
             _instancedMaterials[i] = new Material(shared[i]);
@@ -319,7 +319,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     private void UpdateMaterialExpressions() {
         bool changed = false;
         foreach(var mat in _instancedMaterials) {
-            if(mat == null) {
+            if(!mat) {
                 continue;
             }
 

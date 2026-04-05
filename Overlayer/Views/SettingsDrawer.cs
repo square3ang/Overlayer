@@ -360,7 +360,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
 
         for(int i = 0; i < ProfileManager.Profiles.Count; i++) {
             var profile = ProfileManager.Get(i);
-            if(profile == null) {
+            if(!profile) {
                 GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_PROFILE_INDEX", "Unable to load profile data at index {0}"), i.ToString()));
                 continue;
             }
