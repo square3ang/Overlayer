@@ -84,7 +84,7 @@ public static class AudioPlayer {
     }
     static AudioSource EnsureSource() {
         var source = sources.FirstOrDefault(a => !a.isPlaying);
-        if(source is not null) {
+        if(source != null) {
             return source;
         }
 

@@ -192,7 +192,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
         pointingCount--;
         if(pointingCount <= 0) {
             pointingCount = 0;
-            if(!isAlreadyDragging && OverlayerProfile.DragObj is not null) {
+            if(!isAlreadyDragging && OverlayerProfile.DragObj != null) {
                 OverlayerProfile.DragObj.SetActive(false);
             }
         }

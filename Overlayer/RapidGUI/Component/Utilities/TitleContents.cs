@@ -32,7 +32,7 @@ public abstract class TitleContents<T> where T : TitleContent<T>, new() {
         Assert.IsTrue(iDoGUITypes.All(type => type.GetInterfaces().Contains(typeof(IDoGUI))));
 
         var iDoGUIs = iDoGUITypes.Select(t => new LazyFindObject(t)).ToList() // exec once.
-            .Select(lfo => lfo.GetObject()).Where(o => o is not null).Cast<IDoGUI>();   // exec every call.
+            .Select(lfo => lfo.GetObject()).Where(o => o != null).Cast<IDoGUI>();   // exec every call.
 
         return Add(title, () => iDoGUIs.Any(), () => iDoGUIs.ToList().ForEach(idm => idm.DoGUI()));
     }

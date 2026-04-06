@@ -43,7 +43,7 @@ public class P_scrMistakeManager : PatchBase<P_scrMistakeManager> {
 
             if(ADOBase.lm is not null && ADOBase.lm.listFloors != null &&
                 Tile.CurTile >= 0 && Tile.CurTile < ADOBase.lm.listFloors.Count &&
-                ADOBase.lm.listFloors[Tile.CurTile] is not null) {
+                ADOBase.lm.listFloors[Tile.CurTile] != null) {
 
                 int lefttile = Tile.LeftTile - (ADOBase.lm.listFloors[Tile.CurTile].midSpin ? 1 : 0);
 

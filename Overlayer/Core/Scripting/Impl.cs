@@ -408,7 +408,7 @@ public static class Impl {
     [Api("getText")]
     public static OverlayerText GetText(int index, OverlayerProfile profile = null) {
         profile ??= ProfileManager.Profiles.FirstOrDefault(p => p.Config.Active);
-        if(profile is null) {
+        if(profile == null) {
             return null;
         }
         object obj = index < 0 || index >= profile.ObjectManager.Count ? null : profile.ObjectManager.Get(index);
@@ -417,7 +417,7 @@ public static class Impl {
     [Api("getTextByName")]
     public static OverlayerText GetTextByName(string name, OverlayerProfile profile = null) {
         profile ??= ProfileManager.Profiles.FirstOrDefault(p => p.Config.Active);
-        if(profile is null) {
+        if(profile == null) {
             return null;
         }
         for(int i = 0; i < profile.ObjectManager.Count; i++) {
@@ -438,7 +438,7 @@ public static class Impl {
     [Api("createTextFromJson")]
     public static OverlayerText CreateTextFromJson(string json, OverlayerProfile profile = null) {
         profile ??= ProfileManager.Profiles.FirstOrDefault(p => p.Config.Active);
-        if(profile is null) {
+        if(profile == null) {
             return null;
         }
 
@@ -781,7 +781,7 @@ public static class Impl {
         [Api("setLobbyBgm")]
         public static void SetLobbyBgm(string audio) => AudioPlayer.LoadAudio(audio, clip => {
             var lobbySource = scrConductor.instance.GetComponentsInChildren<AudioSource>()?.FirstOrDefault(a => a.clip?.name == "1-X-wav");
-            if(lobbySource is not null) {
+            if(lobbySource != null) {
                 lobbySource.clip = clip;
             }
         });
@@ -820,7 +820,7 @@ public static class Impl {
         }
         private static void ScaleAll(Transform[] t, Vector2 vec) {
             for(int i = 0; i < t.Length; i++) {
-                if(t[i] is not null) {
+                if(t[i] != null) {
                     t[i].localScale = vec;
                 }
             }

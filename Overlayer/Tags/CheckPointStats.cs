@@ -12,19 +12,19 @@ public static class CheckPointStats {
     [Tag]
     public static int TotalCheckPoints;
 
-    public static void TotalCheckPoients_Update() => TotalCheckPoints = scrLevelMaker.instance.listFloors.Count(f => f.GetComponent<ffxCheckpoint>() is not null);
+    public static void TotalCheckPoients_Update() => TotalCheckPoints = scrLevelMaker.instance.listFloors.Count(f => f.GetComponent<ffxCheckpoint>() != null);
 
     public static List<scrFloor> AllCheckPoints;
 
-    public static void AllCheckPoints_Set() => AllCheckPoints = scrLevelMaker.instance.listFloors.FindAll(f => f.GetComponent<ffxCheckpoint>() is not null);
+    public static void AllCheckPoints_Set() => AllCheckPoints = scrLevelMaker.instance.listFloors.FindAll(f => f.GetComponent<ffxCheckpoint>() != null);
 
     public static void InterCheckPoints_Update() {
-        AllCheckPoints = scrLevelMaker.instance.listFloors.FindAll(f => f.GetComponent<ffxCheckpoint>() is not null);
+        AllCheckPoints = scrLevelMaker.instance.listFloors.FindAll(f => f.GetComponent<ffxCheckpoint>() != null);
         TotalCheckPoints = AllCheckPoints.Count;
     }
 
     public static int GetCheckPointIndex(scrFloor floor) {
-        if(floor is null) {
+        if(floor == null) {
             return 0;
         }
         int i = 0;

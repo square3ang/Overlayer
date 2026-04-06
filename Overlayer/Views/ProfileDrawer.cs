@@ -121,7 +121,7 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
 
         for(int i = 0; i < profile.ObjectManager.Count; i++) {
             var obj = profile.ObjectManager.Get(i);
-            if(obj is null) {
+            if(obj == null) {
                 GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " +
                     string.Format(Main.Lang.Get("ERROR_THIS_OBJECT_INDEX", "Unable to load object data at index {0}"), i));
                 continue;
@@ -177,7 +177,7 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                 if(Drawer.Button(Drawer.Icon_X, GUILayout.Width(46))) {
                     if(Event.current.shift) {
                         profile.ObjectManager.Destroy(obj);
-                    } else if(UnityEngine.Object.FindAnyObjectByType<DeletePopup>() is null) {
+                    } else if(UnityEngine.Object.FindAnyObjectByType<DeletePopup>() == null) {
                         var popup = new GameObject().AddComponent<DeletePopup>();
                         UnityEngine.Object.DontDestroyOnLoad(popup);
                         popup.Initialize(obj, () => dragSoltNeedInit = true);

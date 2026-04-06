@@ -137,19 +137,19 @@ public static class OllyResources {
             }
         }
         Loaded =
-            Base is not null&&
-            BG is not null&&
+            Base != null&&
+            BG != null&&
             Eyes != null && Eyes.Length == Enum.GetValues(typeof(Eye)).Length - 1 &&
             Mouths != null && Mouths.Length == Enum.GetValues(typeof(Mouth)).Length &&
-            Hair is not null&&
-            EyelidUp is not null&&
-            EyelidDown is not null&&
-            EyelidBG is not null&&
-            Nose is not null&&
+            Hair != null&&
+            EyelidUp != null&&
+            EyelidDown != null&&
+            EyelidBG != null&&
+            Nose != null&&
             Eyebrows != null && Eyebrows.Length == Enum.GetValues(typeof(Eyebrow)).Length - 1 &&
             EyeSpecials != null && EyeSpecials.Length == Enum.GetValues(typeof(EyeSpecial)).Length - 1 &&
-            EyeHighlightLeft is not null&&
-            EyeHighlightRight is not null&&
+            EyeHighlightLeft != null&&
+            EyeHighlightRight != null&&
             Effects != null && Effects.Length == Enum.GetValues(typeof(Effect)).Length - 1 &&
             EffectForwards != null && EffectForwards.Length == Enum.GetValues(typeof(EffectForward)).Length - 1;
         if(Loaded) {
@@ -165,80 +165,80 @@ public static class OllyResources {
             return;
         }
         Loaded = false;
-        if(Base is not null) {
+        if(Base != null) {
             Destroy(Base);
             Base = null;
         }
-        if(Hair is not null) {
+        if(Hair != null) {
             Destroy(Hair);
             Hair = null;
         }
-        if(BG is not null) {
+        if(BG != null) {
             Destroy(BG);
             BG = null;
         }
-        if(EyelidUp is not null) {
+        if(EyelidUp != null) {
             Destroy(EyelidUp);
             EyelidUp = null;
         }
-        if(EyelidDown is not null) {
+        if(EyelidDown != null) {
             Destroy(EyelidDown);
             EyelidDown = null;
         }
-        if(EyelidBG is not null) {
+        if(EyelidBG != null) {
             Destroy(EyelidBG);
             EyelidBG = null;
         }
         for(int i = 0; i < Eyebrows.Length; i++) {
-            if(Eyebrows[i] is not null) {
+            if(Eyebrows[i] != null) {
                 Destroy(Eyebrows[i]);
                 Eyebrows[i] = null;
             }
         }
 
         for(int i = 0; i < Eyes.Length; i++) {
-            if(Eyes[i].left is not null) {
+            if(Eyes[i].left != null) {
                 Destroy(Eyes[i].left);
                 Eyes[i].left = null;
             }
-            if(Eyes[i].right is not null) {
+            if(Eyes[i].right != null) {
                 Destroy(Eyes[i].right);
                 Eyes[i].right = null;
             }
         }
 
         for(int i = 0; i < EyeSpecials.Length; i++) {
-            if(EyeSpecials[i] is not null) {
+            if(EyeSpecials[i] != null) {
                 Destroy(EyeSpecials[i]);
                 EyeSpecials[i] = null;
             }
         }
 
-        if(EyeHighlightLeft is not null) {
+        if(EyeHighlightLeft != null) {
             Destroy(EyeHighlightLeft);
             EyeHighlightLeft = null;
         }
-        if(EyeHighlightRight is not null) {
+        if(EyeHighlightRight != null) {
             Destroy(EyeHighlightRight);
             EyeHighlightRight = null;
         }
 
         for(int i = 0; i < Mouths.Length; i++) {
-            if(Mouths[i] is not null) {
+            if(Mouths[i] != null) {
                 Destroy(Mouths[i]);
                 Mouths[i] = null;
             }
         }
 
         for(int i = 0; i < Effects.Length; i++) {
-            if(Effects[i] is not null) {
+            if(Effects[i] != null) {
                 Destroy(Effects[i]);
                 Effects[i] = null;
             }
         }
 
         for(int i = 0; i < EffectForwards.Length; i++) {
-            if(EffectForwards[i] is not null) {
+            if(EffectForwards[i] != null) {
                 Destroy(EffectForwards[i]);
                 EffectForwards[i] = null;
             }

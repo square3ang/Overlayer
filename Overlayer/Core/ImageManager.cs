@@ -84,8 +84,8 @@ public static class ImageManager {
         }
         if(Sprites != null) {
             foreach(var sp in Sprites.Values) {
-                if(sp is not null) {
-                    if(sp.texture is not null) {
+                if(sp != null) {
+                    if(sp.texture != null) {
                         UnityEngine.Object.Destroy(sp.texture);
                     }
                     UnityEngine.Object.Destroy(sp);
@@ -95,8 +95,8 @@ public static class ImageManager {
             Sprites = null;
         }
 
-        if(DefaultSprite is not null) {
-            if(DefaultSprite.texture is not null) {
+        if(DefaultSprite != null) {
+            if(DefaultSprite.texture != null) {
                 UnityEngine.Object.Destroy(DefaultSprite.texture);
             }
             UnityEngine.Object.Destroy(DefaultSprite);
