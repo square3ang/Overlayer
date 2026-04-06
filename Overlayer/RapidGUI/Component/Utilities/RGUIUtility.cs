@@ -3,7 +3,7 @@
 namespace RapidGUI;
 
 public static partial class RGUIUtility {
-    static GUIContent tempContent = new();
+    private static readonly GUIContent tempContent = new();
 
     public static GUIContent TempContent(string text) {
         tempContent.text = text;
@@ -19,7 +19,7 @@ public static partial class RGUIUtility {
         var mousePos = Input.mousePosition;
         var ret = new Vector2(mousePos.x, Screen.height - mousePos.y);
 
-        if(screenInsideOffset.HasValue) {
+        if (screenInsideOffset.HasValue) {
             var maxPos = new Vector2(Screen.width, Screen.height) - screenInsideOffset.Value;
             ret = Vector2.Min(ret, maxPos);
         }

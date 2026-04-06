@@ -6,22 +6,28 @@ namespace Overlayer.Core;
 
 public static class FastDateTime {
     public delegate TimeSpan GDTNUOFU(DateTime utcNow, out bool ald);
+
     public static long ticks;
     public static bool ald;
-    public static readonly ConstructorInfo dtConstructor = typeof(DateTime).GetConstructor((BindingFlags)15420, null, new[] { typeof(long), typeof(DateTimeKind), typeof(bool) }, null);
+
+    public static readonly ConstructorInfo dtConstructor = typeof(DateTime).GetConstructor((BindingFlags)15420, null,
+        new[] { typeof(long), typeof(DateTimeKind), typeof(bool) }, null);
+
     public static readonly MethodInfo utc = typeof(DateTime).GetProperty("UtcNow").GetGetMethod();
     public static readonly MethodInfo dtTicks = typeof(DateTime).GetProperty("Ticks").GetGetMethod();
     public static readonly FieldInfo ticksFld = typeof(FastDateTime).GetField("ticks", (BindingFlags)15420);
     public static readonly FieldInfo aldFld = typeof(FastDateTime).GetField("ald", (BindingFlags)15420);
     public static readonly GDTNUOFU getOffset;
     public static readonly Func<DateTime> GetNow;
+
     static FastDateTime() {
-        getOffset = (GDTNUOFU)typeof(TimeZoneInfo).GetMethod("GetDateTimeNowUtcOffsetFromUtc", (BindingFlags)15420).CreateDelegate(typeof(GDTNUOFU));
+        getOffset = (GDTNUOFU)typeof(TimeZoneInfo).GetMethod("GetDateTimeNowUtcOffsetFromUtc", (BindingFlags)15420)
+            .CreateDelegate(typeof(GDTNUOFU));
         ticks = getOffset(DateTime.UtcNow, out ald).Ticks;
         DynamicMethod nowGetter = new(string.Empty, typeof(DateTime), Type.EmptyTypes, true);
-        ILGenerator il = nowGetter.GetILGenerator();
-        LocalBuilder dtLoc = il.DeclareLocal(typeof(DateTime));
-        LocalBuilder tLoc = il.DeclareLocal(typeof(long));
+        var il = nowGetter.GetILGenerator();
+        var dtLoc = il.DeclareLocal(typeof(DateTime));
+        var tLoc = il.DeclareLocal(typeof(long));
         il.Emit(OpCodes.Call, utc);
         il.Emit(OpCodes.Stloc, dtLoc);
         il.Emit(OpCodes.Ldloca, dtLoc);
@@ -36,5 +42,6 @@ public static class FastDateTime {
         il.Emit(OpCodes.Ret);
         GetNow = (Func<DateTime>)nowGetter.CreateDelegate(typeof(Func<DateTime>));
     }
+
     public static DateTime Now => GetNow();
 }

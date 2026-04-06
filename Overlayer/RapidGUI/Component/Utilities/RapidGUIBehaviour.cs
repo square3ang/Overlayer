@@ -4,21 +4,20 @@ using UnityEngine;
 namespace RapidGUI;
 
 public class RapidGUIBehaviour : MonoBehaviour {
-    #region static 
+    #region static
 
-    static RapidGUIBehaviour instance;
+    private static RapidGUIBehaviour instance;
+
     public static RapidGUIBehaviour Instance {
         get {
-            if(instance is null) {
+            if (instance is null) {
                 instance = FindObjectOfType<RapidGUIBehaviour>();
-                if(instance is null) {
+                if (instance is null) {
                     var ga = new GameObject("RapidGUI");
                     instance = ga.AddComponent<RapidGUIBehaviour>();
                 }
 
-                if(Application.isPlaying) {
-                    DontDestroyOnLoad(instance);
-                }
+                if (Application.isPlaying) DontDestroyOnLoad(instance);
             }
 
             return instance;
@@ -31,5 +30,7 @@ public class RapidGUIBehaviour : MonoBehaviour {
     public int prefixLabelSlideButton = 1;
     public Action onGUI;
 
-    public void OnGUI() => onGUI?.Invoke();
+    public void OnGUI() {
+        onGUI?.Invoke();
+    }
 }

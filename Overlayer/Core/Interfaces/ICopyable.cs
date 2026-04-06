@@ -1,5 +1,6 @@
 ﻿namespace Overlayer.Core.Interfaces;
 
-public interface ICopyable<T> {
+public interface ICopyable<T>
+{
     T Copy();
 }

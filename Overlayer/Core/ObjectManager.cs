@@ -1,7 +1,7 @@
-﻿using Overlayer.Models;
-using Overlayer.Unity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Overlayer.Models;
+using Overlayer.Unity;
 using UnityEngine;
 
 namespace Overlayer.Core;
@@ -12,10 +12,12 @@ public class ObjectManager {
     public List<OverlayerObject> Objects = [];
     public OverlayerProfile ProfileCanvas;
 
-    public ObjectManager(OverlayerProfile profileCanvas) => ProfileCanvas = profileCanvas;
+    public ObjectManager(OverlayerProfile profileCanvas) {
+        ProfileCanvas = profileCanvas;
+    }
 
     public void Create(ObjectConfig cfg) {
-        switch(cfg) {
+        switch (cfg) {
             case TextConfig t: {
                 Create(t);
                 break;
@@ -28,9 +30,7 @@ public class ObjectManager {
     }
 
     public OverlayerText Create(TextConfig config) {
-        if(string.IsNullOrEmpty(config.Name)) {
-            config.Name = $"Text {Count + 1}";
-        }
+        if (string.IsNullOrEmpty(config.Name)) config.Name = $"Text {Count + 1}";
 
         var go = new GameObject($"OverlayerText_{Count + 1}");
         var obj = go.AddComponent<OverlayerText>();
@@ -41,9 +41,7 @@ public class ObjectManager {
     }
 
     public OverlayerImage Create(ImageConfig config) {
-        if(string.IsNullOrEmpty(config.Name)) {
-            config.Name = $"Image {Count + 1}";
-        }
+        if (string.IsNullOrEmpty(config.Name)) config.Name = $"Image {Count + 1}";
 
         var go = new GameObject($"OverlayerImage_{Count + 1}");
         var obj = go.AddComponent<OverlayerImage>();
@@ -53,12 +51,12 @@ public class ObjectManager {
         return obj;
     }
 
-    public OverlayerObject Get(int index) => (index >= 0 && index < Count) ? Objects[index] : null;
+    public OverlayerObject Get(int index) {
+        return index >= 0 && index < Count ? Objects[index] : null;
+    }
 
     public bool OrderToIndex(int from, int to) {
-        if(from < 0 || from >= Count || to < 0 || to >= Count || from == to) {
-            return false;
-        }
+        if (from < 0 || from >= Count || to < 0 || to >= Count || from == to) return false;
 
         var item = Objects[from];
         Objects.RemoveAt(from);
@@ -68,27 +66,34 @@ public class ObjectManager {
 
         return true;
     }
-    public bool OrderUp(int index) => OrderToIndex(index, index - 1);
-    public bool OrderDown(int index) => OrderToIndex(index, index + 1);
-    public bool OrderToTop(int index) => OrderToIndex(index, 0);
-    public bool OrderToBottom(int index) => OrderToIndex(index, Count - 1);
+
+    public bool OrderUp(int index) {
+        return OrderToIndex(index, index - 1);
+    }
+
+    public bool OrderDown(int index) {
+        return OrderToIndex(index, index + 1);
+    }
+
+    public bool OrderToTop(int index) {
+        return OrderToIndex(index, 0);
+    }
+
+    public bool OrderToBottom(int index) {
+        return OrderToIndex(index, Count - 1);
+    }
+
     public bool OrderByDrag(int fromIndex, int toIndex) {
-        if(fromIndex < 0 || fromIndex >= Count) {
-            return false;
-        }
+        if (fromIndex < 0 || fromIndex >= Count) return false;
 
         toIndex = Mathf.Clamp(toIndex, 0, Count);
 
-        if(fromIndex == toIndex || fromIndex == toIndex - 1) {
-            return false;
-        }
+        if (fromIndex == toIndex || fromIndex == toIndex - 1) return false;
 
         var item = Objects[fromIndex];
         Objects.RemoveAt(fromIndex);
 
-        if(fromIndex < toIndex) {
-            toIndex--;
-        }
+        if (fromIndex < toIndex) toIndex--;
 
         Objects.Insert(toIndex, item);
         item.gameObject.transform.SetSiblingIndex(toIndex);
@@ -97,22 +102,19 @@ public class ObjectManager {
     }
 
     public void Import(List<ObjectConfig> configs) {
-        if(configs == null) {
-            return;
-        }
+        if (configs == null) return;
 
-        foreach(var config in configs) {
-            if(config is TextConfig t) {
+        foreach (var config in configs)
+            if (config is TextConfig t)
                 Create(t);
-            } else if(config is ImageConfig img) {
-                Create(img);
-            }
-        }
+            else if (config is ImageConfig img) Create(img);
 
         Refresh();
     }
 
-    public List<ObjectConfig> Export() => Objects.Select(o => o.Config).ToList();
+    public List<ObjectConfig> Export() {
+        return Objects.Select(o => o.Config).ToList();
+    }
 
     public void Destroy(OverlayerObject obj) {
         Object.Destroy(obj.gameObject);
@@ -120,14 +122,14 @@ public class ObjectManager {
         Refresh();
     }
 
-    public void Refresh() => Objects.ForEach(o => o.ApplyConfig());
+    public void Refresh() {
+        Objects.ForEach(o => o.ApplyConfig());
+    }
 
     public void Release() {
-        foreach(var o in Objects) {
-            if(o) {
+        foreach (var o in Objects)
+            if (o)
                 Object.Destroy(o.gameObject);
-            }
-        }
 
         Objects.Clear();
     }

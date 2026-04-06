@@ -5,15 +5,17 @@ using TupleObject = System.ValueTuple<object, object>;
 namespace RapidGUI;
 
 public static partial class RGUI {
-    static object RecursiveMinMaxSlider(TupleObject to, object min, object max) => DoRecursiveSafe(to, () => DoRecursiveMinMaxSlider(to, min, max));
+    private static object RecursiveMinMaxSlider(TupleObject to, object min, object max) {
+        return DoRecursiveSafe(to, () => DoRecursiveMinMaxSlider(to, min, max));
+    }
 
-    static object DoRecursiveMinMaxSlider(TupleObject to, object min, object max) {
+    private static object DoRecursiveMinMaxSlider(TupleObject to, object min, object max) {
         var type = to.Item1.GetType();
         min ??= Activator.CreateInstance(type);
 
         GUILayout.EndHorizontal();
 
-        using(new PrefixLabelIndentScope()) {
+        using (new PrefixLabelIndentScope()) {
             DoMinMaxSlider(to, min, max, type);
         }
 
@@ -22,13 +24,11 @@ public static partial class RGUI {
         return to;
     }
 
-    static void DoMinMaxSlider(TupleObject to, object min, object max, Type type) {
+    private static void DoMinMaxSlider(TupleObject to, object min, object max, Type type) {
         var infos = TypeUtility.GetMemberInfoList(type);
-        for(var i = 0; i < infos.Count; ++i) {
+        for (var i = 0; i < infos.Count; ++i) {
             var info = infos[i];
-            if(CheckIgnoreField(info.Name)) {
-                continue;
-            }
+            if (CheckIgnoreField(info.Name)) continue;
 
             var elemValMin = info.GetValue(to.Item1);
             var elemValMax = info.GetValue(to.Item2);
@@ -36,7 +36,8 @@ public static partial class RGUI {
             var elemMax = info.GetValue(max);
             var elemLabel = CheckCustomLabel(info.Name) ?? info.label;
 
-            var tuple = (TupleObject)MinMaxSlider((elemValMin, elemValMax), elemMin, elemMax, info.MemberType, elemLabel);
+            var tuple = (TupleObject)MinMaxSlider((elemValMin, elemValMax), elemMin, elemMax, info.MemberType,
+                elemLabel);
 
             info.SetValue(to.Item1, tuple.Item1);
             info.SetValue(to.Item2, tuple.Item2);

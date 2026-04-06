@@ -1,6 +1,6 @@
-﻿using Overlayer.Core;
+﻿using System;
+using Overlayer.Core;
 using RapidGUI;
-using System;
 using UnityEngine;
 using static Overlayer.Olly.OllyRender;
 using static Overlayer.Olly.OllyState;
@@ -14,13 +14,16 @@ public partial class Olly : MonoBehaviour {
 
     private OllyDialogue.Node currentNode;
     private string displayedText = "";
-    private int charIndex = 0;
-    private float textTimer = 0f;
-    private float newlineWait = 0f;
+    private int charIndex;
+    private float textTimer;
+    private float newlineWait;
 
-    private FaceShape face = new();
-    internal bool FollowMouse = false;
-    public ref bool GetFollowMouseRef() => ref FollowMouse;
+    private FaceShape face;
+    internal bool FollowMouse;
+
+    public ref bool GetFollowMouseRef() {
+        return ref FollowMouse;
+    }
 
     internal void StartDialogue(OllyDialogue.Node root) {
         currentNode = root;
@@ -36,13 +39,14 @@ public partial class Olly : MonoBehaviour {
         textTimer = 0f;
     }
 
-    public void EndDialogue() => currentNode = null;
+    public void EndDialogue() {
+        currentNode = null;
+    }
 
     public bool Inited { get; private set; }
+
     public bool Init() {
-        if(Inited) {
-            return false;
-        }
+        if (Inited) return false;
         renderer = new OllyRender();
         OllyUtils.InitLanguage();
         StartDialogue(MakeDialogue());
@@ -51,32 +55,28 @@ public partial class Olly : MonoBehaviour {
     }
 
     public void Release() {
-        if(!Inited) {
-            return;
-        }
+        if (!Inited) return;
         EndDialogue();
         renderer = null;
         Inited = false;
     }
 
     private void Update() {
-        if(currentNode == null || string.IsNullOrEmpty(currentNode.Text)) {
-            return;
-        }
+        if (currentNode == null || string.IsNullOrEmpty(currentNode.Text)) return;
 
-        if(newlineWait > 0f) {
+        if (newlineWait > 0f) {
             newlineWait -= Time.deltaTime;
-            if(newlineWait <= 0f) {
-                if(charIndex < currentNode.Text.Length) {
+            if (newlineWait <= 0f)
+                if (charIndex < currentNode.Text.Length) {
                     charIndex++;
                     displayedText = currentNode.Text.Substring(0, charIndex);
                 }
-            }
+
             return;
         }
 
-        if(charIndex < currentNode.Text.Length) {
-            if(currentNode.Text[charIndex] == '\n') {
+        if (charIndex < currentNode.Text.Length) {
+            if (currentNode.Text[charIndex] == '\n') {
                 newlineWait = 4f / TextSpeed;
                 displayedText = currentNode.Text.Substring(0, charIndex + 1);
                 charIndex++;
@@ -84,8 +84,8 @@ public partial class Olly : MonoBehaviour {
             }
 
             textTimer += Time.deltaTime * TextSpeed;
-            int advance = (int)textTimer;
-            if(advance > 0) {
+            var advance = (int)textTimer;
+            if (advance > 0) {
                 charIndex = Mathf.Min(charIndex + advance, currentNode.Text.Length);
                 textTimer -= advance;
                 displayedText = currentNode.Text.Substring(0, charIndex);
@@ -94,9 +94,10 @@ public partial class Olly : MonoBehaviour {
     }
 
     private Rect windowRect;
+
     private void Start() {
-        float initWidth = 240f;
-        float initHeight = 240f;
+        var initWidth = 240f;
+        var initHeight = 240f;
         windowRect = new Rect(
             (Screen.width - initWidth) / 2f,
             (Screen.height - initHeight) / 2f,
@@ -104,10 +105,9 @@ public partial class Olly : MonoBehaviour {
             initHeight
         );
     }
+
     private void OnGUI() {
-        if(!Inited || !OllyResources.Loaded || currentNode == null || !Main.IsShowGUI) {
-            return;
-        }
+        if (!Inited || !OllyResources.Loaded || currentNode == null || !Main.IsShowGUI) return;
 
         windowRect = GUI.Window(812, windowRect, DrawWindow, "Olly", RGUIStyle.darkWindow);
     }
@@ -115,40 +115,36 @@ public partial class Olly : MonoBehaviour {
     private void DrawWindow(int windowID) {
         GUI.BringWindowToFront(windowID);
 
-        string[] lines = string.IsNullOrEmpty(displayedText) ? [] : displayedText.Split('\n');
+        var lines = string.IsNullOrEmpty(displayedText) ? [] : displayedText.Split('\n');
 
-        int lineCount = lines.Length;
-        if(lineCount > 0 && string.IsNullOrEmpty(lines[lineCount - 1])) {
-            lineCount--;
-        }
+        var lineCount = lines.Length;
+        if (lineCount > 0 && string.IsNullOrEmpty(lines[lineCount - 1])) lineCount--;
 
         float textHeight = 0;
         float maxLineWidth = 0;
-        for(int i = 0; i < lineCount; i++) {
-            Vector2 size = GUI.skin.label.CalcSize(new GUIContent(lines[i]));
+        for (var i = 0; i < lineCount; i++) {
+            var size = GUI.skin.label.CalcSize(new GUIContent(lines[i]));
             textHeight += size.y;
-            if(size.x > maxLineWidth) {
-                maxLineWidth = size.x;
-            }
+            if (size.x > maxLineWidth) maxLineWidth = size.x;
         }
 
         float portraitSize = Mathf.Max(OllyResources.Base.width, OllyResources.Base.height);
 
-        float newWidth = Mathf.Max(portraitSize + 20, maxLineWidth + 20);
-        float newHeight = 20 + portraitSize + 10 + textHeight + 10;
+        var newWidth = Mathf.Max(portraitSize + 20, maxLineWidth + 20);
+        var newHeight = 20 + portraitSize + 10 + textHeight + 10;
 
-        Vector2 center = new(windowRect.x + (windowRect.width / 2f), windowRect.y + (windowRect.height / 2f));
+        Vector2 center = new(windowRect.x + windowRect.width / 2f, windowRect.y + windowRect.height / 2f);
         windowRect.width = newWidth;
         windowRect.height = newHeight;
-        windowRect.x = center.x - (newWidth / 2f);
-        windowRect.y = center.y - (newHeight / 2f);
+        windowRect.x = center.x - newWidth / 2f;
+        windowRect.y = center.y - newHeight / 2f;
 
         renderer.Draw(face, windowRect, FollowMouse);
 
-        float textY = 20 + portraitSize + 10;
-        for(int i = 0; i < lineCount; i++) {
-            Vector2 size = GUI.skin.label.CalcSize(new GUIContent(lines[i]));
-            float textX = (windowRect.width - size.x) / 2f;
+        var textY = 20 + portraitSize + 10;
+        for (var i = 0; i < lineCount; i++) {
+            var size = GUI.skin.label.CalcSize(new GUIContent(lines[i]));
+            var textX = (windowRect.width - size.x) / 2f;
             GUI.Label(new Rect(textX, textY, size.x, size.y), lines[i]);
             textY += size.y;
         }
@@ -161,25 +157,22 @@ public partial class Olly : MonoBehaviour {
 #if DEBUG
         DrawDebugFace();
 #endif
-        if(currentNode == null || currentNode.Choices == null || currentNode.Choices.Length == 0 || IsTalking) {
-            return;
+        if (currentNode == null || currentNode.Choices == null || currentNode.Choices.Length == 0 || IsTalking) return;
+
+        var maxWidth = 0f;
+        foreach (var choice in currentNode.Choices) {
+            var size = GUI.skin.button.CalcSize(new GUIContent(choice));
+            if (size.x > maxWidth) maxWidth = size.x;
         }
 
-        float maxWidth = 0f;
-        foreach(var choice in currentNode.Choices) {
-            Vector2 size = GUI.skin.button.CalcSize(new GUIContent(choice));
-            if(size.x > maxWidth) {
-                maxWidth = size.x;
-            }
-        }
         maxWidth += 20f;
 
         GUILayout.BeginHorizontal();
         try {
-            for(int i = 0; i < currentNode.Choices.Length; i++) {
-                if(Drawer.Button(currentNode.Choices[i], GUILayout.Width(maxWidth))) {
+            for (var i = 0; i < currentNode.Choices.Length; i++)
+                if (Drawer.Button(currentNode.Choices[i], GUILayout.Width(maxWidth))) {
                     currentNode.OnChoice?.Invoke(i);
-                    if(currentNode.Next.TryGetValue(i, out var next)) {
+                    if (currentNode.Next.TryGetValue(i, out var next)) {
                         currentNode = next;
 
                         face.Eye = currentNode.Eye;
@@ -188,7 +181,8 @@ public partial class Olly : MonoBehaviour {
                         face.EyeSpecial = currentNode.EyeSpecial;
                         face.EffectBit = currentNode.EffectBit;
                         face.EffectForwardBit = currentNode.EffectForwardBit;
-                    } else {
+                    }
+                    else {
                         currentNode = null;
                     }
 
@@ -196,8 +190,8 @@ public partial class Olly : MonoBehaviour {
                     charIndex = 0;
                     textTimer = 0f;
                 }
-            }
-        } finally {
+        }
+        finally {
             GUILayout.EndHorizontal();
         }
     }
@@ -212,10 +206,10 @@ public partial class Olly : MonoBehaviour {
         Drawer.DrawEnum(ref face.Mouth);
         Drawer.DrawEnum(ref face.Eyebrow);
         Drawer.DrawEnum(ref face.EyeSpecial);
-        uint feb = (uint)face.EffectBit;
+        var feb = (uint)face.EffectBit;
         DrawEffectButtons("Effects", ref feb);
         face.EffectBit = (EffectBit)feb;
-        uint fefb = (uint)face.EffectForwardBit;
+        var fefb = (uint)face.EffectForwardBit;
         DrawEffectForwardButtons("Forwards", ref fefb);
         face.EffectForwardBit = (EffectForwardBit)fefb;
 
@@ -223,38 +217,38 @@ public partial class Olly : MonoBehaviour {
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
     }
+
     private void DrawEffectButtons(string label, ref uint currentBit) {
         GUILayout.BeginVertical(RGUIStyle.darkWindow);
         GUILayout.Label($"<b>{label}</b>");
 
-        foreach(EffectBit bitValue in Enum.GetValues(typeof(EffectBit))) {
-            if(bitValue == EffectBit.None)
+        foreach (EffectBit bitValue in Enum.GetValues(typeof(EffectBit))) {
+            if (bitValue == EffectBit.None)
                 continue;
 
-            uint bit = (uint)bitValue;
-            bool isActive = (currentBit & bit) != 0;
+            var bit = (uint)bitValue;
+            var isActive = (currentBit & bit) != 0;
 
-            if(Drawer.Button($"{(isActive ? "●" : "○")} {bitValue}")) {
-                currentBit ^= bit;
-            }
+            if (Drawer.Button($"{(isActive ? "●" : "○")} {bitValue}")) currentBit ^= bit;
         }
+
         GUILayout.EndVertical();
     }
+
     private void DrawEffectForwardButtons(string label, ref uint currentBit) {
         GUILayout.BeginVertical(RGUIStyle.darkWindow);
         GUILayout.Label($"<b>{label}</b>");
 
-        foreach(EffectForwardBit bitValue in Enum.GetValues(typeof(EffectForwardBit))) {
-            if(bitValue == EffectForwardBit.None)
+        foreach (EffectForwardBit bitValue in Enum.GetValues(typeof(EffectForwardBit))) {
+            if (bitValue == EffectForwardBit.None)
                 continue;
 
-            uint bit = (uint)bitValue;
-            bool isActive = (currentBit & bit) != 0;
+            var bit = (uint)bitValue;
+            var isActive = (currentBit & bit) != 0;
 
-            if(Drawer.Button($"{(isActive ? "■" : "□")} {bitValue}")) {
-                currentBit ^= bit;
-            }
+            if (Drawer.Button($"{(isActive ? "■" : "□")} {bitValue}")) currentBit ^= bit;
         }
+
         GUILayout.EndVertical();
     }
 #endif

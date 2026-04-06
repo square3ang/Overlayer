@@ -11,15 +11,15 @@ public static partial class RGUI {
     public static bool PrefixLabel(string label) {
         var isLong = false;
 
-        if(!string.IsNullOrEmpty(label)) {
+        if (!string.IsNullOrEmpty(label)) {
             var style = GUI.skin.label;
-            isLong = PrefixLabelSetting.width > 0f && style.CalcSize(RGUIUtility.TempContent(label)).x > PrefixLabelSetting.width;
+            isLong = PrefixLabelSetting.width > 0f &&
+                     style.CalcSize(RGUIUtility.TempContent(label)).x > PrefixLabelSetting.width;
 
-            if(isLong) {
+            if (isLong)
                 GUILayout.Label(label);
-            } else {
+            else
                 GUILayout.Label(label, GUILayout.Width(PrefixLabelSetting.width));
-            }
         }
 
         return isLong;
@@ -29,11 +29,9 @@ public static partial class RGUI {
 
     public static object PrefixLabelDraggable(string label, object obj, Type type, out bool isLong) {
         isLong = false;
-        if(!string.IsNullOrEmpty(label)) {
+        if (!string.IsNullOrEmpty(label)) {
             isLong = PrefixLabel(label);
-            if(IsDraggable(type)) {
-                obj = DoDrag(obj, type);
-            }
+            if (IsDraggable(type)) obj = DoDrag(obj, type);
         }
 
         return obj;
@@ -41,10 +39,10 @@ public static partial class RGUI {
 
     #region implement drag
 
-    static Vector2 lastMousePos;
-    static readonly int DoDragHash = "DoDrag".GetHashCode();
+    private static Vector2 lastMousePos;
+    private static readonly int DoDragHash = "DoDrag".GetHashCode();
 
-    static object DoDrag(object obj, Type type) {
+    private static object DoDrag(object obj, Type type) {
         var controlId = GUIUtility.GetControlID(DoDragHash, FocusType.Passive);
 
         var rect = GUILayoutUtility.GetLastRect();
@@ -52,9 +50,9 @@ public static partial class RGUI {
         var ev = Event.current;
         var evType = ev.GetTypeForControl(controlId);
 
-        switch(evType) {
+        switch (evType) {
             case EventType.MouseDown: {
-                if((ev.button == RapidGUIBehaviour.Instance.prefixLabelSlideButton) &&
+                if (ev.button == RapidGUIBehaviour.Instance.prefixLabelSlideButton &&
                     rect.Contains(ev.mousePosition)) {
                     GUIUtility.hotControl = controlId;
                     lastMousePos = ev.mousePosition;
@@ -63,29 +61,30 @@ public static partial class RGUI {
                     ev.Use();
                 }
             }
-            break;
+                break;
 
             case EventType.MouseUp: {
-                if(GUIUtility.hotControl == controlId) {
+                if (GUIUtility.hotControl == controlId) {
                     GUIUtility.hotControl = 0;
                     ev.Use();
                 }
             }
-            break;
+                break;
 
             case EventType.MouseDrag: {
-                if((ev.button == RapidGUIBehaviour.Instance.prefixLabelSlideButton) &&
-                    (GUIUtility.hotControl == controlId)) {
+                if (ev.button == RapidGUIBehaviour.Instance.prefixLabelSlideButton &&
+                    GUIUtility.hotControl == controlId) {
                     var diff = ev.mousePosition - lastMousePos;
-                    var add = (Mathf.Abs(diff.x) > Mathf.Abs(diff.y)) ? diff.x : diff.y;
+                    var add = Mathf.Abs(diff.x) > Mathf.Abs(diff.y) ? diff.x : diff.y;
                     add = Math.Sign(add);
 
                     lastMousePos = ev.mousePosition;
-                    if(typeof(int) == type) {
+                    if (typeof(int) == type) {
                         var v = (int)obj;
                         v += (int)add;
                         obj = v;
-                    } else if(typeof(float) == type) {
+                    }
+                    else if (typeof(float) == type) {
                         var scale = 0.03f;
                         var v = (float)obj;
                         v += add * scale;
@@ -96,14 +95,12 @@ public static partial class RGUI {
                     ev.Use();
                 }
             }
-            break;
+                break;
 
             case EventType.Repaint: {
-                if(GUIUtility.hotControl == controlId) {
-                    RGUIUtility.SetCursor(MouseCursor.ResizeHorizontal);
-                }
+                if (GUIUtility.hotControl == controlId) RGUIUtility.SetCursor(MouseCursor.ResizeHorizontal);
             }
-            break;
+                break;
         }
 
         return obj;
@@ -111,9 +108,9 @@ public static partial class RGUI {
 
     public static bool IsDraggable(Type type) {
         return
-            (typeof(int) == type) ||
+            typeof(int) == type ||
             typeof(float) == type
-        ;
+            ;
     }
 }
 

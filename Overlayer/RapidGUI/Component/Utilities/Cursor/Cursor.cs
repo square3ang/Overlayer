@@ -11,12 +11,25 @@ public enum MouseCursor {
     Default,
     ResizeHorizontal,
     ResizeVertical,
-    ResizeUpLeft,
+    ResizeUpLeft
 }
 
 public static partial class RGUIUtility {
-    static readonly Dictionary<MouseCursor, CursorData.Data> cursorTable;
-    static byte[] ConvertBitmapToByteArray(Bitmap bitmap) { byte[] result = null; if(bitmap != null) { MemoryStream stream = new(); bitmap.Save(stream, bitmap.RawFormat); result = stream.ToArray(); } else { Console.WriteLine("Bitmap is null."); } return result; }
+    private static readonly Dictionary<MouseCursor, CursorData.Data> cursorTable;
+
+    private static byte[] ConvertBitmapToByteArray(Bitmap bitmap) {
+        byte[] result = null;
+        if (bitmap != null) {
+            MemoryStream stream = new();
+            bitmap.Save(stream, bitmap.RawFormat);
+            result = stream.ToArray();
+        }
+        else {
+            Console.WriteLine("Bitmap is null.");
+        }
+
+        return result;
+    }
 
     static RGUIUtility() {
         //var data = Resources.Load<CursorData>("cursorData");
@@ -39,24 +52,27 @@ public static partial class RGUIUtility {
         resizeUpLeft.tex = resizeUpLefttex;
         resizeUpLeft.hotspot = new Vector2Int(13, 13);*/
 
-        cursorTable = new Dictionary<MouseCursor, CursorData.Data>()
-        {
-            { MouseCursor.Default, null},
-            { MouseCursor.ResizeHorizontal, null},
-            { MouseCursor.ResizeVertical, null},
-            { MouseCursor.ResizeUpLeft, null},
+        cursorTable = new Dictionary<MouseCursor, CursorData.Data> {
+            { MouseCursor.Default, null },
+            { MouseCursor.ResizeHorizontal, null },
+            { MouseCursor.ResizeVertical, null },
+            { MouseCursor.ResizeUpLeft, null }
         };
 
         RapidGUIBehaviour.Instance.StartCoroutine(UpdateCursor());
     }
 
-    static float cursorLimitTime;
-    static float GetCursorTime() => Time.realtimeSinceStartup;
+    private static float cursorLimitTime;
+
+    private static float GetCursorTime() {
+        return Time.realtimeSinceStartup;
+    }
 
     public static void SetCursor(MouseCursor cursor, float life = 0.1f) {
-        if(cursor == MouseCursor.Default) {
+        if (cursor == MouseCursor.Default) {
             SetCursorDefault();
-        } else {
+        }
+        else {
             var data = cursorTable[cursor];
 
             Cursor.SetCursor(data.tex, data.hotspot, CursorMode.Auto);
@@ -69,8 +85,8 @@ public static partial class RGUIUtility {
         cursorLimitTime = float.MaxValue;
     }
 
-    static IEnumerator UpdateCursor() {
-        while(true) {
+    private static IEnumerator UpdateCursor() {
+        while (true) {
             yield return new WaitUntil(() => GetCursorTime() > cursorLimitTime);
             SetCursorDefault();
         }

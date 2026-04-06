@@ -1,13 +1,4 @@
-﻿using HarmonyLib;
-using Newtonsoft.Json.Linq;
-using Overlayer.Core.Patches;
-using Overlayer.Core.Scripting.JSNet.API;
-using Overlayer.Core.Scripting.JSNet.Utils;
-using Overlayer.Core.TextReplacing;
-using Overlayer.Tags;
-using Overlayer.Unity;
-using Overlayer.Utils;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +7,16 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using HarmonyLib;
+using Newtonsoft.Json.Linq;
+using Overlayer.Core.Patches;
+using Overlayer.Core.Scripting.JSNet.API;
+using Overlayer.Core.Scripting.JSNet.Utils;
+using Overlayer.Core.TextReplacing;
+using Overlayer.Tags;
+using Overlayer.Unity;
+using Overlayer.Utils;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -31,18 +32,16 @@ public static class Scripting {
     public static Api JSApi { get; private set; }
     public static bool PatchesLocked { get; private set; }
 
-    static string SandboxJSCode = string.Empty;
-    static string SandboxResult = "...";
+    private static string SandboxJSCode = string.Empty;
+    private static string SandboxResult = "...";
 
     public static void Initalize() {
         JSApi = new Api();
         JSApi.RegisterType(typeof(Impl));
-        foreach(var tag in TagManager.All) {
-            JSApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
-        }
+        foreach (var tag in TagManager.All) JSApi.Methods.Add((new ApiAttribute(tag.Name), tag.Tag.GetterOriginal));
 
         OverlayerText.OnApplyConfig += text => {
-            if(!PatchesLocked && TagManager.HasReference(typeof(Expression))) {
+            if (!PatchesLocked && TagManager.HasReference(typeof(Expression))) {
                 LazyPatchManager.PatchAll().ForEach(lp => lp.Locked = true);
                 PatchesLocked = true;
             }
@@ -58,53 +57,53 @@ public static class Scripting {
 
     public static void DrawUI() {
         GUILayout.BeginHorizontal();
-        if(Drawer.Button(Main.Lang.Get("RELOAD_SCRIPTS", "Reload Scripts"))) {
-            RunScriptsNonBlocking();
-        }
+        if (Drawer.Button(Main.Lang.Get("RELOAD_SCRIPTS", "Reload Scripts"))) RunScriptsNonBlocking();
 
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
         GUILayout.Label(Main.Lang.Get("TEST_CODE", "Test Code") + ":");
         SandboxJSCode = GUILayout.TextArea(SandboxJSCode, Drawer.myTextField);
         GUILayout.BeginHorizontal();
-        if(Drawer.Button(Main.Lang.Get("EXECUTE", "Execute"))) {
+        if (Drawer.Button(Main.Lang.Get("EXECUTE", "Execute"))) {
             Exception e;
             MiscUtils.ExecuteSafe(() => {
                 BeginScript(true);
-                MiscUtils.ExecuteSafe(() => JSApi.PrepareInterpreter().Evaluate(JSUtils.RemoveImports(SandboxJSCode)), out e);
+                MiscUtils.ExecuteSafe(() => JSApi.PrepareInterpreter().Evaluate(JSUtils.RemoveImports(SandboxJSCode)),
+                    out e);
                 SandboxResult = e?.ToString() ?? Main.Lang.Get("SUCCESS", "Success");
             }, out e);
-            if(e != null) {
-                SandboxResult = e.ToString();
-            }
+            if (e != null) SandboxResult = e.ToString();
 
             EndScript();
         }
-        if(Drawer.Button(Main.Lang.Get("EVALUATE", "Evaluate"))) {
+
+        if (Drawer.Button(Main.Lang.Get("EVALUATE", "Evaluate"))) {
             Exception e;
             MiscUtils.ExecuteSafe(() => {
                 BeginScript(true);
-                var result = MiscUtils.ExecuteSafe(() => JSApi.PrepareInterpreter().Evaluate(JSUtils.RemoveImports(SandboxJSCode)), out e);
+                var result =
+                    MiscUtils.ExecuteSafe(
+                        () => JSApi.PrepareInterpreter().Evaluate(JSUtils.RemoveImports(SandboxJSCode)), out e);
                 SandboxResult = e?.ToString() ?? result?.ToString() ?? "null";
             }, out e);
-            if(e != null) {
-                SandboxResult = e.ToString();
-            }
+            if (e != null) SandboxResult = e.ToString();
 
             EndScript();
         }
+
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
         GUILayout.Label($"{Main.Lang.Get("RESULT", "Result")}:");
-        string temp = SandboxResult;
+        var temp = SandboxResult;
         Drawer.DrawString("", ref temp);
     }
 
     public static async Task RunScripts() {
-        if(ScriptsRunning) {
+        if (ScriptsRunning) {
             Main.Logger.Log("Scripts Already Running! Aborting..");
             return;
         }
+
         ScriptsRunning = true;
         Main.Logger.Log("Start Running Scripts..");
         Directory.CreateDirectory(ScriptPath);
@@ -112,145 +111,153 @@ public static class Scripting {
         Main.Logger.Log("Generating Script Implementations..");
         File.WriteAllText(Path.Combine(ScriptPath, "Impl.js"), JSApi.Generate());
         Main.Logger.Log("Generating Script System Implementations..");
-        File.WriteAllText(Path.Combine(ScriptProxyPath, "System.js"), GenerateJSProxy("Square3ang & Kkitut", systemTypes.Select(t => (t.Name == "File" ? "IOFile" : t.Name, t)), null, new Version(1, 0, 0)));
+        File.WriteAllText(Path.Combine(ScriptProxyPath, "System.js"),
+            GenerateJSProxy("Square3ang & Kkitut", systemTypes.Select(t => (t.Name == "File" ? "IOFile" : t.Name, t)),
+                null, new Version(1, 0, 0)));
         Main.Logger.Log("Generating Script System Implementations..");
-        File.WriteAllText(Path.Combine(ScriptProxyPath, "Reflection.js"), GenerateJSProxy("Square3ang & Kkitut", reflectionTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
+        File.WriteAllText(Path.Combine(ScriptProxyPath, "Reflection.js"),
+            GenerateJSProxy("Square3ang & Kkitut", reflectionTypes.Select(t => (t.Name, t)), null,
+                new Version(1, 0, 0)));
         Main.Logger.Log("Generating Script Harmony Implementations..");
-        File.WriteAllText(Path.Combine(ScriptProxyPath, "Harmony.js"), GenerateJSProxy("Square3ang & Kkitut", harmonyTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
+        File.WriteAllText(Path.Combine(ScriptProxyPath, "Harmony.js"),
+            GenerateJSProxy("Square3ang & Kkitut", harmonyTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
         Main.Logger.Log("Generating Script Unity Implementations..");
-        File.WriteAllText(Path.Combine(ScriptProxyPath, "Unity.js"), GenerateJSProxy("Square3ang & Kkitut", unityTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
+        File.WriteAllText(Path.Combine(ScriptProxyPath, "Unity.js"),
+            GenerateJSProxy("Square3ang & Kkitut", unityTypes.Select(t => (t.Name, t)), null, new Version(1, 0, 0)));
         Main.Logger.Log("Preparing Executing Scripts..");
         Impl.Reload();
-        foreach(string script in Directory.GetFiles(ScriptPath, "*.js")) {
+        foreach (var script in Directory.GetFiles(ScriptPath, "*.js")) {
             var nameWithoutExt = Path.GetFileNameWithoutExtension(script);
-            if(nameWithoutExt is "Impl" or
-                "CImpl") {
+            if (nameWithoutExt is "Impl" or
+                "CImpl")
                 continue;
-            }
 
-            if(nameWithoutExt.EndsWith("_Proxy")) {
-                continue;
-            }
+            if (nameWithoutExt.EndsWith("_Proxy")) continue;
 
-            if(nameWithoutExt.EndsWith("_Compilable")) {
-                continue;
-            }
+            if (nameWithoutExt.EndsWith("_Compilable")) continue;
 
-            if(Impl.alreadyExecutedScripts.Contains(script)) {
-                continue;
-            }
+            if (Impl.alreadyExecutedScripts.Contains(script)) continue;
 
             await RunScript(script, File.ReadAllText(script));
         }
+
         ScriptsRunning = false;
     }
+
     public static async Task<bool> RunScript(string path, string script) {
         return await Task.Run(() => {
-            string name = Path.GetFileName(path);
+            var name = Path.GetFileName(path);
             try {
                 CurrentExecutingScript = script;
                 CurrentExecutingScriptPath = path;
                 BeginScript();
-                var time = MiscUtils.MeasureTime(() => JSApi.PrepareInterpreter().Execute(JSUtils.RemoveImports(script)));
+                var time =
+                    MiscUtils.MeasureTime(() => JSApi.PrepareInterpreter().Execute(JSUtils.RemoveImports(script)));
                 EndScript();
                 Main.Logger.Log($"Executed \"{name}\" Script Successfully. ({time.TotalMilliseconds}ms)");
                 return true;
-            } catch(Exception e) { Main.Logger.Log($"Exception At Executing Script \"{name}\":\n{e}"); return false; }
+            }
+            catch (Exception e) {
+                Main.Logger.Log($"Exception At Executing Script \"{name}\":\n{e}");
+                return false;
+            }
         });
     }
-    public static async void RunScriptsNonBlocking() => await RunScripts();
+
+    public static async void RunScriptsNonBlocking() {
+        await RunScripts();
+    }
+
     public static void BeginScript(bool sandbox = false) {
-        if(sandbox) {
+        if (sandbox) {
             CurrentExecutingScript = SandboxJSCode;
             CurrentExecutingScriptPath = "Sandbox.js";
         }
     }
+
     public static void EndScript() {
         CurrentExecutingScript = null;
         CurrentExecutingScriptPath = null;
     }
+
     public static IEnumerable<Type> GetADOFAITagTypes() {
         var adofaiTags = TagManager.All.Where(t => t.DeclaringType == typeof(Tags.ADOFAI));
         return adofaiTags.Select(t => t.Tag.GetterOriginal.ReturnType).Distinct();
     }
-    public static string GenerateJSProxy(string author = null, IEnumerable<(string, Type)> proxyTypes = null, IEnumerable<(string, MethodInfo)> proxyStaticMethods = null, Version version = null) {
+
+    public static string GenerateJSProxy(string author = null, IEnumerable<(string, Type)> proxyTypes = null,
+        IEnumerable<(string, MethodInfo)> proxyStaticMethods = null, Version version = null) {
         StringBuilder sb = new();
-        sb.AppendLine($"// [Overlayer.Scripting JS Wrapper]");
-        if(author != null) {
-            sb.AppendLine($"// Author: {author}");
-        }
+        sb.AppendLine("// [Overlayer.Scripting JS Wrapper]");
+        if (author != null) sb.AppendLine($"// Author: {author}");
 
-        if(proxyTypes != null) {
-            sb.AppendLine($"// ProxyTypes: {string.Join("*", proxyTypes.Select(t => $"{t.Item2.FullName}&{t.Item1}"))}");
-        }
+        if (proxyTypes != null)
+            sb.AppendLine(
+                $"// ProxyTypes: {string.Join("*", proxyTypes.Select(t => $"{t.Item2.FullName}&{t.Item1}"))}");
 
-        if(proxyStaticMethods != null) {
-            sb.AppendLine($"// ProxyMethods: {string.Join("*", proxyStaticMethods.Select(t => $"{t.Item2.DeclaringType}^{t.Item2.Name}#{string.Join(",", t.Item2.GetParameters().Select(p => p.ParameterType.FullName))}&{t.Item1}"))}");
-        }
+        if (proxyStaticMethods != null)
+            sb.AppendLine(
+                $"// ProxyMethods: {string.Join("*", proxyStaticMethods.Select(t => $"{t.Item2.DeclaringType}^{t.Item2.Name}#{string.Join(",", t.Item2.GetParameters().Select(p => p.ParameterType.FullName))}&{t.Item1}"))}");
 
-        if(version != null) {
-            sb.AppendLine($"// Version: {version}");
-        }
+        if (version != null) sb.AppendLine($"// Version: {version}");
 
         Api api = new();
-        if(proxyTypes != null) {
-            api.Types.AddRange(proxyTypes.Select(t => (new ApiAttribute(t.Item1), t.Item2)));
-        }
+        if (proxyTypes != null) api.Types.AddRange(proxyTypes.Select(t => (new ApiAttribute(t.Item1), t.Item2)));
 
-        if(proxyStaticMethods != null) {
+        if (proxyStaticMethods != null)
             api.Methods.AddRange(proxyStaticMethods.Select(t => (new ApiAttribute(t.Item1), t.Item2)));
-        }
 
         sb.AppendLine(api.Generate());
         return sb.ToString();
     }
+
     public static IEnumerable<(string, MemberInfo)> ImportJSProxy(string jsWrapper) {
-        using(StringReader sr = new(jsWrapper)) {
+        using (StringReader sr = new(jsWrapper)) {
             List<string> comments = [];
             string line = null;
-            while((line = sr.ReadLine()) != null) {
-                if(!line.StartsWith("//")) {
-                    break;
-                }
+            while ((line = sr.ReadLine()) != null) {
+                if (!line.StartsWith("//")) break;
 
                 comments.Add(line.Substring(2).TrimStart());
             }
 
             var proxyTypes = comments.Find(s => s.StartsWith("ProxyTypes:"));
-            if(proxyTypes != null) {
+            if (proxyTypes != null) {
                 var split = proxyTypes.Split(':');
-                if(split.Length > 1) {
+                if (split.Length > 1) {
                     var types = split[1].TrimStart();
-                    foreach(var clrType in types.Split('*').Select(typeString => {
-                        var typeNameSplit = typeString.Split('&');
-                        return (typeNameSplit[1], (MemberInfo)MiscUtils.TypeByName(typeNameSplit[0]));
-                    })) {
+                    foreach (var clrType in types.Split('*').Select(typeString => {
+                                 var typeNameSplit = typeString.Split('&');
+                                 return (typeNameSplit[1], (MemberInfo)MiscUtils.TypeByName(typeNameSplit[0]));
+                             }))
                         yield return clrType;
-                    }
                 }
             }
 
             var proxyMethods = comments.Find(s => s.StartsWith("ProxyMethods:"));
-            if(proxyMethods != null) {
+            if (proxyMethods != null) {
                 var split = proxyMethods.Split(':');
-                if(split.Length > 1) {
+                if (split.Length > 1) {
                     var methods = split[1].TrimStart();
-                    foreach(var staticMethod in methods.Split('*').Where(s => s.Any()).Select(methodString => {
-                        var decTypeSplit = methodString.Split('^');
-                        var decType = MiscUtils.TypeByName(decTypeSplit[0]);
-                        var nameSplit = decTypeSplit[1].Split('#');
-                        var name = nameSplit[0];
-                        var parametersSplit = nameSplit[1].Split('&');
-                        var parameters = parametersSplit[0].Split(',').Select(pType => MiscUtils.TypeByName(pType));
-                        var alias = parametersSplit[1];
-                        return (alias, (MemberInfo)decType?.GetMethod(name, (BindingFlags)15420, null, parameters.ToArray(), null));
-                    })) {
+                    foreach (var staticMethod in methods.Split('*').Where(s => s.Any()).Select(methodString => {
+                                 var decTypeSplit = methodString.Split('^');
+                                 var decType = MiscUtils.TypeByName(decTypeSplit[0]);
+                                 var nameSplit = decTypeSplit[1].Split('#');
+                                 var name = nameSplit[0];
+                                 var parametersSplit = nameSplit[1].Split('&');
+                                 var parameters = parametersSplit[0].Split(',')
+                                     .Select(pType => MiscUtils.TypeByName(pType));
+                                 var alias = parametersSplit[1];
+                                 return (alias,
+                                     (MemberInfo)decType?.GetMethod(name, (BindingFlags)15420, null,
+                                         parameters.ToArray(), null));
+                             }))
                         yield return staticMethod;
-                    }
                 }
             }
         }
     }
+
     public static byte[] ExportTexts(IEnumerable<OverlayerText> texts) {
         var node = new JObject {
             ["Texts"] = JArray.FromObject(texts.Select(ot => ot.Config).ToList())
@@ -272,18 +279,14 @@ public static class Scripting {
                 return scriptNode;
             });
 
-        foreach(var script in scripts) {
-            scriptsArray.Add(script);
-        }
+        foreach (var script in scripts) scriptsArray.Add(script);
 
         return Encoding.UTF8.GetBytes(node.ToString()).Compress();
     }
 
     public static List<OverlayerText> ImportTexts(byte[] raw, OverlayerProfile profile = null) {
         profile ??= ProfileManager.Profiles.FirstOrDefault(p => p.Config.Active);
-        if(profile == null) {
-            return [];
-        }
+        if (profile == null) return [];
 
         var node = JObject.Parse(Encoding.UTF8.GetString(raw.Decompress()));
 
@@ -291,7 +294,7 @@ public static class Scripting {
             .Select(tc => profile.ObjectManager.Create(TextConfigImporter.Import(tc)))
             .ToList();
 
-        foreach(var script in node["Scripts"]) {
+        foreach (var script in node["Scripts"]) {
             JSApi.PrepareInterpreter().Execute((string)script["Script"], (string)script["Name"]);
             File.WriteAllText(Path.Combine(ScriptPath, (string)script["Name"]), (string)script["Script"]);
         }
@@ -300,10 +303,11 @@ public static class Scripting {
         return texts;
     }
 
-    private static ScriptTag ResolveScriptTag(Tag tag) => TagManager.All.Where(ot => ot.Name == tag.Name).FirstOrDefault() as ScriptTag;
+    private static ScriptTag ResolveScriptTag(Tag tag) {
+        return TagManager.All.Where(ot => ot.Name == tag.Name).FirstOrDefault() as ScriptTag;
+    }
 
-    public static Type[] unityTypes =
-    [
+    public static Type[] unityTypes = [
         typeof(Scene),
         typeof(SceneManager),
         typeof(Sprite),
@@ -330,13 +334,13 @@ public static class Scripting {
         typeof(Matrix4x4),
         typeof(Text),
         typeof(TextMesh),
-        typeof(TMPro.TextMeshPro),
-        typeof(TMPro.TextMeshProUGUI),
+        typeof(TextMeshPro),
+        typeof(TextMeshProUGUI),
         typeof(Material),
         typeof(Canvas)
     ];
-    public static Type[] systemTypes =
-    [
+
+    public static Type[] systemTypes = [
         // Real System
         typeof(Type),
         typeof(Array),
@@ -349,10 +353,10 @@ public static class Scripting {
 
         // Collection
         typeof(IEnumerable),
-        typeof(IEnumerator),
+        typeof(IEnumerator)
     ];
-    public static Type[] reflectionTypes =
-    [
+
+    public static Type[] reflectionTypes = [
         // Reflection
         typeof(MemberInfo),
         typeof(MethodBase),
@@ -383,11 +387,11 @@ public static class Scripting {
         typeof(EventAttributes),
         typeof(ILGenerator),
         typeof(OpCode),
-        typeof(OpCodes),
+        typeof(OpCodes)
     ];
-    public static Type[] harmonyTypes =
-    [
+
+    public static Type[] harmonyTypes = [
         typeof(CodeInstruction),
-        typeof(AccessTools),
+        typeof(AccessTools)
     ];
 }

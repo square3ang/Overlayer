@@ -1,46 +1,51 @@
-﻿using Overlayer;
-using Overlayer.Core;
-using System;
+﻿using System;
 using System.Linq;
+using Overlayer;
+using Overlayer.Core;
 using UnityEngine;
 using Color = UnityEngine.Color;
 
 namespace RapidGUI;
 
 /// <summary>
-/// IMGUI ColorPicker based on
-/// https://github.com/mattatz/unity-immediate-color-picker
+///     IMGUI ColorPicker based on
+///     https://github.com/mattatz/unity-immediate-color-picker
 /// </summary>
 public class IMColorPicker : IDoGUIWindow {
     public enum SliderMode {
         HSV,
         RGB
-    };
+    }
 
     #region static
 
-    static readonly Texture2D circle, rightArrow, leftArrow, button, buttonHighlighted;
+    private static readonly Texture2D circle, rightArrow, leftArrow, button, buttonHighlighted;
 
-    static readonly GUIStyle previewStyle;
-    static readonly GUIStyle labelStyle;
-    static readonly GUIStyle hueStyle;
-    static readonly GUIStyle presetStyle, presetHighlightedStyle;
+    private static readonly GUIStyle previewStyle;
+    private static readonly GUIStyle labelStyle;
+    private static readonly GUIStyle hueStyle;
+    private static readonly GUIStyle presetStyle, presetHighlightedStyle;
 
-    static readonly GUIContent previewContents;
+    private static readonly GUIContent previewContents;
 
-    static IMColorPreset defaultPreset;
+    private static readonly IMColorPreset defaultPreset;
 
     static IMColorPicker() {
         circle = new Texture2D(2, 2);
-        circle.LoadImage(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACRElEQVRYCe3Bzy5jARiH4Z9qK9qV6JyIGW5ARmwqdSGSsbAQjV6A+HsBzNgSaWJmS2hiIxJXMTFig5IQNuhMBoN2887iy0mbo9X2nJXE80jv3gBCDDHPNocUKFGiwCHbzJEipKDoZYkrarnkKz3yC4c1StRTJEtCzWOU3zSqwIiaQYQfVLpjnTRJOokSJUGSNBvcUSlLWI0hxh5lR4zRriqIMc4JZbvEVB8R9nA9MklYryDCFE+4dgmrHr7jOqZPDaCfPK6sXscorp98UINw2Mf1RbXh8AdzzAc1AYc85pZO1cIa5h99ahL9PGFWVR29lDCT8oFpTJGPqoYlzBFh+UCEPGZRLxHiCjMmn0hjLmiRF0OYv7TLJ+LcYwblxTxmXQGwiZmVF9uYtAIgg8nJi0NMUgGQwhzIiwKmUwHgYG7kRQkTVQC0YYryooSJKgDaMEV5UcAkFAAO5kZeHGKSCoAU5kBebGPSCoAMJicv5jAbCoAtzIy8SGHuiMkn4jxgkvIixCVmXD4xgTmnRS/xDXNCRD4Q5RSzoGrooYSZkg/MYZ7pVnVkMY98VpMY4BmzrFpIUMDkcdQEujjDXNOh2hjBtY+jBtHFL1zDeh1ZXHn61QAGOMO1onoIs4vriWkiegVR5njGtUOr6iPGLmV50sRVBXEmOKVsh3Y1hjBZKt2zSYYUDm204ZAiwxYPVFqhVc1ghFsadc2wmkcnqxSp55llOuQXn1jkglrOWaBbQRFikFlyHHBDkSI3HJBjhiQtevcG/AfcchAwrAwT4wAAAABJRU5ErkJggg=="));
+        circle.LoadImage(Convert.FromBase64String(
+            "iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACRElEQVRYCe3Bzy5jARiH4Z9qK9qV6JyIGW5ARmwqdSGSsbAQjV6A+HsBzNgSaWJmS2hiIxJXMTFig5IQNuhMBoN2887iy0mbo9X2nJXE80jv3gBCDDHPNocUKFGiwCHbzJEipKDoZYkrarnkKz3yC4c1StRTJEtCzWOU3zSqwIiaQYQfVLpjnTRJOokSJUGSNBvcUSlLWI0hxh5lR4zRriqIMc4JZbvEVB8R9nA9MklYryDCFE+4dgmrHr7jOqZPDaCfPK6sXscorp98UINw2Mf1RbXh8AdzzAc1AYc85pZO1cIa5h99ahL9PGFWVR29lDCT8oFpTJGPqoYlzBFh+UCEPGZRLxHiCjMmn0hjLmiRF0OYv7TLJ+LcYwblxTxmXQGwiZmVF9uYtAIgg8nJi0NMUgGQwhzIiwKmUwHgYG7kRQkTVQC0YYryooSJKgDaMEV5UcAkFAAO5kZeHGKSCoAU5kBebGPSCoAMJicv5jAbCoAtzIy8SGHuiMkn4jxgkvIixCVmXD4xgTmnRS/xDXNCRD4Q5RSzoGrooYSZkg/MYZ7pVnVkMY98VpMY4BmzrFpIUMDkcdQEujjDXNOh2hjBtY+jBtHFL1zDeh1ZXHn61QAGOMO1onoIs4vriWkiegVR5njGtUOr6iPGLmV50sRVBXEmOKVsh3Y1hjBZKt2zSYYUDm204ZAiwxYPVFqhVc1ghFsadc2wmkcnqxSp55llOuQXn1jkglrOWaBbQRFikFlyHHBDkSI3HJBjhiQtevcG/AfcchAwrAwT4wAAAABJRU5ErkJggg=="));
         rightArrow = new Texture2D(2, 2);
-        rightArrow.LoadImage(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4wcYChUv6no+dwAAALBJREFUeNrt2FkOwjAQBFGLk8/NOz9IIEiIWSJgqt4NuqQs9hiSJEmSdIAkRQ8QdIRcFD0AM0LuFT0AK0K2FT0AI0L2FT1A7wiZV/QAPSPkeUUP0CtCXlf0AD0i5H1FD/DfEfI5RQ9wSITTkI+AL0E/g/4I+SvsYcjjsBciXol9M0DP8ZMB+o6fCNB7/E6A/uMfBGCM3wjAGb8SgDX+JgBv/FUA5vhzAO54SZIkST9rASnVJsSet2LdAAAAAElFTkSuQmCC"));
+        rightArrow.LoadImage(Convert.FromBase64String(
+            "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4wcYChUv6no+dwAAALBJREFUeNrt2FkOwjAQBFGLk8/NOz9IIEiIWSJgqt4NuqQs9hiSJEmSdIAkRQ8QdIRcFD0AM0LuFT0AK0K2FT0AI0L2FT1A7wiZV/QAPSPkeUUP0CtCXlf0AD0i5H1FD/DfEfI5RQ9wSITTkI+AL0E/g/4I+SvsYcjjsBciXol9M0DP8ZMB+o6fCNB7/E6A/uMfBGCM3wjAGb8SgDX+JgBv/FUA5vhzAO54SZIkST9rASnVJsSet2LdAAAAAElFTkSuQmCC"));
         leftArrow = new Texture2D(2, 2);
-        leftArrow.LoadImage(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4wcYChQ1DgP2TAAAALRJREFUeNrt2FkOwkAMBNERJ+fm5hchlqwo4351gyppEttjAAAAAMDFqKp7tHxVVbR8ZIBn+bgAr/JRAd7JxwT4JB8R4Jt8+wC/5FsHWCLfNsBS+ZYB1si3C7BWvlWALfJtAmyVbxFgj/z0AfbKTx3gCPlpAxwlP2WAI+X/EeA24An4CPoNGoSMwpYh67CDiJPYJSPET4zxY3P87hC/QMVvkfGrdPw9If6oEn9ZGgAAAABwAg8YTCbEq77wEwAAAABJRU5ErkJggg=="));
+        leftArrow.LoadImage(Convert.FromBase64String(
+            "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4wcYChQ1DgP2TAAAALRJREFUeNrt2FkOwkAMBNERJ+fm5hchlqwo4351gyppEttjAAAAAMDFqKp7tHxVVbR8ZIBn+bgAr/JRAd7JxwT4JB8R4Jt8+wC/5FsHWCLfNsBS+ZYB1si3C7BWvlWALfJtAmyVbxFgj/z0AfbKTx3gCPlpAxwlP2WAI+X/EeA24An4CPoNGoSMwpYh67CDiJPYJSPET4zxY3P87hC/QMVvkfGrdPw9If6oEn9ZGgAAAABwAg8YTCbEq77wEwAAAABJRU5ErkJggg=="));
         button = new Texture2D(2, 2);
-        button.LoadImage(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAF0lEQVR42mNgIAP8JxqMahjVMNAaSAIAEz9J0wH4O8QAAAAASUVORK5CYII="));
+        button.LoadImage(Convert.FromBase64String(
+            "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAF0lEQVR42mNgIAP8JxqMahjVMNAaSAIAEz9J0wH4O8QAAAAASUVORK5CYII="));
         buttonHighlighted = new Texture2D(2, 2);
-        buttonHighlighted.LoadImage(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAF0lEQVR42mNgoBP4TwQY1TCqgRgNNAQAFC2uYAIOr4cAAAAASUVORK5CYII="));
+        buttonHighlighted.LoadImage(Convert.FromBase64String(
+            "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAF0lEQVR42mNgoBP4TwQY1TCqgRgNNAQAFC2uYAIOr4cAAAAASUVORK5CYII="));
 
         previewStyle = new GUIStyle();
         var previewSize = new Vector2Int(kPreviewBarWidth, kPreviewBarHeight);
@@ -69,27 +74,25 @@ public class IMColorPicker : IDoGUIWindow {
         defaultPreset = ScriptableObject.CreateInstance<IMColorPreset>();
     }
 
-    static Texture2D CreateHueTexture(int width, int height) {
+    private static Texture2D CreateHueTexture(int width, int height) {
         var tex = new Texture2D(width, height);
-        for(int y = 0; y < height; y++) {
+        for (var y = 0; y < height; y++) {
             var h = 1f * y / height;
             var color = Color.HSVToRGB(h, 1f, 1f);
-            for(int x = 0; x < width; x++) {
-                tex.SetPixel(x, y, color);
-            }
+            for (var x = 0; x < width; x++) tex.SetPixel(x, y, color);
         }
 
         tex.Apply();
         return tex;
     }
 
-    static Texture2D CreateChekcerBoardTexture(Vector2Int size, int gridSize, Color col0, Color col1) {
+    private static Texture2D CreateChekcerBoardTexture(Vector2Int size, int gridSize, Color col0, Color col1) {
         var tex = new Texture2D(size.x, size.y);
-        for(var y = 0; y < size.y; y++) {
+        for (var y = 0; y < size.y; y++) {
             var flagY = y / gridSize % 2 == 0;
-            for(var x = 0; x < size.x; x++) {
+            for (var x = 0; x < size.x; x++) {
                 var flagX = x / gridSize % 2 == 0;
-                tex.SetPixel(x, y, (flagX ^ flagY) ? col0 : col1);
+                tex.SetPixel(x, y, flagX ^ flagY ? col0 : col1);
             }
         }
 
@@ -99,13 +102,13 @@ public class IMColorPicker : IDoGUIWindow {
 
     #endregion
 
-    const int kHSVPickerSize = 280, kHuePickerWidth = 24;
-    const int kPreviewBarWidth = 160, kPreviewBarHeight = 24;
+    private const int kHSVPickerSize = 280, kHuePickerWidth = 24;
+    private const int kPreviewBarWidth = 160, kPreviewBarHeight = 24;
 
     public Color color {
         get => _color;
         set {
-            if(value != _color) {
+            if (value != _color) {
                 _color = value;
                 Color.RGBToHSV(_color, out _hsv.x, out _hsv.y, out _hsv.z);
                 UpdateSVTexture();
@@ -117,7 +120,7 @@ public class IMColorPicker : IDoGUIWindow {
     public Vector3 hsv {
         get => _hsv;
         set {
-            if(value != _hsv) {
+            if (value != _hsv) {
                 _hsv = value;
                 var a = _color.a;
                 _color = Color.HSVToRGB(hsv.x, hsv.y, hsv.z);
@@ -133,24 +136,25 @@ public class IMColorPicker : IDoGUIWindow {
     public float S => _hsv.y;
     public float V => _hsv.z;
 
-    SliderMode sliderMode = SliderMode.RGB;
+    private SliderMode sliderMode = SliderMode.RGB;
 
-    Color _colorPrev;
-    Color _color;
-    IMColorPreset preset;
+    private readonly Color _colorPrev;
+    private Color _color;
+    private readonly IMColorPreset preset;
 
-    Vector3 _hsv = new(0f, 0f, 0f);
+    private Vector3 _hsv = new(0f, 0f, 0f);
 
     public Rect windowRect = new(20, 20, 350, 500);
     public bool destroy { get; protected set; }
 
-    GUIStyle svStyle;
-    Texture2D svTexture;
-    int selectedPreset = -1;
+    private GUIStyle svStyle;
+    private Texture2D svTexture;
+    private int selectedPreset = -1;
 
     public IMColorPicker() : this(Color.red, defaultPreset) { }
     public IMColorPicker(Color c) : this(c, defaultPreset) { }
     public IMColorPicker(IMColorPreset pr) : this(Color.red, pr) { }
+
     public IMColorPicker(Color c, IMColorPreset pr) {
         Setup();
 
@@ -161,17 +165,21 @@ public class IMColorPicker : IDoGUIWindow {
         preset = pr;
     }
 
-    void Setup() {
+    private void Setup() {
         svTexture = new Texture2D(kHSVPickerSize, kHSVPickerSize);
         svStyle = new GUIStyle();
         svStyle.normal.background = svTexture;
     }
 
-    public void SetWindowPosition(Vector2 pos) => windowRect.position = pos;
+    public void SetWindowPosition(Vector2 pos) {
+        windowRect.position = pos;
+    }
 
     #region IDoGUIWindow
 
-    public void DoGUIWindow() => DrawWindow();
+    public void DoGUIWindow() {
+        DrawWindow();
+    }
 
     public void CloseWindow() { }
 
@@ -182,17 +190,18 @@ public class IMColorPicker : IDoGUIWindow {
         return destroy;
     }
 
-    void DrawColorPickerWindow(int windowID) {
+    private void DrawColorPickerWindow(int windowID) {
         DrawColorPicker();
         GUI.DragWindow();
 
         var ev = Event.current;
 
-        destroy |= ev.button == 0 && ev.rawType == EventType.MouseDown && !windowRect.Contains(GUIUtility.GUIToScreenPoint(ev.mousePosition));
+        destroy |= ev.button == 0 && ev.rawType == EventType.MouseDown &&
+                   !windowRect.Contains(GUIUtility.GUIToScreenPoint(ev.mousePosition));
     }
 
     public void DrawColorPicker() {
-        using(new GUILayout.VerticalScope()) {
+        using (new GUILayout.VerticalScope()) {
             GUILayout.Space(5f);
             DrawPreviews();
 
@@ -203,7 +212,7 @@ public class IMColorPicker : IDoGUIWindow {
             DrawSliderMode();
 
             GUILayout.Space(10f);
-            switch(sliderMode) {
+            switch (sliderMode) {
                 case SliderMode.HSV:
                     DrawSlidersHSV();
                     break;
@@ -220,34 +229,32 @@ public class IMColorPicker : IDoGUIWindow {
         }
     }
 
-    void DrawPreviews() {
-        using(new GUILayout.HorizontalScope()) {
+    private void DrawPreviews() {
+        using (new GUILayout.HorizontalScope()) {
             DrawPreview(_colorPrev, () => color = _colorPrev);
             DrawPreview(_color, null);
             GUILayout.FlexibleSpace();
         }
     }
 
-    void DrawPreview(Color c, Action onButton) {
-        using(new GUILayout.VerticalScope()) {
+    private void DrawPreview(Color c, Action onButton) {
+        using (new GUILayout.VerticalScope()) {
             var tmpBC = GUI.backgroundColor;
             var tmpCC = GUI.contentColor;
             {
-
                 GUI.backgroundColor = Color.white;
                 GUI.contentColor = c;
 
-                if(GUILayout.Button(previewContents, previewStyle, GUILayout.Width(kPreviewBarWidth), GUILayout.Height(kPreviewBarHeight))) {
-                    onButton?.Invoke();
-                }
+                if (GUILayout.Button(previewContents, previewStyle, GUILayout.Width(kPreviewBarWidth),
+                        GUILayout.Height(kPreviewBarHeight))) onButton?.Invoke();
             }
             GUI.backgroundColor = tmpBC;
             GUI.contentColor = tmpCC;
         }
     }
 
-    void DrawHSVPicker() {
-        using(new GUILayout.HorizontalScope()) {
+    private void DrawHSVPicker() {
+        using (new GUILayout.HorizontalScope()) {
             GUILayout.Label("", svStyle, GUILayout.Width(kHSVPickerSize), GUILayout.Height(kHSVPickerSize));
             DrawSVHandler(GUILayoutUtility.GetLastRect());
 
@@ -258,19 +265,18 @@ public class IMColorPicker : IDoGUIWindow {
         }
     }
 
-    void DrawSliderMode() {
-        using(new GUILayout.HorizontalScope()) {
+    private void DrawSliderMode() {
+        using (new GUILayout.HorizontalScope()) {
             GUILayout.FlexibleSpace();
             var style = new GUIStyle(Main.Settings.LegacyTheme ? GUI.skin.button : Drawer.myButton) {
                 fontSize = 12
             };
-            if(GUILayout.Button(sliderMode.ToString(), style, GUILayout.Width(50f))) {
+            if (GUILayout.Button(sliderMode.ToString(), style, GUILayout.Width(50f)))
                 sliderMode = (SliderMode)(((int)sliderMode + 1) % Enum.GetValues(typeof(SliderMode)).Length);
-            }
         }
     }
 
-    void DrawSlidersHSV() {
+    private void DrawSlidersHSV() {
         var newHSV = hsv;
         newHSV.x = DrawSlide(hsv.x, "H");
         newHSV.y = DrawSlide(hsv.y, "S");
@@ -279,7 +285,8 @@ public class IMColorPicker : IDoGUIWindow {
 
         hsv = newHSV;
     }
-    void DrawSlidersRBG() {
+
+    private void DrawSlidersRBG() {
         var col = color;
         col.r = DrawSlide(col.r, "R");
         col.g = DrawSlide(col.g, "G");
@@ -289,7 +296,7 @@ public class IMColorPicker : IDoGUIWindow {
         color = col;
     }
 
-    float DrawSlide(float v, string label) {
+    private float DrawSlide(float v, string label) {
         var tmp = RGUI.PrefixLabelSetting.width;
         RGUI.PrefixLabelSetting.width = 16f;
 
@@ -311,7 +318,7 @@ public class IMColorPicker : IDoGUIWindow {
         */
     }
 
-    void DrawPresets() {
+    private void DrawPresets() {
         const int presetSize = 16;
 
         GUILayout.Label("Presets", labelStyle);
@@ -326,114 +333,118 @@ public class IMColorPicker : IDoGUIWindow {
 
             const int colNum = 10;
             var rowNum = num / colNum;
-            for(int row = 0; row <= rowNum; row++) {
-                using(new GUILayout.HorizontalScope()) {
+            for (var row = 0; row <= rowNum; row++)
+                using (new GUILayout.HorizontalScope()) {
                     GUILayout.Space(1f);
                     var limit = Mathf.Min(num, (row + 1) * colNum);
                     var i = row * colNum;
-                    for(; i < limit; i++) {
+                    for (; i < limit; i++) {
                         var c = preset.Colors[i];
                         GUI.backgroundColor = c;
-                        if(GUILayout.Button(" ", (i == selectedPreset) ? presetHighlightedStyle : presetStyle, width, height)) {
-                            switch(Event.current.button) {
+                        if (GUILayout.Button(" ", i == selectedPreset ? presetHighlightedStyle : presetStyle, width,
+                                height))
+                            switch (Event.current.button) {
                                 case 0: {
                                     selectedPreset = i;
                                     color = c;
                                 }
-                                break;
+                                    break;
                                 case 1: {
                                     preset.Colors.RemoveAt(i);
                                     ClearPresetSelection();
                                 }
-                                return;
+                                    return;
                             }
-                        }
+
                         GUILayout.Space(1f);
                     }
                 }
-            }
         }
         GUI.backgroundColor = tmp;
         const int buttonWidth = 67, buttonHeight = 20;
-        using(new GUILayout.HorizontalScope()) {
-            if(Drawer.Button("Save", GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight))) {
+        using (new GUILayout.HorizontalScope()) {
+            if (Drawer.Button("Save", GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight))) {
                 preset.Save(color);
                 selectedPreset = preset.Colors.Count - 1;
             }
-            if(selectedPreset >= 0 && Drawer.Button("Remove", GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight))) {
+
+            if (selectedPreset >= 0 &&
+                Drawer.Button("Remove", GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight))) {
                 preset.Colors.RemoveAt(selectedPreset);
                 ClearPresetSelection();
             }
         }
     }
 
-    void ClearPresetSelection() => selectedPreset = -1;
+    private void ClearPresetSelection() {
+        selectedPreset = -1;
+    }
 
-    void DrawSVHandler(Rect rect) {
+    private void DrawSVHandler(Rect rect) {
         const float size = 10f;
         const float offset = 5f;
         var s = hsv.y;
         var v = hsv.z;
-        GUI.DrawTexture(new Rect(rect.x + (s * rect.width) - offset, rect.y + ((1f - v) * rect.height) - offset, size, size), circle);
+        GUI.DrawTexture(
+            new Rect(rect.x + s * rect.width - offset, rect.y + (1f - v) * rect.height - offset, size, size), circle);
 
         DraggableRectHandler(rect, () => {
             var p = Event.current.mousePosition;
 
             var newHSV = hsv;
             newHSV.y = Mathf.Clamp01((p.x - rect.x) / rect.width);
-            newHSV.z = Mathf.Clamp01(1f - ((p.y - rect.y) / rect.height));
+            newHSV.z = Mathf.Clamp01(1f - (p.y - rect.y) / rect.height);
             hsv = newHSV;
         });
     }
 
-    void DrawHueHandler(Rect rect) {
+    private void DrawHueHandler(Rect rect) {
         const float size = 15f;
         var h = hsv.x;
-        GUI.DrawTexture(new Rect(rect.x - (size * 0.75f), rect.y + ((1f - h) * rect.height) - (size * 0.5f), size, size), rightArrow);
-        GUI.DrawTexture(new Rect(rect.x + rect.width - (size * 0.25f), rect.y + ((1f - h) * rect.height) - (size * 0.5f), size, size), leftArrow);
+        GUI.DrawTexture(new Rect(rect.x - size * 0.75f, rect.y + (1f - h) * rect.height - size * 0.5f, size, size),
+            rightArrow);
+        GUI.DrawTexture(
+            new Rect(rect.x + rect.width - size * 0.25f, rect.y + (1f - h) * rect.height - size * 0.5f, size, size),
+            leftArrow);
 
         DraggableRectHandler(rect, () => {
             var p = Event.current.mousePosition;
 
             var newHSV = hsv;
-            newHSV.x = Mathf.Clamp01(1f - ((p.y - rect.y) / rect.height));
+            newHSV.x = Mathf.Clamp01(1f - (p.y - rect.y) / rect.height);
             hsv = newHSV;
         });
     }
 
-    void DraggableRectHandler(Rect rect, Action action) {
+    private void DraggableRectHandler(Rect rect, Action action) {
         var e = Event.current;
         var controlID = GUIUtility.GetControlID(FocusType.Passive);
         var etype = e.GetTypeForControl(controlID);
         var p = e.mousePosition;
 
-        switch(etype) {
+        switch (etype) {
             case EventType.MouseDown: {
-                if((e.button == 0) && rect.Contains(p)) {
-                    GUIUtility.hotControl = controlID;
-                }
+                if (e.button == 0 && rect.Contains(p)) GUIUtility.hotControl = controlID;
             }
-            break;
+                break;
 
             case EventType.MouseUp: {
-                if(GUIUtility.hotControl == controlID) {
-                    GUIUtility.hotControl = 0;
-                }
+                if (GUIUtility.hotControl == controlID) GUIUtility.hotControl = 0;
             }
-            break;
+                break;
         }
 
-        if(e.isMouse && (GUIUtility.hotControl == controlID)) {
+        if (e.isMouse && GUIUtility.hotControl == controlID) {
             action();
             e.Use();
         }
     }
 
-    void UpdateSVTexture() {
+    private void UpdateSVTexture() {
         var size = svTexture.width;
-        for(int y = 0; y < size; y++) {
+        for (var y = 0; y < size; y++) {
             var v = 1f * y / size;
-            for(int x = 0; x < size; x++) {
+            for (var x = 0; x < size; x++) {
                 var s = 1f * x / size;
                 var c = Color.HSVToRGB(_hsv.x, s, v);
                 svTexture.SetPixel(x, y, c);
@@ -443,4 +454,3 @@ public class IMColorPicker : IDoGUIWindow {
         svTexture.Apply();
     }
 }
-

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RapidGUI;
 
 public static partial class RGUI {
-    static string CheckCustomLabel(string label) {
+    private static string CheckCustomLabel(string label) {
         return customLabelScopeStack
             .Select(t => {
                 t.TryGetValue(label, out var l);
@@ -14,15 +14,23 @@ public static partial class RGUI {
             .FirstOrDefault(l => l != null);
     }
 
-    static readonly Stack<Dictionary<string, string>> customLabelScopeStack = new();
+    private static readonly Stack<Dictionary<string, string>> customLabelScopeStack = new();
 
-    public static void BeginCustomLabel(Dictionary<string, string> table) => customLabelScopeStack.Push(table);
+    public static void BeginCustomLabel(Dictionary<string, string> table) {
+        customLabelScopeStack.Push(table);
+    }
 
-    public static void EndCustomLabel() => customLabelScopeStack.Pop();
+    public static void EndCustomLabel() {
+        customLabelScopeStack.Pop();
+    }
 
     public class CustomLabelScope : GUI.Scope {
-        public CustomLabelScope(Dictionary<string, string> table) => BeginCustomLabel(table);
+        public CustomLabelScope(Dictionary<string, string> table) {
+            BeginCustomLabel(table);
+        }
 
-        protected override void CloseScope() => EndCustomLabel();
+        protected override void CloseScope() {
+            EndCustomLabel();
+        }
     }
 }

@@ -9,17 +9,27 @@ public abstract class TitleContents<T> where T : TitleContent<T>, new() {
     protected readonly Dictionary<string, T> dic = [];
     protected bool dicChanged = true;
 
-    public T Add(string title, Action guiAction) => Add(title, null, guiAction);
+    public T Add(string title, Action guiAction) {
+        return Add(title, null, guiAction);
+    }
 
-    public T Add(string title, Func<bool> checkEnableFunc, Action guiAction) => Add(title, checkEnableFunc, () => { guiAction(); return false; });
+    public T Add(string title, Func<bool> checkEnableFunc, Action guiAction) {
+        return Add(title, checkEnableFunc, () => {
+            guiAction();
+            return false;
+        });
+    }
 
-    public T Add(string title, Func<bool> guiFunc) => Add(title, null, guiFunc);
+    public T Add(string title, Func<bool> guiFunc) {
+        return Add(title, null, guiFunc);
+    }
 
     public virtual T Add(string title, Func<bool> checkEnableFunc, Func<bool> guiFunc) {
-        if(dic.TryGetValue(title, out var element)) {
+        if (dic.TryGetValue(title, out var element)) {
             element.Add(checkEnableFunc, guiFunc);
-        } else {
-            element = new T() { name = title }.Add(checkEnableFunc, guiFunc);
+        }
+        else {
+            element = new T { name = title }.Add(checkEnableFunc, guiFunc);
             dic.Add(title, element);
         }
 
@@ -32,17 +42,17 @@ public abstract class TitleContents<T> where T : TitleContent<T>, new() {
         Assert.IsTrue(iDoGUITypes.All(type => type.GetInterfaces().Contains(typeof(IDoGUI))));
 
         var iDoGUIs = iDoGUITypes.Select(t => new LazyFindObject(t)).ToList() // exec once.
-            .Select(lfo => lfo.GetObject()).Where(o => o != null).Cast<IDoGUI>();   // exec every call.
+            .Select(lfo => lfo.GetObject()).Where(o => o != null).Cast<IDoGUI>(); // exec every call.
 
         return Add(title, () => iDoGUIs.Any(), () => iDoGUIs.ToList().ForEach(idm => idm.DoGUI()));
     }
 
-    public bool Contains(string name) => dic.ContainsKey(name);
+    public bool Contains(string name) {
+        return dic.ContainsKey(name);
+    }
 
     public void Remove(string name) {
-        if(dic.ContainsKey(name)) {
-            dic.Remove(name);
-        }
+        if (dic.ContainsKey(name)) dic.Remove(name);
 
         dicChanged = true;
     }

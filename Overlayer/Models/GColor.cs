@@ -15,20 +15,65 @@ public struct GColor : IModel, ICopyable<GColor> {
 
     public bool gradientEnabled = false;
 
-    public Color topLeft { readonly get => _color.topLeft; set => SetTopLeftColor(value); }
-    public Color topRight { readonly get => _color.topRight; set => SetTopRightColor(value); }
-    public Color bottomLeft { readonly get => _color.bottomLeft; set => SetBottomLeftColor(value); }
-    public Color bottomRight { readonly get => _color.bottomRight; set => SetBottomRightColor(value); }
+    public Color topLeft {
+        readonly get => _color.topLeft;
+        set => SetTopLeftColor(value);
+    }
 
-    public string topLeftHex { readonly get => _topLeftHex; set => SetTopLeftHex(value); }
-    public string topRightHex { readonly get => _topRightHex; set => SetTopRightHex(value); }
-    public string bottomLeftHex { readonly get => _bottomLeftHex; set => SetBottomLeftHex(value); }
-    public string bottomRightHex { readonly get => _bottomRightHex; set => SetBottomRightHex(value); }
+    public Color topRight {
+        readonly get => _color.topRight;
+        set => SetTopRightColor(value);
+    }
 
-    public float r { readonly get => _color.topLeft.r; set => SetTopLeftColor(_color.topLeft with { r = value }); }
-    public float g { readonly get => _color.topLeft.g; set => SetTopLeftColor(_color.topLeft with { g = value }); }
-    public float b { readonly get => _color.topLeft.b; set => SetTopLeftColor(_color.topLeft with { b = value }); }
-    public float a { readonly get => _color.topLeft.a; set => SetTopLeftColor(_color.topLeft with { a = value }); }
+    public Color bottomLeft {
+        readonly get => _color.bottomLeft;
+        set => SetBottomLeftColor(value);
+    }
+
+    public Color bottomRight {
+        readonly get => _color.bottomRight;
+        set => SetBottomRightColor(value);
+    }
+
+    public string topLeftHex {
+        readonly get => _topLeftHex;
+        set => SetTopLeftHex(value);
+    }
+
+    public string topRightHex {
+        readonly get => _topRightHex;
+        set => SetTopRightHex(value);
+    }
+
+    public string bottomLeftHex {
+        readonly get => _bottomLeftHex;
+        set => SetBottomLeftHex(value);
+    }
+
+    public string bottomRightHex {
+        readonly get => _bottomRightHex;
+        set => SetBottomRightHex(value);
+    }
+
+    public float r {
+        readonly get => _color.topLeft.r;
+        set => SetTopLeftColor(_color.topLeft with { r = value });
+    }
+
+    public float g {
+        readonly get => _color.topLeft.g;
+        set => SetTopLeftColor(_color.topLeft with { g = value });
+    }
+
+    public float b {
+        readonly get => _color.topLeft.b;
+        set => SetTopLeftColor(_color.topLeft with { b = value });
+    }
+
+    public float a {
+        readonly get => _color.topLeft.a;
+        set => SetTopLeftColor(_color.topLeft with { a = value });
+    }
 
     public GColor(Color color) {
         _color = new VertexGradient(color);
@@ -38,6 +83,7 @@ public struct GColor : IModel, ICopyable<GColor> {
         _bottomLeftHex = hex;
         _bottomRightHex = hex;
     }
+
     public GColor(VertexGradient color) {
         _color = color;
         _topLeftHex = ColorUtility.ToHtmlStringRGBA(color.topLeft);
@@ -45,25 +91,28 @@ public struct GColor : IModel, ICopyable<GColor> {
         _bottomLeftHex = ColorUtility.ToHtmlStringRGBA(color.bottomLeft);
         _bottomRightHex = ColorUtility.ToHtmlStringRGBA(color.bottomRight);
     }
+
     public GColor Copy() {
         var col = new GColor {
             gradientEnabled = gradientEnabled,
             topLeft = topLeft,
             topRight = topRight,
             bottomLeft = bottomLeft,
-            bottomRight = bottomRight,
+            bottomRight = bottomRight
         };
         return col;
     }
+
     public JToken Serialize() {
         return new JObject {
             [nameof(gradientEnabled)] = gradientEnabled,
             [nameof(topLeft)] = ModelUtils.ToNode(topLeft),
             [nameof(topRight)] = ModelUtils.ToNode(topRight),
             [nameof(bottomLeft)] = ModelUtils.ToNode(bottomLeft),
-            [nameof(bottomRight)] = ModelUtils.ToNode(bottomRight),
+            [nameof(bottomRight)] = ModelUtils.ToNode(bottomRight)
         };
     }
+
     public void Deserialize(JToken node) {
         gradientEnabled = node.Value<bool?>(nameof(gradientEnabled)) ?? false;
 
@@ -82,86 +131,86 @@ public struct GColor : IModel, ICopyable<GColor> {
     }
 
     private void SetTopLeftColor(Color color) {
-        if(color == _color.topLeft) {
-            return;
-        }
+        if (color == _color.topLeft) return;
 
         _color.topLeft = color;
         _topLeftHex = ColorUtility.ToHtmlStringRGBA(color);
     }
-    private void SetTopLeftHex(string hex) {
-        if(hex == _topLeftHex) {
-            return;
-        }
 
-        if(ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
+    private void SetTopLeftHex(string hex) {
+        if (hex == _topLeftHex) return;
+
+        if (ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
             _color.topLeft = parsed;
             _topLeftHex = hex;
         }
     }
 
     private void SetTopRightColor(Color color) {
-        if(color == _color.topRight) {
-            return;
-        }
+        if (color == _color.topRight) return;
 
         _color.topRight = color;
         _topRightHex = ColorUtility.ToHtmlStringRGBA(color);
     }
-    private void SetTopRightHex(string hex) {
-        if(hex == _topRightHex) {
-            return;
-        }
 
-        if(ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
+    private void SetTopRightHex(string hex) {
+        if (hex == _topRightHex) return;
+
+        if (ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
             _color.topRight = parsed;
             _topRightHex = hex;
         }
     }
 
     private void SetBottomLeftColor(Color color) {
-        if(color == _color.bottomLeft) {
-            return;
-        }
+        if (color == _color.bottomLeft) return;
 
         _color.bottomLeft = color;
         _bottomLeftHex = ColorUtility.ToHtmlStringRGBA(color);
     }
-    private void SetBottomLeftHex(string hex) {
-        if(hex == _bottomLeftHex) {
-            return;
-        }
 
-        if(ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
+    private void SetBottomLeftHex(string hex) {
+        if (hex == _bottomLeftHex) return;
+
+        if (ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
             _color.bottomLeft = parsed;
             _bottomLeftHex = hex;
         }
     }
 
     private void SetBottomRightColor(Color color) {
-        if(color == _color.bottomRight) {
-            return;
-        }
+        if (color == _color.bottomRight) return;
 
         _color.bottomRight = color;
         _bottomRightHex = ColorUtility.ToHtmlStringRGBA(color);
     }
-    private void SetBottomRightHex(string hex) {
-        if(hex == _bottomRightHex) {
-            return;
-        }
 
-        if(ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
+    private void SetBottomRightHex(string hex) {
+        if (hex == _bottomRightHex) return;
+
+        if (ColorUtility.TryParseHtmlString($"#{hex}", out var parsed)) {
             _color.bottomRight = parsed;
             _bottomRightHex = hex;
         }
     }
 
-    public static implicit operator Color(GColor color) => color.topLeft;
-    public static implicit operator GColor(Color color) => new(color);
+    public static implicit operator Color(GColor color) {
+        return color.topLeft;
+    }
 
-    public static implicit operator VertexGradient(GColor color) => color.gradientEnabled ? new VertexGradient(color.topLeft, color.topRight, color.bottomLeft, color.bottomRight) : new VertexGradient(color);
-    public static implicit operator GColor(VertexGradient color) => new(color);
+    public static implicit operator GColor(Color color) {
+        return new GColor(color);
+    }
+
+    public static implicit operator VertexGradient(GColor color) {
+        return color.gradientEnabled
+            ? new VertexGradient(color.topLeft, color.topRight, color.bottomLeft, color.bottomRight)
+            : new VertexGradient(color);
+    }
+
+    public static implicit operator GColor(VertexGradient color) {
+        return new GColor(color);
+    }
 
     public static GColor operator +(GColor a, GColor b) {
         return new VertexGradient(
@@ -170,6 +219,7 @@ public struct GColor : IModel, ICopyable<GColor> {
             a.bottomLeft + b.bottomLeft,
             a.bottomRight + b.bottomRight);
     }
+
     public static GColor operator -(GColor a, GColor b) {
         return new VertexGradient(
             a.topLeft - b.topLeft,

@@ -60,285 +60,255 @@ public static class StringHelper {
 
     public static readonly MethodInfo FBool = typeof(StringHelper).GetMethod("FromBoolean");
 
-    public unsafe static sbyte ToInt8(string s) {
-        if(s == null || s.Length == 0) {
-            return 0;
-        }
+    public static unsafe sbyte ToInt8(string s) {
+        if (s == null || s.Length == 0) return 0;
         sbyte b = 0;
-        bool flag = s[0] == '-';
-        fixed(char* ptr = s) {
-            char* ptr2 = ptr;
-            if(flag) {
-                ptr2++;
-            }
-            for(; *ptr2 != 0; ptr2++) {
-                b = (sbyte)((10 * b) + (*ptr2 - 48));
-            }
+        var flag = s[0] == '-';
+        fixed (char* ptr = s) {
+            var ptr2 = ptr;
+            if (flag) ptr2++;
+            for (; *ptr2 != 0; ptr2++) b = (sbyte)(10 * b + (*ptr2 - 48));
         }
+
         return flag ? (sbyte)-b : b;
     }
 
-    public static string FromInt8(sbyte s) => s.ToString();
+    public static string FromInt8(sbyte s) {
+        return s.ToString();
+    }
 
-    public unsafe static short ToInt16(string s) {
-        if(s == null || s.Length == 0) {
-            return 0;
-        }
+    public static unsafe short ToInt16(string s) {
+        if (s == null || s.Length == 0) return 0;
         short num = 0;
-        bool flag = s[0] == '-';
-        fixed(char* ptr = s) {
-            char* ptr2 = ptr;
-            if(flag) {
-                ptr2++;
-            }
-            for(; *ptr2 != 0; ptr2++) {
-                num = (short)((10 * num) + (*ptr2 - 48));
-            }
+        var flag = s[0] == '-';
+        fixed (char* ptr = s) {
+            var ptr2 = ptr;
+            if (flag) ptr2++;
+            for (; *ptr2 != 0; ptr2++) num = (short)(10 * num + (*ptr2 - 48));
         }
+
         return flag ? (short)-num : num;
     }
 
-    public static string FromInt16(short s) => s.ToString();
+    public static string FromInt16(short s) {
+        return s.ToString();
+    }
 
-    public unsafe static int ToInt32(string s) {
-        if(s == null || s.Length == 0) {
-            return 0;
+    public static unsafe int ToInt32(string s) {
+        if (s == null || s.Length == 0) return 0;
+        var num = 0;
+        var flag = s[0] == '-';
+        fixed (char* ptr = s) {
+            var ptr2 = ptr;
+            if (flag) ptr2++;
+            for (; *ptr2 != 0; ptr2++) num = 10 * num + (*ptr2 - 48);
         }
-        int num = 0;
-        bool flag = s[0] == '-';
-        fixed(char* ptr = s) {
-            char* ptr2 = ptr;
-            if(flag) {
-                ptr2++;
-            }
-            for(; *ptr2 != 0; ptr2++) {
-                num = (10 * num) + (*ptr2 - 48);
-            }
-        }
+
         return flag ? -num : num;
     }
 
-    public static string FromInt32(int s) => s.ToString();
+    public static string FromInt32(int s) {
+        return s.ToString();
+    }
 
-    public unsafe static long ToInt64(string s) {
-        if(s == null || s.Length == 0) {
-            return 0L;
+    public static unsafe long ToInt64(string s) {
+        if (s == null || s.Length == 0) return 0L;
+        var num = 0L;
+        var flag = s[0] == '-';
+        fixed (char* ptr = s) {
+            var ptr2 = ptr;
+            if (flag) ptr2++;
+            for (; *ptr2 != 0; ptr2++) num = 10 * num + (*ptr2 - 48);
         }
-        long num = 0L;
-        bool flag = s[0] == '-';
-        fixed(char* ptr = s) {
-            char* ptr2 = ptr;
-            if(flag) {
-                ptr2++;
-            }
-            for(; *ptr2 != 0; ptr2++) {
-                num = (10 * num) + (*ptr2 - 48);
-            }
-        }
+
         return flag ? -num : num;
     }
 
-    public static string FromInt64(long s) => s.ToString();
+    public static string FromInt64(long s) {
+        return s.ToString();
+    }
 
-    public unsafe static byte ToUInt8(string s) {
-        if(s == null || s.Length == 0) {
-            return 0;
-        }
+    public static unsafe byte ToUInt8(string s) {
+        if (s == null || s.Length == 0) return 0;
         byte b = 0;
-        fixed(char* ptr = s) {
-            for(char* ptr2 = ptr; *ptr2 != 0; ptr2++) {
-                b = (byte)((10 * b) + (*ptr2 - 48));
-            }
+        fixed (char* ptr = s) {
+            for (var ptr2 = ptr; *ptr2 != 0; ptr2++) b = (byte)(10 * b + (*ptr2 - 48));
         }
+
         return b;
     }
 
-    public static string FromUInt8(byte s) => s.ToString();
+    public static string FromUInt8(byte s) {
+        return s.ToString();
+    }
 
-    public unsafe static ushort ToUInt16(string s) {
-        if(s == null || s.Length == 0) {
-            return 0;
-        }
+    public static unsafe ushort ToUInt16(string s) {
+        if (s == null || s.Length == 0) return 0;
         ushort num = 0;
-        fixed(char* ptr = s) {
-            for(char* ptr2 = ptr; *ptr2 != 0; ptr2++) {
-                num = (ushort)((10 * num) + (*ptr2 - 48));
-            }
+        fixed (char* ptr = s) {
+            for (var ptr2 = ptr; *ptr2 != 0; ptr2++) num = (ushort)(10 * num + (*ptr2 - 48));
         }
+
         return num;
     }
 
-    public static string FromUInt16(ushort s) => s.ToString();
+    public static string FromUInt16(ushort s) {
+        return s.ToString();
+    }
 
-    public unsafe static uint ToUInt32(string s) {
-        if(s == null || s.Length == 0) {
-            return 0u;
+    public static unsafe uint ToUInt32(string s) {
+        if (s == null || s.Length == 0) return 0u;
+        var num = 0u;
+        fixed (char* ptr = s) {
+            for (var ptr2 = ptr; *ptr2 != 0; ptr2++) num = (uint)(10 * num + (*ptr2 - 48));
         }
-        uint num = 0u;
-        fixed(char* ptr = s) {
-            for(char* ptr2 = ptr; *ptr2 != 0; ptr2++) {
-                num = (uint)((10 * num) + (*ptr2 - 48));
-            }
-        }
+
         return num;
     }
 
-    public static string FromUInt32(uint s) => s.ToString();
+    public static string FromUInt32(uint s) {
+        return s.ToString();
+    }
 
-    public unsafe static ulong ToUInt64(string s) {
-        if(s == null || s.Length == 0) {
-            return 0uL;
+    public static unsafe ulong ToUInt64(string s) {
+        if (s == null || s.Length == 0) return 0uL;
+        var num = 0uL;
+        fixed (char* ptr = s) {
+            for (var ptr2 = ptr; *ptr2 != 0; ptr2++) num = 10 * num + (ulong)(*ptr2 - 48L);
         }
-        ulong num = 0uL;
-        fixed(char* ptr = s) {
-            for(char* ptr2 = ptr; *ptr2 != 0; ptr2++) {
-                num = (10 * num) + (ulong)((long)*ptr2 - 48L);
-            }
-        }
+
         return num;
     }
 
-    public static string FromUInt64(ulong s) => s.ToString();
+    public static string FromUInt64(ulong s) {
+        return s.ToString();
+    }
 
-    public unsafe static double ToDouble(string s) {
-        if(s == null || s.Length == 0) {
-            return 0.0;
-        }
-        double num = 0.0;
-        bool flag = false;
-        int num2 = 1;
-        bool flag2 = s[0] == '-';
-        fixed(char* ptr = s) {
-            char* ptr2 = ptr;
-            if(flag2) {
-                ptr2++;
-            }
-            for(; *ptr2 != 0; ptr2++) {
-                if(*ptr2 == '.') {
+    public static unsafe double ToDouble(string s) {
+        if (s == null || s.Length == 0) return 0.0;
+        var num = 0.0;
+        var flag = false;
+        var num2 = 1;
+        var flag2 = s[0] == '-';
+        fixed (char* ptr = s) {
+            var ptr2 = ptr;
+            if (flag2) ptr2++;
+            for (; *ptr2 != 0; ptr2++)
+                if (*ptr2 == '.')
                     flag = true;
-                } else {
-                    num = flag ? (num + ((double)(*ptr2 - 48) / dPow[num2++])) : ((10.0 * num) + (double)(*ptr2 - 48));
-                }
-            }
+                else
+                    num = flag ? num + (*ptr2 - 48) / dPow[num2++] : 10.0 * num + (*ptr2 - 48);
         }
+
         return flag2 ? 0.0 - num : num;
     }
 
-    public static string FromDouble(double s) => s.ToString();
+    public static string FromDouble(double s) {
+        return s.ToString();
+    }
 
-    public unsafe static float ToFloat(string s) {
-        if(s == null || s.Length == 0) {
-            return 0f;
-        }
-        float num = 0f;
-        bool flag = false;
-        int num2 = 1;
-        bool flag2 = s[0] == '-';
-        fixed(char* ptr = s) {
-            char* ptr2 = ptr;
-            if(flag2) {
-                ptr2++;
-            }
-            for(; *ptr2 != 0; ptr2++) {
-                if(*ptr2 == '.') {
+    public static unsafe float ToFloat(string s) {
+        if (s == null || s.Length == 0) return 0f;
+        var num = 0f;
+        var flag = false;
+        var num2 = 1;
+        var flag2 = s[0] == '-';
+        fixed (char* ptr = s) {
+            var ptr2 = ptr;
+            if (flag2) ptr2++;
+            for (; *ptr2 != 0; ptr2++)
+                if (*ptr2 == '.')
                     flag = true;
-                } else {
-                    num = flag ? (num + ((float)(*ptr2 - 48) / fPow[num2++])) : ((10f * num) + (float)(*ptr2 - 48));
-                }
-            }
+                else
+                    num = flag ? num + (*ptr2 - 48) / fPow[num2++] : 10f * num + (*ptr2 - 48);
         }
+
         return flag2 ? 0f - num : num;
     }
 
-    public static string FromFloat(float s) => s.ToString();
+    public static string FromFloat(float s) {
+        return s.ToString();
+    }
 
     private static double[] GetDoublePow() {
-        int num = 309;
-        double[] array = new double[num];
-        for(int i = 0; i < num; i++) {
-            array[i] = Math.Pow(10.0, i);
-        }
+        var num = 309;
+        var array = new double[num];
+        for (var i = 0; i < num; i++) array[i] = Math.Pow(10.0, i);
         return array;
     }
 
     private static float[] GetFloatPow() {
-        int num = 39;
-        float[] array = new float[num];
-        for(int i = 0; i < num; i++) {
-            array[i] = (float)Math.Pow(10.0, i);
-        }
+        var num = 39;
+        var array = new float[num];
+        for (var i = 0; i < num; i++) array[i] = (float)Math.Pow(10.0, i);
         return array;
     }
 
-    public static T ToEnum<T>(string s) where T : Enum => EnumParser<T>.Parse(s);
+    public static T ToEnum<T>(string s) where T : Enum {
+        return EnumParser<T>.Parse(s);
+    }
 
-    public static string FromEnum<T>(T e) where T : Enum => e.ToString();
+    public static string FromEnum<T>(T e) where T : Enum {
+        return e.ToString();
+    }
 
-    public static bool ToBoolean(string s) => s.Equals("true", StringComparison.OrdinalIgnoreCase);
+    public static bool ToBoolean(string s) {
+        return s.Equals("true", StringComparison.OrdinalIgnoreCase);
+    }
 
-    public static string FromBoolean(bool b) => b.ToString();
+    public static string FromBoolean(bool b) {
+        return b.ToString();
+    }
 
     public static MethodInfo GetToConverter(Type numType) {
-        if(numType == typeof(sbyte)) {
-            return TInt8;
-        }
-        if(numType == typeof(short)) {
-            return TInt16;
-        }
-        if(numType == typeof(int)) {
-            return TInt32;
-        }
-        if(numType == typeof(long)) {
-            return TInt64;
-        }
-        if(numType == typeof(byte)) {
-            return TUInt8;
-        }
-        if(numType == typeof(ushort)) {
-            return TUInt16;
-        }
+        if (numType == typeof(sbyte)) return TInt8;
+        if (numType == typeof(short)) return TInt16;
+        if (numType == typeof(int)) return TInt32;
+        if (numType == typeof(long)) return TInt64;
+        if (numType == typeof(byte)) return TUInt8;
+        if (numType == typeof(ushort)) return TUInt16;
         return numType == typeof(uint)
             ? TUInt32
             : numType == typeof(ulong)
-            ? TUInt64
-            : numType == typeof(float)
-            ? TFloat
-            : numType == typeof(double)
-            ? TDouble
-            : numType == typeof(bool) ? TBool : typeof(Enum).IsAssignableFrom(numType) ? TEnum.MakeGenericMethod(numType) : null;
+                ? TUInt64
+                : numType == typeof(float)
+                    ? TFloat
+                    : numType == typeof(double)
+                        ? TDouble
+                        : numType == typeof(bool)
+                            ? TBool
+                            : typeof(Enum).IsAssignableFrom(numType)
+                                ? TEnum.MakeGenericMethod(numType)
+                                : null;
     }
 
     public static MethodInfo GetFromConverter(Type numType) {
-        if(numType == typeof(sbyte)) {
-            return FInt8;
-        }
-        if(numType == typeof(short)) {
-            return FInt16;
-        }
-        if(numType == typeof(int)) {
-            return FInt32;
-        }
-        if(numType == typeof(long)) {
-            return FInt64;
-        }
-        if(numType == typeof(byte)) {
-            return FUInt8;
-        }
-        if(numType == typeof(ushort)) {
-            return FUInt16;
-        }
+        if (numType == typeof(sbyte)) return FInt8;
+        if (numType == typeof(short)) return FInt16;
+        if (numType == typeof(int)) return FInt32;
+        if (numType == typeof(long)) return FInt64;
+        if (numType == typeof(byte)) return FUInt8;
+        if (numType == typeof(ushort)) return FUInt16;
         return numType == typeof(uint)
             ? FUInt32
             : numType == typeof(ulong)
-            ? FUInt64
-            : numType == typeof(float)
-            ? FFloat
-            : numType == typeof(double)
-            ? FDouble
-            : numType == typeof(bool) ? FBool : typeof(Enum).IsAssignableFrom(numType) ? FEnum.MakeGenericMethod(numType) : FObject;
+                ? FUInt64
+                : numType == typeof(float)
+                    ? FFloat
+                    : numType == typeof(double)
+                        ? FDouble
+                        : numType == typeof(bool)
+                            ? FBool
+                            : typeof(Enum).IsAssignableFrom(numType)
+                                ? FEnum.MakeGenericMethod(numType)
+                                : FObject;
     }
 
-    public static string FromObject(object s) => s?.ToString();
+    public static string FromObject(object s) {
+        return s?.ToString();
+    }
 
-    public static string ToObject(string s) => s;
+    public static string ToObject(string s) {
+        return s;
+    }
 }

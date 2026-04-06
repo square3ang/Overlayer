@@ -1,41 +1,34 @@
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Overlayer.Utils;
 
 public static class ADOUtils {
-    static ErrorCanvas overlayerErrorCanvas;
+    private static ErrorCanvas overlayerErrorCanvas;
+
     public static void ShowError(ErrorCanvasContext ecc) {
-        if(overlayerErrorCanvas == null) {
-            var ecObject = UnityEngine.Object.Instantiate(RDConstants.data.prefab_errorCanvas);
+        if (overlayerErrorCanvas == null) {
+            var ecObject = Object.Instantiate(RDConstants.data.prefab_errorCanvas);
             var ec = ecObject.GetComponent<ErrorCanvas>();
-            UnityEngine.Object.DontDestroyOnLoad(ecObject);
+            Object.DontDestroyOnLoad(ecObject);
             overlayerErrorCanvas = ec;
         }
+
         overlayerErrorCanvas.btnSupport.onClick.RemoveAllListeners();
         overlayerErrorCanvas.btnLog.onClick.RemoveAllListeners();
         overlayerErrorCanvas.btnSubmit.onClick.RemoveAllListeners();
         overlayerErrorCanvas.btnIgnore.onClick.RemoveAllListeners();
         overlayerErrorCanvas.btnBack.onClick.RemoveAllListeners();
-        if(ecc.supportBtnCallback != null) {
-            overlayerErrorCanvas.btnSupport.onClick.AddListener(ecc.supportBtnCallback);
-        }
+        if (ecc.supportBtnCallback != null) overlayerErrorCanvas.btnSupport.onClick.AddListener(ecc.supportBtnCallback);
 
-        if(ecc.logBtnCallback != null) {
-            overlayerErrorCanvas.btnLog.onClick.AddListener(ecc.logBtnCallback);
-        }
+        if (ecc.logBtnCallback != null) overlayerErrorCanvas.btnLog.onClick.AddListener(ecc.logBtnCallback);
 
-        if(ecc.submitBtnCallback != null) {
-            overlayerErrorCanvas.btnSubmit.onClick.AddListener(ecc.submitBtnCallback);
-        }
+        if (ecc.submitBtnCallback != null) overlayerErrorCanvas.btnSubmit.onClick.AddListener(ecc.submitBtnCallback);
 
-        if(ecc.ignoreBtnCallback != null) {
-            overlayerErrorCanvas.btnIgnore.onClick.AddListener(ecc.ignoreBtnCallback);
-        }
+        if (ecc.ignoreBtnCallback != null) overlayerErrorCanvas.btnIgnore.onClick.AddListener(ecc.ignoreBtnCallback);
 
-        if(ecc.goBackBtnCallback != null) {
-            overlayerErrorCanvas.btnBack.onClick.AddListener(ecc.goBackBtnCallback);
-        }
+        if (ecc.goBackBtnCallback != null) overlayerErrorCanvas.btnBack.onClick.AddListener(ecc.goBackBtnCallback);
 
         overlayerErrorCanvas.btnSupport.gameObject.SetActive(ecc.supportBtnCallback != null);
         overlayerErrorCanvas.btnLog.gameObject.SetActive(ecc.logBtnCallback != null);
@@ -52,36 +45,41 @@ public static class ADOUtils {
         overlayerErrorCanvas.txtErrorMessage.text = ecc.errorMessage;
         overlayerErrorCanvas.gameObject.SetActive(true);
     }
-    public static void HideError(ErrorCanvasContext ecc) => overlayerErrorCanvas.gameObject.SetActive(false);
+
+    public static void HideError(ErrorCanvasContext ecc) {
+        overlayerErrorCanvas.gameObject.SetActive(false);
+    }
+
     public static int HashMargins(HitMargin[] margins) {
-        int bits = 0;
-        for(int i = 0; i < margins.Length; i++) {
-            bits |= 1 << (int)margins[i];
-        }
+        var bits = 0;
+        for (var i = 0; i < margins.Length; i++) bits |= 1 << (int)margins[i];
 
         return bits;
     }
+
     public static HitMargin[] UnboxMarginHash(int marginHash) {
         List<HitMargin> margins = [];
         var values = EnumHelper<HitMargin>.GetValues();
-        for(int i = 0; i < values.Length; i++) {
-            if((marginHash & (1 << (int)values[i])) != 0) {
+        for (var i = 0; i < values.Length; i++)
+            if ((marginHash & (1 << (int)values[i])) != 0)
                 margins.Add(values[i]);
-            }
-        }
+
         return margins.ToArray();
     }
 }
+
 public class ErrorCanvasContext {
     /// <summary>
-    /// StackTrace Or Message?
+    ///     StackTrace Or Message?
     /// </summary>
     public string errorMessage;
 
     public string titleText;
     public string submitText;
     public string supportPagesText;
+
     public string faqText;
+
     //public string discordText;
     public string steamText;
     public string goBackText;

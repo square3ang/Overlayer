@@ -6,29 +6,25 @@ using TupleObject = System.ValueTuple<object, object>;
 namespace RapidGUI;
 
 public static partial class RGUI {
-    static Stack<object> recursiveTypeLoopCheck = new();
-    static bool isInRecursive => recursiveTypeLoopCheck.Count > 0;
+    private static readonly Stack<object> recursiveTypeLoopCheck = new();
+    private static bool isInRecursive => recursiveTypeLoopCheck.Count > 0;
 
-    enum ObjStatus {
+    private enum ObjStatus {
         Null,
         Loop,
         ValueType,
         Class,
-        Tuple,
+        Tuple
     }
 
-    static object DoRecursiveSafe(object obj, Func<object> doFunc) {
+    private static object DoRecursiveSafe(object obj, Func<object> doFunc) {
         static ObjStatus GetStatus(object o) {
-            if(o == null) {
-                return ObjStatus.Null;
-            }
+            if (o == null) return ObjStatus.Null;
 
             var type = o.GetType();
-            if(type.IsValueType) {
-                return (type == typeof(TupleObject)) ? ObjStatus.Tuple : ObjStatus.ValueType;
-            } else if(recursiveTypeLoopCheck.Contains(o)) {
-                return ObjStatus.Loop;
-            }
+            if (type.IsValueType) return type == typeof(TupleObject) ? ObjStatus.Tuple : ObjStatus.ValueType;
+
+            if (recursiveTypeLoopCheck.Contains(o)) return ObjStatus.Loop;
 
             return ObjStatus.Class;
         }
@@ -36,7 +32,7 @@ public static partial class RGUI {
         const string nullMsg = "is null.";
         const string loopMsg = "circular reference detected.";
 
-        switch(GetStatus(obj)) {
+        switch (GetStatus(obj)) {
             case ObjStatus.Null:
                 WarningLabel("object " + nullMsg);
                 break;
@@ -54,31 +50,35 @@ public static partial class RGUI {
                 obj = doFunc();
                 recursiveTypeLoopCheck.Pop();
             }
-            break;
+                break;
 
             case ObjStatus.Tuple: {
                 var (min, max) = (TupleObject)obj;
                 var stMin = GetStatus(min);
                 var stMax = GetStatus(max);
 
-                var str1 = (stMin == ObjStatus.Null) ? "min " + nullMsg : ((stMin == ObjStatus.Loop) ? "min: " + loopMsg : null);
-                var str2 = (stMax == ObjStatus.Null) ? "max " + nullMsg : ((stMax == ObjStatus.Loop) ? "max: " + loopMsg : null);
+                var str1 = stMin == ObjStatus.Null ? "min " + nullMsg :
+                    stMin == ObjStatus.Loop ? "min: " + loopMsg : null;
+                var str2 = stMax == ObjStatus.Null ? "max " + nullMsg :
+                    stMax == ObjStatus.Loop ? "max: " + loopMsg : null;
 
-                if(str1 != null || str2 != null) {
+                if (str1 != null || str2 != null) {
                     WarningLabel(string.Join("\n", new[] { str1, str2 }.Where(str => str != null).ToArray()));
-                } else {
-                    if(stMin == ObjStatus.Class) {
+                }
+                else {
+                    if (stMin == ObjStatus.Class) {
                         recursiveTypeLoopCheck.Push(min);
                         recursiveTypeLoopCheck.Push(max);
                         obj = doFunc();
                         recursiveTypeLoopCheck.Pop();
                         recursiveTypeLoopCheck.Pop();
-                    } else {
+                    }
+                    else {
                         obj = doFunc();
                     }
                 }
             }
-            break;
+                break;
         }
 
         return obj;

@@ -12,10 +12,8 @@ public partial class Olly {
             eye: Eye.Normal,
             mouth: Mouth.Normal,
             eyebrow: Eyebrow.Normal,
-            onChoice: (num) => {
-                if(num == 3) {
-                    FollowMouse = true;
-                }
+            onChoice: num => {
+                if (num == 3) FollowMouse = true;
             }
         );
 
@@ -29,7 +27,8 @@ public partial class Olly {
         faceNode.Next[0] = node1;
 
         var node2 = new Node(
-            Tr("I'm Olly.\nThe name comes from words used in Overlayer.", "저는 올리에요.\nOverlayer에 들어간 단어로부터 이름을 지었다고 하네요."),
+            Tr("I'm Olly.\nThe name comes from words used in Overlayer.",
+                "저는 올리에요.\nOverlayer에 들어간 단어로부터 이름을 지었다고 하네요."),
             ["...", Tr("How did you come to be?", "어쩌다가 만들어졌어?"), Tr("Who drew you?", "널 누가 그려준거야?")],
             eye: Eye.Normal,
             mouth: Mouth.OpenSmall,
@@ -37,7 +36,8 @@ public partial class Olly {
         );
 
         var node2_2 = new Node(
-            Tr("They just added some interesting things they thought of along the way.", "적당히 넣을만한..\n신기한 것들을 생각하다가 넣으셨다고 전하시라네요."),
+            Tr("They just added some interesting things they thought of along the way.",
+                "적당히 넣을만한..\n신기한 것들을 생각하다가 넣으셨다고 전하시라네요."),
             ["..."],
             eye: Eye.Normal,
             mouth: Mouth.Clenched,
@@ -53,7 +53,9 @@ public partial class Olly {
         );
 
         var node3 = new Node(
-            Tr("Originally it was a mod made by c3nb,\nbut now mostly Kkitut is in charge.\nThey had a hard time rewriting c3nb's code.", "처음엔 c3nb가 만든 모드였지만,\n이제는 대부분 Kkitut이 맞고 있어요.\nc3nb의 코드를 갈아치우느라 고생이 많았다고 했죠."),
+            Tr(
+                "Originally it was a mod made by c3nb,\nbut now mostly Kkitut is in charge.\nThey had a hard time rewriting c3nb's code.",
+                "처음엔 c3nb가 만든 모드였지만,\n이제는 대부분 Kkitut이 맞고 있어요.\nc3nb의 코드를 갈아치우느라 고생이 많았다고 했죠."),
             ["...", Tr("Hard time?", "고생?")],
             eye: Eye.Normal,
             mouth: Mouth.Open,
@@ -61,7 +63,9 @@ public partial class Olly {
         );
 
         var node3_2 = new Node(
-            Tr("You may not know this, but the previous Overlayer was full of ads...\nIt was quite inconvenient in many ways.", "아실 진 모르겠지만..\n이전 오버레이어는 광고 투성이에...\n여러모로 불편하기 짝이 없었거든요."),
+            Tr(
+                "You may not know this, but the previous Overlayer was full of ads...\nIt was quite inconvenient in many ways.",
+                "아실 진 모르겠지만..\n이전 오버레이어는 광고 투성이에...\n여러모로 불편하기 짝이 없었거든요."),
             ["...", Tr("So..?", "그래서..?")],
             eye: Eye.Small,
             mouth: Mouth.OpenDisgust,
@@ -78,7 +82,7 @@ public partial class Olly {
 
         var node4 = new Node(
             Tr("Overlayer is an open-source mod released under GPL v3.",
-               "오버레이어는 GPL v3으로 공개되어 있는 오픈 소스 모드예요."),
+                "오버레이어는 GPL v3으로 공개되어 있는 오픈 소스 모드예요."),
             ["...", Tr("What does that mean?", "그게 어떤 의미야?"), Tr("How can I help?", "어떻게 도울 수 있어?")],
             eye: Eye.Normal,
             mouth: Mouth.Open,
@@ -86,8 +90,9 @@ public partial class Olly {
         );
 
         var node4_2 = new Node(
-            Tr("It means anyone can view, modify, and share the code.\nHowever, any derivative work must also be open under the same license.",
-               "누구나 코드를 보고, 수정하고, 공유할 수 있다는 뜻이죠.\n단, 이를 수정한 작업물도 반드시 같은 라이선스로 공개해야 해요."),
+            Tr(
+                "It means anyone can view, modify, and share the code.\nHowever, any derivative work must also be open under the same license.",
+                "누구나 코드를 보고, 수정하고, 공유할 수 있다는 뜻이죠.\n단, 이를 수정한 작업물도 반드시 같은 라이선스로 공개해야 해요."),
             ["..."],
             eye: Eye.Normal,
             mouth: Mouth.OpenSmallHarf,
@@ -95,8 +100,9 @@ public partial class Olly {
         );
 
         var node4_3 = new Node(
-            Tr("You can help by reporting bugs or suggesting new features.\nIf you're a developer, feel free to submit a Pull Request.",
-               "버그를 제보하거나 새로운 기능을 제안하며 도와줄 수 있어요.\n개발자라면 직접 코드를 수정해서 풀 리퀘스트를 보내주셔도 좋아요."),
+            Tr(
+                "You can help by reporting bugs or suggesting new features.\nIf you're a developer, feel free to submit a Pull Request.",
+                "버그를 제보하거나 새로운 기능을 제안하며 도와줄 수 있어요.\n개발자라면 직접 코드를 수정해서 풀 리퀘스트를 보내주셔도 좋아요."),
             ["...", Tr("Where is the source?", "소스 코드는 어디에 있어?")],
             eye: Eye.Normal,
             mouth: Mouth.Smile,
@@ -105,7 +111,7 @@ public partial class Olly {
 
         var node4_3_1 = new Node(
             Tr("The source code is hosted on GitHub.\nI'm always waiting for someone to help improve Overlayer.",
-               "소스 코드는 GitHub에 올라와 있어요.\n오버레이어를 함께 더 좋게 만들어줄 분을 언제나 기다리고 있어요."),
+                "소스 코드는 GitHub에 올라와 있어요.\n오버레이어를 함께 더 좋게 만들어줄 분을 언제나 기다리고 있어요."),
             ["..."],
             eye: Eye.Normal,
             mouth: Mouth.OpenMicro,
@@ -138,7 +144,7 @@ public partial class Olly {
         node4_3.Next[1] = node4_3_1;
         node4_3_1.Next[0] = node1;
 
-        if(Main.Settings.IsFirstEg) {
+        if (Main.Settings.IsFirstEg) {
             var first1 = new Node(
                 Tr("..oh you found me?", "..절 찾았군요?"),
                 [Tr("What is this??", "이게 뭐야??")],
@@ -180,7 +186,8 @@ public partial class Olly {
             );
 
             var first4 = new Node(
-                Tr("Anyway, nice to meet you.\nCongratulations, you found a secret.", "뭐 어쨌든 반갑게 되었네요.\n축하해요, 당신은 비밀을 하나 찾았어요."),
+                Tr("Anyway, nice to meet you.\nCongratulations, you found a secret.",
+                    "뭐 어쨌든 반갑게 되었네요.\n축하해요, 당신은 비밀을 하나 찾았어요."),
                 [Tr("..Ok", "..그래")],
                 eye: Eye.Normal,
                 mouth: Mouth.Clenched,
@@ -205,8 +212,8 @@ public partial class Olly {
             Main.Settings.IsFirstEg = false;
 
             return first1;
-        } else {
-            return node1;
         }
+
+        return node1;
     }
 }

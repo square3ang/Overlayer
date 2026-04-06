@@ -1,7 +1,7 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using HarmonyLib;
 
 namespace Overlayer.Core.Patches;
 
@@ -21,6 +21,7 @@ internal class LazyPatch {
     public bool Locked { get; set; }
     public int IgnorePatchCount { get; set; }
     public int IgnoreUnpatchCount { get; set; }
+
     public LazyPatch(Harmony harmony, Type patchType, LazyPatchAttribute attr) {
         this.patchType = patchType!;
         this.attr = attr!;
@@ -30,24 +31,21 @@ internal class LazyPatch {
         transpiler = patchType.GetMethod("Transpiler", (BindingFlags)15420);
         finalizer = patchType.GetMethod("Finalizer", (BindingFlags)15420);
         target = attr.Resolve();
-        if(attr.IsCompatible && target == null) {
+        if (attr.IsCompatible && target == null)
             Main.Logger.Log($"[{nameof(LazyPatch)}] {attr.Id}: {attr.TargetType}.{attr.TargetMethod} Not Resolved");
-        }
 
         Patches.Add(attr.Id, this);
     }
-    public void Patch(bool force = false) {
-        if(Patched || IgnorePatchCount-- > 0 || target == null || patch != null) {
-            return;
-        }
 
-        if(!force && Locked) {
+    public void Patch(bool force = false) {
+        if (Patched || IgnorePatchCount-- > 0 || target == null || patch != null) return;
+
+        if (!force && Locked) {
             Main.Logger.Log($"[{nameof(LazyPatch)}] ID:{attr.Id} Locked. Patch skipped");
             return;
         }
-        if(force) {
-            Locked = false;
-        }
+
+        if (force) Locked = false;
 
         var pre_hm = prefix != null ? new HarmonyMethod(prefix) : null;
         var post_hm = postfix != null ? new HarmonyMethod(postfix) : null;
@@ -57,18 +55,16 @@ internal class LazyPatch {
         Main.Logger.Log($"[{nameof(LazyPatch)}] ID:{attr.Id} Patched");
         Patched = true;
     }
-    public void Unpatch(bool force = false) {
-        if(!Patched || IgnoreUnpatchCount-- > 0 || target == null || patch == null) {
-            return;
-        }
 
-        if(!force && Locked) {
+    public void Unpatch(bool force = false) {
+        if (!Patched || IgnoreUnpatchCount-- > 0 || target == null || patch == null) return;
+
+        if (!force && Locked) {
             Main.Logger.Log($"[{nameof(LazyPatch)}] ID:{attr.Id} Is Locked. Unpatch skipped");
             return;
         }
-        if(force) {
-            Locked = false;
-        }
+
+        if (force) Locked = false;
 
         harmony.Unpatch(target, patch);
         Main.Logger.Log($"[{nameof(LazyPatch)}] ID:{attr.Id} Unpatched");

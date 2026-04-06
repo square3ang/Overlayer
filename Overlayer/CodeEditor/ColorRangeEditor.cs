@@ -14,14 +14,13 @@ internal class ColorRangeEditor : MonoBehaviour {
     public string matchValue;
     private Rect windowRect;
     private Rect previewWindowRect;
-    private string[] contentLines;
-    private bool isInitaialize = false;
+    private bool isInitaialize;
     private bool isAnimating = false;
-    private bool isSpawn = false;
+    private bool isSpawn;
     private float testvalue;
 
     public string targetTag = nameof(ComboStats.Combo);
-    public double valueMin = 0;
+    public double valueMin;
     public double valueMax = 100;
     public Color colorMin = Color.black;
     public Color colorMax = Color.white;
@@ -31,7 +30,7 @@ internal class ColorRangeEditor : MonoBehaviour {
     private NeoDrawer neoDrawer;
 
     public void Initialize(string tag, string codesBefore, string codesAfter) {
-        if(tag.Contains("(")) {
+        if (tag.Contains("(")) {
             var arr = tag.Split('(')[1].Split(')')[0].Split(',');
             targetTag = arr[0];
             valueMin = double.Parse(arr[1]);
@@ -39,9 +38,7 @@ internal class ColorRangeEditor : MonoBehaviour {
             ColorUtility.TryParseHtmlString("#" + arr[3], out colorMin);
             ColorUtility.TryParseHtmlString("#" + arr[4], out colorMax);
             ease = EnumHelper<Ease>.Parse(arr[5]);
-            if(arr.Length > 6) {
-                maxLength = int.Parse(arr[6]);
-            }
+            if (arr.Length > 6) maxLength = int.Parse(arr[6]);
         }
 
         testvalue = (float)valueMax;
@@ -55,13 +52,13 @@ internal class ColorRangeEditor : MonoBehaviour {
     }
 
     public void OnGUI() {
-        if(isInitaialize) {
+        if (isInitaialize) {
             var fmt = string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.ColorRange));
 
-            if(!isSpawn && Event.current.type == EventType.Repaint) {
+            if (!isSpawn && Event.current.type == EventType.Repaint) {
                 windowRect = GUILayout.Window(123, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
-                windowRect.x = (int)((Screen.width * 0.5f) - (windowRect.width * 0.5f));
-                windowRect.y = (int)((Screen.height * 0.5f) - (windowRect.height * 0.5f));
+                windowRect.x = (int)(Screen.width * 0.5f - windowRect.width * 0.5f);
+                windowRect.y = (int)(Screen.height * 0.5f - windowRect.height * 0.5f);
 
                 isSpawn = true;
             }
@@ -87,7 +84,7 @@ internal class ColorRangeEditor : MonoBehaviour {
         col = col.Replace(".", "F").Replace("(", "F").Replace(")", "F");
         neoDrawer.DrawSingleWithSlider("Value", ref testvalue, (float)valueMin, (float)valueMax, 100, "Pre");
         GUILayout.Label("<size=40><color=#" + col +
-                       ">Test</color></size>");
+                        ">Test</color></size>");
     }
 
     private void DrawWindow(int windowID) {
@@ -118,7 +115,7 @@ internal class ColorRangeEditor : MonoBehaviour {
 
         neoDrawer.UpdateFocused();
 
-        if(Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
+        if (Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
             neoDrawer = null;
             BlockUMMClosing.Block = false;
             Destroy(gameObject);

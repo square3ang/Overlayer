@@ -14,10 +14,8 @@ internal class EasedValueEditor : MonoBehaviour {
     public string matchValue;
     private Rect windowRect;
     private Rect previewWindowRect;
-    private string[] contentLines;
-    private bool isInitaialize = false;
-    private bool isAnimating = false;
-    private bool isSpawn = false;
+    private bool isInitaialize;
+    private bool isSpawn;
     private float testvalue;
 
     public string targetTag = nameof(AccuracyStats.XAccuracy);
@@ -27,8 +25,9 @@ internal class EasedValueEditor : MonoBehaviour {
     public Ease ease = Ease.OutQuad;
 
     private NeoDrawer neoDrawer;
+
     public void Initialize(string tag, string codesBefore, string codesAfter) {
-        if(tag.Contains("(")) {
+        if (tag.Contains("(")) {
             var arr = tag.Split('(')[1].Split(')')[0].Split(',');
             targetTag = arr[0];
             digits = int.Parse(arr[1]);
@@ -47,15 +46,17 @@ internal class EasedValueEditor : MonoBehaviour {
         neoDrawer = new NeoDrawer();
     }
 
-    public void Update() => TagManager.testerValue = testvalue.ToString();
+    public void Update() {
+        TagManager.testerValue = testvalue.ToString();
+    }
 
     public void OnGUI() {
-        if(isInitaialize) {
+        if (isInitaialize) {
             var fmt = string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.EasedValue));
-            if(!isSpawn && Event.current.type == EventType.Repaint) {
+            if (!isSpawn && Event.current.type == EventType.Repaint) {
                 windowRect = GUILayout.Window(124, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
-                windowRect.x = (int)((Screen.width * 0.5f) - (windowRect.width * 0.5f));
-                windowRect.y = (int)((Screen.height * 0.5f) - (windowRect.height * 0.5f));
+                windowRect.x = (int)(Screen.width * 0.5f - windowRect.width * 0.5f);
+                windowRect.y = (int)(Screen.height * 0.5f - windowRect.height * 0.5f);
 
                 isSpawn = true;
             }
@@ -72,7 +73,8 @@ internal class EasedValueEditor : MonoBehaviour {
 
     private void PreviewWindow(int windowID) {
         GUI.BringWindowToFront(windowID);
-        GUILayout.Label("<size=40>" + Effect.EasedValue("INTERNAL_TESTER_TAG_1234512345", digits, speed, ease).ToString() + "</size>");
+        GUILayout.Label("<size=40>" + Effect.EasedValue("INTERNAL_TESTER_TAG_1234512345", digits, speed, ease) +
+                        "</size>");
         neoDrawer.DrawSingleWithSlider("Value", ref testvalue, 0, 100, 100, "testvalue");
     }
 
@@ -99,7 +101,7 @@ internal class EasedValueEditor : MonoBehaviour {
 
         neoDrawer.UpdateFocused();
 
-        if(Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
+        if (Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
             neoDrawer = null;
             BlockUMMClosing.Block = false;
             Destroy(gameObject);

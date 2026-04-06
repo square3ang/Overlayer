@@ -4,18 +4,24 @@ using UnityEngine;
 namespace RapidGUI;
 
 public static partial class RGUI {
-    static Stack<bool> enabledScopeStack = new();
+    private static readonly Stack<bool> enabledScopeStack = new();
 
     public static void BeginEnabled(bool enabled) {
         enabledScopeStack.Push(GUI.enabled);
         GUI.enabled = enabled;
     }
 
-    public static void EndEnabled() => GUI.enabled = enabledScopeStack.Pop();
+    public static void EndEnabled() {
+        GUI.enabled = enabledScopeStack.Pop();
+    }
 
     public class EnabledScope : GUI.Scope {
-        public EnabledScope(bool enabled) => BeginEnabled(enabled);
+        public EnabledScope(bool enabled) {
+            BeginEnabled(enabled);
+        }
 
-        protected override void CloseScope() => EndEnabled();
+        protected override void CloseScope() {
+            EndEnabled();
+        }
     }
 }

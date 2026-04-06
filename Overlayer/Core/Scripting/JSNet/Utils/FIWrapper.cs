@@ -1,10 +1,10 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using Acornima.Ast;
 using Jint;
 using Jint.Native;
 using Jint.Native.Function;
-using System;
-using System.Linq;
-using System.Reflection;
 
 namespace Overlayer.Core.Scripting.JSNet.Utils;
 
@@ -22,10 +22,15 @@ public class FIWrapper {
     public FIWrapper(Function fi) {
         this.fi = fi;
         engine = fi.Engine;
-        args = fi.FunctionDeclaration.Params.Select((Node n) => ((Identifier)n).Name).ToArray();
+        args = fi.FunctionDeclaration.Params.Select(n => ((Identifier)n).Name).ToArray();
     }
 
-    public object Call(params object[] args) => fi.Call(null, (args != null) ? Array.ConvertAll(args, (object o) => JsValue.FromObject(engine, o)) : []).ToObject();
+    public object Call(params object[] args) {
+        return fi.Call(null, args != null ? Array.ConvertAll(args, o => JsValue.FromObject(engine, o)) : [])
+            .ToObject();
+    }
 
-    public JsValue CallRaw(params object[] args) => fi.Call(null, (args != null) ? Array.ConvertAll(args, (object o) => JsValue.FromObject(engine, o)) : []);
+    public JsValue CallRaw(params object[] args) {
+        return fi.Call(null, args != null ? Array.ConvertAll(args, o => JsValue.FromObject(engine, o)) : []);
+    }
 }

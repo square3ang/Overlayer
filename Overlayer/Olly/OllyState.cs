@@ -20,11 +20,13 @@ public class OllyState {
         Normal,
         Small
     }
+
     public enum EyeSpecial {
         None,
         Up,
         Down
     }
+
     public enum Mouth {
         None,
         Normal,
@@ -48,18 +50,20 @@ public class OllyState {
         SurpriseSmall,
         WideStretch
     }
+
     public enum Effect {
         None,
         Tear,
         Sweat,
         Blush
     }
+
     public enum EffectForward {
         None,
         Cloud,
         Tremble,
         Tendon,
-        BlushBig,
+        BlushBig
     }
 
     [Flags]
@@ -67,14 +71,15 @@ public class OllyState {
         None = 0,
         Tear = 1 << 0,
         Sweat = 1 << 1,
-        Blush = 1 << 2,
+        Blush = 1 << 2
     }
+
     [Flags]
     public enum EffectForwardBit {
         None = 0,
         Cloud = 1 << 0,
         Tremble = 1 << 1,
         Tendon = 1 << 2,
-        BlushBig = 1 << 3,
+        BlushBig = 1 << 3
     }
 }

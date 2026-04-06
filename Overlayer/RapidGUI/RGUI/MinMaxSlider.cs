@@ -6,19 +6,33 @@ using TupleObject = System.ValueTuple<object, object>;
 namespace RapidGUI;
 
 public static partial class RGUI {
-    delegate object MinMaxSliderFunc(TupleObject tuple, object min, object max);
+    private delegate object MinMaxSliderFunc(TupleObject tuple, object min, object max);
 
-    public static void MinMaxSlider(MinMax<float> val, string label = null, params GUILayoutOption[] options) => MinMaxSlider(ref val.min, ref val.max, label, options);
+    public static void MinMaxSlider(MinMax<float> val, string label = null, params GUILayoutOption[] options) {
+        MinMaxSlider(ref val.min, ref val.max, label, options);
+    }
 
-    public static void MinMaxSlider(ref float valMin, ref float valMax, string label = null, params GUILayoutOption[] options) => MinMaxSlider(ref valMin, ref valMax, 1f, label, options);
+    public static void MinMaxSlider(ref float valMin, ref float valMax, string label = null,
+        params GUILayoutOption[] options) {
+        MinMaxSlider(ref valMin, ref valMax, 1f, label, options);
+    }
 
-    public static void MinMaxSlider<T>(MinMax<T> val, T max, string label = null, params GUILayoutOption[] options) => MinMaxSlider(ref val.min, ref val.max, max, label, options);
+    public static void MinMaxSlider<T>(MinMax<T> val, T max, string label = null, params GUILayoutOption[] options) {
+        MinMaxSlider(ref val.min, ref val.max, max, label, options);
+    }
 
-    public static void MinMaxSlider<T>(ref T valMin, ref T valMax, T max, string label = null, params GUILayoutOption[] options) => MinMaxSlider(ref valMin, ref valMax, default, max, label, options);
+    public static void MinMaxSlider<T>(ref T valMin, ref T valMax, T max, string label = null,
+        params GUILayoutOption[] options) {
+        MinMaxSlider(ref valMin, ref valMax, default, max, label, options);
+    }
 
-    public static void MinMaxSlider<T>(MinMax<T> val, MinMax<T> range, string label = null, params GUILayoutOption[] options) => MinMaxSlider(ref val.min, ref val.max, range.min, range.max, label, options);
+    public static void MinMaxSlider<T>(MinMax<T> val, MinMax<T> range, string label = null,
+        params GUILayoutOption[] options) {
+        MinMaxSlider(ref val.min, ref val.max, range.min, range.max, label, options);
+    }
 
-    public static void MinMaxSlider<T>(ref T valMin, ref T valMax, T min, T max, string label = null, params GUILayoutOption[] options) {
+    public static void MinMaxSlider<T>(ref T valMin, ref T valMax, T min, T max, string label = null,
+        params GUILayoutOption[] options) {
         var obj = MinMaxSlider((valMin, valMax), min, max, typeof(T), label, options);
         var to = (TupleObject)obj;
         valMin = (T)to.Item1;
@@ -27,25 +41,26 @@ public static partial class RGUI {
 
     #region MinMaxSlider() Implement
 
-    public static object MinMaxSlider(TupleObject to, object min, object max, Type type, string label, params GUILayoutOption[] options) {
-        using(new GUILayout.VerticalScope(options))
-        using(new GUILayout.HorizontalScope()) {
+    public static object MinMaxSlider(TupleObject to, object min, object max, Type type, string label,
+        params GUILayoutOption[] options) {
+        using (new GUILayout.VerticalScope(options))
+        using (new GUILayout.HorizontalScope()) {
             PrefixLabel(label);
             return DicpatchMinMaxSliderFunc(type).Invoke(to, min, max);
         }
     }
 
-    static Dictionary<Type, MinMaxSliderFunc> MinMaxSliderFuncTable = new()
-    {
-        {typeof(int), MinMaxSliderInt },
-        {typeof(float), MinMaxSliderFloat }
+    private static readonly Dictionary<Type, MinMaxSliderFunc> MinMaxSliderFuncTable = new() {
+        { typeof(int), MinMaxSliderInt },
+        { typeof(float), MinMaxSliderFloat }
     };
 
-    static MinMaxSliderFunc DicpatchMinMaxSliderFunc(Type type) {
-        if(!MinMaxSliderFuncTable.TryGetValue(type, out var func)) {
-            if(TypeUtility.IsRecursive(type)) {
+    private static MinMaxSliderFunc DicpatchMinMaxSliderFunc(Type type) {
+        if (!MinMaxSliderFuncTable.TryGetValue(type, out var func)) {
+            if (TypeUtility.IsRecursive(type)) {
                 func = RecursiveMinMaxSlider;
-            } else {
+            }
+            else {
                 // 不明なものはFieldに流す
                 var fieldFunc = DispatchFieldFunc(type);
                 func = (v, min, max) => fieldFunc(v, type);
@@ -57,11 +72,12 @@ public static partial class RGUI {
         return func;
     }
 
-    static object MinMaxSliderInt(TupleObject v, object min, object max) {
+    private static object MinMaxSliderInt(TupleObject v, object min, object max) {
         var f1 = (float)(int)v.Item1;
         var f2 = (float)(int)v.Item2;
 
-        var rect = GUILayoutUtility.GetRect(RGUIUtility.TempContent(null), GUI.skin.horizontalSlider, GUILayout.MinWidth(SliderSetting.minWidth));
+        var rect = GUILayoutUtility.GetRect(RGUIUtility.TempContent(null), GUI.skin.horizontalSlider,
+            GUILayout.MinWidth(SliderSetting.minWidth));
         MinMaxSliderCore.MinMaxSlider(rect, ref f1, ref f2, (int)min, (int)max);
         v = ((int)f1, (int)f2);
 
@@ -71,11 +87,12 @@ public static partial class RGUI {
         return v;
     }
 
-    static object MinMaxSliderFloat(TupleObject v, object min, object max) {
+    private static object MinMaxSliderFloat(TupleObject v, object min, object max) {
         var f1 = (float)v.Item1;
         var f2 = (float)v.Item2;
 
-        var rect = GUILayoutUtility.GetRect(RGUIUtility.TempContent(null), GUI.skin.horizontalSlider, GUILayout.MinWidth(SliderSetting.minWidth));
+        var rect = GUILayoutUtility.GetRect(RGUIUtility.TempContent(null), GUI.skin.horizontalSlider,
+            GUILayout.MinWidth(SliderSetting.minWidth));
         MinMaxSliderCore.MinMaxSlider(rect, ref f1, ref f2, (float)min, (float)max);
         v = (f1, f2);
 

@@ -24,7 +24,7 @@ public static class Type<T> {
 
     private static AddrGetter CreateAddrGetter() {
         DynamicMethod dynamicMethod = new(typeof(T).FullName + "_Address", typeof(IntPtr), [typeof(T).MakeByRefType()]);
-        ILGenerator iLGenerator = dynamicMethod.GetILGenerator();
+        var iLGenerator = dynamicMethod.GetILGenerator();
         iLGenerator.Emit(OpCodes.Ldarg_0);
         iLGenerator.Emit(OpCodes.Conv_U);
         iLGenerator.Emit(OpCodes.Ret);
@@ -33,11 +33,13 @@ public static class Type<T> {
 
     private static SizeGetter CreateSizeGetter() {
         DynamicMethod dynamicMethod = new(typeof(T).FullName + "_Size", typeof(int), Type.EmptyTypes);
-        ILGenerator iLGenerator = dynamicMethod.GetILGenerator();
+        var iLGenerator = dynamicMethod.GetILGenerator();
         iLGenerator.Emit(OpCodes.Sizeof, typeof(T));
         iLGenerator.Emit(OpCodes.Ret);
         return (SizeGetter)dynamicMethod.CreateDelegate(typeof(SizeGetter));
     }
 
-    public static IntPtr GetAddress(ref T obj) => addrGetter(ref obj);
+    public static IntPtr GetAddress(ref T obj) {
+        return addrGetter(ref obj);
+    }
 }

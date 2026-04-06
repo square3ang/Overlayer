@@ -3,17 +3,13 @@
 namespace Overlayer.Tags;
 
 public static class Scores {
-    [Tag]
-    public static int LScore;
-    [Tag]
-    public static int NScore;
-    [Tag]
-    public static int SScore;
-    [Tag]
-    public static int Score;
+    [Tag] public static int LScore;
+    [Tag] public static int NScore;
+    [Tag] public static int SScore;
+    [Tag] public static int Score;
 
     public static void SetScores(HitMargin l, HitMargin n, HitMargin s, HitMargin c) {
-        switch(c) {
+        switch (c) {
             case HitMargin.VeryEarly:
             case HitMargin.VeryLate:
                 Score += 91;
@@ -26,7 +22,8 @@ public static class Scores {
                 Score += 300;
                 break;
         }
-        switch(l) {
+
+        switch (l) {
             case HitMargin.VeryEarly:
             case HitMargin.VeryLate:
                 LScore += 91;
@@ -39,7 +36,8 @@ public static class Scores {
                 LScore += 300;
                 break;
         }
-        switch(n) {
+
+        switch (n) {
             case HitMargin.VeryEarly:
             case HitMargin.VeryLate:
                 NScore += 91;
@@ -52,7 +50,8 @@ public static class Scores {
                 NScore += 300;
                 break;
         }
-        switch(s) {
+
+        switch (s) {
             case HitMargin.VeryEarly:
             case HitMargin.VeryLate:
                 SScore += 91;
@@ -67,5 +66,7 @@ public static class Scores {
         }
     }
 
-    public static void Reset() => LScore = NScore = SScore = Score = 0;
+    public static void Reset() {
+        LScore = NScore = SScore = Score = 0;
+    }
 }

@@ -10,72 +10,83 @@ using UnityEngine.TextCore.LowLevel;
 namespace Overlayer.Core;
 
 public static class FontManager {
-    static TMP_FontAsset DefaultTMPFont;
-    static Font DefaultFont;
-    static FontData defaultFont;
-    static Dictionary<string, FontData> Fonts = [];
+    private static TMP_FontAsset DefaultTMPFont;
+    private static Font DefaultFont;
+    private static FontData defaultFont;
+    private static Dictionary<string, FontData> Fonts = [];
     public static bool Initialized { get; private set; }
     public static string[] OSFonts { get; private set; }
     public static string[] OSFontPaths { get; private set; }
     public static ReadOnlyCollection<FontData> FallbackFontDatas { get; private set; }
     public static ReadOnlyCollection<Font> FallbackFonts { get; private set; }
     public static ReadOnlyCollection<TMP_FontAsset> FallbackTMPFonts { get; private set; }
-    public static FontData GetFontSafe(string name) => TryGetFont(name, out FontData font) ? font : defaultFont;
-    public static FontData? GetFont(string name) => TryGetFont(name, out FontData font) ? font : null;
-    public static void SetFont(string name, FontData font) => Fonts[name] = font;
+
+    public static FontData GetFontSafe(string name) {
+        return TryGetFont(name, out var font) ? font : defaultFont;
+    }
+
+    public static FontData? GetFont(string name) {
+        return TryGetFont(name, out var font) ? font : null;
+    }
+
+    public static void SetFont(string name, FontData font) {
+        Fonts[name] = font;
+    }
+
     public static bool TryGetFont(string name, out FontData font) {
-        if(string.IsNullOrWhiteSpace(name)) {
+        if (string.IsNullOrWhiteSpace(name)) {
             font = defaultFont;
             return true;
         }
-        if(name == "Default") {
+
+        if (name == "Default") {
             font = defaultFont;
             return true;
         }
+
         name = name.Replace("{ModDir}", Main.Mod.Path);
-        if(Fonts.TryGetValue(name, out FontData data)) {
+        if (Fonts.TryGetValue(name, out var data)) {
             font = data;
             return true;
-        } else {
-            if(File.Exists(name)) {
-                FontData newData = defaultFont;
-                Font newFont = new(name);
-                TMP_FontAsset newTMPFont = TMP_FontAsset.CreateFontAsset(newFont);
-                if(newTMPFont) {
-                    newTMPFont.fallbackFontAssetTable = FallbackTMPFonts.ToList();
-                }
-
-                newData.font = newFont;
-                newData.fontTMP = newTMPFont ?? defaultFont.fontTMP;
-                Fonts.Add(name, newData);
-                font = newData;
-                return true;
-            } else {
-                int index = Array.IndexOf(OSFonts, name);
-                if(index != -1) {
-                    FontData newData = defaultFont;
-                    Font newFont = Font.CreateDynamicFontFromOSFont(name, defaultFont.font.fontSize);
-                    TMP_FontAsset newTMPFont = TMP_FontAsset.CreateFontAsset(new Font(OSFontPaths[index]));
-                    if(newTMPFont) {
-                        newTMPFont.fallbackFontAssetTable = FallbackTMPFonts.ToList();
-                    }
-
-                    newData.font = newFont;
-                    newData.fontTMP = newTMPFont ?? defaultFont.fontTMP;
-                    Fonts.Add(name, newData);
-                    font = newData;
-                    return true;
-                }
-            }
-            font = defaultFont;
-            return false;
         }
+
+        if (File.Exists(name)) {
+            var newData = defaultFont;
+            Font newFont = new(name);
+            var newTMPFont = TMP_FontAsset.CreateFontAsset(newFont);
+            if (newTMPFont) newTMPFont.fallbackFontAssetTable = FallbackTMPFonts.ToList();
+
+            newData.font = newFont;
+            newData.fontTMP = newTMPFont ?? defaultFont.fontTMP;
+            Fonts.Add(name, newData);
+            font = newData;
+            return true;
+        }
+
+        var index = Array.IndexOf(OSFonts, name);
+        if (index != -1) {
+            var newData = defaultFont;
+            var newFont = Font.CreateDynamicFontFromOSFont(name, defaultFont.font.fontSize);
+            var newTMPFont = TMP_FontAsset.CreateFontAsset(new Font(OSFontPaths[index]));
+            if (newTMPFont) newTMPFont.fallbackFontAssetTable = FallbackTMPFonts.ToList();
+
+            newData.font = newFont;
+            newData.fontTMP = newTMPFont ?? defaultFont.fontTMP;
+            Fonts.Add(name, newData);
+            font = newData;
+            return true;
+        }
+
+        font = defaultFont;
+        return false;
     }
+
     public static void Initialize() {
-        if(!Initialized) {
+        if (!Initialized) {
             DefaultFont = RDString.GetFontDataForLanguage(SystemLanguage.English).font;
             DefaultTMPFont = TMP_FontAsset.CreateFontAsset(DefaultFont, 100, 10, GlyphRenderMode.SDFAA, 1024, 1024);
-            FallbackFontDatas = RDString.AvailableLanguages.Select(RDString.GetFontDataForLanguage).ToList().AsReadOnly();
+            FallbackFontDatas = RDString.AvailableLanguages.Select(RDString.GetFontDataForLanguage).ToList()
+                .AsReadOnly();
             FallbackFonts = FallbackFontDatas.Select(f => f.font).ToList().AsReadOnly();
             FallbackTMPFonts = FallbackFontDatas.Select(f => f.fontTMP).ToList().AsReadOnly();
             DefaultTMPFont.fallbackFontAssetTable = FallbackTMPFonts.ToList();
@@ -91,6 +102,7 @@ public static class FontManager {
             Initialized = true;
         }
     }
+
     public static void Release() {
         DefaultFont = null;
         DefaultTMPFont = null;

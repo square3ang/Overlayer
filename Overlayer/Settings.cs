@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.IO;
+using System.Xml.Serialization;
+using Newgrounds;
+using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 using Overlayer.Models;
 using Overlayer.Utils;
-using System.IO;
-using System.Xml.Serialization;
 
 namespace Overlayer;
 
@@ -13,30 +14,31 @@ public class Settings : IModel, ICopyable<Settings> {
         Advanced
     }
 
-    public bool DisableLogo = false;
+    public bool DisableLogo;
     public string Lang = "en-US";
     public float FPSUpdateRate = 100;
     public float FrameTimeUpdateRate = 100;
     public int SystemTagUpdateRate = 100;
-    public bool LegacyTheme = false;
+    public bool LegacyTheme;
     public bool MovingManEditor = true;
     public bool ColorRangeEditor = true;
     public bool EasedValueEditor = true;
-    public bool AutoUpdate = false;
-    public bool AutoUpdateBeta = false;
+    public bool AutoUpdate;
+    public bool AutoUpdateBeta;
     public bool Tooltip = true;
     public bool AutoPivot = true;
-    public bool ShowTextNameAsDisplayText = false;
+    public bool ShowTextNameAsDisplayText;
     public EditorUIMode UiMode = EditorUIMode.Simple;
     public bool IncludeReferences = true;
     public bool SafeCommandParse = true;
-    public bool FileAttempt = false;
+    public bool FileAttempt;
 
     public FontMeta AdofaiFont = new();
-    public bool ChangeFont = false;
-    public bool ShowTrueAutoJudgment = false;
+    public bool ChangeFont;
+    public bool ShowTrueAutoJudgment;
 
     public bool IsFirstEg = true;
+
     public JToken Serialize() {
         var node = new JObject {
             [nameof(DisableLogo)] = DisableLogo,
@@ -66,6 +68,7 @@ public class Settings : IModel, ICopyable<Settings> {
         };
         return node;
     }
+
     public void Deserialize(JToken node) {
         var defaultSettings = new Settings();
 
@@ -82,8 +85,10 @@ public class Settings : IModel, ICopyable<Settings> {
         AutoUpdateBeta = node[nameof(AutoUpdateBeta)]?.Value<bool>() ?? defaultSettings.AutoUpdateBeta;
         Tooltip = node[nameof(Tooltip)]?.Value<bool>() ?? defaultSettings.Tooltip;
         AutoPivot = node[nameof(AutoPivot)]?.Value<bool>() ?? defaultSettings.AutoPivot;
-        ShowTextNameAsDisplayText = node[nameof(ShowTextNameAsDisplayText)]?.Value<bool>() ?? defaultSettings.ShowTextNameAsDisplayText;
-        UiMode = EnumHelper<EditorUIMode>.Parse(node[nameof(UiMode)]?.Value<string>() ?? defaultSettings.UiMode.ToString());
+        ShowTextNameAsDisplayText = node[nameof(ShowTextNameAsDisplayText)]?.Value<bool>() ??
+                                    defaultSettings.ShowTextNameAsDisplayText;
+        UiMode = EnumHelper<EditorUIMode>.Parse(node[nameof(UiMode)]?.Value<string>() ??
+                                                defaultSettings.UiMode.ToString());
         IncludeReferences = node[nameof(IncludeReferences)]?.Value<bool>() ?? defaultSettings.IncludeReferences;
         SafeCommandParse = node[nameof(SafeCommandParse)]?.Value<bool>() ?? defaultSettings.SafeCommandParse;
         FileAttempt = node[nameof(FileAttempt)]?.Value<bool>() ?? defaultSettings.FileAttempt;
@@ -92,10 +97,12 @@ public class Settings : IModel, ICopyable<Settings> {
         AdofaiFont = node[nameof(AdofaiFont)] != null
             ? ModelUtils.Unbox<FontMeta>(node[nameof(AdofaiFont)])
             : defaultSettings.AdofaiFont;
-        ShowTrueAutoJudgment = node[nameof(ShowTrueAutoJudgment)]?.Value<bool>() ?? defaultSettings.ShowTrueAutoJudgment;
+        ShowTrueAutoJudgment =
+            node[nameof(ShowTrueAutoJudgment)]?.Value<bool>() ?? defaultSettings.ShowTrueAutoJudgment;
 
         IsFirstEg = node[nameof(IsFirstEg)]?.Value<bool>() ?? defaultSettings.IsFirstEg;
     }
+
     public Settings Copy() {
         var newSettings = new Settings {
             DisableLogo = DisableLogo,
@@ -132,12 +139,10 @@ public class Settings : IModel, ICopyable<Settings> {
     }
 
     public void Load() {
-        if(MigratefromLegacyXmlSettings()) {
-            return;
-        }
+        if (MigratefromLegacyXmlSettings()) return;
 
         var path = Path.Combine(Main.Mod.Path, "Settings.json");
-        if(File.Exists(path)) {
+        if (File.Exists(path)) {
             var json = File.ReadAllText(path);
             var node = JToken.Parse(json);
             Deserialize(node);
@@ -148,16 +153,12 @@ public class Settings : IModel, ICopyable<Settings> {
         var jsonPath = Path.Combine(Main.Mod.Path, "Settings.json");
         var xmlPath = Path.Combine(Main.Mod.Path, "Settings.xml");
 
-        if(File.Exists(jsonPath)) {
-            return false;
-        }
+        if (File.Exists(jsonPath)) return false;
 
-        if(!File.Exists(xmlPath)) {
-            return false;
-        }
+        if (!File.Exists(xmlPath)) return false;
 
         var serializer = new XmlSerializer(typeof(LegacyXmlSettings));
-        using(var stream = File.OpenRead(xmlPath)) {
+        using (var stream = File.OpenRead(xmlPath)) {
             var legacy = (LegacyXmlSettings)serializer.Deserialize(stream);
 
             DisableLogo = legacy.disableLogo;

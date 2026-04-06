@@ -15,9 +15,11 @@ public class WindowLauncher : TitleContent<WindowLauncher>, IDoGUIWindow {
 
     public bool isEnable => funcDatas.Any(data => data.checkEnableFunc?.Invoke() ?? true);
 
-    public WindowLauncher() : base() { }
+    public WindowLauncher() { }
 
-    public WindowLauncher(string name, float width = 300f) : base(name) => rect.width = width;
+    public WindowLauncher(string name, float width = 300f) : base(name) {
+        rect.width = width;
+    }
 
     public WindowLauncher SetWidth(float width) {
         rect.width = width;
@@ -30,52 +32,45 @@ public class WindowLauncher : TitleContent<WindowLauncher>, IDoGUIWindow {
     }
 
     public void DoGUI() {
-        if(isEnable) {
+        if (isEnable) {
             bool changed;
-            using(new GUILayout.HorizontalScope()) {
+            using (new GUILayout.HorizontalScope()) {
                 changed = isOpen != GUILayout.Toggle(isOpen, "❏ " + name, Style.toggle);
                 titleAction?.Invoke();
             }
 
-            if(changed) {
+            if (changed) {
                 isOpen = !isOpen;
-                if(isOpen) {
+                if (isOpen) {
                     isMoved = false;
-                    rect.position = RGUIUtility.GetMouseScreenPos() + (Vector2.right * 50f);
+                    rect.position = RGUIUtility.GetMouseScreenPos() + Vector2.right * 50f;
                     onOpen?.Invoke(this);
-                } else {
+                }
+                else {
                     CloseWindow();
                 }
             }
 
-            if(isOpen) {
-                WindowInvoker.Add(this);
-            }
+            if (isOpen) WindowInvoker.Add(this);
         }
     }
 
     #region IDoGUIWindow
 
     public void DoGUIWindow() {
-        if(isOpen && isEnable) {
+        if (isOpen && isEnable) {
             var pos = rect.position;
             rect = RGUI.ResizableWindow(GetHashCode(), rect,
-                (id) => {
+                id => {
                     var buttonSize = new Vector2(40f, 15f);
                     var buttonPos = new Vector2(rect.size.x - buttonSize.x, 2f);
                     var buttonRect = new Rect(buttonPos, buttonSize);
-                    if(GUI.Button(buttonRect, "✕", RGUIStyle.flatButton)) {
-                        CloseWindow();
-                    }
+                    if (GUI.Button(buttonRect, "✕", RGUIStyle.flatButton)) CloseWindow();
 
-                    foreach(var func in GetGUIFuncs()) {
-                        func();
-                    }
+                    foreach (var func in GetGUIFuncs()) func();
                     GUI.DragWindow();
 
-                    if(Event.current.type == EventType.Used) {
-                        WindowInvoker.SetFocusedWindow(this);
-                    }
+                    if (Event.current.type == EventType.Used) WindowInvoker.SetFocusedWindow(this);
                 }
                 , name, RGUIStyle.darkWindow);
 
@@ -94,12 +89,12 @@ public class WindowLauncher : TitleContent<WindowLauncher>, IDoGUIWindow {
 
     public static class Style {
         public static readonly GUIStyle toggle;
-        const int LeftLine = 3;
+        private const int LeftLine = 3;
 
         // GUIStyleState.background will be null 
         // if it set after secound scene load and don't use a few frame
         // to keep textures, set it to other member. at unity2019
-        static readonly List<Texture2D> TexList = [];
+        private static readonly List<Texture2D> TexList = [];
 
         static Style() {
             Color onColor = new(0.3f, 0.5f, 0.98f, 0.9f);
@@ -108,7 +103,7 @@ public class WindowLauncher : TitleContent<WindowLauncher>, IDoGUIWindow {
             toggle.name = "launcher_unit_toggle";
         }
 
-        static GUIStyle CreateToggle(Color onColor) {
+        private static GUIStyle CreateToggle(Color onColor) {
             var style = new GUIStyle(GUI.skin.button) {
                 alignment = TextAnchor.MiddleLeft,
                 //style.border = new RectOffset(0, 0, 1, underLine + 1);
@@ -129,16 +124,15 @@ public class WindowLauncher : TitleContent<WindowLauncher>, IDoGUIWindow {
             return style;
         }
 
-        static Texture2D CreateToggleOnTex(Color col, Color bg) {
+        private static Texture2D CreateToggleOnTex(Color col, Color bg) {
             //var tex = new Texture2D(1, underLine + 3);
             var tex = new Texture2D(LeftLine + 3, 1);
 
-            for(var x = 0; x < tex.width; ++x) {
-                var c = (x < LeftLine) ? col : bg;
-                for(var y = 0; y < tex.height; ++y) {
+            for (var x = 0; x < tex.width; ++x) {
+                var c = x < LeftLine ? col : bg;
+                for (var y = 0; y < tex.height; ++y)
                     //var c = (y < underLine) ? col : bg;
                     tex.SetPixel(x, y, c);
-                }
             }
 
             tex.Apply();
@@ -146,7 +140,7 @@ public class WindowLauncher : TitleContent<WindowLauncher>, IDoGUIWindow {
             return tex;
         }
 
-        static Texture2D CreateTex(Color col) {
+        private static Texture2D CreateTex(Color col) {
             var tex = new Texture2D(1, 1);
             tex.SetPixel(0, 0, col);
             tex.Apply();

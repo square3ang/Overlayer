@@ -1,8 +1,8 @@
-﻿using Overlayer.Tags.Attributes;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Overlayer.Tags.Attributes;
 using UnityEngine.Profiling;
 using Vostok.Sys.Metrics.PerfCounters;
 
@@ -11,33 +11,42 @@ namespace Overlayer.Tags;
 public static class System {
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemUsage;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemUsageGB;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemUsageKB;
 
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemAllocRate;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemAllocRateGB;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double GCMemAllocRateKB;
 
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double UnityMemUsage;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double UnityMemUsageGB;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double UnityMemUsageKB;
 
-    [Tag(NotPlaying = true)]
-    public static int ProcessorCount;
+    [Tag(NotPlaying = true)] public static int ProcessorCount;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double CpuUsage;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TotalCpuUsage;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double MemoryUsage;
+
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TotalMemoryUsage;
 
@@ -48,9 +57,7 @@ public static class System {
     private static bool inited;
 
     public static void Init() {
-        if(inited) {
-            return;
-        }
+        if (inited) return;
 
         ProcessorCount = Environment.ProcessorCount;
         lastGCAllocatedMemory = GC.GetTotalMemory(false);
@@ -61,7 +68,7 @@ public static class System {
         IPerformanceCounter<double> totMem = null;
         ulong totalMemMB = 0;
 
-        if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
             var proc = Process.GetCurrentProcess();
             totalMemMB = MemoryStatus.GetMemoryStatus().TotalPhysicalMemorySize / 1048576;
 
@@ -73,13 +80,13 @@ public static class System {
 
         running = true;
         updateThread = new Thread(() => {
-            while(running) {
-                long gc = GC.GetTotalMemory(false);
+            while (running) {
+                var gc = GC.GetTotalMemory(false);
                 GCMemUsage = gc / 1024d / 1024d;
                 GCMemUsageGB = gc / 1024d / 1024d / 1024d;
                 GCMemUsageKB = gc / 1024d;
 
-                long delta = gc - lastGCAllocatedMemory;
+                var delta = gc - lastGCAllocatedMemory;
                 lastGCAllocatedMemory = gc;
                 GCMemAllocRate = delta / 1024d / 1024d;
                 GCMemAllocRateGB = delta / 1024d / 1024d / 1024d;
@@ -90,7 +97,7 @@ public static class System {
                 UnityMemUsageGB = unity / 1024d / 1024d / 1024d;
                 UnityMemUsageKB = unity / 1024d;
 
-                if(cpu != null) {
+                if (cpu != null) {
                     CpuUsage = cpu.Observe() / ProcessorCount;
                     TotalCpuUsage = totCpu.Observe();
 
@@ -110,9 +117,7 @@ public static class System {
     }
 
     public static void Free() {
-        if(!inited) {
-            return;
-        }
+        if (!inited) return;
 
         running = false;
         updateThread?.Join();
@@ -133,7 +138,7 @@ public static class System {
         public ulong AvailableExtendedVirtualMemorySize;
 
         [DllImport("kernel32.dll")]
-        static extern bool GlobalMemoryStatusEx([In, Out] MemoryStatus lpBuffer);
+        private static extern bool GlobalMemoryStatusEx([In] [Out] MemoryStatus lpBuffer);
 
         public static MemoryStatus GetMemoryStatus() {
             var s = new MemoryStatus();

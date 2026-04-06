@@ -4,7 +4,7 @@ namespace RapidGUI;
 
 public static partial class RGUI {
     public class PrefixLabelIndentScope : GUI.Scope {
-        float width;
+        private readonly float width;
 
         public PrefixLabelIndentScope(float width = 32f) {
             BeginIndent(width);

@@ -1,9 +1,15 @@
 ﻿namespace Overlayer.Olly;
 
 public static class OllyUtils {
-    public static void InitLanguage() => isKorean = Main.Lang.Language == "ko-KR";
-    private static bool isKorean = false;
-    public static string Tr(string en, string ko) => isKorean ? ko : en;
+    public static void InitLanguage() {
+        isKorean = Main.Lang.Language == "ko-KR";
+    }
+
+    private static bool isKorean;
+
+    public static string Tr(string en, string ko) {
+        return isKorean ? ko : en;
+    }
 
     public static int BitIndex(int bitValue) {
         return bitValue switch {
@@ -38,7 +44,7 @@ public static class OllyUtils {
             268435456 => 29,
             536870912 => 30,
             1073741824 => 31,
-            _ => 0,
+            _ => 0
         };
     }
 }

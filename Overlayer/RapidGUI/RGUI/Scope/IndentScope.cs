@@ -12,11 +12,15 @@ public static partial class RGUI {
     public static void EndIndent() {
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
-
     }
-    public class IndentScope : GUI.Scope {
-        public IndentScope(float width = 32f) => BeginIndent(width);
 
-        protected override void CloseScope() => EndIndent();
+    public class IndentScope : GUI.Scope {
+        public IndentScope(float width = 32f) {
+            BeginIndent(width);
+        }
+
+        protected override void CloseScope() {
+            EndIndent();
+        }
     }
 }

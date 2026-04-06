@@ -3,34 +3,31 @@
 namespace RapidGUI.imColorPicker.Test;
 
 public class TestOnGUI : MonoBehaviour {
-
     public IMColorPreset preset;
     public Color color = Color.red;
 
-    IMColorPicker colorPicker;
-    [SerializeField] bool window;
+    private IMColorPicker colorPicker;
+    [SerializeField] private bool window;
 
-    void OnGUI() {
+    private void OnGUI() {
         colorPicker ??= new IMColorPicker(color, preset);
 
-        using(new GUILayout.HorizontalScope()) {
+        using (new GUILayout.HorizontalScope()) {
             window = GUILayout.Toggle(window, "Window");
         }
 
-        if(window) {
+        if (window)
             colorPicker.DrawWindow();
-        } else {
-            using(new GUILayout.HorizontalScope()) {
+        else
+            using (new GUILayout.HorizontalScope()) {
                 GUILayout.Space(10f);
-                using(new GUILayout.VerticalScope()) {
+                using (new GUILayout.VerticalScope()) {
                     GUILayout.Space(10f);
                     GUILayout.Label("IMColorPicker");
                     colorPicker.DrawColorPicker();
                 }
             }
-        }
 
         color = colorPicker.color;
     }
 }
-

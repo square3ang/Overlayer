@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json.Linq;
-using Overlayer.Core.Interfaces;
-using Overlayer.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json.Linq;
+using Overlayer.Core.Interfaces;
+using Overlayer.Utils;
 
 namespace Overlayer.Core;
 
 public class Reference : IModel, ICopyable<Reference> {
     public enum Type {
         Font,
-        Image,
+        Image
     }
 
     public Type ReferenceType;
@@ -22,7 +22,7 @@ public class Reference : IModel, ICopyable<Reference> {
 
     public static Reference GetReference(string path, Type referenceType) {
         var target = path.Replace("{ModDir}", Main.Mod.Path);
-        if(refCache.TryGetValue(target, out var reference)) {
+        if (refCache.TryGetValue(target, out var reference)) {
             return reference;
         }
 
@@ -31,11 +31,12 @@ public class Reference : IModel, ICopyable<Reference> {
             Name = Path.GetFileName(target),
             ReferenceType = referenceType
         };
-        if(File.Exists(target)) {
+        if (File.Exists(target)) {
             @ref.Raw = File.ReadAllBytes(target).Compress();
             refCache[target] = @ref;
             return @ref;
         }
+
         return null;
     }
 

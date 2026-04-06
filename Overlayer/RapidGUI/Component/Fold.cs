@@ -4,23 +4,21 @@ using UnityEngine;
 namespace RapidGUI;
 
 public class Fold : TitleContent<Fold> {
-    public Fold() : base() { }
+    public Fold() { }
     public Fold(string name) : base(name) { }
 
     public bool DoGUI() {
         var ret = false;
         var guiFuncs = GetGUIFuncs();
 
-        if(guiFuncs.Any()) {
-            using(new GUILayout.HorizontalScope()) {
+        if (guiFuncs.Any()) {
+            using (new GUILayout.HorizontalScope()) {
                 isOpen = DoGUIHeader(isOpen, name);
                 titleAction?.Invoke();
             }
 
-            using(new RGUI.IndentScope()) {
-                if(isOpen) {
-                    ret |= guiFuncs.Aggregate(false, (changed, drawFunc) => changed || drawFunc());
-                }
+            using (new RGUI.IndentScope()) {
+                if (isOpen) ret |= guiFuncs.Aggregate(false, (changed, drawFunc) => changed || drawFunc());
             }
         }
 
@@ -36,7 +34,7 @@ public class Fold : TitleContent<Fold> {
 
     public static class Style {
         public static readonly GUIStyle Fold;
-        static Texture2D tex;
+        private static readonly Texture2D tex;
 
         static Style() {
             var style = new GUIStyle(GUI.skin.label);

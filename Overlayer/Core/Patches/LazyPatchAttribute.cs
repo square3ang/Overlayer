@@ -1,7 +1,7 @@
-﻿using Overlayer.Utils;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
+using Overlayer.Utils;
 
 namespace Overlayer.Core.Patches;
 
@@ -17,39 +17,46 @@ internal class LazyPatchAttribute : Attribute {
     public int MaxVersion { get; set; } = -1;
     public BindingFlags ORFlags { get; set; } = BindingFlags.DeclaredOnly;
     public BindingFlags ANDNOTFlags { get; set; } = BindingFlags.Default;
+
     public LazyPatchAttribute(string id, string targetType, string targetMethod) {
         Id = id!;
         TargetType = targetType!;
         TargetMethod = targetMethod!;
         TargetMethodArgs = null;
     }
+
     public LazyPatchAttribute(string id, string targetType, string targetMethod, string[] targetMethodArgs) {
         Id = id!;
         TargetType = targetType!;
         TargetMethod = targetMethod!;
         TargetMethodArgs = targetMethodArgs;
     }
-    public bool IsCompatible => (CurrentVersion >= MinVersion || MinVersion < 0) && (MaxVersion >= CurrentVersion || MaxVersion < 0);
+
+    public bool IsCompatible => (CurrentVersion >= MinVersion || MinVersion < 0) &&
+                                (MaxVersion >= CurrentVersion || MaxVersion < 0);
+
     public MethodBase Resolve() {
-        if(!IsCompatible) {
-            Main.Logger.Error($"[{nameof(LazyPatch)}] {Id} Not Compatible - Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion}");
+        if (!IsCompatible) {
+            Main.Logger.Error(
+                $"[{nameof(LazyPatch)}] {Id} Not Compatible - Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion}");
             return null;
         }
+
         var bf = ((BindingFlags)15420 | ORFlags) & ~ANDNOTFlags;
         try {
             var tt = MiscUtils.TypeByName(TargetType);
             var tma = TargetMethodArgs?.Select(MiscUtils.TypeByName).ToArray();
             return TargetMethod == ".ctor"
-                ? tma != null ?
-                    tt?.GetConstructor(bf, null, tma, null) :
-                    tt?.GetConstructors(bf).FirstOrDefault()
+                ? tma != null ? tt?.GetConstructor(bf, null, tma, null) : tt?.GetConstructors(bf).FirstOrDefault()
                 : TargetMethod == ".cctor"
                     ? tt.TypeInitializer
-                    : tma != null ?
-                                        tt?.GetMethod(TargetMethod, bf, null, tma, null) :
-                                        tt?.GetMethod(TargetMethod, bf);
-        } catch(AmbiguousMatchException) {
-            Main.Logger.Error($"[{nameof(LazyPatch)}] {Id} Ambiguous Match - Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion}");
+                    : tma != null
+                        ? tt?.GetMethod(TargetMethod, bf, null, tma, null)
+                        : tt?.GetMethod(TargetMethod, bf);
+        }
+        catch (AmbiguousMatchException) {
+            Main.Logger.Error(
+                $"[{nameof(LazyPatch)}] {Id} Ambiguous Match - Min:{MinVersion}, Max:{MaxVersion}, Current:{CurrentVersion}");
             return null;
         }
     }

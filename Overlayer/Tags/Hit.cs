@@ -1,133 +1,104 @@
-﻿using Overlayer.Tags.Attributes;
+﻿using System;
+using Overlayer.Tags.Attributes;
 using Overlayer.Utils;
-using System;
 using UnityEngine;
 
 namespace Overlayer.Tags;
 
 public static class Hit {
-    [Tag("LHitRaw")]
-    public static HitMargin Lenient;
-    [Tag("NHitRaw")]
-    public static HitMargin Normal;
-    [Tag("SHitRaw")]
-    public static HitMargin Strict;
-    [Tag("CHitRaw")]
-    public static HitMargin Current;
-    [Tag]
-    public static string LHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Lenient).Trim(maxLength, afterTrimStr);
-    [Tag]
-    public static string NHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Normal).Trim(maxLength, afterTrimStr);
-    [Tag]
-    public static string SHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Strict).Trim(maxLength, afterTrimStr);
-    [Tag]
-    public static string CHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Current).Trim(maxLength, afterTrimStr);
-    [Tag]
-    public static int LTE, LVE, LEP, LP, LLP, LVL, LTL;
-    [Tag]
-    public static int NTE, NVE, NEP, NP, NLP, NVL, NTL;
-    [Tag]
-    public static int STE, SVE, SEP, SP, SLP, SVL, STL;
-    [Tag]
-    public static int CTE, CVE, CEP, CP, CLP, CVL, CTL;
-    [Tag]
-    public static int LFast => LTE + LVE + LEP;
-    [Tag]
-    public static int NFast => NTE + NVE + NEP;
-    [Tag]
-    public static int SFast => STE + SVE + SEP;
-    [Tag]
-    public static int CFast => CTE + CVE + CEP;
-    [Tag]
-    public static int LSlow => LTL + LVL + LLP;
-    [Tag]
-    public static int NSlow => NTL + NVL + NLP;
-    [Tag]
-    public static int SSlow => STL + SVL + SLP;
-    [Tag]
-    public static int CSlow => CTL + CVL + CLP;
-    [Tag]
-    public static int LELP => LEP + LLP;
-    [Tag]
-    public static int NELP => NEP + NLP;
-    [Tag]
-    public static int SELP => SEP + SLP;
-    [Tag]
-    public static int CELP => CEP + CLP;
-    [Tag]
-    public static int LV => LVE + LVL;
-    [Tag]
-    public static int NV => NVE + NVL;
-    [Tag]
-    public static int SV => SVE + SVL;
-    [Tag]
-    public static int CV => CVE + CVL;
-    [Tag]
-    public static int LT => LTE + LTL;
-    [Tag]
-    public static int NT => NTE + NTL;
-    [Tag]
-    public static int ST => STE + STL;
-    [Tag]
-    public static int CT => CTE + CTL;
-    [Tag]
-    public static int OTE => scrMistakesManager.hitMarginsCount[0];
-    [Tag]
-    public static int OVE => scrMistakesManager.hitMarginsCount[1];
-    [Tag]
-    public static int OEP => scrMistakesManager.hitMarginsCount[2];
-    [Tag]
-    public static int OP => scrMistakesManager.hitMarginsCount[3] + scrMistakesManager.hitMarginsCount[10];
-    [Tag]
-    public static int OLP => scrMistakesManager.hitMarginsCount[4];
-    [Tag]
-    public static int OVL => scrMistakesManager.hitMarginsCount[5];
-    [Tag]
-    public static int OTL => scrMistakesManager.hitMarginsCount[6];
-    [Tag]
-    public static int OA => scrMistakesManager.hitMarginsCount[10];
-    [Tag]
-    public static int OPP => scrMistakesManager.hitMarginsCount[3];
-    [Tag]
-    public static int OFast => OTE + OVE + OEP;
-    [Tag]
-    public static int OSlow => OTL + OVL + OLP;
-    [Tag]
-    public static int OELP => OEP + OLP;
-    [Tag]
-    public static int OV => OVE + OVL;
-    [Tag]
-    public static int OT => OTE + OTL;
-    [Tag]
-    public static int MissCount => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
-    [Tag]
-    public static int Overloads => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
-    [Tag]
-    public static int Fail => MissCount + Overloads;
-    [Tag]
-    public static int Multipress;
-    [Tag]
-    public static string Difficulty(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("enum.Difficulty." + GCS.difficulty).Trim(maxLength, afterTrimStr);
-    [Tag]
-    public static string DifficultyRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => GCS.difficulty.ToString().Trim(maxLength, afterTrimStr);
+    [Tag("LHitRaw")] public static HitMargin Lenient;
+    [Tag("NHitRaw")] public static HitMargin Normal;
+    [Tag("SHitRaw")] public static HitMargin Strict;
+    [Tag("CHitRaw")] public static HitMargin Current;
 
-    public static bool ControllerIsSafe(scrController ctrl) => ctrl.currFloor?.isSafe ?? false;
+    [Tag]
+    public static string LHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
+        return RDString.Get("HitMargin." + Lenient).Trim(maxLength, afterTrimStr);
+    }
+
+    [Tag]
+    public static string NHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
+        return RDString.Get("HitMargin." + Normal).Trim(maxLength, afterTrimStr);
+    }
+
+    [Tag]
+    public static string SHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
+        return RDString.Get("HitMargin." + Strict).Trim(maxLength, afterTrimStr);
+    }
+
+    [Tag]
+    public static string CHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
+        return RDString.Get("HitMargin." + Current).Trim(maxLength, afterTrimStr);
+    }
+
+    [Tag] public static int LTE, LVE, LEP, LP, LLP, LVL, LTL;
+    [Tag] public static int NTE, NVE, NEP, NP, NLP, NVL, NTL;
+    [Tag] public static int STE, SVE, SEP, SP, SLP, SVL, STL;
+    [Tag] public static int CTE, CVE, CEP, CP, CLP, CVL, CTL;
+    [Tag] public static int LFast => LTE + LVE + LEP;
+    [Tag] public static int NFast => NTE + NVE + NEP;
+    [Tag] public static int SFast => STE + SVE + SEP;
+    [Tag] public static int CFast => CTE + CVE + CEP;
+    [Tag] public static int LSlow => LTL + LVL + LLP;
+    [Tag] public static int NSlow => NTL + NVL + NLP;
+    [Tag] public static int SSlow => STL + SVL + SLP;
+    [Tag] public static int CSlow => CTL + CVL + CLP;
+    [Tag] public static int LELP => LEP + LLP;
+    [Tag] public static int NELP => NEP + NLP;
+    [Tag] public static int SELP => SEP + SLP;
+    [Tag] public static int CELP => CEP + CLP;
+    [Tag] public static int LV => LVE + LVL;
+    [Tag] public static int NV => NVE + NVL;
+    [Tag] public static int SV => SVE + SVL;
+    [Tag] public static int CV => CVE + CVL;
+    [Tag] public static int LT => LTE + LTL;
+    [Tag] public static int NT => NTE + NTL;
+    [Tag] public static int ST => STE + STL;
+    [Tag] public static int CT => CTE + CTL;
+    [Tag] public static int OTE => scrMistakesManager.hitMarginsCount[0];
+    [Tag] public static int OVE => scrMistakesManager.hitMarginsCount[1];
+    [Tag] public static int OEP => scrMistakesManager.hitMarginsCount[2];
+    [Tag] public static int OP => scrMistakesManager.hitMarginsCount[3] + scrMistakesManager.hitMarginsCount[10];
+    [Tag] public static int OLP => scrMistakesManager.hitMarginsCount[4];
+    [Tag] public static int OVL => scrMistakesManager.hitMarginsCount[5];
+    [Tag] public static int OTL => scrMistakesManager.hitMarginsCount[6];
+    [Tag] public static int OA => scrMistakesManager.hitMarginsCount[10];
+    [Tag] public static int OPP => scrMistakesManager.hitMarginsCount[3];
+    [Tag] public static int OFast => OTE + OVE + OEP;
+    [Tag] public static int OSlow => OTL + OVL + OLP;
+    [Tag] public static int OELP => OEP + OLP;
+    [Tag] public static int OV => OVE + OVL;
+    [Tag] public static int OT => OTE + OTL;
+    [Tag] public static int MissCount => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
+    [Tag] public static int Overloads => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailOverload) ?? 0;
+    [Tag] public static int Fail => MissCount + Overloads;
+    [Tag] public static int Multipress;
+
+    [Tag]
+    public static string Difficulty(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
+        return RDString.Get("enum.Difficulty." + GCS.difficulty).Trim(maxLength, afterTrimStr);
+    }
+
+    [Tag]
+    public static string DifficultyRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
+        return GCS.difficulty.ToString().Trim(maxLength, afterTrimStr);
+    }
+
+    public static bool ControllerIsSafe(scrController ctrl) {
+        return ctrl.currFloor?.isSafe ?? false;
+    }
 
     public static void FixMargin(scrController ctrl, ref HitMargin hitMargin) {
-        if(ctrl.gameworld) {
-            if(ctrl.noFailInfiniteMargin) {
-                hitMargin = HitMargin.FailMiss;
-            }
-            if(ctrl.midspinInfiniteMargin || (RDC.auto && !RDC.useOldAuto)) {
-                hitMargin = HitMargin.Perfect;
-            }
+        if (ctrl.gameworld) {
+            if (ctrl.noFailInfiniteMargin) hitMargin = HitMargin.FailMiss;
+            if (ctrl.midspinInfiniteMargin || (RDC.auto && !RDC.useOldAuto)) hitMargin = HitMargin.Perfect;
         }
     }
 
     public static void IncreaseCount(Difficulty diff, HitMargin hit) {
-        switch(hit) {
+        switch (hit) {
             case HitMargin.TooEarly:
-                switch(diff) {
+                switch (diff) {
                     case global::Difficulty.Lenient:
                         LTE++;
                         break;
@@ -138,9 +109,10 @@ public static class Hit {
                         STE++;
                         break;
                 }
+
                 break;
             case HitMargin.VeryEarly:
-                switch(diff) {
+                switch (diff) {
                     case global::Difficulty.Lenient:
                         LVE++;
                         break;
@@ -151,9 +123,10 @@ public static class Hit {
                         SVE++;
                         break;
                 }
+
                 break;
             case HitMargin.EarlyPerfect:
-                switch(diff) {
+                switch (diff) {
                     case global::Difficulty.Lenient:
                         LEP++;
                         break;
@@ -164,9 +137,10 @@ public static class Hit {
                         SEP++;
                         break;
                 }
+
                 break;
             case HitMargin.Perfect:
-                switch(diff) {
+                switch (diff) {
                     case global::Difficulty.Lenient:
                         LP++;
                         break;
@@ -177,9 +151,10 @@ public static class Hit {
                         SP++;
                         break;
                 }
+
                 break;
             case HitMargin.LatePerfect:
-                switch(diff) {
+                switch (diff) {
                     case global::Difficulty.Lenient:
                         LLP++;
                         break;
@@ -190,9 +165,10 @@ public static class Hit {
                         SLP++;
                         break;
                 }
+
                 break;
             case HitMargin.VeryLate:
-                switch(diff) {
+                switch (diff) {
                     case global::Difficulty.Lenient:
                         LVL++;
                         break;
@@ -203,9 +179,10 @@ public static class Hit {
                         SVL++;
                         break;
                 }
+
                 break;
             case HitMargin.TooLate:
-                switch(diff) {
+                switch (diff) {
                     case global::Difficulty.Lenient:
                         LTL++;
                         break;
@@ -216,12 +193,13 @@ public static class Hit {
                         STL++;
                         break;
                 }
+
                 break;
         }
     }
 
     public static void IncreaseCCount(HitMargin hit) {
-        switch(hit) {
+        switch (hit) {
             case HitMargin.TooEarly:
                 CTE++;
                 break;
@@ -246,9 +224,10 @@ public static class Hit {
         }
     }
 
-    public static double GetAdjustedAngleBoundaryInDeg(Difficulty diff, HitMarginGeneral marginType, double bpmTimesSpeed, double conductorPitch, double marginMult = 1.0) {
-        float num = 0.065f;
-        switch(diff) {
+    public static double GetAdjustedAngleBoundaryInDeg(Difficulty diff, HitMarginGeneral marginType,
+        double bpmTimesSpeed, double conductorPitch, double marginMult = 1.0) {
+        var num = 0.065f;
+        switch (diff) {
             case global::Difficulty.Lenient:
                 num = 0.091f;
                 break;
@@ -259,43 +238,52 @@ public static class Hit {
                 num = 0.04f;
                 break;
         }
-        bool isMobile = ADOBase.isMobile;
-        num = isMobile ? 0.09f : (num / GCS.currentSpeedTrial);
-        float num2 = isMobile ? 0.07f : (0.03f / GCS.currentSpeedTrial);
-        float a = isMobile ? 0.05f : (0.02f / GCS.currentSpeedTrial);
+
+        var isMobile = ADOBase.isMobile;
+        num = isMobile ? 0.09f : num / GCS.currentSpeedTrial;
+        var num2 = isMobile ? 0.07f : 0.03f / GCS.currentSpeedTrial;
+        var a = isMobile ? 0.05f : 0.02f / GCS.currentSpeedTrial;
         num = Mathf.Max(num, 0.025f);
         num2 = Mathf.Max(num2, 0.025f);
-        double num3 = (double)Mathf.Max(a, 0.025f);
-        double val = scrMisc.TimeToAngleInRad((double)num, bpmTimesSpeed, conductorPitch, false) * 57.295780181884766;
-        double val2 = scrMisc.TimeToAngleInRad((double)num2, bpmTimesSpeed, conductorPitch, false) * 57.295780181884766;
-        double val3 = scrMisc.TimeToAngleInRad(num3, bpmTimesSpeed, conductorPitch, false) * 57.295780181884766;
-        double result = Math.Max(GCS.HITMARGIN_COUNTED * marginMult, val);
-        double result2 = Math.Max(45.0 * marginMult, val2);
-        double result3 = Math.Max(30.0 * marginMult, val3);
+        var num3 = (double)Mathf.Max(a, 0.025f);
+        var val = scrMisc.TimeToAngleInRad(num, bpmTimesSpeed, conductorPitch) * 57.295780181884766;
+        var val2 = scrMisc.TimeToAngleInRad(num2, bpmTimesSpeed, conductorPitch) * 57.295780181884766;
+        var val3 = scrMisc.TimeToAngleInRad(num3, bpmTimesSpeed, conductorPitch) * 57.295780181884766;
+        var result = Math.Max(GCS.HITMARGIN_COUNTED * marginMult, val);
+        var result2 = Math.Max(45.0 * marginMult, val2);
+        var result3 = Math.Max(30.0 * marginMult, val3);
         return marginType switch {
             HitMarginGeneral.Counted => result,
             HitMarginGeneral.Perfect => result2,
             HitMarginGeneral.Pure => result3,
-            _ => result,
+            _ => result
         };
     }
 
-    public static HitMargin GetHitMargin(Difficulty diff, float hitangle, float refangle, bool isCW, float bpmTimesSpeed, float conductorPitch, double marginScale) {
-        float angleDeg = 57.29578f * (hitangle - refangle) * (isCW ? 1 : -1);
+    public static HitMargin GetHitMargin(Difficulty diff, float hitangle, float refangle, bool isCW,
+        float bpmTimesSpeed, float conductorPitch, double marginScale) {
+        var angleDeg = 57.29578f * (hitangle - refangle) * (isCW ? 1 : -1);
 
-        double countedDeg = GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Counted, bpmTimesSpeed, conductorPitch, marginScale);
-        double perfectDeg = GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Perfect, bpmTimesSpeed, conductorPitch, marginScale);
-        double pureDeg = GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Pure, bpmTimesSpeed, conductorPitch, marginScale);
+        var countedDeg =
+            GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Counted, bpmTimesSpeed, conductorPitch, marginScale);
+        var perfectDeg =
+            GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Perfect, bpmTimesSpeed, conductorPitch, marginScale);
+        var pureDeg =
+            GetAdjustedAngleBoundaryInDeg(diff, HitMarginGeneral.Pure, bpmTimesSpeed, conductorPitch, marginScale);
 
         return angleDeg < -countedDeg
             ? HitMargin.TooEarly
             : angleDeg < -perfectDeg
-            ? HitMargin.VeryEarly
-            : angleDeg < -pureDeg
-            ? HitMargin.EarlyPerfect
-            : angleDeg <= pureDeg
-            ? HitMargin.Perfect
-            : angleDeg <= perfectDeg ? HitMargin.LatePerfect : angleDeg <= countedDeg ? HitMargin.VeryLate : HitMargin.TooLate;
+                ? HitMargin.VeryEarly
+                : angleDeg < -pureDeg
+                    ? HitMargin.EarlyPerfect
+                    : angleDeg <= pureDeg
+                        ? HitMargin.Perfect
+                        : angleDeg <= perfectDeg
+                            ? HitMargin.LatePerfect
+                            : angleDeg <= countedDeg
+                                ? HitMargin.VeryLate
+                                : HitMargin.TooLate;
     }
 
     public static void Reset() {
@@ -312,7 +300,7 @@ public static class Hit {
             global::Difficulty.Lenient => Lenient,
             global::Difficulty.Normal => Normal,
             global::Difficulty.Strict => Strict,
-            _ => Strict,
+            _ => Strict
         };
     }
 
@@ -326,7 +314,7 @@ public static class Hit {
                 HitMargin.LatePerfect => LLP,
                 HitMargin.VeryLate => LVL,
                 HitMargin.TooLate => LTL,
-                _ => 0,
+                _ => 0
             },
             global::Difficulty.Normal => margin switch {
                 HitMargin.TooEarly => NTE,
@@ -336,7 +324,7 @@ public static class Hit {
                 HitMargin.LatePerfect => NLP,
                 HitMargin.VeryLate => NVL,
                 HitMargin.TooLate => NTL,
-                _ => 0,
+                _ => 0
             },
             global::Difficulty.Strict => margin switch {
                 HitMargin.TooEarly => STE,
@@ -346,9 +334,9 @@ public static class Hit {
                 HitMargin.LatePerfect => SLP,
                 HitMargin.VeryLate => SVL,
                 HitMargin.TooLate => STL,
-                _ => 0,
+                _ => 0
             },
-            _ => 0,
+            _ => 0
         };
     }
 }

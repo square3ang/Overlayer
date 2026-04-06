@@ -1,4 +1,10 @@
-﻿using DG.Tweening;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using DG.Tweening;
 using HarmonyLib;
 using Overlayer.CodeEditor;
 using Overlayer.Models;
@@ -6,15 +12,10 @@ using Overlayer.Tags;
 using Overlayer.Utils;
 using RapidGUI;
 using SFB;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityModManagerNet;
+using Extensions = Overlayer.Utils.Extensions;
 
 namespace Overlayer.Core;
 
@@ -37,7 +38,7 @@ public static class Drawer {
     public static GUIStyle myThumb;
 
     public static void SetStyle(bool legacy) {
-        if(legacy) {
+        if (legacy) {
             myButton.normal.background = GUI.skin.button.normal.background;
             myButton.active.background = GUI.skin.button.active.background;
             myButton.hover.background = GUI.skin.button.hover.background;
@@ -51,7 +52,8 @@ public static class Drawer {
             myThumb.normal.background = GUI.skin.horizontalSliderThumb.normal.background;
             myThumb.active.background = GUI.skin.horizontalSliderThumb.active.background;
             myThumb.hover.background = GUI.skin.horizontalSliderThumb.hover.background;
-        } else if(isImageInited) {
+        }
+        else if (isImageInited) {
             myButton.normal.background = gray;
             myButton.active.background = dulgray;
             myButton.hover.background = dulgray;
@@ -81,41 +83,42 @@ public static class Drawer {
             str = str.Replace("<", "<<b></b>");
 
             var colorHighlighted = new List<string>();
-            foreach(Match m in color.Matches(str)) {
-                if(!colorHighlighted.Contains(m.Groups[1].Value) && ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _)) {
+            foreach (Match m in color.Matches(str))
+                if (!colorHighlighted.Contains(m.Groups[1].Value) &&
+                    ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _)) {
                     str = str.Replace("<<b></b>color=" + m.Groups[1].Value + ">",
                         "<<b></b>color=<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>>");
                     colorHighlighted.Add(m.Groups[1].Value);
                 }
-            }
 
             var highlighted = new List<string>();
 
-            foreach(Match match in highlight.Matches(str)) {
-                if(highlighted.Contains(match.Groups[1].Value)) {
-                    continue;
-                }
+            foreach (Match match in highlight.Matches(str)) {
+                if (highlighted.Contains(match.Groups[1].Value)) continue;
 
                 var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                if(TagManager.tags.ContainsKey(name)) {
-                    if((Main.Settings.MovingManEditor && name == nameof(Effect.MovingMan)) || (Main.Settings.ColorRangeEditor && name == nameof(Effect.ColorRange)) || (Main.Settings.EasedValueEditor && name == nameof(Effect.EasedValue))) {
+                if (TagManager.tags.ContainsKey(name)) {
+                    if ((Main.Settings.MovingManEditor && name == nameof(Effect.MovingMan)) ||
+                        (Main.Settings.ColorRangeEditor && name == nameof(Effect.ColorRange)) ||
+                        (Main.Settings.EasedValueEditor && name == nameof(Effect.EasedValue)))
                         str = str.Replace("{" + match.Groups[1].Value + "}",
                             "<color=orange>{" + match.Groups[1].Value + "}</color>");
-                    } else if(name.EndsWith("Hex")) {
+                    else if (name.EndsWith("Hex"))
                         try {
                             var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
-                                ["-1", Overlayer.Utils.Extensions.DefaultTrimStr]);
+                                ["-1", Extensions.DefaultTrimStr]);
                             str = str.Replace("{" + match.Groups[1].Value + "}",
                                 "<color=#" + val + ">{" + match.Groups[1].Value + "}</color>");
-                        } catch {
+                        }
+                        catch {
                             str = str.Replace("{" + match.Groups[1].Value + "}",
                                 "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
                         }
-                    } else {
+                    else
                         str = str.Replace("{" + match.Groups[1].Value + "}",
                             "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
-                    }
-                } else {
+                }
+                else {
                     str = str.Replace("{" + match.Groups[1].Value + "}",
                         "<color=red>{" + match.Groups[1].Value + "}</color>");
                 }
@@ -137,7 +140,7 @@ public static class Drawer {
         SetStyle(Main.Settings.LegacyTheme);
     }
 
-    private static bool isImageInited = false;
+    private static bool isImageInited;
 
     public static Texture2D Icon_Copy;
     public static Texture2D Icon_Active;
@@ -223,9 +226,7 @@ public static class Drawer {
     public static Texture2D Icon_EaseInOutBounce;
 
     public static void InitializeImages() {
-        if(isImageInited) {
-            return;
-        }
+        if (isImageInited) return;
 
         dulgray = new Texture2D(1, 1);
         dulgray.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
@@ -340,33 +341,33 @@ public static class Drawer {
         Icon_EaseInOutBounce = CreateTextureFromByte(ResourceImageManager.GetResourceBytes("easeinoutbounce.png"));
 
         isImageInited = true;
-
     }
+
     public static Texture2D RotateTexture90(Texture2D tex) {
-        int w = tex.width;
-        int h = tex.height;
+        var w = tex.width;
+        var h = tex.height;
 
         Texture2D rotTex = new(h, w, tex.format, false);
-        Color[] original = tex.GetPixels();
-        Color[] rotated = new Color[original.Length];
+        var original = tex.GetPixels();
+        var rotated = new Color[original.Length];
 
-        for(int y = 0; y < h; y++) {
-            for(int x = 0; x < w; x++) {
-                rotated[(x * h) + (h - y - 1)] = original[(y * w) + x];
-            }
-        }
+        for (var y = 0; y < h; y++)
+        for (var x = 0; x < w; x++)
+            rotated[x * h + (h - y - 1)] = original[y * w + x];
 
         rotTex.SetPixels(rotated);
         rotTex.Apply();
         return rotTex;
     }
+
     public static Texture2D Base64ToTexture(string base64) {
-        byte[] imageBytes = Convert.FromBase64String(base64);
+        var imageBytes = Convert.FromBase64String(base64);
 
         Texture2D texture = new(1, 1, TextureFormat.RGBA32, false);
         texture.LoadImage(imageBytes);
         return texture;
     }
+
     public static Texture2D CreateTextureFromByte(byte[] bytes) {
         Texture2D texture = new(1, 1, TextureFormat.RGBA32, false);
         texture.LoadImage(bytes);
@@ -386,7 +387,7 @@ public static class Drawer {
 
     public static bool SelectionPopup(ref int selected, string[] options, string label,
         params GUILayoutOption[] layoutOptions) {
-        if(label != "") {
+        if (label != "") {
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
         }
@@ -395,16 +396,14 @@ public static class Drawer {
         var c = selected != news;
 
         selected = news;
-        if(label != "") {
-            GUILayout.EndHorizontal();
-        }
+        if (label != "") GUILayout.EndHorizontal();
 
         return c;
     }
 
     public static bool SelectionPopup(ref int selected, string[] options, Texture2D[] images, string label,
         params GUILayoutOption[] layoutOptions) {
-        if(label != "") {
+        if (label != "") {
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
         }
@@ -413,16 +412,14 @@ public static class Drawer {
         var c = selected != news;
 
         selected = news;
-        if(label != "") {
-            GUILayout.EndHorizontal();
-        }
+        if (label != "") GUILayout.EndHorizontal();
 
         return c;
     }
 
     public static bool SelectionPopupWithTooltip(ref int selected, string[] options, string label,
         Dictionary<string, string> tooltips, params GUILayoutOption[] layoutOptions) {
-        if(label != "") {
+        if (label != "") {
             GUILayout.BeginHorizontal();
             GUILayout.Label(label);
         }
@@ -431,21 +428,20 @@ public static class Drawer {
         var c = selected != news;
 
         selected = news;
-        if(label != "") {
-            GUILayout.EndHorizontal();
-        }
+        if (label != "") GUILayout.EndHorizontal();
 
         return c;
     }
 
     public static bool DrawBool(string label, ref bool value) {
-        bool prev = value;
+        var prev = value;
 
         GUILayout.BeginHorizontal();
 
-        if(Main.Settings.LegacyTheme) {
+        if (Main.Settings.LegacyTheme) {
             value = GUILayout.Toggle(value, "");
-        } else {
+        }
+        else {
             var old = GUI.backgroundColor;
             GUI.backgroundColor = Color.clear;
             var newskin = new GUIStyle(GUI.skin.button) {
@@ -454,16 +450,12 @@ public static class Drawer {
                 padding = new RectOffset(0, 0, 0, 0)
             };
 
-            if(GUILayout.Button(value ? Icon_Active : Icon_Inactive, newskin)) {
-                value = !value;
-            }
+            if (GUILayout.Button(value ? Icon_Active : Icon_Inactive, newskin)) value = !value;
 
             GUI.backgroundColor = old;
         }
 
-        if(GUILayout.Button(label, GUI.skin.label)) {
-            value = !value;
-        }
+        if (GUILayout.Button(label, GUI.skin.label)) value = !value;
 
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
@@ -472,13 +464,14 @@ public static class Drawer {
     }
 
     public static bool DrawBool(Texture2D icon, string label, ref bool value) {
-        bool prev = value;
+        var prev = value;
 
         GUILayout.BeginHorizontal();
 
-        if(Main.Settings.LegacyTheme) {
+        if (Main.Settings.LegacyTheme) {
             value = GUILayout.Toggle(value, "");
-        } else {
+        }
+        else {
             var old = GUI.backgroundColor;
             GUI.backgroundColor = Color.clear;
             var newskin = new GUIStyle(GUI.skin.button) {
@@ -487,20 +480,16 @@ public static class Drawer {
                 padding = new RectOffset(0, 0, 0, 0)
             };
 
-            if(GUILayout.Button(value ? Icon_Active : Icon_Inactive, newskin)) {
-                value = !value;
-            }
+            if (GUILayout.Button(value ? Icon_Active : Icon_Inactive, newskin)) value = !value;
 
             GUI.backgroundColor = old;
         }
 
-        bool buttonPressed = false;
+        var buttonPressed = false;
         buttonPressed |= GUILayout.Button(icon, GUI.skin.label);
         buttonPressed |= GUILayout.Button(label, GUI.skin.label);
 
-        if(buttonPressed) {
-            value = !value;
-        }
+        if (buttonPressed) value = !value;
 
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
@@ -509,11 +498,12 @@ public static class Drawer {
     }
 
     public static bool DrawOnlyBool(ref bool value) {
-        bool prev = value;
+        var prev = value;
 
-        if(Main.Settings.LegacyTheme) {
+        if (Main.Settings.LegacyTheme) {
             value = GUILayout.Toggle(value, "");
-        } else {
+        }
+        else {
             var old = GUI.backgroundColor;
             GUI.backgroundColor = Color.clear;
             var newskin = new GUIStyle(GUI.skin.button) {
@@ -522,9 +512,7 @@ public static class Drawer {
                 padding = new RectOffset(0, 0, 0, 0)
             };
 
-            if(GUILayout.Button(value ? Icon_Active : Icon_Inactive, newskin)) {
-                value = !value;
-            }
+            if (GUILayout.Button(value ? Icon_Active : Icon_Inactive, newskin)) value = !value;
 
             GUI.backgroundColor = old;
         }
@@ -533,41 +521,49 @@ public static class Drawer {
     }
 
     public static bool DrawEnum<T>(ref T @enum) where T : Enum {
-        int current = EnumHelper<T>.IndexOf(@enum);
-        string[] names = EnumHelper<T>.GetNames();
-        bool result = SelectionPopup(ref current, names, "");
+        var current = EnumHelper<T>.IndexOf(@enum);
+        var names = EnumHelper<T>.GetNames();
+        var result = SelectionPopup(ref current, names, "");
         @enum = EnumHelper<T>.GetValues()[current];
         return result;
     }
 
     public static bool DrawEase(ref Ease ease) {
-        string[] names = Enum.GetNames(typeof(Ease));
-        int current = (int)ease;
-        Texture2D[] easeImages = [null, Icon_EaseLinear, Icon_EaseInSine, Icon_EaseOutSine, Icon_EaseInOutSine, Icon_EaseInQuad, Icon_EaseOutQuad, Icon_EaseInOutQuad, Icon_EaseInCubic, Icon_EaseOutCubic, Icon_EaseInOutCubic, Icon_EaseInQuart, Icon_EaseOutQuart, Icon_EaseInOutQuart, Icon_EaseInQuint, Icon_EaseOutQuint, Icon_EaseInOutQuint, Icon_EaseInExpo, Icon_EaseOutExpo, Icon_EaseInOutExpo, Icon_EaseInCirc, Icon_EaseOutCirc, Icon_EaseInOutCirc, Icon_EaseInElastic, Icon_EaseOutElastic, Icon_EaseInOutElastic, Icon_EaseInBack, Icon_EaseOutBack, Icon_EaseInOutBack, Icon_EaseInBounce, Icon_EaseOutBounce, Icon_EaseInOutBounce
+        var names = Enum.GetNames(typeof(Ease));
+        var current = (int)ease;
+        Texture2D[] easeImages = [
+            null, Icon_EaseLinear, Icon_EaseInSine, Icon_EaseOutSine, Icon_EaseInOutSine, Icon_EaseInQuad,
+            Icon_EaseOutQuad, Icon_EaseInOutQuad, Icon_EaseInCubic, Icon_EaseOutCubic, Icon_EaseInOutCubic,
+            Icon_EaseInQuart, Icon_EaseOutQuart, Icon_EaseInOutQuart, Icon_EaseInQuint, Icon_EaseOutQuint,
+            Icon_EaseInOutQuint, Icon_EaseInExpo, Icon_EaseOutExpo, Icon_EaseInOutExpo, Icon_EaseInCirc,
+            Icon_EaseOutCirc, Icon_EaseInOutCirc, Icon_EaseInElastic, Icon_EaseOutElastic, Icon_EaseInOutElastic,
+            Icon_EaseInBack, Icon_EaseOutBack, Icon_EaseInOutBack, Icon_EaseInBounce, Icon_EaseOutBounce,
+            Icon_EaseInOutBounce
         ];
-        bool result = SelectionPopup(ref current, names, easeImages, "");
-        if(result) {
+        var result = SelectionPopup(ref current, names, easeImages, "");
+        if (result) {
             ease = (Ease)current;
             return true;
         }
+
         return false;
     }
 
     public static bool DrawEnum<T>(ref T @enum, Texture2D[] images) where T : Enum {
-        int current = EnumHelper<T>.IndexOf(@enum);
-        string[] names = EnumHelper<T>.GetNames();
-        bool result = SelectionPopup(ref current, names, images, "");
+        var current = EnumHelper<T>.IndexOf(@enum);
+        var names = EnumHelper<T>.GetNames();
+        var result = SelectionPopup(ref current, names, images, "");
         @enum = EnumHelper<T>.GetValues()[current];
         return result;
     }
 
     public static bool DrawEnumPlus<T>(ref T @enum, Func<string, string> translator)
         where T : Enum {
-        int current = EnumHelper<T>.IndexOf(@enum);
-        string[] names = EnumHelper<T>.GetNames();
-        string[] translatedNames = names.Select(name => translator(name)).ToArray();
+        var current = EnumHelper<T>.IndexOf(@enum);
+        var names = EnumHelper<T>.GetNames();
+        var translatedNames = names.Select(name => translator(name)).ToArray();
 
-        bool result =
+        var result =
             SelectionPopup(ref current, translatedNames, "");
 
         @enum = EnumHelper<T>.GetValues()[current];
@@ -576,11 +572,11 @@ public static class Drawer {
 
     public static bool DrawEnumPlus<T>(ref T @enum, Texture2D[] images, Func<string, string> translator)
         where T : Enum {
-        int current = EnumHelper<T>.IndexOf(@enum);
-        string[] names = EnumHelper<T>.GetNames();
-        string[] translatedNames = names.Select(name => translator(name)).ToArray();
+        var current = EnumHelper<T>.IndexOf(@enum);
+        var names = EnumHelper<T>.GetNames();
+        var translatedNames = names.Select(name => translator(name)).ToArray();
 
-        bool result =
+        var result =
             SelectionPopup(ref current, translatedNames, images, "");
 
         @enum = EnumHelper<T>.GetValues()[current];
@@ -593,22 +589,21 @@ public static class Drawer {
         var selected = tags.IndexOf(value);
 
         var tooltip = new Dictionary<string, string>();
-        foreach(var tag in tags) {
-            tooltip[tag] = Utils.Tooltip.GetTagDescription(tag);
-        }
+        foreach (var tag in tags) tooltip[tag] = Utils.Tooltip.GetTagDescription(tag);
 
         SelectionPopupWithTooltip(ref selected, tags.ToArray(), "", tooltip);
         value = tags[selected];
         return selected != tags.IndexOf(value);
     }
 
-    public static bool DrawString(string label, ref string value, bool textArea = false) => DrawString(null, label, ref value, textArea);
+    public static bool DrawString(string label, ref string value, bool textArea = false) {
+        return DrawString(null, label, ref value, textArea);
+    }
+
     public static bool DrawString(Texture2D icon, string label, ref string value, bool textArea = false) {
-        string prev = value;
+        var prev = value;
         GUILayout.BeginHorizontal();
-        if(icon != null) {
-            GUILayout.Label(icon);
-        }
+        if (icon != null) GUILayout.Label(icon);
         GUILayout.Label(label);
         value = !textArea ? GUILayout.TextField(value, myTextField) : GUILayout.TextArea(value, myTextField);
 
@@ -618,7 +613,7 @@ public static class Drawer {
     }
 
     public static bool DrawOnlyString(ref string value, bool textArea = false) {
-        string prev = value;
+        var prev = value;
         value = !textArea ? GUILayout.TextField(value, myTextField) : GUILayout.TextArea(value, myTextField);
 
         GUILayout.FlexibleSpace();
@@ -626,7 +621,7 @@ public static class Drawer {
     }
 
     public static bool DrawCodeEditor(string label, string id, ref string value) {
-        string prev = value;
+        var prev = value;
         GUILayout.Label(label);
         var sk = new GUIStyle(GUI.skin.label) {
             margin = new RectOffset(0, 0, 0, 0),
@@ -638,7 +633,7 @@ public static class Drawer {
     }
 
     public static bool DrawCodeEditor(Texture2D icon, string label, string id, ref string value) {
-        string prev = value;
+        var prev = value;
         GUILayout.BeginHorizontal();
         GUILayout.Label(icon);
         GUILayout.Space(4);
@@ -655,59 +650,65 @@ public static class Drawer {
         return prev != value;
     }
 
-    public static bool DrawExpr<T>(string label, string id, ref ExprValue<T> value, Action drawNormal, Type tooltip = null)
-        => DrawExprInternal(null, label, id, ref value, drawNormal, tooltip);
-    public static bool DrawExpr<T>(Texture2D icon, string label, string id, ref ExprValue<T> value, Action drawNormal, Type tooltip = null)
-        => DrawExprInternal(icon, label, id, ref value, drawNormal, tooltip);
-    private static bool DrawExprInternal<T>(Texture2D icon, string label, string id, ref ExprValue<T> value, Action drawNormal, Type tooltip) {
-        bool changed = false;
-        Color old = GUI.color;
-        bool isExpr = value.IsExpr;
+    public static bool DrawExpr<T>(string label, string id, ref ExprValue<T> value, Action drawNormal,
+        Type tooltip = null) {
+        return DrawExprInternal(null, label, id, ref value, drawNormal, tooltip);
+    }
+
+    public static bool DrawExpr<T>(Texture2D icon, string label, string id, ref ExprValue<T> value, Action drawNormal,
+        Type tooltip = null) {
+        return DrawExprInternal(icon, label, id, ref value, drawNormal, tooltip);
+    }
+
+    private static bool DrawExprInternal<T>(Texture2D icon, string label, string id, ref ExprValue<T> value,
+        Action drawNormal, Type tooltip) {
+        var changed = false;
+        var old = GUI.color;
+        var isExpr = value.IsExpr;
         GUILayout.BeginHorizontal();
-        if(icon) {
+        if (icon) {
             GUILayout.Label(icon);
             GUILayout.Space(4);
         }
-        if(Main.Settings.UiMode == Settings.EditorUIMode.Simple) {
+
+        if (Main.Settings.UiMode == Settings.EditorUIMode.Simple) {
             GUILayout.Label(label);
-        } else {
-            if(isExpr) {
-                GUI.color = Color.cyan;
-            }
-            if(Button(label)) {
-                if(!isExpr) {
+        }
+        else {
+            if (isExpr) GUI.color = Color.cyan;
+            if (Button(label)) {
+                if (!isExpr) {
                     value.Init();
-                } else {
+                }
+                else {
                     value.Dispose();
                     changed = true;
                 }
             }
-            if(isExpr) {
-                GUI.color = old;
-            }
-            if(isExpr && tooltip != null && MiscUtils.IsHovering()) {
-                if(tooltip == typeof(Vector2)) {
+
+            if (isExpr) GUI.color = old;
+            if (isExpr && tooltip != null && MiscUtils.IsHovering()) {
+                if (tooltip == typeof(Vector2))
                     Main.tooltip = "X,Y | EX : 1,0.5";
-                } else if(tooltip == typeof(Vector3)) {
+                else if (tooltip == typeof(Vector3))
                     Main.tooltip = "X,Y,Z | EX : 1,0.5,0.2";
-                } else if(tooltip == typeof(GColor)) {
-                    Main.tooltip = "R,G,B,A,R,G,B,A,R,G,B,A,R,G,B,A\n↖ ↗ ↙ ↘ | 0 - 1\n EX : 1,0.5,0,1,0,1,0,0.9,0,0,1,1,0,0.24,0,1";
-                } else if(tooltip == typeof(Color)) {
-                    Main.tooltip = "R,G,B,A | 0 - 1 | EX : 1,0.5,0,1";
-                }
+                else if (tooltip == typeof(GColor))
+                    Main.tooltip =
+                        "R,G,B,A,R,G,B,A,R,G,B,A,R,G,B,A\n↖ ↗ ↙ ↘ | 0 - 1\n EX : 1,0.5,0,1,0,1,0,0.9,0,0,1,1,0,0.24,0,1";
+                else if (tooltip == typeof(Color)) Main.tooltip = "R,G,B,A | 0 - 1 | EX : 1,0.5,0,1";
             }
         }
+
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
 
-        if(value.IsExpr) {
-            if(DrawCodeEditor(Icon_Play, Main.Lang.Get("PLAYING_COMMAND", "Playing Command"), id + "_P", ref value.Playing)) {
-                value.ApplyConfig();
-            }
-            if(DrawCodeEditor(Icon_Pause, Main.Lang.Get("NOT_PLAYING_COMMAND", "Not Playing Command"), id + "_n", ref value.NotPlaying)) {
-                value.ApplyConfig();
-            }
-        } else {
+        if (value.IsExpr) {
+            if (DrawCodeEditor(Icon_Play, Main.Lang.Get("PLAYING_COMMAND", "Playing Command"), id + "_P",
+                    ref value.Playing)) value.ApplyConfig();
+            if (DrawCodeEditor(Icon_Pause, Main.Lang.Get("NOT_PLAYING_COMMAND", "Not Playing Command"), id + "_n",
+                    ref value.NotPlaying)) value.ApplyConfig();
+        }
+        else {
             drawNormal.Invoke();
             changed = true;
         }
@@ -716,56 +717,56 @@ public static class Drawer {
     }
 
     public static bool DrawAlignment(ref TextAlignmentOptions value) {
-        if(value == TextAlignmentOptions.Converted) {
+        if (value == TextAlignmentOptions.Converted) {
             GUI.color = Color.cyan;
             Button(Icon_AliUnknown, GUILayout.Width(404));
             GUI.color = Color.white;
             return false;
         }
 
-        int oldvalue = (int)value;
-        int newvalue = oldvalue;
+        var oldvalue = (int)value;
+        var newvalue = oldvalue;
 
         GUILayout.BeginHorizontal();
 
         // Left 0
-        GUI.color = (((int)value & (1 << 0)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliLeft, GUILayout.Width(40))) {
-            newvalue &= ~0xFF;         // clear 0~7
+        GUI.color = ((int)value & (1 << 0)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliLeft, GUILayout.Width(40))) {
+            newvalue &= ~0xFF; // clear 0~7
             newvalue |= 1 << 0;
         }
 
         // Center 1
-        GUI.color = (((int)value & (1 << 1)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliCenter, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 1)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliCenter, GUILayout.Width(40))) {
             newvalue &= ~0xFF;
             newvalue |= 1 << 1;
         }
 
         // Right 2
-        GUI.color = (((int)value & (1 << 2)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliRight, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 2)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliRight, GUILayout.Width(40))) {
             newvalue &= ~0xFF;
             newvalue |= 1 << 2;
         }
 
         // Justified 3
-        GUI.color = (((int)value & (1 << 3)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliJustified, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 3)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliJustified, GUILayout.Width(40))) {
             newvalue &= ~0xFF;
             newvalue |= 1 << 3;
         }
 
         // Flush 4
-        GUI.color = (((int)value & (1 << 4)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliFlush, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 4)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliFlush, GUILayout.Width(40))) {
             newvalue &= ~0xFF;
             newvalue |= 1 << 4;
         }
 
         // Geometry_Center 5
-        GUI.color = (((int)value & (1 << 5)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliGeometryCenter, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 5)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliGeometryCenter, GUILayout.Width(40))) {
             newvalue &= ~0xFF;
             newvalue |= 1 << 5;
         }
@@ -773,43 +774,43 @@ public static class Drawer {
         GUILayout.Space(20);
 
         // Top 8
-        GUI.color = (((int)value & (1 << 8)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliTop, GUILayout.Width(40))) {
-            newvalue &= ~(0xFF << 8);  // clear 8~15
+        GUI.color = ((int)value & (1 << 8)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliTop, GUILayout.Width(40))) {
+            newvalue &= ~(0xFF << 8); // clear 8~15
             newvalue |= 1 << 8;
         }
 
         // Middle 9
-        GUI.color = (((int)value & (1 << 9)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliMiddle, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 9)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliMiddle, GUILayout.Width(40))) {
             newvalue &= ~(0xFF << 8);
             newvalue |= 1 << 9;
         }
 
         // Bottom 10
-        GUI.color = (((int)value & (1 << 10)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliBottom, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 10)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliBottom, GUILayout.Width(40))) {
             newvalue &= ~(0xFF << 8);
             newvalue |= 1 << 10;
         }
 
         // Baseline 11
-        GUI.color = (((int)value & (1 << 11)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliBaseline, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 11)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliBaseline, GUILayout.Width(40))) {
             newvalue &= ~(0xFF << 8);
             newvalue |= 1 << 11;
         }
 
         // Midline 12
-        GUI.color = (((int)value & (1 << 12)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliMidline, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 12)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliMidline, GUILayout.Width(40))) {
             newvalue &= ~(0xFF << 8);
             newvalue |= 1 << 12;
         }
 
         // Capline 13
-        GUI.color = (((int)value & (1 << 13)) != 0) ? Color.cyan : Color.white;
-        if(Button(Icon_AliCapline, GUILayout.Width(40))) {
+        GUI.color = ((int)value & (1 << 13)) != 0 ? Color.cyan : Color.white;
+        if (Button(Icon_AliCapline, GUILayout.Width(40))) {
             newvalue &= ~(0xFF << 8);
             newvalue |= 1 << 13;
         }
@@ -817,7 +818,7 @@ public static class Drawer {
         GUI.color = Color.white;
         GUILayout.EndHorizontal();
 
-        if(Enum.IsDefined(typeof(TextAlignmentOptions), newvalue) && newvalue != oldvalue) {
+        if (Enum.IsDefined(typeof(TextAlignmentOptions), newvalue) && newvalue != oldvalue) {
             value = (TextAlignmentOptions)newvalue;
             return true;
         }
@@ -825,39 +826,35 @@ public static class Drawer {
         return false;
     }
 
-    public static void DrawSelectFont(System.Action<string> onFontSelected) {
-        if(Button(Icon_OpenFolder, GUILayout.Width(40))) {
+    public static void DrawSelectFont(Action<string> onFontSelected) {
+        if (Button(Icon_OpenFolder, GUILayout.Width(40)))
             Task.Run(() => {
                 var extensions = new[] {
                     new ExtensionFilter("Font Files", "ttf", "otf"),
                     new ExtensionFilter("All Files", "*")
                 };
-                string baseDir = Path.Combine(Main.Mod.Path, "Overlayer");
-                string[] paths = StandaloneFileBrowser.OpenFilePanel(
+                var baseDir = Path.Combine(Main.Mod.Path, "Overlayer");
+                var paths = StandaloneFileBrowser.OpenFilePanel(
                     Main.Lang.Get("SELECT_FONT_FILE", "Select Font File"),
                     baseDir,
                     extensions,
                     false
                 );
-                if(paths.Length > 0) {
-                    string path = paths[0];
-                    if(path.StartsWith(Main.Mod.Path)) {
+                if (paths.Length > 0) {
+                    var path = paths[0];
+                    if (path.StartsWith(Main.Mod.Path))
                         path = path.Replace(Main.Mod.Path, "{ModDir}")
-                                   .Replace("\\", "/");
-                    }
-                    string finalPath = path;
+                            .Replace("\\", "/");
+                    var finalPath = path;
                     Main.MainThreadDispatcher.Enqueue(() => onFontSelected?.Invoke(finalPath));
                 }
             });
-        }
     }
 
     private static Rect CalculatePosition(Vector2 mousePosition, float width, float height, bool ignoreWidth) {
         Rect labelPosition = new(mousePosition.x, mousePosition.y - height - 20, width + 20, height + 20);
 
-        if(ignoreWidth) {
-            return labelPosition;
-        }
+        if (ignoreWidth) return labelPosition;
 
         var windowwidth = ((Rect)AccessTools.Field(typeof(UnityModManager.UI), "mWindowRect")
             .GetValue(UnityModManager.UI.Instance)).width;
@@ -865,28 +862,28 @@ public static class Drawer {
             .GetValue(UnityModManager.UI.Instance);
         windowwidth += scroll[UnityModManager.UI.Instance.tabId].x;
 
-        if(labelPosition.x + labelPosition.width > windowwidth) {
-            labelPosition.x = windowwidth - labelPosition.width;
-        }
+        if (labelPosition.x + labelPosition.width > windowwidth) labelPosition.x = windowwidth - labelPosition.width;
 
         return labelPosition;
     }
 
-    private static void DrawBackground(Rect rect) => GUI.Box(rect, "", RGUIStyle.darkWindow);
+    private static void DrawBackground(Rect rect) {
+        GUI.Box(rect, "", RGUIStyle.darkWindow);
+    }
 
     public static bool Tooltip(string text, bool ignoreWidth = false) {
-        if(string.IsNullOrEmpty(text)) {
+        if (string.IsNullOrEmpty(text)) {
             GUI.Box(new Rect(0, 0, 0, 0), "");
             return false;
         }
 
-        Vector2 mousePosition = Event.current.mousePosition;
+        var mousePosition = Event.current.mousePosition;
 
-        float maxWidth = 660f;
-        float height = GUI.skin.label.CalcHeight(new GUIContent(text), maxWidth);
-        float width = Mathf.Min(GUI.skin.label.CalcSize(new GUIContent(text)).x, maxWidth);
+        var maxWidth = 660f;
+        var height = GUI.skin.label.CalcHeight(new GUIContent(text), maxWidth);
+        var width = Mathf.Min(GUI.skin.label.CalcSize(new GUIContent(text)).x, maxWidth);
 
-        Rect pos = CalculatePosition(mousePosition, width, height, ignoreWidth);
+        var pos = CalculatePosition(mousePosition, width, height, ignoreWidth);
 
         DrawBackground(pos);
 
@@ -895,24 +892,24 @@ public static class Drawer {
     }
 
     public static bool Tooltip(Texture2D image, bool ignoreWidth = false) {
-        if(image == null) {
+        if (image == null) {
             GUI.Box(new Rect(0, 0, 0, 0), "");
             return false;
         }
 
-        Vector2 mousePosition = Event.current.mousePosition;
+        var mousePosition = Event.current.mousePosition;
 
-        float maxWidth = 660f;
+        var maxWidth = 660f;
         float width = image.width;
         float height = image.height;
 
-        if(width > maxWidth) {
-            float ratio = maxWidth / width;
+        if (width > maxWidth) {
+            var ratio = maxWidth / width;
             width = maxWidth;
             height *= ratio;
         }
 
-        Rect pos = CalculatePosition(mousePosition, width, height, ignoreWidth);
+        var pos = CalculatePosition(mousePosition, width, height, ignoreWidth);
 
         DrawBackground(pos);
 
@@ -921,26 +918,31 @@ public static class Drawer {
     }
 
     public static bool HoverTooltip(string tooltip) {
-        bool hover = MiscUtils.IsHovering();
-        if(hover && Main.Settings.Tooltip) {
-            Main.tooltip = tooltip;
-        }
+        var hover = MiscUtils.IsHovering();
+        if (hover && Main.Settings.Tooltip) Main.tooltip = tooltip;
 
         return hover;
     }
 
     public static bool HoverTooltip(Texture2D tooltip) {
-        bool hover = MiscUtils.IsHovering();
-        if(hover && Main.Settings.Tooltip) {
-            Main.tooltipImage = tooltip;
-        }
+        var hover = MiscUtils.IsHovering();
+        if (hover && Main.Settings.Tooltip) Main.tooltipImage = tooltip;
 
         return hover;
     }
 
-    public static bool Button(string label, params GUILayoutOption[] options) => GUILayout.Button(label, myButton, options);
-    public static bool Button(Texture2D icon, string text, params GUILayoutOption[] options) => GUILayout.Button(new GUIContent(text, icon), myButton, options);
-    public static bool Button(Texture2D icon, params GUILayoutOption[] options) => GUILayout.Button(icon, myButton, options);
+    public static bool Button(string label, params GUILayoutOption[] options) {
+        return GUILayout.Button(label, myButton, options);
+    }
+
+    public static bool Button(Texture2D icon, string text, params GUILayoutOption[] options) {
+        return GUILayout.Button(new GUIContent(text, icon), myButton, options);
+    }
+
+    public static bool Button(Texture2D icon, params GUILayoutOption[] options) {
+        return GUILayout.Button(icon, myButton, options);
+    }
+
     public static void ButtonDummy(Texture2D icon, params GUILayoutOption[] options) {
         GUIStyle dummyStyle = new(myButton);
         dummyStyle.normal.background = myButton.normal.background;

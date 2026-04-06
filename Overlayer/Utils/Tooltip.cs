@@ -1,24 +1,26 @@
 ﻿using System.Collections.Generic;
+using Newgrounds;
 
 namespace Overlayer.Utils;
 
 public class Tooltip {
     public static string GetTagDescription(string key) {
-        if(string.IsNullOrEmpty(key)) {
-            return null;
-        }
+        if (string.IsNullOrEmpty(key)) return null;
 
-        string keyUpper = key.ToUpperInvariant();
+        var keyUpper = key.ToUpperInvariant();
 
-        string langKey = "TAG_DESC_" + keyUpper;
-        string localized = Main.Lang.Get(langKey, null);
+        var langKey = "TAG_DESC_" + keyUpper;
+        var localized = Main.Lang.Get(langKey, null);
         return !string.IsNullOrEmpty(localized)
             ? localized
-            : tooltip.TryGetValue(keyUpper, out var staticTip) && !string.IsNullOrEmpty(staticTip) ? staticTip : null;
+            : tooltip.TryGetValue(keyUpper, out var staticTip) && !string.IsNullOrEmpty(staticTip)
+                ? staticTip
+                : null;
     }
 
     public static Dictionary<string, string> tooltip = new() {
-        ["ABSMAXXACCURACY"] = "The highest achievable Absolute Max XAccuracy in the current tile(Excluding checkpoints)",
+        ["ABSMAXXACCURACY"] =
+            "The highest achievable Absolute Max XAccuracy in the current tile(Excluding checkpoints)",
         ["ABSXACCURACY"] = "Absolute Max XAccuracy(Excluding checkpoints)",
         ["ACCURACY"] = "Accuracy(when perfect: 100+0.01%)",
         ["ACTUALPROGRESS"] = "Current Actual Progress based on time",
@@ -35,7 +37,8 @@ public class Tooltip {
         ["CHIT"] = "Current Hit",
         ["CHITRAW"] = "Current Hit Raw",
         ["CLP"] = "Current Late Perfect",
-        ["COLORRANGE"] = "You can adjust the color from any color to any color you want based on a specific tag. Use with <color>.",
+        ["COLORRANGE"] =
+            "You can adjust the color from any color to any color you want based on a specific tag. Use with <color>.",
         ["COMBO"] = "Combo count",
         ["CP"] = "Current Perfect",
         ["CSLOW"] = "Slow judgment in Current difficulty",
@@ -83,7 +86,8 @@ public class Tooltip {
         ["ISNOFAILENABLED"] = "Displays true if No-fail Mode is enabled, false if disabled",
         ["ISOLDAUTOENABLED"] = "Displays true if Old Auto is enabled, false if disabled",
         ["ISPRACTICEMODEENABLED"] = "Displays true if practice mode is enabled, false otherwise",
-        ["ISSPEEDTRIALENABLED"] = "Displays true if Speed Trial Mode is enabled, false otherwise.\nOnly works on CLS and official levels.",
+        ["ISSPEEDTRIALENABLED"] =
+            "Displays true if Speed Trial Mode is enabled, false otherwise.\nOnly works on CLS and official levels.",
         ["ISSTARTED"] = "Displays false if not started, or true if started by pressing any key",
         ["LEFTTILE"] = "Number of tiles left",
         ["LELP"] = "Lenient Early Perfect + Lenient Late Perfect",
@@ -112,7 +116,8 @@ public class Tooltip {
         ["MARGINCOMBO"] = "Displays the combo for a single judgment\n(ex: {MarginCombo:VeryLate})",
         ["MARGINCOMBOS"] = "Displays all combos for multiple judgments\n(ex: {MarginCombos:VeryLate|VeryEarly})",
         ["MARGINMAXCOMBO"] = "Displays the maximum combo for a single judgment\n(ex: {MarginMaxCombo:VeryLate})",
-        ["MARGINMAXCOMBOS"] = "Displays all maximum combos for multiple judgments\n(ex: {MarginMaxCombos:VeryLate|VeryEarly})",
+        ["MARGINMAXCOMBOS"] =
+            "Displays all maximum combos for multiple judgments\n(ex: {MarginMaxCombos:VeryLate|VeryEarly})",
         ["MARGINSCALE"] = "Level's judgment range",
         ["MAXACCURACY"] = "The highest achievable Accuracy in the current tile",
         ["MAXCOMBO"] = "Maximum Combo",
@@ -187,7 +192,8 @@ public class Tooltip {
         ["SMARGINMAXCOMBO"] = "Strict judgment of MarginMaxCombo",
         ["SMARGINMAXCOMBOS"] = "Strict judgment of MarginMaxCombos",
         ["SP"] = "Strict Perfect",
-        ["SPECIALPLAYMARK"] = "Displays a special mark based on your play performance:\nPP = perfect  FC+ = no miss\nFC = full combo  XX = no special mark",
+        ["SPECIALPLAYMARK"] =
+            "Displays a special mark based on your play performance:\nPP = perfect  FC+ = no miss\nFC = full combo  XX = no special mark",
         ["SSCORE"] = "Strict difficulty score",
         ["SSLOW"] = "Slow judgment in Strict difficulty",
         ["ST"] = "Strict Too Early + Strict Too Late",
@@ -223,6 +229,6 @@ public class Tooltip {
         ["VEHEX"] = "VeryEarly Hex Color",
         ["VLHEX"] = "VeryLate Hex Color",
         ["XACCURACY"] = "XAccuracy(when pure perfect: 100)",
-        ["YEAR"] = "Year on current computer",
+        ["YEAR"] = "Year on current computer"
     };
 }

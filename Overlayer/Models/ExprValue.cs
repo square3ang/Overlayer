@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 using Overlayer.Core.TextReplacing;
 using Overlayer.Tags;
-using System;
-using System.Linq;
 
 namespace Overlayer.Models;
 
@@ -12,11 +12,12 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
         DefaultValue = defaultValue;
         Value = defaultValue;
     }
+
     public readonly T DefaultValue;
     public T Value;
 
-    public bool IsExpr { get; private set; } = false;
-    public bool HasExpr { get; private set; } = false;
+    public bool IsExpr { get; private set; }
+    public bool HasExpr { get; private set; }
     public Replacer PlayingReplacer;
     public Replacer NotPlayingReplacer;
     public string Playing = "";
@@ -35,7 +36,8 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     private static JToken SerializeValue(T value, Func<T, JToken> serializer) {
         try {
             return serializer(value);
-        } catch {
+        }
+        catch {
             return JValue.CreateNull();
         }
     }
@@ -43,13 +45,14 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     private T DeserializeValue(Func<T> parser) {
         try {
             return parser();
-        } catch {
+        }
+        catch {
             return DefaultValue;
         }
     }
 
     public JToken Serialize(Func<T, JToken> serializer) {
-        if(IsExpr) {
+        if (IsExpr) {
             JObject obj = new() {
                 [nameof(Playing)] = Playing,
                 [nameof(NotPlaying)] = NotPlaying
@@ -61,13 +64,13 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public bool Deserialize(JToken node, Func<JToken, T> parser) {
-        if(node == null) {
+        if (node == null) {
             Value = DefaultValue;
             HasExpr = false;
             return false;
         }
 
-        if(node.Type == JTokenType.Object && node[nameof(Playing)] != null) {
+        if (node.Type == JTokenType.Object && node[nameof(Playing)] != null) {
             Playing = node[nameof(Playing)].Value<string>();
             NotPlaying = node[nameof(NotPlaying)]?.Value<string>() ?? "";
             HasExpr = true;
@@ -80,9 +83,7 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public void Init() {
-        if(IsExpr) {
-            return;
-        }
+        if (IsExpr) return;
 
         PlayingReplacer = new Replacer(Playing, TagManager.All.Select(ot => ot.Tag));
         NotPlayingReplacer = new Replacer(NotPlaying, TagManager.NP.Select(ot => ot.Tag));
@@ -91,20 +92,18 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public T Update(Func<string, T> parser) {
-        string raw = Main.IsPlaying ? PlayingReplacer?.Replace() : NotPlayingReplacer?.Replace();
+        var raw = Main.IsPlaying ? PlayingReplacer?.Replace() : NotPlayingReplacer?.Replace();
 
-        if(string.IsNullOrEmpty(raw)) {
-            return default;
-        }
-        if(Main.Settings.SafeCommandParse) {
+        if (string.IsNullOrEmpty(raw)) return default;
+        if (Main.Settings.SafeCommandParse)
             try {
                 return parser(raw);
-            } catch {
+            }
+            catch {
                 return default;
             }
-        } else {
-            return parser(raw);
-        }
+
+        return parser(raw);
     }
 
     public void ApplyConfig() {
@@ -118,9 +117,7 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public void Dispose() {
-        if(!IsExpr) {
-            return;
-        }
+        if (!IsExpr) return;
 
         PlayingReplacer?.Dispose();
         NotPlayingReplacer?.Dispose();
@@ -128,7 +125,7 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public bool GetNormalValue(out T value) {
-        if(!IsExpr) {
+        if (!IsExpr) {
             value = Value;
             return true;
         }
@@ -138,7 +135,7 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public bool GetExprValue(Func<string, T> parser, out T expr) {
-        if(IsExpr) {
+        if (IsExpr) {
             expr = Update(parser);
             return true;
         }

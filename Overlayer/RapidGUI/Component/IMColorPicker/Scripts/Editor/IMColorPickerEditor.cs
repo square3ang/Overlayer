@@ -1,7 +1,6 @@
 ﻿namespace RapidGUI.imColorPicker;
 
 public class IMColorPickerEditor {
-
     /*[MenuItem("Assets/Create/IMColorPreset")]
     public static void CreateAsset()
     {
@@ -21,4 +20,3 @@ public class IMColorPickerEditor {
         Selection.activeObject = item;
     }*/
 }
-

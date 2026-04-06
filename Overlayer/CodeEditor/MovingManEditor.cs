@@ -1,10 +1,10 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using Overlayer.Core;
 using Overlayer.Patches;
 using Overlayer.Tags;
 using Overlayer.Utils;
 using RapidGUI;
-using System;
 using UnityEngine;
 using Time = UnityEngine.Time;
 
@@ -16,13 +16,12 @@ internal class MovingManEditor : MonoBehaviour {
     public string matchValue;
     private Rect windowRect;
     private Rect previewWindowRect;
-    private string[] contentLines;
-    private bool isInitaialize = false;
+    private bool isInitaialize;
     private bool isAnimating = false;
-    private bool isSpawn = false;
+    private bool isSpawn;
 
-    private int tester = 0;
-    private float timer = 0;
+    private int tester;
+    private float timer;
 
     public string targetTag = nameof(ComboStats.Combo);
     public double startSize = 30;
@@ -31,13 +30,13 @@ internal class MovingManEditor : MonoBehaviour {
     public double defaultSize = 30;
     public double speed = 800;
 
-    public bool invert = false;
+    public bool invert;
     public Ease ease = Ease.OutExpo;
 
     private NeoDrawer neoDrawer;
 
     public void Initialize(string tag, string codesBefore, string codesAfter) {
-        if(tag.Contains("(")) {
+        if (tag.Contains("(")) {
             var arr = tag.Split('(')[1].Split(')')[0].Split(',');
             targetTag = arr[0];
             startSize = double.Parse(arr[1]);
@@ -61,24 +60,22 @@ internal class MovingManEditor : MonoBehaviour {
 
     public void Update() {
         timer += Time.deltaTime;
-        if(timer >= speed / 1000f) {
+        if (timer >= speed / 1000f) {
             timer -= (float)speed / 1000f;
             tester++;
-            if(tester > 100) {
-                tester = 0;
-            }
+            if (tester > 100) tester = 0;
 
             TagManager.testerValue = tester.ToString();
         }
     }
 
     public void OnGUI() {
-        if(isInitaialize) {
+        if (isInitaialize) {
             var fmt = string.Format(Main.Lang.Get("THIS_EDITOR", "{0} Editor"), nameof(Effect.MovingMan));
-            if(!isSpawn && Event.current.type == EventType.Repaint) {
+            if (!isSpawn && Event.current.type == EventType.Repaint) {
                 windowRect = GUILayout.Window(122, windowRect, DrawWindow, fmt, RGUIStyle.darkWindow);
-                windowRect.x = (int)((Screen.width * 0.5f) - (windowRect.width * 0.5f));
-                windowRect.y = (int)((Screen.height * 0.5f) - (windowRect.height * 0.5f));
+                windowRect.x = (int)(Screen.width * 0.5f - windowRect.width * 0.5f);
+                windowRect.y = (int)(Screen.height * 0.5f - windowRect.height * 0.5f);
 
                 isSpawn = true;
             }
@@ -98,8 +95,8 @@ internal class MovingManEditor : MonoBehaviour {
 
     private void PreviewWindow(int windowID) {
         GUI.BringWindowToFront(windowID);
-        GUILayout.Label("<size=" + (Effect.MovingMan("INTERNAL_TESTER_TAG_1234512345", startSize, endSize,
-            defaultSize, speed, invert, ease) / 2f) + ">Test</size>");
+        GUILayout.Label("<size=" + Effect.MovingMan("INTERNAL_TESTER_TAG_1234512345", startSize, endSize,
+            defaultSize, speed, invert, ease) / 2f + ">Test</size>");
     }
 
     private void DrawWindow(int windowID) {
@@ -129,7 +126,7 @@ internal class MovingManEditor : MonoBehaviour {
 
         neoDrawer.UpdateFocused();
 
-        if(Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
+        if (Drawer.Button(Main.Lang.Get("DONE", "Done"))) {
             neoDrawer = null;
             BlockUMMClosing.Block = false;
             Destroy(gameObject);

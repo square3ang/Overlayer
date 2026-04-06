@@ -30,8 +30,8 @@ public class OverlayerProfile : MonoBehaviour {
         Group.interactable = true;
         Group.blocksRaycasts = true;
 
-        RectTransform rt = gameObject.GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
-        RectTransform publicRt = PublicCanvas.GetComponent<RectTransform>();
+        var rt = gameObject.GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
+        var publicRt = PublicCanvas.GetComponent<RectTransform>();
         rt.anchorMin = Vector2.zero;
         rt.anchorMax = Vector2.one;
         rt.pivot = new Vector2(0.5f, 0.5f);
@@ -47,14 +47,12 @@ public class OverlayerProfile : MonoBehaviour {
     }
 
     public static void PublicCanvasInit() {
-        if(PublicCanvas) {
-            return;
-        }
-        GameObject pCanvasObj = PCanvasObj = new GameObject("Overlayer Canvas");
+        if (PublicCanvas) return;
+        var pCanvasObj = PCanvasObj = new GameObject("Overlayer Canvas");
         PublicCanvas = pCanvasObj.AddComponent<Canvas>();
         PublicCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
         PublicCanvas.sortingOrder = 32760;
-        CanvasScaler scaler = pCanvasObj.AddComponent<CanvasScaler>();
+        var scaler = pCanvasObj.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
@@ -62,17 +60,14 @@ public class OverlayerProfile : MonoBehaviour {
     }
 
     public static void DragInit() {
-        if(DragObj != null) {
-            return;
-        }
+        if (DragObj != null) return;
         DragObj = new GameObject("Drag Outline");
         DragObj.transform.SetParent(PublicCanvas.transform);
         DragObj.transform.localPosition = Vector3.zero;
         DragImage = DragObj.AddComponent<Image>();
 
         Texture2D outlinetex = new(3, 3, TextureFormat.RGBA32, false);
-        Color[] outlinetexpixels =
-        [
+        Color[] outlinetexpixels = [
             Color.white, Color.white, Color.white,
             Color.white, Color.clear, Color.white,
             Color.white, Color.white, Color.white
@@ -80,7 +75,7 @@ public class OverlayerProfile : MonoBehaviour {
         outlinetex.SetPixels(outlinetexpixels);
         outlinetex.Apply();
         outlinetex.filterMode = FilterMode.Point;
-        Sprite outline = Sprite.Create(
+        var outline = Sprite.Create(
             outlinetex,
             new Rect(0, 0, 3, 3),
             new Vector2(0.5f, 0.5f),
@@ -97,5 +92,7 @@ public class OverlayerProfile : MonoBehaviour {
         DragObj.SetActive(false);
     }
 
-    public void ApplyConfig() => Group.alpha = Config.Opacity;
+    public void ApplyConfig() {
+        Group.alpha = Config.Opacity;
+    }
 }

@@ -18,8 +18,9 @@ public class OllyDialogue {
         public EffectForwardBit EffectForwardBit;
 
         public Node(string text, string[] choices = null, Action<int> onChoice = null,
-                            Eye eye = Eye.Normal, Mouth mouth = Mouth.Normal, Eyebrow eyebrow = default,
-                            EyeSpecial eyeSpecial = default, EffectBit effectBit = EffectBit.None, EffectForwardBit effectForwardBit = EffectForwardBit.None) {
+            Eye eye = Eye.Normal, Mouth mouth = Mouth.Normal, Eyebrow eyebrow = default,
+            EyeSpecial eyeSpecial = default, EffectBit effectBit = EffectBit.None,
+            EffectForwardBit effectForwardBit = EffectForwardBit.None) {
             Text = text;
             Choices = choices;
             OnChoice = onChoice;

@@ -1,22 +1,22 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 using Overlayer.Core.Interfaces;
 using Overlayer.Tags;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Overlayer.Models;
 
 public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
     public delegate void DragChangeHandler(bool state);
+
     public event DragChangeHandler OnDragChanged;
     private bool _drag;
+
     public bool Drag {
         get => _drag;
         set {
-            if(_drag == value) {
-                return;
-            }
+            if (_drag == value) return;
 
             _drag = value;
             OnDragChanged?.Invoke(_drag);
@@ -50,7 +50,9 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
         return copy;
     }
 
-    ImageConfig ICopyable<ImageConfig>.Copy() => (ImageConfig)Copy();
+    ImageConfig ICopyable<ImageConfig>.Copy() {
+        return (ImageConfig)Copy();
+    }
 
     public override JToken Serialize() {
         var node = SerializeBase();
@@ -70,7 +72,9 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
         var defaults = new ImageConfig();
         DeserializeBase(node);
         Drag = node[nameof(Drag)]?.Value<bool>() ?? defaults.Drag;
-        Images = node[nameof(Images)] is JArray imagesToken ? imagesToken.Select(t => t.Value<string>()).ToList() : defaults.Images.ToList();
+        Images = node[nameof(Images)] is JArray imagesToken
+            ? imagesToken.Select(t => t.Value<string>()).ToList()
+            : defaults.Images.ToList();
         Color.Deserialize(node[nameof(Color)], n => ModelUtils.ParseColorNode(n, defaults.Color.DefaultValue));
         Scale.Deserialize(node[nameof(Scale)], ModelUtils.ToVector2);
         Position.Deserialize(node[nameof(Position)], ModelUtils.ToVector2);
@@ -81,27 +85,27 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
     }
 
     public void Init() {
-        if(Color.IsExpr) { Color.Init(); }
-        if(Scale.IsExpr) { Scale.Init(); }
-        if(Position.IsExpr) { Position.Init(); }
-        if(Pivot.IsExpr) { Pivot.Init(); }
-        if(Rotation.IsExpr) { Rotation.Init(); }
+        if (Color.IsExpr) Color.Init();
+        if (Scale.IsExpr) Scale.Init();
+        if (Position.IsExpr) Position.Init();
+        if (Pivot.IsExpr) Pivot.Init();
+        if (Rotation.IsExpr) Rotation.Init();
     }
 
     public void ExprApplyConfig() {
-        if(Color.IsExpr) { Color.ApplyConfig(); }
-        if(Scale.IsExpr) { Scale.ApplyConfig(); }
-        if(Position.IsExpr) { Position.ApplyConfig(); }
-        if(Pivot.IsExpr) { Pivot.ApplyConfig(); }
-        if(Rotation.IsExpr) { Rotation.ApplyConfig(); }
+        if (Color.IsExpr) Color.ApplyConfig();
+        if (Scale.IsExpr) Scale.ApplyConfig();
+        if (Position.IsExpr) Position.ApplyConfig();
+        if (Pivot.IsExpr) Pivot.ApplyConfig();
+        if (Rotation.IsExpr) Rotation.ApplyConfig();
     }
 
     public void Release() {
         TagManager.OnLoadUnload -= ExprApplyConfig;
-        if(Color.IsExpr) { Color.Dispose(); }
-        if(Scale.IsExpr) { Scale.Dispose(); }
-        if(Position.IsExpr) { Position.Dispose(); }
-        if(Pivot.IsExpr) { Pivot.Dispose(); }
-        if(Rotation.IsExpr) { Rotation.Dispose(); }
+        if (Color.IsExpr) Color.Dispose();
+        if (Scale.IsExpr) Scale.Dispose();
+        if (Position.IsExpr) Position.Dispose();
+        if (Pivot.IsExpr) Pivot.Dispose();
+        if (Rotation.IsExpr) Rotation.Dispose();
     }
 }

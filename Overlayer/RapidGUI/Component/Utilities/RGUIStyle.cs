@@ -22,7 +22,9 @@ public static class RGUIStyle {
     public static Texture2D darkWindowTexNormal;
     public static Texture2D darkWindowTexOnNormal;
 
-    static RGUIStyle() => CreateStyles();
+    static RGUIStyle() {
+        CreateStyles();
+    }
 
     public static void CreateStyles() {
         CreateFlatButton();
@@ -34,7 +36,7 @@ public static class RGUIStyle {
         CreateWarningLabelNoStyle();
     }
 
-    static void CreateFlatButton() {
+    private static void CreateFlatButton() {
         var style = new GUIStyle(GUI.skin.label) {
             wordWrap = false,
             alignment = TextAnchor.MiddleCenter
@@ -53,7 +55,7 @@ public static class RGUIStyle {
         flatButton = style;
     }
 
-    static void CreatePopupFlatButton() {
+    private static void CreatePopupFlatButton() {
         var style = new GUIStyle(flatButton) {
             alignment = GUI.skin.label.alignment,
             padding = new RectOffset(24, 48, 2, 2),
@@ -63,10 +65,10 @@ public static class RGUIStyle {
         popupFlatButton = style;
     }
 
-    static void CreatePopup() {
+    private static void CreatePopup() {
         var style = new GUIStyle(GUI.skin.box);
 
-        if(!Main.Settings.LegacyTheme) {
+        if (!Main.Settings.LegacyTheme) {
             style.border = new RectOffset();
             popupTex = new Texture2D(1, 1);
             var brightness = 0.2f;
@@ -76,7 +78,8 @@ public static class RGUIStyle {
 
             style.normal.background =
                 style.hover.background = popupTex;
-        } else {
+        }
+        else {
             style = new GUIStyle(darkWindow);
         }
 
@@ -87,11 +90,12 @@ public static class RGUIStyle {
     public static void CreateDarkWindow() {
         var style = new GUIStyle(GUI.skin.window);
 
-        if(Main.Settings.LegacyTheme) {
+        if (Main.Settings.LegacyTheme) {
             style.normal.background = darkWindowTexNormal = CreateTexDark(style.normal.background, 0.5f, 1.4f);
             style.onNormal.background =
                 darkWindowTexOnNormal = CreateTexDark(style.onNormal.background, 0.6f, 1.5f);
-        } else {
+        }
+        else {
             style.normal.background = Drawer.outlineimg;
             style.onNormal.background = Drawer.outlineimg;
             style.border = new RectOffset(2, 2, 2, 2);
@@ -128,7 +132,7 @@ public static class RGUIStyle {
         RenderTexture.ReleaseTemporary(tmp);
 
         var pixels = dst.GetPixels();
-        for(var i = 0; i < pixels.Length; ++i) {
+        for (var i = 0; i < pixels.Length; ++i) {
             var col = pixels[i];
             col.r *= colorRate;
             col.g *= colorRate;

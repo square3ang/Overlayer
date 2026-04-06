@@ -2,7 +2,7 @@
 
 namespace Overlayer.Core.Patches;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Class)]
 public class SafePatchAttribute : Attribute {
     public string Id { get; }
     public string TargetType { get; }

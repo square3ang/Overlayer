@@ -1,9 +1,9 @@
-﻿using Overlayer.Core.Patches;
-using Overlayer.Tags.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Overlayer.Core.Patches;
+using Overlayer.Tags.Attributes;
 
 namespace Overlayer.Tags;
 
@@ -17,75 +17,81 @@ public static class TagManager {
 
     internal static string testerValue;
 
-    private static OverlayerTag testerTag = new("INTERNAL_TESTER_TAG_1234512345", () => testerValue, true);
+    private static readonly OverlayerTag testerTag = new("INTERNAL_TESTER_TAG_1234512345", () => testerValue, true);
+
     public static void Load(Assembly ass) {
-        foreach(var t in ass.GetExportedTypes()) {
-            Load(t);
-        }
+        foreach (var t in ass.GetExportedTypes()) Load(t);
     }
+
     public static void Load(Type type) {
-        foreach(var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static)) {
+        foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static)) {
             var attr = method.GetCustomAttribute<TagAttribute>();
-            if(attr == null) {
-                continue;
-            }
+            if (attr == null) continue;
 
             SetTag(new OverlayerTag(method, attr));
         }
-        foreach(var field in type.GetFields(BindingFlags.Public | BindingFlags.Static)) {
+
+        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static)) {
             var attr = field.GetCustomAttribute<TagAttribute>();
-            if(attr == null) {
-                continue;
-            }
+            if (attr == null) continue;
 
             SetTag(new OverlayerTag(field, attr));
         }
-        foreach(var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Static)) {
+
+        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Static)) {
             var attr = prop.GetCustomAttribute<TagAttribute>();
-            if(attr == null) {
-                continue;
-            }
+            if (attr == null) continue;
 
             SetTag(new OverlayerTag(prop, attr));
         }
+
         OnLoadUnload?.Invoke();
     }
+
     public static void Unload(Assembly ass) {
-        foreach(var t in ass.GetExportedTypes()) {
-            Unload(t);
-        }
+        foreach (var t in ass.GetExportedTypes()) Unload(t);
     }
+
     public static void Unload(Type type) {
-        foreach(var key in tags.Where(kvp => kvp.Value.DeclaringType == type).Select(kvp => kvp.Key).ToList()) {
+        foreach (var key in tags.Where(kvp => kvp.Value.DeclaringType == type).Select(kvp => kvp.Key).ToList())
             tags.Remove(key);
-        }
         OnLoadUnload?.Invoke();
     }
-    public static OverlayerTag GetTag(string name) => name.StartsWith("INTERNAL_TESTER_TAG_1234512345") ? testerTag : tags.TryGetValue(name, out var ot) ? ot : null;
-    public static void SetTag(OverlayerTag tag) => tags[tag.Name] = tag;
-    public static void RemoveTag(string name) => tags.Remove(name);
-    public static void UpdatePatch() {
-        foreach(var tag in All) {
-            if(!tag.Referenced) {
-                LazyPatchManager.UnpatchAll(tag.Name);
-            } else {
-                LazyPatchManager.PatchAll(tag.Name);
-            }
-        }
+
+    public static OverlayerTag GetTag(string name) {
+        return name.StartsWith("INTERNAL_TESTER_TAG_1234512345") ? testerTag :
+            tags.TryGetValue(name, out var ot) ? ot : null;
     }
-    public static bool HasReference(Type declaringType) => tags.Values.Any(tag => tag.Referenced && tag.DeclaringType == declaringType);
+
+    public static void SetTag(OverlayerTag tag) {
+        tags[tag.Name] = tag;
+    }
+
+    public static void RemoveTag(string name) {
+        tags.Remove(name);
+    }
+
+    public static void UpdatePatch() {
+        foreach (var tag in All)
+            if (!tag.Referenced)
+                LazyPatchManager.UnpatchAll(tag.Name);
+            else
+                LazyPatchManager.PatchAll(tag.Name);
+    }
+
+    public static bool HasReference(Type declaringType) {
+        return tags.Values.Any(tag => tag.Referenced && tag.DeclaringType == declaringType);
+    }
+
     public static void Initialize() {
-        if(Initialized) {
-            return;
-        }
+        if (Initialized) return;
 
         tags = [];
         Initialized = true;
     }
+
     public static void Release() {
-        if(!Initialized) {
-            return;
-        }
+        if (!Initialized) return;
 
         tags = null;
         Initialized = false;

@@ -1,5 +1,3 @@
 ﻿namespace Overlayer.Patches;
 
-public static class HideTitle {
-
-}
+public static class HideTitle { }

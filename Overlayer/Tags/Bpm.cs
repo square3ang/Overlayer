@@ -5,49 +5,51 @@ namespace Overlayer.Tags;
 public static class Bpm {
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TileBpm;
+
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double MaxTileBpm => scnGame.instance.highestBPM;
+
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double CurBpm;
+
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double RecKPS;
+
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TileBpmWithoutPitch;
+
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double CurBpmWithoutPitch;
+
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double RecKPSWithoutPitch;
 
     public static float bpm, pitch, bpmwithoutpitch, playbackSpeed = 1;
 
     public static void Init(scrController __instance) {
-        if(scnGame.instance == null && scnEditor.instance == null && !(scrController.instance?.gameworld ?? false)) {
-            return;
-        }
+        if (scnGame.instance == null && scnEditor.instance == null &&
+            !(scrController.instance?.gameworld ?? false)) return;
 
-        if(scnGame.instance != null) {
+        if (scnGame.instance != null) {
             pitch = (float)scnGame.instance.levelData.pitch / 100;
-            if(ADOBase.isOfficialLevel) {
-                pitch *= scrConductor.instance.song.pitch;
-            }
-            if(ADOBase.isCLSLevel) {
-                pitch *= GCS.currentSpeedTrial;
-            }
-            if(scnEditor.instance != null) {
-                pitch *= scnEditor.instance.playbackSpeed;
-            }
+            if (ADOBase.isOfficialLevel) pitch *= scrConductor.instance.song.pitch;
+            if (ADOBase.isCLSLevel) pitch *= GCS.currentSpeedTrial;
+            if (scnEditor.instance != null) pitch *= scnEditor.instance.playbackSpeed;
             bpm = scnGame.instance.levelData.bpm * pitch;
             bpmwithoutpitch = scnGame.instance.levelData.bpm;
-        } else {
+        }
+        else {
             pitch = scrConductor.instance.song.pitch;
             bpm = scrConductor.instance.bpm * pitch;
             bpmwithoutpitch = scrConductor.instance.bpm;
         }
-        float cur = bpm;
-        if(__instance.currentSeqID != 0) {
-            double speed = scrController.instance.speed;
+
+        var cur = bpm;
+        if (__instance.currentSeqID != 0) {
+            var speed = scrController.instance.speed;
             cur = (float)(bpm * speed);
         }
+
         TileBpm = cur;
         CurBpm = cur;
         RecKPS = cur / 60;
@@ -55,22 +57,22 @@ public static class Bpm {
 
     public static double GetRealBpm(scrFloor floor, float bpm) {
         return floor == null
-            ? (double)bpm
-            : floor.nextfloor == null ? scrController.instance.speed * bpm : 60.0 / (floor.nextfloor.entryTime - floor.entryTime);
+            ? bpm
+            : floor.nextfloor == null
+                ? scrController.instance.speed * bpm
+                : 60.0 / (floor.nextfloor.entryTime - floor.entryTime);
     }
 
     public static void Update(scrFloor floor) {
-        if(floor.nextfloor is null) {
-            return;
-        }
+        if (floor.nextfloor is null) return;
 
-        double curBPM = GetRealBpm(floor, bpm) * pitch;
+        var curBPM = GetRealBpm(floor, bpm) * pitch;
 
         TileBpm = bpm * scrController.instance.speed;
         CurBpm = curBPM;
         RecKPS = curBPM / 60;
 
-        double curBPMWithoutPitch = GetRealBpm(floor, bpmwithoutpitch);
+        var curBPMWithoutPitch = GetRealBpm(floor, bpmwithoutpitch);
         TileBpmWithoutPitch = bpmwithoutpitch * scrController.instance.speed;
         CurBpmWithoutPitch = curBPMWithoutPitch;
         RecKPSWithoutPitch = curBPMWithoutPitch / 60;

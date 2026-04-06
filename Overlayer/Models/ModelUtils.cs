@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using Overlayer.Core.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using Overlayer.Core.Interfaces;
 using UnityEngine;
 
 namespace Overlayer.Models;
@@ -17,35 +17,32 @@ public static class ModelUtils {
     public static readonly Type rect_t = typeof(Rect);
     public static readonly Type ro_t = typeof(RectOffset);
     public static readonly Type m4x4_t = typeof(Matrix4x4);
-    public static JToken ToNode<T>(object obj) {
-        if(obj == null) {
-            return JValue.CreateNull();
-        }
 
-        Type t = typeof(T);
-        switch(Type.GetTypeCode(t)) {
+    public static JToken ToNode<T>(object obj) {
+        if (obj == null) return JValue.CreateNull();
+
+        var t = typeof(T);
+        switch (Type.GetTypeCode(t)) {
             case TypeCode.Object:
-                if(obj is IModel model) {
-                    return model.Serialize();
-                } else if(obj is Vector2 vec2) {
-                    return JToken.FromObject(vec2);
-                } else if(obj is Vector3 vec3) {
-                    return JToken.FromObject(vec3);
-                } else if(obj is Vector4 vec4) {
-                    return JToken.FromObject(vec4);
-                } else if(obj is Color col) {
-                    return JToken.FromObject(col);
-                } else if(obj is Color32 col32) {
-                    return JToken.FromObject(col32);
-                } else if(obj is Quaternion quat) {
-                    return JToken.FromObject(quat);
-                } else if(obj is Rect r) {
-                    return JToken.FromObject(r);
-                } else if(obj is RectOffset ro) {
-                    return JToken.FromObject(ro);
-                } else if(obj is Matrix4x4 m4x4) {
-                    return JToken.FromObject(m4x4);
-                }
+                if (obj is IModel model) return model.Serialize();
+
+                if (obj is Vector2 vec2) return JToken.FromObject(vec2);
+
+                if (obj is Vector3 vec3) return JToken.FromObject(vec3);
+
+                if (obj is Vector4 vec4) return JToken.FromObject(vec4);
+
+                if (obj is Color col) return JToken.FromObject(col);
+
+                if (obj is Color32 col32) return JToken.FromObject(col32);
+
+                if (obj is Quaternion quat) return JToken.FromObject(quat);
+
+                if (obj is Rect r) return JToken.FromObject(r);
+
+                if (obj is RectOffset ro) return JToken.FromObject(ro);
+
+                if (obj is Matrix4x4 m4x4) return JToken.FromObject(m4x4);
 
                 goto default;
             case TypeCode.Boolean:
@@ -84,18 +81,17 @@ public static class ModelUtils {
     }
 
     public static object ToObject<T>(JToken token) {
-        if(token == null) {
-            return null;
-        }
+        if (token == null) return null;
 
-        Type t = typeof(T);
-        switch(Type.GetTypeCode(t)) {
+        var t = typeof(T);
+        switch (Type.GetTypeCode(t)) {
             case TypeCode.Object:
-                if(typeof(IModel).IsAssignableFrom(t)) {
-                    IModel model = (IModel)Activator.CreateInstance(t);
+                if (typeof(IModel).IsAssignableFrom(t)) {
+                    var model = (IModel)Activator.CreateInstance(t);
                     model.Deserialize(token);
                     return model;
                 }
+
                 return token.ToObject<T>();
             case TypeCode.Boolean:
                 return token.Value<bool>();
@@ -133,13 +129,9 @@ public static class ModelUtils {
     }
 
     public static T Unbox<T>(JToken token) where T : IModel, new() {
-        if(token == null) {
-            return default;
-        }
+        if (token == null) return default;
         T t = new();
-        if(token.Type == JTokenType.Object) {
-            t.Deserialize(token);
-        }
+        if (token.Type == JTokenType.Object) t.Deserialize(token);
         return t;
     }
 
@@ -151,17 +143,21 @@ public static class ModelUtils {
 
     public static List<T> UnwrapList<T>(JArray array) where T : IModel, new() {
         var list = new List<T>();
-        foreach(var v in array) {
+        foreach (var v in array) {
             var t = new T();
             t.Deserialize(v);
             list.Add(t);
         }
+
         return list;
     }
 
-    public static JToken ToNode(Vector4 v) => new JArray { v.x, v.y, v.z, v.w };
+    public static JToken ToNode(Vector4 v) {
+        return new JArray { v.x, v.y, v.z, v.w };
+    }
+
     public static Vector4 ToVector4(JToken token) {
-        if(token.Type == JTokenType.Array) {
+        if (token.Type == JTokenType.Array) {
             var arr = (JArray)token;
             return new Vector4(
                 (float)arr[0],
@@ -170,12 +166,16 @@ public static class ModelUtils {
                 (float)arr[3]
             );
         }
+
         return default;
     }
 
-    public static JToken ToNode(Vector3 v) => new JArray { v.x, v.y, v.z };
+    public static JToken ToNode(Vector3 v) {
+        return new JArray { v.x, v.y, v.z };
+    }
+
     public static Vector3 ToVector3(JToken token) {
-        if(token.Type == JTokenType.Array) {
+        if (token.Type == JTokenType.Array) {
             var arr = (JArray)token;
             return new Vector3(
                 (float)arr[0],
@@ -183,24 +183,32 @@ public static class ModelUtils {
                 (float)arr[2]
             );
         }
+
         return default;
     }
 
-    public static JToken ToNode(Vector2 v) => new JArray { v.x, v.y };
+    public static JToken ToNode(Vector2 v) {
+        return new JArray { v.x, v.y };
+    }
+
     public static Vector2 ToVector2(JToken token) {
-        if(token.Type == JTokenType.Array) {
+        if (token.Type == JTokenType.Array) {
             var arr = (JArray)token;
             return new Vector2(
                 (float)arr[0],
                 (float)arr[1]
             );
         }
+
         return default;
     }
 
-    public static JToken ToNode(Color c) => new JArray { c.r, c.g, c.b, c.a };
+    public static JToken ToNode(Color c) {
+        return new JArray { c.r, c.g, c.b, c.a };
+    }
+
     public static Color ToColor(JToken token) {
-        if(token.Type == JTokenType.Array) {
+        if (token.Type == JTokenType.Array) {
             var arr = (JArray)token;
             return new Color(
                 arr.Count > 0 ? (float)arr[0] : 0f,
@@ -209,20 +217,19 @@ public static class ModelUtils {
                 arr.Count > 3 ? (float)arr[3] : 1f
             );
         }
+
         return default;
     }
 
     public static Color ParseColorNode(JToken token, Color defaultValue) {
-        if(token == null) {
-            return defaultValue;
+        if (token == null) return defaultValue;
+
+        if (token.Type == JTokenType.Object) {
+            var obj = (JObject)token;
+            return obj.TryGetValue("topLeft", out var legacy) ? ToColor(legacy) : ToColor(obj);
         }
 
-        if(token.Type == JTokenType.Object) {
-            JObject obj = (JObject)token;
-            return obj.TryGetValue("topLeft", out var legacy) ? ToColor(legacy) : ToColor(obj);
-        } else if(token.Type == JTokenType.Array) {
-            return ToColor(token);
-        }
+        if (token.Type == JTokenType.Array) return ToColor(token);
         return defaultValue;
     }
 }

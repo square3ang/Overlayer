@@ -7,5 +7,5 @@ public enum TokenType {
     Colon,
     ArgStart,
     ArgEnd,
-    Comma,
+    Comma
 }
