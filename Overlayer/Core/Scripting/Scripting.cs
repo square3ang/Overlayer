@@ -95,9 +95,7 @@ public static class Scripting {
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
-        GUILayout.Label($"{Main.Lang.Get("RESULT", "Result")}:");
-        string temp = SandboxResult;
-        Drawer.DrawString("", ref temp);
+        GUILayout.Label($"{Main.Lang.Get("RESULT", "Result")}:\n{SandboxResult}");
     }
 
     public static async Task RunScripts() {

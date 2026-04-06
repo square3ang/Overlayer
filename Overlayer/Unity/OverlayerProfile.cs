@@ -62,7 +62,7 @@ public class OverlayerProfile : MonoBehaviour {
     }
 
     public static void DragInit() {
-        if(DragObj != null) {
+        if(DragObj) {
             return;
         }
         DragObj = new GameObject("Drag Outline");
@@ -71,11 +71,12 @@ public class OverlayerProfile : MonoBehaviour {
         DragImage = DragObj.AddComponent<Image>();
 
         Texture2D outlinetex = new(3, 3, TextureFormat.RGBA32, false);
-        Color[] outlinetexpixels = new Color[] {
+        Color[] outlinetexpixels =
+        [
             Color.white, Color.white, Color.white,
             Color.white, Color.clear, Color.white,
-            Color.white, Color.white, Color.white,
-        };
+            Color.white, Color.white, Color.white
+        ];
         outlinetex.SetPixels(outlinetexpixels);
         outlinetex.Apply();
         outlinetex.filterMode = FilterMode.Point;

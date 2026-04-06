@@ -150,7 +150,7 @@ public static class Effect {
         var easedValue = ee.Compute(rawFunc);
         var prev = ee.GetPrevValue(rawFunc);
 
-        return (prev + ((ee.Value - prev) * easedValue)).Round(digits);
+        return (prev + (ee.Value - prev) * easedValue).Round(digits);
     }
 
     [Tag(NotPlaying = true)]
@@ -158,7 +158,7 @@ public static class Effect {
         double hue = Environment.TickCount % (int)(360 * speed) / speed;
 
         double c = 1;
-        double x = 1 - Math.Abs((hue / 60 % 2) - 1);
+        double x = 1 - Math.Abs(hue / 60 % 2 - 1);
         double m = 0;
         double r, g = 0, b;
 

@@ -20,7 +20,7 @@ namespace Overlayer.Core;
 
 public static class Drawer {
     public static CodeEditor.CodeEditor codeEditor = new("OverlayerCodeEditor",
-        new CodeTheme() {
+        new CodeTheme {
             background = "#333333",
             linenumbg = "#222222",
             color = "#FFFFFF",
@@ -104,7 +104,7 @@ public static class Drawer {
                     } else if(name.EndsWith("Hex")) {
                         try {
                             var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
-                                new object[] { "-1", Overlayer.Utils.Extensions.DefaultTrimStr });
+                                ["-1", Overlayer.Utils.Extensions.DefaultTrimStr]);
                             str = str.Replace("{" + match.Groups[1].Value + "}",
                                 "<color=#" + val + ">{" + match.Groups[1].Value + "}</color>");
                         } catch {
@@ -543,7 +543,8 @@ public static class Drawer {
     public static bool DrawEase(ref Ease ease) {
         string[] names = Enum.GetNames(typeof(Ease));
         int current = (int)ease;
-        Texture2D[] easeImages = new Texture2D[] { null, Icon_EaseLinear, Icon_EaseInSine, Icon_EaseOutSine, Icon_EaseInOutSine, Icon_EaseInQuad, Icon_EaseOutQuad, Icon_EaseInOutQuad, Icon_EaseInCubic, Icon_EaseOutCubic, Icon_EaseInOutCubic, Icon_EaseInQuart, Icon_EaseOutQuart, Icon_EaseInOutQuart, Icon_EaseInQuint, Icon_EaseOutQuint, Icon_EaseInOutQuint, Icon_EaseInExpo, Icon_EaseOutExpo, Icon_EaseInOutExpo, Icon_EaseInCirc, Icon_EaseOutCirc, Icon_EaseInOutCirc, Icon_EaseInElastic, Icon_EaseOutElastic, Icon_EaseInOutElastic, Icon_EaseInBack, Icon_EaseOutBack, Icon_EaseInOutBack, Icon_EaseInBounce, Icon_EaseOutBounce, Icon_EaseInOutBounce };
+        Texture2D[] easeImages = [null, Icon_EaseLinear, Icon_EaseInSine, Icon_EaseOutSine, Icon_EaseInOutSine, Icon_EaseInQuad, Icon_EaseOutQuad, Icon_EaseInOutQuad, Icon_EaseInCubic, Icon_EaseOutCubic, Icon_EaseInOutCubic, Icon_EaseInQuart, Icon_EaseOutQuart, Icon_EaseInOutQuart, Icon_EaseInQuint, Icon_EaseOutQuint, Icon_EaseInOutQuint, Icon_EaseInExpo, Icon_EaseOutExpo, Icon_EaseInOutExpo, Icon_EaseInCirc, Icon_EaseOutCirc, Icon_EaseInOutCirc, Icon_EaseInElastic, Icon_EaseOutElastic, Icon_EaseInOutElastic, Icon_EaseInBack, Icon_EaseOutBack, Icon_EaseInOutBack, Icon_EaseInBounce, Icon_EaseOutBounce, Icon_EaseInOutBounce
+        ];
         bool result = SelectionPopup(ref current, names, easeImages, "");
         if(result) {
             ease = (Ease)current;
@@ -663,7 +664,7 @@ public static class Drawer {
         Color old = GUI.color;
         bool isExpr = value.IsExpr;
         GUILayout.BeginHorizontal();
-        if(icon != null) {
+        if(icon) {
             GUILayout.Label(icon);
             GUILayout.Space(4);
         }

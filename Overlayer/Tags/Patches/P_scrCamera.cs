@@ -2,9 +2,10 @@
 namespace Overlayer.Tags.Patches;
 
 public class P_scrCamera : PatchBase<P_scrCamera> {
-    [LazyPatch("Tags.P_scrCamera.FrameRate__Update", "scrCamera", "Update", Triggers = new string[] {
-        nameof(FrameRate.Fps), nameof(FrameRate.FrameTime),
-    })]
+    [LazyPatch("Tags.P_scrCamera.FrameRate__Update", "scrCamera", "Update", Triggers =
+    [
+        nameof(FrameRate.Fps), nameof(FrameRate.FrameTime)
+    ])]
     public static class FrameRate__Update {
         public static void Postfix() {
             var deltaTime = UnityEngine.Time.deltaTime;

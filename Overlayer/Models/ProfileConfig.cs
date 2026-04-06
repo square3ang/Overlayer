@@ -46,8 +46,8 @@ public class ProfileConfig : IModel, ICopyable<ProfileConfig> {
         Active = node[nameof(Active)]?.Value<bool>() ?? defaults.Active;
         Opacity = node[nameof(Opacity)]?.Value<float>() ?? defaults.Opacity;
         Objects = [];
-        var objectTokens = (node[nameof(Objects)] as JArray)
-            ?? (node["Texts"] as JArray)
+        var objectTokens = node[nameof(Objects)] as JArray
+            ?? node["Texts"] as JArray
             ?? [];
         foreach(var obj in objectTokens) {
             string typeName = obj["Type"]?.Value<string>()?.Trim() ?? "";

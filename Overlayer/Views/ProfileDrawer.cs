@@ -55,7 +55,7 @@ public class ProfileDrawer : ModelDrawable<ProfileConfig> {
                 string[] texts = StandaloneFileBrowser.OpenFilePanel(
                     Main.Lang.Get("SELECT_OBJECT", "Select Object"),
                     Main.Mod.Path,
-                    new[] { new ExtensionFilter(Main.Lang.Get("OVERLAYER_OBJECT_JSON", "Overlayer Object JSON"), "json") },
+                    [new ExtensionFilter(Main.Lang.Get("OVERLAYER_OBJECT_JSON", "Overlayer Object JSON"), "json")],
                     true
                 );
                 if(texts == null || texts.Length == 0) {

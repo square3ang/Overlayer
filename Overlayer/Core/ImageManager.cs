@@ -10,7 +10,7 @@ public static class ImageManager {
     public static bool Initialized { get; private set; } = false;
     public static Sprite DefaultSprite {
         get {
-            if(_defaultSprite == null) {
+            if(!_defaultSprite) {
                 CreateDefault();
             }
             return _defaultSprite;
@@ -23,7 +23,7 @@ public static class ImageManager {
 
     static void CreateDefault() {
         Texture2D tex = new(2, 2);
-        tex.SetPixels(new Color[4] { Color.clear, Color.clear, Color.clear, Color.clear });
+        tex.SetPixels([Color.clear, Color.clear, Color.clear, Color.clear]);
         tex.Apply();
         _defaultSprite = Sprite.Create(tex, new Rect(0, 0, 2, 2), new Vector2(0.5f, 0.5f));
     }
@@ -62,11 +62,7 @@ public static class ImageManager {
 
     public static void CleanUp() {
         foreach(var pf in ProfileManager.Profiles.OfType<ImageConfig>()) {
-            if(pf.Images == null) {
-                continue;
-            }
-
-            pf.Images.RemoveAll(path => !TryGetSprite(path, out _));
+            pf.Images?.RemoveAll(path => !TryGetSprite(path, out _));
         }
     }
 
@@ -84,8 +80,8 @@ public static class ImageManager {
         }
         if(Sprites != null) {
             foreach(var sp in Sprites.Values) {
-                if(sp != null) {
-                    if(sp.texture != null) {
+                if(sp) {
+                    if(sp.texture) {
                         UnityEngine.Object.Destroy(sp.texture);
                     }
                     UnityEngine.Object.Destroy(sp);
@@ -95,8 +91,8 @@ public static class ImageManager {
             Sprites = null;
         }
 
-        if(DefaultSprite != null) {
-            if(DefaultSprite.texture != null) {
+        if(DefaultSprite) {
+            if(DefaultSprite.texture) {
                 UnityEngine.Object.Destroy(DefaultSprite.texture);
             }
             UnityEngine.Object.Destroy(DefaultSprite);

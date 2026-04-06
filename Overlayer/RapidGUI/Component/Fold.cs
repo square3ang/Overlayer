@@ -46,7 +46,7 @@ public class Fold : TitleContent<Fold> {
             style.margin.left = 0;
 
             tex = new Texture2D(1, 1);
-            tex.SetPixels(new[] { new Color(0.5f, 0.5f, 0.5f, 0.5f) });
+            tex.SetPixels([new Color(0.5f, 0.5f, 0.5f, 0.5f)]);
             tex.Apply();
             style.hover.background = tex;
 

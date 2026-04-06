@@ -130,7 +130,7 @@ internal class DeletePopup : MonoBehaviour {
         if(Drawer.Button($"<size=18>{Main.Lang.Get("YES", "Yes")}</size>", GUILayout.Width(150), GUILayout.Height(52))) {
             obj?.Parent.ObjectManager.Destroy(obj);
 
-            if(profile != null) {
+            if(profile) {
                 ProfileManager.Destroy(profile);
             }
 

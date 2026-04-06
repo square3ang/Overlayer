@@ -103,7 +103,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
 
         if(_fontChanged || _instancedMaterials == null || _instancedMaterials.Length == 0) {
             Material[] shared = Text.fontSharedMaterials;
-            if(shared != null && shared.Length > 0 && shared[0] != null) {
+            if(shared != null && shared.Length > 0 && shared[0]) {
                 RefreshMaterials(shared);
                 _fontChanged = false;
             }
@@ -113,7 +113,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
             UpdateMaterialExpressions();
         }
 
-        if(isDragging && OverlayerProfile.DragObj != null && OverlayerProfile.DragImage != null) {
+        if(isDragging && OverlayerProfile.DragObj && OverlayerProfile.DragImage) {
             OverlayerProfile.DragObj.transform.position = Text.gameObject.transform.position;
             OverlayerProfile.DragObj.transform.rotation = Text.gameObject.transform.rotation;
             OverlayerProfile.DragImage.rectTransform.pivot = Text.rectTransform.pivot;

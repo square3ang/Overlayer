@@ -190,7 +190,7 @@ public static class OllyResources {
             EyelidBG = null;
         }
         for(int i = 0; i < Eyebrows.Length; i++) {
-            if(Eyebrows[i] != null) {
+            if(Eyebrows[i]) {
                 Destroy(Eyebrows[i]);
                 Eyebrows[i] = null;
             }

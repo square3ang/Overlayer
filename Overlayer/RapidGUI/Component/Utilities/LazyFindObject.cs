@@ -15,7 +15,7 @@ public class LazyFindObject {
     public LazyFindObject(Type type) => _type = type;
 
     public UnityEngine.Object GetObject() {
-        if((Event.current.type == EventType.Layout) && _obj == null) {
+        if((Event.current.type == EventType.Layout) && !_obj) {
             if(--_delayCount <= 0) {
                 _obj = UnityEngine.Object.FindObjectOfType(_type);
                 _delayCount = UnityEngine.Random.Range(0, _delayCountMax);

@@ -19,7 +19,7 @@ public static class CheckPointStats {
     public static void AllCheckPoints_Set() => AllCheckPoints = scrLevelMaker.instance.listFloors.FindAll(f => f.GetComponent<ffxCheckpoint>() != null);
 
     public static void InterCheckPoints_Update() {
-        AllCheckPoints = scrLevelMaker.instance.listFloors.FindAll(f => f.GetComponent<ffxCheckpoint>() != null);
+        AllCheckPoints = scrLevelMaker.instance.listFloors.FindAll(f => f.GetComponent<ffxCheckpoint>());
         TotalCheckPoints = AllCheckPoints.Count;
     }
 

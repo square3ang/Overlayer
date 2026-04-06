@@ -115,7 +115,7 @@ public partial class Olly : MonoBehaviour {
     private void DrawWindow(int windowID) {
         GUI.BringWindowToFront(windowID);
 
-        string[] lines = string.IsNullOrEmpty(displayedText) ? Array.Empty<string>() : displayedText.Split('\n');
+        string[] lines = string.IsNullOrEmpty(displayedText) ? [] : displayedText.Split('\n');
 
         int lineCount = lines.Length;
         if(lineCount > 0 && string.IsNullOrEmpty(lines[lineCount - 1])) {
