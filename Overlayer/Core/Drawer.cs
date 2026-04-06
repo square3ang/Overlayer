@@ -20,7 +20,7 @@ namespace Overlayer.Core;
 
 public static class Drawer {
     public static CodeEditor.CodeEditor codeEditor = new("OverlayerCodeEditor",
-        new CodeTheme() {
+        new CodeTheme {
             background = "#333333",
             linenumbg = "#222222",
             color = "#FFFFFF",
@@ -104,7 +104,7 @@ public static class Drawer {
                     } else if(name.EndsWith("Hex")) {
                         try {
                             var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
-                                new object[] { "-1", Overlayer.Utils.Extensions.DefaultTrimStr });
+                                ["-1", Overlayer.Utils.Extensions.DefaultTrimStr]);
                             str = str.Replace("{" + match.Groups[1].Value + "}",
                                 "<color=#" + val + ">{" + match.Groups[1].Value + "}</color>");
                         } catch {

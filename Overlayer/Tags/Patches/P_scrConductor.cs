@@ -5,10 +5,11 @@ using UnityEngine;
 namespace Overlayer.Tags.Patches;
 
 public class P_scrConductor : PatchBase<P_scrConductor> {
-    [LazyPatch("Tags.P_scrConductor.Song__Update", "scrConductor", "Update", Triggers = new string[] {
+    [LazyPatch("Tags.P_scrConductor.Song__Update", "scrConductor", "Update", Triggers =
+    [
         nameof(Song.CurMinute), nameof(Song.CurSecond),nameof(Song.CurMilliSecond),
-        nameof(Song.TotalMinute), nameof(Song.TotalSecond),nameof(Song.TotalMilliSecond),
-    })]
+        nameof(Song.TotalMinute), nameof(Song.TotalSecond),nameof(Song.TotalMilliSecond)
+    ])]
     public static class Song__Update {
         public static void Postfix(scrConductor __instance) {
             if(scrController.instance.paused || !__instance.isGameWorld) {

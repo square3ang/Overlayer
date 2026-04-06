@@ -69,7 +69,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
     public override void Draw() {
         NeoDrawer.StaticInstance.FieldResetId();
 
-        if(Main.Logo != null && !model.DisableLogo) {
+        if(Main.Logo && !model.DisableLogo) {
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Logo, GUILayout.Width(Main.Logo.width), GUILayout.Height(Main.Logo.height));
             GUILayout.BeginVertical();
@@ -289,7 +289,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 string[] pfs = StandaloneFileBrowser.OpenFilePanel(
                     Main.Lang.Get("SELECT_PROFILE", "Select Profile"),
                     Main.ProfilePath,
-                    new[] { new ExtensionFilter(Main.Lang.Get("OVERLAYER_PROFILE_JSON", "Overlayer Profile JSON"), "json") },
+                    [new ExtensionFilter(Main.Lang.Get("OVERLAYER_PROFILE_JSON", "Overlayer Profile JSON"), "json")],
                     true
                 );
                 foreach(var pf in pfs) {
