@@ -21,14 +21,14 @@ public static class Status {
     public static int Attempts;
 
     public static void Attempts_Update() {
-        if(!scnGame.instance) {
-            Attempts = scrController.instance != null && scrConductor.instance != null
+        if(scnGame.instance is null) {
+            Attempts = scrController.instance is not null && scrConductor.instance is not null
                 ? ADOBase.sceneName.Contains("-") && !scrController.instance.noFail && scrConductor.instance.isGameWorld
                     ? Persistence.GetWorldAttempts(scrController.currentWorld)
                     : 0
                 : 0;
         } else {
-            if(!scnEditor.instance) {
+            if(scnEditor.instance is null) {
                 var level = ADOFAI.LevelData;
                 Attempts = level != null
                     ? Persistence.GetCustomWorldAttempts(

@@ -10,7 +10,7 @@ public static class ImageManager {
     public static bool Initialized { get; private set; } = false;
     public static Sprite DefaultSprite {
         get {
-            if(!_defaultSprite) {
+            if(_defaultSprite is null) {
                 CreateDefault();
             }
             return _defaultSprite;
@@ -62,7 +62,11 @@ public static class ImageManager {
 
     public static void CleanUp() {
         foreach(var pf in ProfileManager.Profiles.OfType<ImageConfig>()) {
-            pf.Images?.RemoveAll(path => !TryGetSprite(path, out _));
+            if(pf.Images == null) {
+                continue;
+            }
+
+            pf.Images.RemoveAll(path => !TryGetSprite(path, out _));
         }
     }
 
@@ -80,8 +84,8 @@ public static class ImageManager {
         }
         if(Sprites != null) {
             foreach(var sp in Sprites.Values) {
-                if(sp) {
-                    if(sp.texture) {
+                if(sp is not null) {
+                    if(sp.texture is not null) {
                         UnityEngine.Object.Destroy(sp.texture);
                     }
                     UnityEngine.Object.Destroy(sp);
@@ -91,8 +95,8 @@ public static class ImageManager {
             Sprites = null;
         }
 
-        if(DefaultSprite) {
-            if(DefaultSprite.texture) {
+        if(DefaultSprite is not null) {
+            if(DefaultSprite.texture is not null) {
                 UnityEngine.Object.Destroy(DefaultSprite.texture);
             }
             UnityEngine.Object.Destroy(DefaultSprite);

@@ -15,7 +15,8 @@ public class OllyRender {
         public static readonly Vector2 EyelidBGAnchor = new(53, 92);
         public static readonly Vector2 NoseAnchor = new(121, 134);
 
-        public static readonly Vector2[] EyebrowAnchor = new Vector2[] {
+        public static readonly Vector2[] EyebrowAnchor =
+        [
             new(72, 76), // Normal
             new(75, 87), // Sad
             new(69, 74), // Angry
@@ -24,22 +25,25 @@ public class OllyRender {
             new(62, 75), // Twist
             new(63, 66), // Pity
             new(65, 65)  // NormalHigh
-        };
+        ];
 
-        public static readonly (Vector2, Vector2)[] EyesAnchor = new (Vector2, Vector2)[] {
+        public static readonly (Vector2, Vector2)[] EyesAnchor =
+        [
             (new Vector2(81, 101), new Vector2(143, 101)), // Normal
             (new Vector2(82, 109), new Vector2(144, 108))  // Small
-        };
+        ];
 
-        public static readonly Vector2[] EyeSpecialAnchor = new Vector2[] {
+        public static readonly Vector2[] EyeSpecialAnchor =
+        [
             new(59, 115), // Up
             new(55, 112)  // Down
-        };
+        ];
 
         public static readonly (Vector2, Vector2) EyeHighlightAnchor =
             (new Vector2(82, 108), new Vector2(146, 107));
 
-        public static readonly Vector2[] MouthAnchor = new Vector2[] {
+        public static readonly Vector2[] MouthAnchor =
+        [
             new(119, 155), // Normal
             new(115, 152), // Shift
             new(117, 153), // CaretWide
@@ -60,20 +64,22 @@ public class OllyRender {
             new(102, 143), // Surprise
             new(107, 150), // SurpriseSmall
             new(110, 149)  // WideStretch
-        };
+        ];
 
-        public static readonly Vector2[] EffectAnchor = new Vector2[] {
+        public static readonly Vector2[] EffectAnchor =
+        [
             new(61, 125), // Tear
             new(79, 111), // Sweat
             new(63, 129)  // Blush
-        };
+        ];
 
-        public static readonly Vector2[] EffectForwardAnchor = new Vector2[] {
+        public static readonly Vector2[] EffectForwardAnchor =
+        [
             new(3, 186),  // Cloud
             new(16, 8),   // Tremble
             new(65, 39),  // Tendon
             new(50, 96)   // BlushBig
-        };
+        ];
     }
     public struct FaceShape {
         public Eyebrow Eyebrow;

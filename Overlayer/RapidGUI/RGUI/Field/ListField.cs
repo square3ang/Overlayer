@@ -167,7 +167,7 @@ public static partial class RGUI {
                 ret = baseElem;
             }
               // has copy constructor
-              else if(elemType.GetConstructor(new[] { elemType }) != null) {
+              else if(elemType.GetConstructor([elemType]) != null) {
                 ret = Activator.CreateInstance(elemType, baseElem);
             }
         }

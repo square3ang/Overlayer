@@ -39,10 +39,11 @@ internal class DeletePopup : MonoBehaviour {
         this.obj = null;
         this.OnDelete = onDelete;
 
-        contentLines = new[] {
+        contentLines =
+        [
             "<size=30>" + Main.Lang.Get("DESTROY_ASK", "Destroy?") + "</size>\n",
             "<size=20>" + profile.Config.Name + "</size>\n"
-        };
+        ];
 
         SetupWindow();
     }
@@ -130,7 +131,7 @@ internal class DeletePopup : MonoBehaviour {
         if(Drawer.Button($"<size=18>{Main.Lang.Get("YES", "Yes")}</size>", GUILayout.Width(150), GUILayout.Height(52))) {
             obj?.Parent.ObjectManager.Destroy(obj);
 
-            if(profile) {
+            if(profile is not null) {
                 ProfileManager.Destroy(profile);
             }
 

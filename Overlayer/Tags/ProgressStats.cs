@@ -24,7 +24,7 @@ public static class ProgressStats {
     public static void BestProgress_Reset() => BestProgress = 0;
 
     public static void BestProgress_Update() {
-        if(scrLevelMaker.instance == null) {
+        if(scrLevelMaker.instance is null) {
             return;
         }
         BestProgress = Math.Max(BestProgress, scrController.instance.percentComplete * 100);

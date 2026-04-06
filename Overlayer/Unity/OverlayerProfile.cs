@@ -62,7 +62,7 @@ public class OverlayerProfile : MonoBehaviour {
     }
 
     public static void DragInit() {
-        if(DragObj) {
+        if(DragObj is not null) {
             return;
         }
         DragObj = new GameObject("Drag Outline");

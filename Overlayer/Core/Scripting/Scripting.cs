@@ -281,7 +281,7 @@ public static class Scripting {
 
     public static List<OverlayerText> ImportTexts(byte[] raw, OverlayerProfile profile = null) {
         profile ??= ProfileManager.Profiles.FirstOrDefault(p => p.Config.Active);
-        if(!profile) {
+        if(profile is null) {
             return [];
         }
 

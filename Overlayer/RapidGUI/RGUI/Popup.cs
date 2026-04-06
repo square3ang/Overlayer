@@ -250,7 +250,7 @@ public static partial class RGUI {
 
                         var image = images != null && j < images.Length ? images[j] : null;
 
-                        if(image) {
+                        if(image is not null) {
                             lastRect.x += 5;
                             lastRect.width = image.width * 4;
                             lastRect.height = image.height * 4;

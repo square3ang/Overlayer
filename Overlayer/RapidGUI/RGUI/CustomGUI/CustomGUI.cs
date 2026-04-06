@@ -26,7 +26,7 @@ public static class CustomGUI {
 
     public static bool AddRange<T>(string memberName, float max) => AddRange<T>(memberName, 0f, max);
 
-    public static bool AddRange<T>(string memberName, float min, float max) => AddRange<T>(memberName, new MinMaxFloat() { min = min, max = max });
+    public static bool AddRange<T>(string memberName, float min, float max) => AddRange<T>(memberName, new MinMaxFloat { min = min, max = max });
 
     public static bool AddRange<T>(string memberName, MinMaxFloat range) {
         var infos = TypeUtility.GetMemberInfoList(typeof(T));

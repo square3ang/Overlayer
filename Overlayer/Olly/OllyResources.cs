@@ -137,19 +137,19 @@ public static class OllyResources {
             }
         }
         Loaded =
-            Base &&
-            BG &&
+            Base is not null&&
+            BG is not null&&
             Eyes != null && Eyes.Length == Enum.GetValues(typeof(Eye)).Length - 1 &&
             Mouths != null && Mouths.Length == Enum.GetValues(typeof(Mouth)).Length &&
-            Hair &&
-            EyelidUp &&
-            EyelidDown &&
-            EyelidBG &&
-            Nose &&
+            Hair is not null&&
+            EyelidUp is not null&&
+            EyelidDown is not null&&
+            EyelidBG is not null&&
+            Nose is not null&&
             Eyebrows != null && Eyebrows.Length == Enum.GetValues(typeof(Eyebrow)).Length - 1 &&
             EyeSpecials != null && EyeSpecials.Length == Enum.GetValues(typeof(EyeSpecial)).Length - 1 &&
-            EyeHighlightLeft &&
-            EyeHighlightRight &&
+            EyeHighlightLeft is not null&&
+            EyeHighlightRight is not null&&
             Effects != null && Effects.Length == Enum.GetValues(typeof(Effect)).Length - 1 &&
             EffectForwards != null && EffectForwards.Length == Enum.GetValues(typeof(EffectForward)).Length - 1;
         if(Loaded) {
@@ -165,80 +165,80 @@ public static class OllyResources {
             return;
         }
         Loaded = false;
-        if(Base) {
+        if(Base is not null) {
             Destroy(Base);
             Base = null;
         }
-        if(Hair) {
+        if(Hair is not null) {
             Destroy(Hair);
             Hair = null;
         }
-        if(BG) {
+        if(BG is not null) {
             Destroy(BG);
             BG = null;
         }
-        if(EyelidUp) {
+        if(EyelidUp is not null) {
             Destroy(EyelidUp);
             EyelidUp = null;
         }
-        if(EyelidDown) {
+        if(EyelidDown is not null) {
             Destroy(EyelidDown);
             EyelidDown = null;
         }
-        if(EyelidBG) {
+        if(EyelidBG is not null) {
             Destroy(EyelidBG);
             EyelidBG = null;
         }
         for(int i = 0; i < Eyebrows.Length; i++) {
-            if(Eyebrows[i]) {
+            if(Eyebrows[i] is not null) {
                 Destroy(Eyebrows[i]);
                 Eyebrows[i] = null;
             }
         }
 
         for(int i = 0; i < Eyes.Length; i++) {
-            if(Eyes[i].left) {
+            if(Eyes[i].left is not null) {
                 Destroy(Eyes[i].left);
                 Eyes[i].left = null;
             }
-            if(Eyes[i].right) {
+            if(Eyes[i].right is not null) {
                 Destroy(Eyes[i].right);
                 Eyes[i].right = null;
             }
         }
 
         for(int i = 0; i < EyeSpecials.Length; i++) {
-            if(EyeSpecials[i]) {
+            if(EyeSpecials[i] is not null) {
                 Destroy(EyeSpecials[i]);
                 EyeSpecials[i] = null;
             }
         }
 
-        if(EyeHighlightLeft) {
+        if(EyeHighlightLeft is not null) {
             Destroy(EyeHighlightLeft);
             EyeHighlightLeft = null;
         }
-        if(EyeHighlightRight) {
+        if(EyeHighlightRight is not null) {
             Destroy(EyeHighlightRight);
             EyeHighlightRight = null;
         }
 
         for(int i = 0; i < Mouths.Length; i++) {
-            if(Mouths[i]) {
+            if(Mouths[i] is not null) {
                 Destroy(Mouths[i]);
                 Mouths[i] = null;
             }
         }
 
         for(int i = 0; i < Effects.Length; i++) {
-            if(Effects[i]) {
+            if(Effects[i] is not null) {
                 Destroy(Effects[i]);
                 Effects[i] = null;
             }
         }
 
         for(int i = 0; i < EffectForwards.Length; i++) {
-            if(EffectForwards[i]) {
+            if(EffectForwards[i] is not null) {
                 Destroy(EffectForwards[i]);
                 EffectForwards[i] = null;
             }

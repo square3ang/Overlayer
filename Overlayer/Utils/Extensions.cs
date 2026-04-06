@@ -63,7 +63,7 @@ public static class Extensions {
                 il.Emit(OpCodes.Conv_R8);
                 return true;
             case TypeCode.String:
-                il.Emit(OpCodes.Call, typeof(Convert).GetMethod("ToString", new[] { to }));
+                il.Emit(OpCodes.Call, typeof(Convert).GetMethod("ToString", [to]));
                 return true;
             default:
                 return false;

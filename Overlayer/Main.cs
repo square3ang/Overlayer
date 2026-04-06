@@ -32,7 +32,7 @@ public static class Main {
     [Tag(NotPlaying = true)]
     public static string MipaNyang => "MipaNyang is God";
     [Tag(NotPlaying = true)]
-    public static string Kyulio => "Kyulio is Sexy";
+    public static string Kyulio => "Kyulio is lazy";
     [Tag("imBBBT", NotPlaying = true)]
     public static string ImBBBT => "imBBBT is not beepbit futures";
 
@@ -320,7 +320,7 @@ public static class Main {
         get {
             var ctrl = scrController.instance;
             var cdt = scrConductor.instance;
-            return ctrl && cdt && !ctrl.paused && cdt.isGameWorld;
+            return ctrl is not null && cdt is not null && !ctrl.paused && cdt.isGameWorld;
         }
     }
 
@@ -344,7 +344,7 @@ public static class Main {
         }
     }
     public static void LogoRelease() {
-        if(Logo != null) {
+        if(Logo is not null) {
             UnityEngine.Object.Destroy(Logo);
             Logo = null;
         }

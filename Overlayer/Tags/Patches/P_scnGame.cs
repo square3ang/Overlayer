@@ -38,7 +38,7 @@ public class P_scnGame : PatchBase<P_scnGame> {
     public static class Tile__Play {
         public static void Postfix() {
             scrFloor floor = scrController.instance?.currFloor;
-            if(floor) {
+            if(floor is not null) {
                 Tile.Angle_Update(floor);
             }
         }

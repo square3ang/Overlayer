@@ -69,7 +69,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
     public override void Draw() {
         NeoDrawer.StaticInstance.FieldResetId();
 
-        if(Main.Logo && !model.DisableLogo) {
+        if(Main.Logo is not null && !model.DisableLogo) {
             GUILayout.BeginHorizontal();
             GUILayout.Label(Main.Logo, GUILayout.Width(Main.Logo.width), GUILayout.Height(Main.Logo.height));
             GUILayout.BeginVertical();
@@ -360,7 +360,7 @@ public class SettingsDrawer : ModelDrawable<Settings> {
 
         for(int i = 0; i < ProfileManager.Profiles.Count; i++) {
             var profile = ProfileManager.Get(i);
-            if(!profile) {
+            if(profile is null) {
                 GUILayout.Label($"[{Main.Lang.Get("ERROR", "Error")}] " + string.Format(Main.Lang.Get("ERROR_THIS_PROFILE_INDEX", "Unable to load profile data at index {0}"), i.ToString()));
                 continue;
             }

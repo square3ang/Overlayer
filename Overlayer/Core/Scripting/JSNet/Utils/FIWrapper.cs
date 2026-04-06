@@ -25,7 +25,7 @@ public class FIWrapper {
         args = fi.FunctionDeclaration.Params.Select((Node n) => ((Identifier)n).Name).ToArray();
     }
 
-    public object Call(params object[] args) => fi.Call(null, (args != null) ? Array.ConvertAll(args, (object o) => JsValue.FromObject(engine, o)) : new JsValue[0]).ToObject();
+    public object Call(params object[] args) => fi.Call(null, (args != null) ? Array.ConvertAll(args, (object o) => JsValue.FromObject(engine, o)) : []).ToObject();
 
-    public JsValue CallRaw(params object[] args) => fi.Call(null, (args != null) ? Array.ConvertAll(args, (object o) => JsValue.FromObject(engine, o)) : new JsValue[0]);
+    public JsValue CallRaw(params object[] args) => fi.Call(null, (args != null) ? Array.ConvertAll(args, (object o) => JsValue.FromObject(engine, o)) : []);
 }

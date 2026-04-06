@@ -6,7 +6,7 @@ namespace Overlayer.Utils;
 public static class ADOUtils {
     static ErrorCanvas overlayerErrorCanvas;
     public static void ShowError(ErrorCanvasContext ecc) {
-        if(!overlayerErrorCanvas) {
+        if(overlayerErrorCanvas is null) {
             var ecObject = UnityEngine.Object.Instantiate(RDConstants.data.prefab_errorCanvas);
             var ec = ecObject.GetComponent<ErrorCanvas>();
             UnityEngine.Object.DontDestroyOnLoad(ecObject);

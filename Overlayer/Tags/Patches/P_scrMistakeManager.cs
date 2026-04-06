@@ -41,9 +41,9 @@ public class P_scrMistakeManager : PatchBase<P_scrMistakeManager> {
             AccuracyStats.AbsXAccuracy = 100.0 * (weightedHits / totalHits);
             AccuracyStats.XAccuracy = AccuracyStats.AbsXAccuracy * checkpointminus;
 
-            if(ADOBase.lm != null && ADOBase.lm.listFloors != null &&
+            if(ADOBase.lm is not null && ADOBase.lm.listFloors != null &&
                 Tile.CurTile >= 0 && Tile.CurTile < ADOBase.lm.listFloors.Count &&
-                ADOBase.lm.listFloors[Tile.CurTile] != null) {
+                ADOBase.lm.listFloors[Tile.CurTile] is not null) {
 
                 int lefttile = Tile.LeftTile - (ADOBase.lm.listFloors[Tile.CurTile].midSpin ? 1 : 0);
 

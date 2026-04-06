@@ -114,7 +114,7 @@ public static class ProfileManager {
     }
 
     public static void Destroy(OverlayerProfile profile) {
-        if(!profile || !Profiles.Contains(profile)) {
+        if(profile is null || !Profiles.Contains(profile)) {
             return;
         }
 
@@ -156,7 +156,7 @@ public static class ProfileManager {
         => Profiles.Any(p => string.Equals(p.Config.Name, name, StringComparison.Ordinal));
 
     public static bool Rename(OverlayerProfile profile, string newName) {
-        if(!profile || string.IsNullOrWhiteSpace(newName) || Profiles.Any(p => p != profile && string.Equals(p.Config.Name, newName, StringComparison.OrdinalIgnoreCase))) {
+        if(profile is null || string.IsNullOrWhiteSpace(newName) || Profiles.Any(p => p != profile && string.Equals(p.Config.Name, newName, StringComparison.OrdinalIgnoreCase))) {
             return false;
         }
 

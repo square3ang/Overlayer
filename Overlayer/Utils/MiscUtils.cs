@@ -105,7 +105,7 @@ public static class MiscUtils {
         Type objType = obj is Type t ? t : obj.GetType();
         accessor = accessor.TrimEnd('.');
         object result = obj;
-        string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+        string[] accessors = accessor.Split(['.'], StringSplitOptions.RemoveEmptyEntries);
         if(accessors.Length < 1) {
             return false;
         }
