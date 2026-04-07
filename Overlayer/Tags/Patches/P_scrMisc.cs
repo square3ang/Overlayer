@@ -4,7 +4,8 @@ using System;
 namespace Overlayer.Tags.Patches;
 
 public class P_scrMisc : PatchBase<P_scrMisc> {
-    [LazyPatch("Tags.P_scrMisc.Hit__GetHitMargin", "scrMisc", "GetHitMargin", Triggers = new string[] {
+    [LazyPatch("Tags.P_scrMisc.Hit__GetHitMargin", "scrMisc", "GetHitMargin", Triggers =
+    [
         nameof(Hit.LHit), nameof(Hit.LTE), nameof(Hit.LVE), nameof(Hit.LEP), nameof(Hit.LP), nameof(Hit.LLP), nameof(Hit.LVL), nameof(Hit.LTL),
         nameof(Hit.NHit), nameof(Hit.NTE), nameof(Hit.NVE), nameof(Hit.NEP), nameof(Hit.NP), nameof(Hit.NLP), nameof(Hit.NVL), nameof(Hit.NTL),
         nameof(Hit.SHit), nameof(Hit.STE), nameof(Hit.SVE), nameof(Hit.SEP), nameof(Hit.SP), nameof(Hit.SLP), nameof(Hit.SVL), nameof(Hit.STL),
@@ -15,8 +16,8 @@ public class P_scrMisc : PatchBase<P_scrMisc> {
         nameof(Hit.CT),   nameof(Hit.CV),  nameof(Hit.CELP),
         "LHitRaw", "NHitRaw", "SHitRaw", "CHitRaw",
         nameof(Hit.LFast), nameof(Hit.NFast), nameof(Hit.SFast), nameof(Hit.CFast),
-        nameof(Hit.LSlow), nameof(Hit.NSlow), nameof(Hit.SSlow), nameof(Hit.CSlow),
-    })]
+        nameof(Hit.LSlow), nameof(Hit.NSlow), nameof(Hit.SSlow), nameof(Hit.CSlow)
+    ])]
     public static class Hit__GetHitMargin {
         public static bool Prefix(float hitangle, float refangle, bool isCW, float bpmTimesSpeed, float conductorPitch, double marginScale, ref HitMargin __result) {
             var controller = scrController.instance;
@@ -40,14 +41,15 @@ public class P_scrMisc : PatchBase<P_scrMisc> {
         }
     }
 
-    [LazyPatch("Tags.P_scrMisc.ComboStats__GetHitMargin", "scrMisc", "GetHitMargin", Triggers = new string[] {
+    [LazyPatch("Tags.P_scrMisc.ComboStats__GetHitMargin", "scrMisc", "GetHitMargin", Triggers =
+    [
         nameof(ComboStats.Combo), nameof(ComboStats.MaxCombo),
         nameof(ComboStats.LMarginCombo), nameof(ComboStats.NMarginCombo), nameof(ComboStats.SMarginCombo), nameof(ComboStats.MarginCombo),
         nameof(ComboStats.LMarginMaxCombo), nameof(ComboStats.NMarginMaxCombo), nameof(ComboStats.SMarginMaxCombo), nameof(ComboStats.MarginMaxCombo),
         nameof(ComboStats.LMarginCombos), nameof(ComboStats.NMarginCombos), nameof(ComboStats.SMarginCombos), nameof(ComboStats.MarginCombos),
         nameof(ComboStats.LMarginMaxCombos), nameof(ComboStats.NMarginMaxCombos), nameof(ComboStats.SMarginMaxCombos), nameof(ComboStats.MarginMaxCombos),
-        nameof(ComboStats.SpecialPlayMark),
-    })]
+        nameof(ComboStats.SpecialPlayMark)
+    ])]
     public static class Combo__GetHitMargin {
         public static void Postfix(float hitangle, float refangle, bool isCW, float bpmTimesSpeed, float conductorPitch, double marginScale, ref HitMargin __result) {
             var controller = scrController.instance;
@@ -75,9 +77,10 @@ public class P_scrMisc : PatchBase<P_scrMisc> {
         }
     }
 
-    [LazyPatch("Tags.P_scrMisc.Scores__GetHitMargin", "scrMisc", "GetHitMargin", Triggers = new string[] {
-        nameof(Scores.LScore), nameof(Scores.NScore), nameof(Scores.SScore), nameof(Scores.Score),
-    })]
+    [LazyPatch("Tags.P_scrMisc.Scores__GetHitMargin", "scrMisc", "GetHitMargin", Triggers =
+    [
+        nameof(Scores.LScore), nameof(Scores.NScore), nameof(Scores.SScore), nameof(Scores.Score)
+    ])]
     public static class Scores__GetHitMargin {
         public static void Postfix(float hitangle, float refangle, bool isCW, float bpmTimesSpeed, float conductorPitch, double marginScale, ref HitMargin __result) {
             var controller = scrController.instance;

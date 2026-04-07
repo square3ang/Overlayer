@@ -137,19 +137,19 @@ public static class OllyResources {
             }
         }
         Loaded =
-            Base != null &&
-            BG != null &&
+            Base != null&&
+            BG != null&&
             Eyes != null && Eyes.Length == Enum.GetValues(typeof(Eye)).Length - 1 &&
             Mouths != null && Mouths.Length == Enum.GetValues(typeof(Mouth)).Length &&
-            Hair != null &&
-            EyelidUp != null &&
-            EyelidDown != null &&
-            EyelidBG != null &&
-            Nose != null &&
+            Hair != null&&
+            EyelidUp != null&&
+            EyelidDown != null&&
+            EyelidBG != null&&
+            Nose != null&&
             Eyebrows != null && Eyebrows.Length == Enum.GetValues(typeof(Eyebrow)).Length - 1 &&
             EyeSpecials != null && EyeSpecials.Length == Enum.GetValues(typeof(EyeSpecial)).Length - 1 &&
-            EyeHighlightLeft != null &&
-            EyeHighlightRight != null &&
+            EyeHighlightLeft != null&&
+            EyeHighlightRight != null&&
             Effects != null && Effects.Length == Enum.GetValues(typeof(Effect)).Length - 1 &&
             EffectForwards != null && EffectForwards.Length == Enum.GetValues(typeof(EffectForward)).Length - 1;
         if(Loaded) {

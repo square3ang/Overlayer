@@ -70,7 +70,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     }
 
     public void Update() {
-        if(!Initialized || Text == null) {
+        if(!Initialized || Text is null) {
             return;
         }
 
@@ -103,7 +103,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
 
         if(_fontChanged || _instancedMaterials == null || _instancedMaterials.Length == 0) {
             Material[] shared = Text.fontSharedMaterials;
-            if(shared != null && shared.Length > 0 && shared[0] != null) {
+            if(shared != null && shared.Length > 0 && shared[0] is not null) {
                 RefreshMaterials(shared);
                 _fontChanged = false;
             }
@@ -113,7 +113,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
             UpdateMaterialExpressions();
         }
 
-        if(isDragging && OverlayerProfile.DragObj != null && OverlayerProfile.DragImage != null) {
+        if(isDragging && OverlayerProfile.DragObj is not null && OverlayerProfile.DragImage is not null) {
             OverlayerProfile.DragObj.transform.position = Text.gameObject.transform.position;
             OverlayerProfile.DragObj.transform.rotation = Text.gameObject.transform.rotation;
             OverlayerProfile.DragImage.rectTransform.pivot = Text.rectTransform.pivot;
@@ -249,7 +249,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
         }
 
         TMP_FontAsset targetFont = font.fontTMP;
-        if(targetFont == null) {
+        if(targetFont is null) {
             return;
         }
         Text.font = targetFont;
@@ -303,7 +303,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     private void RefreshMaterials(Material[] shared) {
         _instancedMaterials = new Material[shared.Length];
         for(int i = 0; i < shared.Length; i++) {
-            if(shared[i] == null) {
+            if(shared[i] is null) {
                 continue;
             }
             _instancedMaterials[i] = new Material(shared[i]);
@@ -319,7 +319,7 @@ public class OverlayerText : OverlayerObject, IPointerDownHandler, IPointerUpHan
     private void UpdateMaterialExpressions() {
         bool changed = false;
         foreach(var mat in _instancedMaterials) {
-            if(mat == null) {
+            if(mat is null) {
                 continue;
             }
 

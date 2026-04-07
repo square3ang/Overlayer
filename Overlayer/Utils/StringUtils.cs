@@ -124,8 +124,8 @@ public static class StringUtils {
     public static string[] Split2(this string str, char separator) {
         int index = str.IndexOf(separator);
         return index < 0
-            ? (new string[] { str })
-            : (new string[] { str.Substring(0, index), str.Substring(index + 1, str.Length - (index + 1)) });
+            ? [str]
+            : [str.Substring(0, index), str.Substring(index + 1, str.Length - (index + 1))];
     }
     public static char ToLower(this char c) => c.IsLower() ? c : (char)(c + 32);
     public static unsafe string ToLowerFast(this string s) {

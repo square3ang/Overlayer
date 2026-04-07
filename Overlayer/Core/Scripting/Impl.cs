@@ -377,11 +377,11 @@ public static class Impl {
         harmony.Patch(target, transpiler: new HarmonyMethod(wrap));
         return true;
     }*/
-    [Api("getLanguage", RequireTypes = new[] { typeof(SystemLanguage) })]
+    [Api("getLanguage", RequireTypes = [typeof(SystemLanguage)])]
     public static SystemLanguage GetLanguage(Engine engine) => RDString.language;
-    [Api("ease", RequireTypes = new Type[] { typeof(Ease) })]
+    [Api("ease", RequireTypes = [typeof(Ease)])]
     public static float EasedValue(Engine engine, Ease ease, float lifetime) => DOVirtual.EasedValue(0, 1, lifetime, ease);
-    [Api("easeColor", RequireTypes = new Type[] { typeof(Color) })]
+    [Api("easeColor", RequireTypes = [typeof(Color)])]
     public static Color EasedColor(Engine engine, Color color, Ease ease, float lifetime) => color * DOVirtual.EasedValue(0, 1, lifetime, ease);
     [Api("easeColorFromTo")]
     public static Color EasedColor(Engine engine, Color from, Color to, Ease ease, float lifetime) => from + ((to - from) * DOVirtual.EasedValue(0, 1, lifetime, ease));
@@ -446,7 +446,7 @@ public static class Impl {
         var config = TextConfigImporter.Import(token);
         return profile.ObjectManager.Create(config);
     }
-    [Api("createTexture", RequireTypes = new[] { typeof(Texture2D) })]
+    [Api("createTexture", RequireTypes = [typeof(Texture2D)])]
     public static Texture2D CreateTexture(string imagePath) {
         if(!File.Exists(imagePath)) {
             return null;
@@ -477,10 +477,10 @@ public static class Impl {
         };
         AudioPlayer.Play(sound);
     }
-    [Api("loadAudio", Comment = new string[]
-    {
+    [Api("loadAudio", Comment =
+    [
         "Load Audio(UnityEngine.AudioClip) With Callback (.mp3, .ogg, .aiff, .wav)"
-    }, RequireTypes = new Type[] { typeof(AudioClip) })]
+    ], RequireTypes = [typeof(AudioClip)])]
     public static void LoadAudio(string path, JsValue callback) {
         if(callback is not Function func) {
             return;
@@ -489,16 +489,16 @@ public static class Impl {
         FIWrapper fi = new(func);
         AudioPlayer.LoadAudio(path, ac => fi.Call(ac));
     }
-    [Api("setAudio", Comment = new string[]
-    {
+    [Api("setAudio", Comment =
+    [
         "Set Audio(UnityEngine.AudioClip) With Callback (.mp3, .ogg, .aiff, .wav)"
-    }, RequireTypes = new Type[] { typeof(AudioSource) })]
+    ], RequireTypes = [typeof(AudioSource)])]
     public static void SetAudio(string path, AudioSource source) => AudioPlayer.LoadAudio(path, clip => source.clip = clip);
     public class On {
-        [Api("rewind", Comment = new[]
-        {
+        [Api("rewind", Comment =
+        [
             "On ADOFAI Rewind (Level Start, Scene Moved, etc..)"
-        })]
+        ])]
         public static void Rewind(Engine engine, JsValue func) {
             if(func is not Function fi) {
                 return;
@@ -507,10 +507,10 @@ public static class Impl {
             FIWrapper wrapper = new(fi);
             harmony.Postfix(MiscUtils.MethodByName("scrController:Awake_Rewind"), new Action(() => wrapper.Call()));
         }
-        [Api("hit", Comment = new[]
-        {
+        [Api("hit", Comment =
+        [
             "On Tile Hit"
-        })]
+        ])]
         public static void Hit(Engine engine, JsValue func) {
             if(func is not Function fi) {
                 return;
@@ -519,10 +519,10 @@ public static class Impl {
             FIWrapper wrapper = new(fi);
             harmony.Postfix(MiscUtils.MethodByName("scrController:Hit"), new Action(() => wrapper.Call()));
         }
-        [Api("dead", Comment = new[]
-         {
+        [Api("dead", Comment =
+        [
             "On Dead"
-        })]
+        ])]
         public static void Dead(Engine engine, JsValue func) {
             if(func is not Function fi) {
                 return;
@@ -535,10 +535,10 @@ public static class Impl {
                 }
             }));
         }
-        [Api("fail", Comment = new[]
-         {
+        [Api("fail", Comment =
+        [
             "On Fail"
-        })]
+        ])]
         public static void Fail(Engine engine, JsValue func) {
             if(func is not Function fi) {
                 return;
@@ -547,10 +547,10 @@ public static class Impl {
             FIWrapper wrapper = new(fi);
             harmony.Postfix(MiscUtils.MethodByName("scrController:FailAction"), new Action<scrController>(__instance => wrapper.Call()));
         }
-        [Api("clear", Comment = new[]
-         {
+        [Api("clear", Comment =
+        [
             "On Clear"
-        })]
+        ])]
         public static void Clear(Engine engine, JsValue func) {
             if(func is not Function fi) {
                 return;
@@ -564,26 +564,26 @@ public static class Impl {
             }));
         }
         #region KeyEvents
-        [Api("anyKey", Comment = new[]
-        {
+        [Api("anyKey", Comment =
+        [
             "On Any Key Pressed"
-        })]
+        ])]
         public static void AnyKey(Engine engine, JsValue func) {
             if(func is not Function fi) {
                 return;
             }
 
             FIWrapper wrapper = new(fi);
-            harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() => {
+            harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), () => {
                 if(Input.anyKey) {
                     wrapper.Call();
                 }
-            }));
+            });
         }
-        [Api("anyKeyDown", Comment = new[]
-        {
+        [Api("anyKeyDown", Comment =
+        [
             "On Any Key Down"
-        })]
+        ])]
         public static void AnyKeyDown(Engine engine, JsValue func) {
             if(func is not Function fi) {
                 return;
@@ -596,75 +596,74 @@ public static class Impl {
                 }
             }));
         }
-        [Api("key", Comment = new[]
-        {
+        [Api("key", Comment =
+        [
             "On Key Pressed"
-        })]
+        ])]
         public static void Key(Engine engine, KeyCode key, JsValue func) {
             if(func is not Function fi) {
                 return;
             }
 
             FIWrapper wrapper = new(fi);
-            harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() => {
+            harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), () => {
                 if(Input.GetKey(key)) {
                     wrapper.Call();
                 }
-            }));
+            });
         }
-        [Api("keyUp", Comment = new[]
-        {
+        [Api("keyUp", Comment =
+        [
             "On Key Up"
-        })]
+        ])]
         public static void KeyUp(Engine engine, KeyCode key, JsValue func) {
             if(func is not Function fi) {
                 return;
             }
 
             FIWrapper wrapper = new(fi);
-            harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() => {
+            harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), () => {
                 if(Input.GetKeyUp(key)) {
                     wrapper.Call();
                 }
-            }));
+            });
         }
-        [Api("keyDown", Comment = new[]
-        {
+        [Api("keyDown", Comment =
+        [
             "On Key Down"
-        })]
+        ])]
         public static void KeyDown(Engine engine, KeyCode key, JsValue func) {
             if(func is not Function fi) {
                 return;
             }
 
             FIWrapper wrapper = new(fi);
-            harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), new Action(() => {
+            harmony.Postfix(MiscUtils.MethodByName("scrController:Update"), () => {
                 if(Input.GetKeyDown(key)) {
                     wrapper.Call();
                 }
-            }));
+            });
         }
         #endregion
     }
-    [Api(Comment = new string[]
-    {
-        "These Methods Are Recommended To Use In 'On.rewind' Callback."
-    },
-    RequireTypes = new Type[]
-    {
-        typeof(SpriteRenderer),
+    [Api(Comment =
+        [
+            "These Methods Are Recommended To Use In 'On.rewind' Callback."
+        ],
+    RequireTypes =
+        [
+            typeof(SpriteRenderer),
         typeof(scrHitTextMesh),
         typeof(HitMargin),
         typeof(SfxSound),
         typeof(HitSound)
-    })]
+        ])]
     public class Adofai {
         [Api("getPlanetRenderer", ReturnComment = "UnityEngine.SpriteRenderer (Planet SpriteRenderer)")]
         public static SpriteRenderer GetPlanetRenderer(scrPlanet planet, PlanetRenderer planetrenderer) => planet.GetOrAddRenderer(planetrenderer);
         [Api("scalePlanet")]
         public static void ScalePlanet(PlanetRenderer planetrender, Vector2 vec) {
-            ScaleAll(new[]
-            {
+            ScaleAll([
                 (mr.GetValue(planetrender.sprite) as SpriteRenderer)?.transform,
                 planetrender.coreParticles?.transform,
                 planetrender.tailParticles?.transform,
@@ -675,8 +674,8 @@ public static class Impl {
                 planetrender.faceSprite?.transform,
                 planetrender.faceDetails?.transform,
                 planetrender.faceHolder?.transform,
-                planetrender.samuraiSprite?.transform,
-            }, vec);
+                planetrender.samuraiSprite?.transform
+            ], vec);
         }
         [Api("setDiscordRp")]
         public static void SetDiscordRp(string title, string state, string details) {
@@ -702,10 +701,10 @@ public static class Impl {
             betaText.gameObject.SetActive(true);
             betaText.GetComponent<UnityEngine.UI.Text>().text = text;
         }
-        [Api("configAutoText", ParamComment = new string[]
-        {
+        [Api("configAutoText", ParamComment =
+        [
             "UnityEngine.UI.Text Callback"
-        })]
+        ])]
         public static void ConfigAutoText(Engine engine, JsValue configFunc) {
             if(configFunc is not Function func) {
                 return;
@@ -740,7 +739,7 @@ public static class Impl {
             FIWrapper wrapper = new(func);
             var list = scrLevelMaker.instance.listFloors;
             for(int i = 0; i < list.Count; i++) {
-                wrapper.Call(wrapper.args.Length == 1 ? new object[] { list[i] } : new object[] { i, list[i] });
+                wrapper.Call(wrapper.args.Length == 1 ? [list[i]] : [i, list[i]]);
             }
         }
         [Api("setJudgeText")]
@@ -755,10 +754,10 @@ public static class Impl {
                 }
             }));
         }
-        [Api("configJudgeText", ParamComment = new string[]
-        {
+        [Api("configJudgeText", ParamComment =
+        [
             "scrHitTextMesh Callback"
-        })]
+        ])]
         public static void ConfigJudgeText(Engine engine, HitMargin hitMargin, JsValue configFunc) {
             if(configFunc is not Function func) {
                 return;
@@ -805,7 +804,7 @@ public static class Impl {
                 return;
             }
 
-            harmony.Patch(typeof(scrShowIfDebug).GetMethod("Update", (BindingFlags)15420), new HarmonyMethod(EmitUtils.Wrap(new Func<bool>(() => false))));
+            harmony.Patch(typeof(scrShowIfDebug).GetMethod("Update", (BindingFlags)15420), new HarmonyMethod(EmitUtils.Wrap(() => false)));
             autoTextInjected = true;
         }
         private static void InjectStartRadius() {

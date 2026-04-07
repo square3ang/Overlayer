@@ -66,7 +66,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
     }
 
     public void Update() {
-        if(!Initialized || _mainImage == null || Images.Count == 0) {
+        if(!Initialized || _mainImage is null || Images.Count == 0) {
             return;
         }
 
@@ -92,7 +92,7 @@ public class OverlayerImage : OverlayerObject, IPointerDownHandler, IPointerUpHa
             _mainImage.rectTransform.rotation = Quaternion.Euler(rot);
         }
 
-        if(isDragging && OverlayerProfile.DragObj != null && OverlayerProfile.DragImage != null) {
+        if(isDragging && OverlayerProfile.DragObj is not null && OverlayerProfile.DragImage is not null) {
             OverlayerProfile.DragObj.transform.position = _mainImage.transform.position;
             OverlayerProfile.DragObj.transform.rotation = _mainImage.transform.rotation;
             OverlayerProfile.DragImage.rectTransform.pivot = _mainImage.rectTransform.pivot;

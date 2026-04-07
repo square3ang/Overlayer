@@ -23,7 +23,7 @@ public static class Type<T> {
     }
 
     private static AddrGetter CreateAddrGetter() {
-        DynamicMethod dynamicMethod = new(typeof(T).FullName + "_Address", typeof(IntPtr), new Type[1] { typeof(T).MakeByRefType() });
+        DynamicMethod dynamicMethod = new(typeof(T).FullName + "_Address", typeof(IntPtr), [typeof(T).MakeByRefType()]);
         ILGenerator iLGenerator = dynamicMethod.GetILGenerator();
         iLGenerator.Emit(OpCodes.Ldarg_0);
         iLGenerator.Emit(OpCodes.Conv_U);

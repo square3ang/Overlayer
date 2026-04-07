@@ -60,7 +60,7 @@ public static class Bpm {
     }
 
     public static void Update(scrFloor floor) {
-        if(floor.nextfloor == null) {
+        if(floor.nextfloor is null) {
             return;
         }
 

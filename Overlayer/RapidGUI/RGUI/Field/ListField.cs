@@ -6,7 +6,7 @@ using UnityEngine;
 namespace RapidGUI;
 
 public static partial class RGUI {
-    static readonly string[] ListPopupButtonNames = new[] { "Add Element", "Delete Element" };
+    static readonly string[] ListPopupButtonNames = ["Add Element", "Delete Element"];
 
     public static T ListField<T>(T list, Func<T, int, string, object> customElementGUI = null, Func<T, object> customLabelRightFunc = null)
         where T : IList => ListField(list, null, customElementGUI, customLabelRightFunc);
@@ -167,7 +167,7 @@ public static partial class RGUI {
                 ret = baseElem;
             }
               // has copy constructor
-              else if(elemType.GetConstructor(new[] { elemType }) != null) {
+              else if(elemType.GetConstructor([elemType]) != null) {
                 ret = Activator.CreateInstance(elemType, baseElem);
             }
         }

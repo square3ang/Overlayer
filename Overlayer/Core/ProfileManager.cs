@@ -114,7 +114,7 @@ public static class ProfileManager {
     }
 
     public static void Destroy(OverlayerProfile profile) {
-        if(profile == null || !Profiles.Contains(profile)) {
+        if(profile is null || !Profiles.Contains(profile)) {
             return;
         }
 

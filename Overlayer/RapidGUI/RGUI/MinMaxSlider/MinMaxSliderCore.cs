@@ -9,7 +9,7 @@ public class MinMaxSliderCore {
         static Style() => InitStyle();
 
         static void InitStyle() {
-            minMaxSliderThumb = new GUIStyle() {
+            minMaxSliderThumb = new GUIStyle {
                 border = new RectOffset(7, 7, 0, 0),
                 clipping = TextClipping.Clip,
                 fixedHeight = 12f,

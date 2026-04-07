@@ -45,7 +45,7 @@ public static class RGUIStyle {
         style.hover.textColor = toggle.hover.textColor;
 
         flatButtonTex = new Texture2D(1, 1);
-        flatButtonTex.SetPixels(new[] { new Color(0.5f, 0.5f, 0.5f, 0.5f) });
+        flatButtonTex.SetPixels([new Color(0.5f, 0.5f, 0.5f, 0.5f)]);
         flatButtonTex.Apply();
         style.hover.background = flatButtonTex;
 
@@ -71,7 +71,7 @@ public static class RGUIStyle {
             popupTex = new Texture2D(1, 1);
             var brightness = 0.2f;
             var alpha = 0.9f;
-            popupTex.SetPixels(new[] { new Color(brightness, brightness, brightness, alpha) });
+            popupTex.SetPixels([new Color(brightness, brightness, brightness, alpha)]);
             popupTex.Apply();
 
             style.normal.background =

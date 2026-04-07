@@ -224,7 +224,7 @@ public class OverlayerTag {
             return dm;
         }
 
-        string[] accessors = accessor.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+        string[] accessors = accessor.Split(['.'], StringSplitOptions.RemoveEmptyEntries);
         if(accessors.Length < 1) {
             return null;
         }
@@ -250,7 +250,7 @@ public class OverlayerTag {
         }
         MemberInfo last = toEmitMembers.Last();
         Type rt = last is FieldInfo ff ? ff.FieldType : last is PropertyInfo pp ? pp.PropertyType : typeof(object);
-        accessorCacheDM[name] = dm = new DynamicMethod(name, typeof(object), new[] { typeof(object) }, typeof(OverlayerTag), true);
+        accessorCacheDM[name] = dm = new DynamicMethod(name, typeof(object), [typeof(object)], typeof(OverlayerTag), true);
         ILGenerator il = dm.GetILGenerator();
         if(!staticAccess) {
             il.Emit(OpCodes.Ldarg_0);
@@ -285,9 +285,10 @@ public class OverlayerTag {
     private static Dictionary<string, Func<object, object>> accessorCache = [];
     private static Dictionary<string, DynamicMethod> accessorCacheDM = [];
     static OverlayerTag() {
-        runtimeAccessor = typeof(OverlayerTag).GetMethod(nameof(RuntimeAccess), (BindingFlags)15420, null, new[] { typeof(object), typeof(string) }, null);
-        round = typeof(Extensions).GetMethod("Round", new[] { typeof(double), typeof(int) });
-        trim = typeof(Extensions).GetMethod("Trim", new[] { typeof(string), typeof(int), typeof(string) });
-        toString = typeof(Extensions).GetMethod("ToString", new[] { typeof(double), typeof(string) });
+        runtimeAccessor = typeof(OverlayerTag).GetMethod(nameof(RuntimeAccess), (BindingFlags)15420, null, [typeof(object), typeof(string)
+        ], null);
+        round = typeof(Extensions).GetMethod("Round", [typeof(double), typeof(int)]);
+        trim = typeof(Extensions).GetMethod("Trim", [typeof(string), typeof(int), typeof(string)]);
+        toString = typeof(Extensions).GetMethod("ToString", [typeof(double), typeof(string)]);
     }
 }

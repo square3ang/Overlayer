@@ -10,7 +10,7 @@ public static class ImageManager {
     public static bool Initialized { get; private set; } = false;
     public static Sprite DefaultSprite {
         get {
-            if(_defaultSprite == null) {
+            if(_defaultSprite is null) {
                 CreateDefault();
             }
             return _defaultSprite;
@@ -23,7 +23,7 @@ public static class ImageManager {
 
     static void CreateDefault() {
         Texture2D tex = new(2, 2);
-        tex.SetPixels(new Color[4] { Color.clear, Color.clear, Color.clear, Color.clear });
+        tex.SetPixels([Color.clear, Color.clear, Color.clear, Color.clear]);
         tex.Apply();
         _defaultSprite = Sprite.Create(tex, new Rect(0, 0, 2, 2), new Vector2(0.5f, 0.5f));
     }

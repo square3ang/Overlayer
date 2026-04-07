@@ -4,11 +4,12 @@ using System;
 namespace Overlayer.Tags.Patches;
 
 public class P_scrMistakeManager : PatchBase<P_scrMistakeManager> {
-    [LazyPatch("Tags.P_scrMistakeManager.AccuracyStats__CalculatePercentAcc", "scrMistakesManager", "CalculatePercentAcc", Triggers = new string[] {
+    [LazyPatch("Tags.P_scrMistakeManager.AccuracyStats__CalculatePercentAcc", "scrMistakesManager", "CalculatePercentAcc", Triggers =
+    [
         nameof(AccuracyStats.Accuracy), nameof(AccuracyStats.MaxAccuracy),
         nameof(AccuracyStats.XAccuracy), nameof(AccuracyStats.MaxXAccuracy),
-        nameof(AccuracyStats.AbsXAccuracy), nameof(AccuracyStats.AbsMaxXAccuracy),
-    })]
+        nameof(AccuracyStats.AbsXAccuracy), nameof(AccuracyStats.AbsMaxXAccuracy)
+    ])]
     public static class AccuracyStats__CalculatePercentAcc {
         public static void Postfix(scrMistakesManager __instance) {
             int perfect = __instance.GetHits(HitMargin.Perfect);
@@ -40,7 +41,7 @@ public class P_scrMistakeManager : PatchBase<P_scrMistakeManager> {
             AccuracyStats.AbsXAccuracy = 100.0 * (weightedHits / totalHits);
             AccuracyStats.XAccuracy = AccuracyStats.AbsXAccuracy * checkpointminus;
 
-            if(ADOBase.lm != null && ADOBase.lm.listFloors != null &&
+            if(ADOBase.lm is not null && ADOBase.lm.listFloors != null &&
                 Tile.CurTile >= 0 && Tile.CurTile < ADOBase.lm.listFloors.Count &&
                 ADOBase.lm.listFloors[Tile.CurTile] != null) {
 

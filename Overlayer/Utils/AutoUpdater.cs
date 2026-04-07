@@ -38,9 +38,9 @@ public static class AutoUpdater {
         PropertyInfo canReloadProp = entryType.GetProperty("CanReload", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
         MethodInfo setMethod = canReloadProp?.GetSetMethod(true);
         MethodInfo reloadMethod = entryType.GetMethod("Reload", BindingFlags.Instance | BindingFlags.NonPublic);
-        setMethod?.Invoke(modEntry, new object[] { true });
+        setMethod?.Invoke(modEntry, [true]);
         reloadMethod?.Invoke(modEntry, null);
-        setMethod?.Invoke(modEntry, new object[] { false });
+        setMethod?.Invoke(modEntry, [false]);
     }
 
     public static async Task InitAndUpdate(ModEntry modEntry, bool update = false, bool allowBeta = false, Action ok = null, Action<string> err = null, bool latestIsError = false) {

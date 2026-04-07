@@ -263,7 +263,7 @@ public static class Scripting {
             .SelectMany(t => t.PlayingReplacer.References
                 .Union(t.NotPlayingReplacer.References)
                 .Select(ResolveScriptTag)
-                .Where(tg => tg is not null))
+                .Where(tg => tg != null))
             .Select(st => {
                 var scriptNode = new JObject {
                     ["Name"] = st.Path != null ? Path.GetFileName(st.Path) : $"{Guid.NewGuid()}.js",

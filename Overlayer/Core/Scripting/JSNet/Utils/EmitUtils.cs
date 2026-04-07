@@ -21,7 +21,7 @@ public static class EmitUtils {
 
     static EmitUtils() {
         accessIgnored = [];
-        iact = typeof(IgnoresAccessChecksToAttribute).GetConstructor(new Type[1] { typeof(string) });
+        iact = typeof(IgnoresAccessChecksToAttribute).GetConstructor([typeof(string)]);
         AssemblyName assemblyName = new("JSNet.Utils.RuntimeAssembly");
         ass = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
         mod = ass.DefineDynamicModule(assemblyName.Name);
@@ -65,7 +65,7 @@ public static class EmitUtils {
                 il.Emit(OpCodes.Conv_R8);
                 break;
             case TypeCode.String:
-                il.Emit(OpCodes.Call, typeof(Convert).GetMethod("ToString", new Type[1] { to }));
+                il.Emit(OpCodes.Call, typeof(Convert).GetMethod("ToString", [to]));
                 break;
             case TypeCode.DBNull:
             case TypeCode.Decimal:
@@ -115,7 +115,7 @@ public static class EmitUtils {
 
     private static CustomAttributeBuilder GetIACT(string name) {
         ConstructorInfo con = iact;
-        object[] constructorArgs = new string[1] { name };
+        object[] constructorArgs = [name];
         return new CustomAttributeBuilder(con, constructorArgs);
     }
 
