@@ -1,3 +1,9 @@
-﻿[ Add ]
-{ Tag }
-MaxTileBPM
+﻿[ Change ]
+Jint - v3.0.0-beta-20XX -> v4.7.1
+- Updated Jint for bugfixes and performance improvements.
+
+( PR #12 kealean )
+- Unity null checks updated to !obj style for safer UnityEngine.Object comparisons.
+
+[ Fix ]
+Scripting
