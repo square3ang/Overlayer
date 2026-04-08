@@ -19,8 +19,6 @@ This project uses third-party libraries as follows:
     - This project uses a [modified version of Jint](https://github.com/modlist-org/jint).
     - Distributed as a compiled DLL; source modifications are not included in this mod.
 
-핵심 포인트:
-
 # 🌐 Translations are welcome!
 
 You can freely adapt the meaning to fit the style and culture of each language.
