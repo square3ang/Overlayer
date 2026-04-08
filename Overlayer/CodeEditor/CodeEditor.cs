@@ -3,6 +3,7 @@ using Overlayer.Tags;
 using Overlayer.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -12,6 +13,69 @@ using Object = UnityEngine.Object;
 namespace Overlayer.CodeEditor;
 
 public class CodeEditor {
+    public static CodeEditor instance = new("OverlayerCodeEditor", new CodeTheme {
+        background = "#333333",
+        linenumbg = "#222222",
+        color = "#FFFFFF",
+        selection = "#264F78",
+        cursor = "#D4D4D4"
+    });
+
+    public static Regex color = new("<<b></b>color=(.*?)>", RegexOptions.Compiled);
+
+    public static void Initialize() {
+        instance.highlighter = str => {
+            str = str.Replace("<", "<<b></b>");
+
+            var colorHighlighted = new List<string>();
+            foreach(Match m in color.Matches(str)) {
+                if(!colorHighlighted.Contains(m.Groups[1].Value) && ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _)) {
+                    str = str.Replace("<<b></b>color=" + m.Groups[1].Value + ">",
+                        "<<b></b>color=<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>>");
+                    colorHighlighted.Add(m.Groups[1].Value);
+                }
+            }
+
+            var highlighted = new List<string>();
+
+            foreach(Match match in tagRegex.Matches(str)) {
+                if(highlighted.Contains(match.Groups[1].Value)) {
+                    continue;
+                }
+
+                var fullTag = match.Groups[1].Value;
+                var splitChar = fullTag.Contains(':') ? ':' : (fullTag.Contains(';') ? ';' : '\0');
+                var name = splitChar != '\0' ? fullTag.Split(splitChar)[0] : fullTag;
+
+                if(TagManager.tags.ContainsKey(name)) {
+                    if(splitChar == ';') {
+                        str = str.Replace("{" + fullTag + "}", "<color=blue>{" + fullTag + "}</color>");
+                    } else if((Main.Settings.MovingManEditor && name == nameof(Effect.MovingMan)) ||
+                              (Main.Settings.ColorRangeEditor && name == nameof(Effect.ColorRange)) ||
+                              (Main.Settings.EasedValueEditor && name == nameof(Effect.EasedValue))) {
+                        str = str.Replace("{" + fullTag + "}", "<color=orange>{" + fullTag + "}</color>");
+                    } else if(name.EndsWith("Hex")) {
+                        try {
+                            var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
+                                new object[] { "-1", Overlayer.Utils.Extensions.DefaultTrimStr });
+                            str = str.Replace("{" + fullTag + "}", "<color=#" + val + ">{" + fullTag + "}</color>");
+                        } catch {
+                            str = str.Replace("{" + fullTag + "}", "<color=lightblue>{" + fullTag + "}</color>");
+                        }
+                    } else {
+                        str = str.Replace("{" + fullTag + "}", "<color=lightblue>{" + fullTag + "}</color>");
+                    }
+                } else {
+                    str = str.Replace("{" + fullTag + "}", "<color=red>{" + fullTag + "}</color>");
+                }
+
+                highlighted.Add(fullTag);
+            }
+
+            return str;
+        };
+    }
+
     public string controlName { get; set; }
     public System.Action onValueChange;
     public int tabSpaces = 2;
@@ -278,8 +342,11 @@ public class CodeEditor {
                 }
 
                 if(rect.Contains(Event.current.mousePosition)) {
-                    var pars = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                    Main.tooltip = TagManager.tags.ContainsKey(pars) ? Tooltip.GetTagDescription(pars) : Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
+                    var pars = match.Groups[1].Value.Split('(')[0]
+                                     .Split([':', ';'], 2)[0];
+                    Main.tooltip = TagManager.tags.ContainsKey(pars)
+                                   ? Tooltip.GetTagDescription(pars)
+                                   : Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
                 }
 
                 if(special) {

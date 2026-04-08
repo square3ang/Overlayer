@@ -70,7 +70,7 @@ public static class Parser {
         }
     }
 
-    private static readonly Regex TagRegex = new(
+    public static readonly Regex TagRegex = new(
         @"\{(\w+)([:;\(]?)([^}]*)\}",
         RegexOptions.Compiled
     );

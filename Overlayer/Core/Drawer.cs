@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using HarmonyLib;
-using Overlayer.CodeEditor;
 using Overlayer.Models;
 using Overlayer.Tags;
 using Overlayer.Utils;
@@ -19,17 +18,6 @@ using UnityModManagerNet;
 namespace Overlayer.Core;
 
 public static class Drawer {
-    public static CodeEditor.CodeEditor codeEditor = new("OverlayerCodeEditor",
-        new CodeTheme {
-            background = "#333333",
-            linenumbg = "#222222",
-            color = "#FFFFFF",
-            selection = "#264F78",
-            cursor = "#D4D4D4"
-        });
-
-    public static Regex highlight = new("{(.*?)}", RegexOptions.Compiled);
-    public static Regex color = new("<<b></b>color=(.*?)>", RegexOptions.Compiled);
     public static GUIStyle myButton;
     public static GUIStyle myTextField;
     public static GUIStyle myTextFieldNoPad;
@@ -77,55 +65,7 @@ public static class Drawer {
     public static Texture2D black;
 
     static Drawer() {
-        codeEditor.highlighter = str => {
-            str = str.Replace("<", "<<b></b>");
-
-            var colorHighlighted = new List<string>();
-            foreach(Match m in color.Matches(str)) {
-                if(!colorHighlighted.Contains(m.Groups[1].Value) && ColorUtility.TryParseHtmlString(m.Groups[1].Value, out _)) {
-                    str = str.Replace("<<b></b>color=" + m.Groups[1].Value + ">",
-                        "<<b></b>color=<color=" + m.Groups[1].Value + ">" + m.Groups[1].Value + "</color>>");
-                    colorHighlighted.Add(m.Groups[1].Value);
-                }
-            }
-
-            var highlighted = new List<string>();
-
-            foreach(Match match in highlight.Matches(str)) {
-                if(highlighted.Contains(match.Groups[1].Value)) {
-                    continue;
-                }
-
-                var name = match.Groups[1].Value.Split('(')[0].Split(':')[0];
-                if(TagManager.tags.ContainsKey(name)) {
-                    if((Main.Settings.MovingManEditor && name == nameof(Effect.MovingMan)) || (Main.Settings.ColorRangeEditor && name == nameof(Effect.ColorRange)) || (Main.Settings.EasedValueEditor && name == nameof(Effect.EasedValue))) {
-                        str = str.Replace("{" + match.Groups[1].Value + "}",
-                            "<color=orange>{" + match.Groups[1].Value + "}</color>");
-                    } else if(name.EndsWith("Hex")) {
-                        try {
-                            var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
-                                ["-1", Overlayer.Utils.Extensions.DefaultTrimStr]);
-                            str = str.Replace("{" + match.Groups[1].Value + "}",
-                                "<color=#" + val + ">{" + match.Groups[1].Value + "}</color>");
-                        } catch {
-                            str = str.Replace("{" + match.Groups[1].Value + "}",
-                                "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
-                        }
-                    } else {
-                        str = str.Replace("{" + match.Groups[1].Value + "}",
-                            "<color=lightblue>{" + match.Groups[1].Value + "}</color>");
-                    }
-                } else {
-                    str = str.Replace("{" + match.Groups[1].Value + "}",
-                        "<color=red>{" + match.Groups[1].Value + "}</color>");
-                }
-
-                highlighted.Add(match.Groups[1].Value);
-            }
-
-            return str;
-        };
-
+        CodeEditor.CodeEditor.Initialize();
         InitializeImages();
 
         myButton = new GUIStyle(GUI.skin.button);
@@ -633,7 +573,7 @@ public static class Drawer {
             wordWrap = false,
             richText = false
         };
-        value = codeEditor.Draw(value, sk, id);
+        value = CodeEditor.CodeEditor.instance.Draw(value, sk, id);
         return prev != value;
     }
 
@@ -651,7 +591,7 @@ public static class Drawer {
             wordWrap = false,
             richText = false
         };
-        value = codeEditor.Draw(value, sk, id);
+        value = CodeEditor.CodeEditor.instance.Draw(value, sk, id);
         return prev != value;
     }
 
