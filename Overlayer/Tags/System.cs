@@ -32,6 +32,8 @@ public static class System {
 
     [Tag(NotPlaying = true)]
     public static int ProcessorCount;
+    [Tag(NotPlaying = true)]
+    public static double MemoryGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double CpuUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
@@ -40,6 +42,10 @@ public static class System {
     public static double MemoryUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static double TotalMemoryUsage;
+    [Tag(NotPlaying = true)]
+    public static double MemoryUsageGBytes;
+    [Tag(NotPlaying = true)]
+    public static double TotalMemoryUsageGBytes;
 
     private static long lastGCAllocatedMemory;
     private static Thread updateThread;
@@ -93,12 +99,17 @@ public static class System {
                 if(cpu != null) {
                     CpuUsage = cpu.Observe() / ProcessorCount;
                     TotalCpuUsage = totCpu.Observe();
+                }
 
+                if(mem != null) {
                     var memUsage = mem.Observe() / 1048576;
                     var usedTotal = totalMemMB - totMem.Observe();
 
                     MemoryUsage = memUsage / totalMemMB * 100d;
                     TotalMemoryUsage = usedTotal / totalMemMB * 100d;
+
+                    MemoryUsageGBytes = memUsage / 1024d;
+                    TotalMemoryUsageGBytes = usedTotal / 1024d;
                 }
 
                 Thread.Sleep(Main.Settings.SystemTagUpdateRate);
