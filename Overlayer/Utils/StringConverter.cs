@@ -276,20 +276,24 @@ Continue:
             return FInt32;
         } else if(numType == typeof(long)) {
             return FInt64;
+        } else if(numType == typeof(byte)) {
+            return FUInt8;
+        } else if(numType == typeof(ushort)) {
+            return FUInt16;
+        } else if(numType == typeof(uint)) {
+            return FUInt32;
+        } else if(numType == typeof(ulong)) {
+            return FUInt64;
+        } else if(numType == typeof(float)) {
+            return FFloat;
+        } else if(numType == typeof(double)) {
+            return FDouble;
+        } else if(numType == typeof(bool)) {
+            return FBool;
+        } else if(typeof(Enum).IsAssignableFrom(numType)) {
+            return FEnum.MakeGenericMethod(numType);
         } else {
-            return numType == typeof(byte)
-                ? FUInt8
-                : numType == typeof(ushort)
-                            ? FUInt16
-                            : numType == typeof(uint)
-                                        ? FUInt32
-                                        : numType == typeof(ulong)
-                                                    ? FUInt64
-                                                    : numType == typeof(float)
-                                                                ? FFloat
-                                                                : numType == typeof(double)
-                                                                            ? FDouble
-                                                                            : numType == typeof(bool) ? FBool : typeof(Enum).IsAssignableFrom(numType) ? FEnum.MakeGenericMethod(numType) : FObject;
+            return FObject;
         }
     }
     public static string FromObject(object s) => s?.ToString();
