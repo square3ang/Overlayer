@@ -6,20 +6,19 @@ using System.Text;
 namespace Overlayer.Core.TextReplacing.Parsing;
 
 public static class Parser {
-    public static IEnumerable<IParsed> Parse(IEnumerable<Token> tokens, List<Tag> tags, LexConfig config = null) {
-        config ??= new LexConfig();
+    public static IEnumerable<IParsed> Parse(IEnumerable<Token> tokens, List<Tag> tags) {
         Queue<Token> queue = new(tokens);
         while(queue.Count > 0) {
             Token t = queue.Dequeue();
             if(t.type == TokenType.TagStart) {
                 if(queue.Peek().type == TokenType.TagEnd) {
                     queue.Dequeue();
-                    yield return new ParsedString(config.TagStart.ToString() + config.TagEnd.ToString());
+                    yield return new ParsedString(((char)LexConfig.TagStart).ToString() + ((char)LexConfig.TagEnd).ToString());
                     continue;
                 }
                 Tag found = null;
                 StringBuilder sb = new();
-                sb.Append(config.TagStart);
+                sb.Append((char)LexConfig.TagStart);
                 bool tagNotFound = false;
                 List<string> arguments = [];
                 while(queue.Count > 0 && t.type != TokenType.TagEnd) {

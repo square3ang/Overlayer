@@ -5,8 +5,8 @@ using System.Text;
 namespace Overlayer.Core.TextReplacing.Lexing;
 
 public static class Lexer {
-    public static List<Token> Lex(string source, LexConfig config = null) {
-        var lex = Lex_(source, config).ToList();
+    public static List<Token> Lex(string source) {
+        var lex = Lex_(source).ToList();
         var invalid = lex.FindIndex(t => t.afterInvalid);
         if(invalid >= 0) {
             StringBuilder values = new();
@@ -19,8 +19,7 @@ public static class Lexer {
         }
         return lex;
     }
-    static IEnumerable<Token> Lex_(string source, LexConfig config = null) {
-        config ??= new LexConfig();
+    static IEnumerable<Token> Lex_(string source) {
         StringBuilder sb = new();
         Stack<Token> lastTagToken = new();
         bool tagStarted = false, escaping = false, colonActivated = false;
@@ -32,7 +31,7 @@ public static class Lexer {
                 sb.Append(c);
                 continue;
             }
-            if(c == config.TagStart) {
+            if(c == (char)LexConfig.TagStart) {
                 if(tagStarted || colonActivated) {
                     sb.Append(c);
                     continue;
@@ -42,7 +41,7 @@ public static class Lexer {
                 }
 
                 sb.Clear();
-                if(i + 1 < source.Length && source[i + 1] == config.TagStart) {
+                if(i + 1 < source.Length && source[i + 1] == (char)LexConfig.TagStart) {
                     sb.Append(c);
                     continue;
                 }
@@ -52,7 +51,7 @@ public static class Lexer {
                 lastTagToken.Push(tok);
                 yield return tok;
                 tagStarted = true;
-            } else if(c == config.TagEnd) {
+            } else if(c == (char)LexConfig.TagEnd) {
                 if(!tagStarted) {
                     sb.Append(c);
                     continue;
@@ -66,7 +65,7 @@ public static class Lexer {
                 lastTagToken.Pop().afterInvalid = false;
                 tagStarted = colonActivated = false;
                 argDepth = 0;
-            } else if(c == config.TagArgStart) {
+            } else if(c == (char)LexConfig.TagArgStart) {
                 if(!tagStarted || argDepth++ > 0 || colonActivated) {
                     sb.Append(c);
                     continue;
@@ -77,7 +76,7 @@ public static class Lexer {
 
                 sb.Clear();
                 yield return new Token(TokenType.ArgStart, c.ToString());
-            } else if(c == config.TagArgEnd) {
+            } else if(c == (char)LexConfig.TagArgEnd) {
                 if(!tagStarted || --argDepth > 0 || colonActivated) {
                     sb.Append(c);
                     continue;
@@ -88,7 +87,7 @@ public static class Lexer {
 
                 sb.Clear();
                 yield return new Token(TokenType.ArgEnd, c.ToString());
-            } else if(c == config.TagOptSeparator) {
+            } else if(c == (char)LexConfig.TagOptSeparator) {
                 if(!tagStarted || argDepth > 0 || colonActivated) {
                     sb.Append(c);
                     continue;
@@ -100,7 +99,7 @@ public static class Lexer {
                 sb.Clear();
                 yield return new Token(TokenType.Colon, c.ToString());
                 colonActivated = true;
-            } else if(c == config.TagArgSeparator) {
+            } else if(c == (char)LexConfig.TagArgSeparator) {
                 if(!tagStarted || colonActivated) {
                     sb.Append(c);
                     continue;

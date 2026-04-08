@@ -32,7 +32,7 @@ public class ReplaceableText : IDisposable {
             }).ToString();
     }
     public static object InvokeTag(Tag tag, params string[] args) => tag.Getter.Invoke(null, args);
-    public static ReplaceableText Create(string source, IEnumerable<Tag> tags, LexConfig config = null) => new(Parser.Parse(Lexer.Lex(source, config), tags.ToList(), config));
+    public static ReplaceableText Create(string source, IEnumerable<Tag> tags) => new(Parser.Parse(Lexer.Lex(source), tags.ToList()));
     public void Dispose() {
         if(disposed) {
             return;

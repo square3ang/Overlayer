@@ -85,18 +85,7 @@ public static class MiscUtils {
         target ??= TypeByName(typemethod[0]).GetMethod(typemethod[1], (BindingFlags)15420);
         return target;
     }
-    public static LexConfig CreateLexConfigFromString(string lexOption) {
-        return lexOption.Length != 6
-            ? null
-            : new LexConfig() {
-                TagStart = lexOption[0],
-                TagEnd = lexOption[1],
-                TagOptSeparator = lexOption[2],
-                TagArgStart = lexOption[3],
-                TagArgEnd = lexOption[4],
-                TagArgSeparator = lexOption[5],
-            };
-    }
+
     public static bool SetAttr(object obj, string accessor = "", object value = null) {
         if(obj == null) {
             return false;
