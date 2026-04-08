@@ -1,7 +1,6 @@
-﻿using System;
+﻿namespace System.Runtime.CompilerServices;
 
-namespace Jint.Runtime.Interop.Attributes {
-    public class AliasAttribute(string name) : Attribute {
-        public string Name { get; } = name;
-    }
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+public sealed class IgnoresAccessChecksToAttribute(string assemblyName) : Attribute {
+    public string AssemblyName { get; } = assemblyName;
 }
