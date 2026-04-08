@@ -1,9 +1,10 @@
-﻿[ Change ]
-Jint - v3.0.0-beta-20XX -> v4.7.1
-- Updated Jint for bugfixes and performance improvements.
+﻿[ Add ]
+Advanced Format Number
+- Just use ; (semicolon) in a Tag.
 
-( PR #12 kealean )
-- Unity null checks updated to !obj style for safer UnityEngine.Object comparisons.
+[ Change ]
+Tag Parser (Legex)
 
 [ Fix ]
-Scripting
+System.Numerics.Vectors dependencies
+Restore {MemoryUsageGBytes} and {TotalMemoryUsageGBytes} Tags
