@@ -251,20 +251,24 @@ Continue:
             return TInt32;
         } else if(numType == typeof(long)) {
             return TInt64;
+        } else if(numType == typeof(byte)) {
+            return TUInt8;
+        } else if(numType == typeof(ushort)) {
+            return TUInt16;
+        } else if(numType == typeof(uint)) {
+            return TUInt32;
+        } else if(numType == typeof(ulong)) {
+            return TUInt64;
+        } else if(numType == typeof(float)) {
+            return TFloat;
+        } else if(numType == typeof(double)) {
+            return TDouble;
+        } else if(numType == typeof(bool)) {
+            return TBool;
+        } else if(typeof(Enum).IsAssignableFrom(numType)) {
+            return TEnum.MakeGenericMethod(numType);
         } else {
-            return numType == typeof(byte)
-                ? TUInt8
-                : numType == typeof(ushort)
-                            ? TUInt16
-                            : numType == typeof(uint)
-                                        ? TUInt32
-                                        : numType == typeof(ulong)
-                                                    ? TUInt64
-                                                    : numType == typeof(float)
-                                                                ? TFloat
-                                                                : numType == typeof(double)
-                                                                            ? TDouble
-                                                                            : numType == typeof(bool) ? TBool : typeof(Enum).IsAssignableFrom(numType) ? TEnum.MakeGenericMethod(numType) : null;
+            return null;
         }
     }
     public static MethodInfo GetFromConverter(Type numType) {
