@@ -1,4 +1,5 @@
-﻿using Overlayer.Core.Patches;
+﻿using Overlayer.Core;
+using Overlayer.Core.Patches;
 using Overlayer.Tags.Attributes;
 using System;
 using System.Collections.Generic;

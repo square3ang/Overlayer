@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using UnityEngine;
 
 namespace Overlayer.Core.TextReplacing;
 
@@ -61,21 +62,28 @@ public class Replacer {
             interpretable = ReplaceableText.Create(source, Tags);
             il.Emit(OpCodes.Newobj, StrBuilder_Ctor);
             foreach(var parsed in interpretable.Replaceables) {
-                if(parsed is ParsedTag pt) {
-                    pt.tag.ReferencedCount++;
-                    References.Add(pt.tag);
-                    parsed.Emit(il);
-                } else {
-                    parsed.Emit(il);
+                switch(parsed) {
+                    case ParsedTag pt:
+                        pt.tag.ReferencedCount++;
+                        References.Add(pt.tag);
+                        parsed.Emit(il);
+                        break;
+                    case ParsedFormatTag pft:
+                        pft.tag.ReferencedCount++;
+                        References.Add(pft.tag);
+                        parsed.Emit(il);
+                        break;
+                    default:
+                        parsed.Emit(il);
+                        break;
                 }
-
                 il.Emit(OpCodes.Call, StrBuilder_Append);
             }
             il.Emit(OpCodes.Call, StrBuilder_ToString);
             il.Emit(OpCodes.Ret);
             compiledMethod = (Func<string>)dm.CreateDelegate(typeof(Func<string>));
             return compiled = true;
-        } catch { return compiled = false; }
+        } catch(Exception e) { Main.Logger.LogException(e); return compiled = false; }
     }
     public void UpdateTags(IEnumerable<Tag> tags) {
         Tags.Clear();

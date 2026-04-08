@@ -7,8 +7,8 @@ using System.Reflection.Emit;
 
 namespace Overlayer.Core.TextReplacing;
 
-public class Tag {
-    public string Name { get; }
+public class Tag(string name) {
+    public string Name { get; } = name;
     public bool Referenced => ReferencedCount > 0;
     private int referencedCount;
     public int ReferencedCount {
@@ -22,6 +22,12 @@ public class Tag {
         }
     }
     public bool HasArgument => ArgumentCount > 0;
+    public enum FormatType {
+        None,
+        Float,
+        Double
+    }
+    public FormatType FormattingType { get; private set; }
     public bool HasObjectArgument { get; private set; }
     public int ArgumentCount { get; private set; }
     /// <summary>
@@ -57,6 +63,10 @@ public class Tag {
     /// </summary>
     public Delegate GetterOriginalDelegate { get; private set; }
     /// <summary>
+    /// MethodInfo Raw
+    /// </summary>
+    public MethodInfo GetterRaw { get; private set; }
+    /// <summary>
     /// Original Getter => String Converter
     /// </summary>
     public MethodInfo ReturnConverter { get; private set; }
@@ -64,7 +74,7 @@ public class Tag {
     /// Argument => Original Getter Converter
     /// </summary>
     public MethodInfo[] ArgumentConverter { get; private set; }
-    public Tag(string name) => Name = name;
+
     public Tag SetGetter(MethodInfo method, object target = null) {
         if(Getter != null) {
             return null;
@@ -107,7 +117,17 @@ public class Tag {
         GetterDelegate = gDel;
         GetterOriginalDirect = method;
         ArgumentCount = parameters.Length;
+        if(ReturnType == typeof(double)) {
+            FormattingType = FormatType.Double;
+        } else if(ReturnType == typeof(float)) {
+            FormattingType = FormatType.Float;
+        } else {
+            FormattingType = FormatType.None;
+        }
         return this;
+    }
+    public void SetRaw(MethodInfo method) {
+        GetterRaw = method;
     }
     public Tag SetGetter(Delegate del) {
         if(Getter != null) {
@@ -127,6 +147,7 @@ public class Tag {
 
             ReturnConverter = rtc;
         }
+        GetterRaw = method;
         GetterOriginalTarget = del;
         var parameters = method.GetParameters();
         var argConverter = new MethodInfo[parameters.Length];
@@ -152,6 +173,13 @@ public class Tag {
         GetterDelegate = gDel;
         GetterOriginalDirect = WrapDelegateDirect(Name, del);
         ArgumentCount = parameters.Length;
+        if(ReturnType == typeof(double)) {
+            FormattingType = FormatType.Double;
+        } else if(ReturnType == typeof(float)) {
+            FormattingType = FormatType.Float;
+        } else {
+            FormattingType = FormatType.None;
+        }
         return this;
     }
     static AssemblyBuilder TagWrapperAssembly;

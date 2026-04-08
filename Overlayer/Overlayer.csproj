@@ -448,6 +448,7 @@
     <Compile Include="Core\Scripting\JSNet\Utils\JSUtils.cs" />
     <Compile Include="Core\Scripting\JSNet\Utils\Type.cs" />
     <Compile Include="Core\Scripting\Scripting.cs" />
+    <Compile Include="Core\TextReplacing\Parsing\ParsedFormatTag.cs" />
     <Compile Include="Models\TileAttempt.cs" />
     <Compile Include="Models\FileAttempt.cs" />
     <Compile Include="Models\ExprValue.cs" />
@@ -468,14 +469,10 @@
     <Compile Include="Core\Patches\LazyPatchManager.cs" />
     <Compile Include="Core\TextConfigImporter.cs" />
     <Compile Include="Core\ObjectManager.cs" />
-    <Compile Include="Core\TextReplacing\Lexing\LexConfig.cs" />
     <Compile Include="Core\TextReplacing\Parsing\IParsed.cs" />
-    <Compile Include="Core\TextReplacing\Lexing\Lexer.cs" />
     <Compile Include="Core\TextReplacing\Parsing\ParsedString.cs" />
     <Compile Include="Core\TextReplacing\Parsing\ParsedTag.cs" />
     <Compile Include="Core\TextReplacing\Parsing\Parser.cs" />
-    <Compile Include="Core\TextReplacing\Lexing\Token.cs" />
-    <Compile Include="Core\TextReplacing\Lexing\TokenType.cs" />
     <Compile Include="Core\TextReplacing\ReplaceableText.cs" />
     <Compile Include="Core\TextReplacing\Replacer.cs" />
     <Compile Include="Core\TextReplacing\Tag.cs" />
@@ -561,7 +558,7 @@
     <Compile Include="Tags\Hex.cs" />
     <Compile Include="Tags\Hit.cs" />
     <Compile Include="Tags\Level.cs" />
-    <Compile Include="Tags\OverlayerTag.cs" />
+    <Compile Include="Core\OverlayerTag.cs" />
     <Compile Include="Tags\Patches\M_MonsterLove.cs" />
     <Compile Include="Tags\Patches\PatchBase.cs" />
     <Compile Include="Tags\Patches\P_ffxSetDefaultText.cs" />

@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 
-namespace Overlayer.Tags;
+namespace Overlayer.Core;
 
 public class OverlayerTag {
     public static bool Initialized { get; private set; }
@@ -20,21 +20,24 @@ public class OverlayerTag {
     public Type DeclaringType { get; }
     public OverlayerTag(MethodInfo method, TagAttribute attr, object target = null) {
         Tag = new Tag(Name = attr.Name ?? method.Name);
-        Tag.SetGetter(WrapProcessor(method, target, attr.ProcessingFlags, attr.ProcessingFlagsArg), target);
+        Tag.SetGetter(WrapProcessor(method, target, attr.ProcessingFlags), target);
+        Tag.SetRaw(WrapRaw(method, target));
         Attributes = attr;
         NotPlaying = attr.NotPlaying;
         DeclaringType = method.DeclaringType;
     }
     public OverlayerTag(FieldInfo field, TagAttribute attr, object target = null) {
         Tag = new Tag(Name = attr.Name ?? field.Name);
-        Tag.SetGetter(WrapProcessor(field, target, attr.ProcessingFlags, attr.ProcessingFlagsArg));
+        Tag.SetGetter(WrapProcessor(field, target, attr.ProcessingFlags));
+        Tag.SetRaw(WrapRaw(field, target));
         Attributes = attr;
         NotPlaying = attr.NotPlaying;
         DeclaringType = field.DeclaringType;
     }
     public OverlayerTag(PropertyInfo prop, TagAttribute attr, object target = null) {
         Tag = new Tag(Name = attr.Name ?? prop.Name);
-        Tag.SetGetter(WrapProcessor(prop, target, attr.ProcessingFlags, attr.ProcessingFlagsArg));
+        Tag.SetGetter(WrapProcessor(prop, target, attr.ProcessingFlags));
+        Tag.SetRaw(WrapRaw(prop, target));
         Attributes = attr;
         NotPlaying = attr.NotPlaying;
         DeclaringType = prop.DeclaringType;
@@ -49,7 +52,7 @@ public class OverlayerTag {
         NotPlaying = notPlaying;
         DeclaringType = del.Method.DeclaringType;
     }
-    private static MethodInfo WrapProcessor(MemberInfo fieldPropMethod, object target, ValueProcessing flags, object flagsArg) {
+    private static MethodInfo WrapProcessor(MemberInfo fieldPropMethod, object target, ValueProcessing flags) {
         if(fieldPropMethod == null) {
             throw new NullReferenceException(nameof(fieldPropMethod));
         }
@@ -81,10 +84,7 @@ public class OverlayerTag {
             rt = field.FieldType;
         }
         if(fieldPropMethod is PropertyInfo property) {
-            MethodInfo getter = property.GetGetMethod();
-            if(getter == null) {
-                throw new InvalidOperationException($"Property '{property.Name}' Getter Is Not Exist Or Not Public!");
-            }
+            MethodInfo getter = property.GetGetMethod() ?? throw new InvalidOperationException($"Property '{property.Name}' Getter Is Not Exist Or Not Public!");
 
             fieldPropMethod = getter;
         }
@@ -127,6 +127,71 @@ public class OverlayerTag {
             il.Emit(OpCodes.Call, trim);
             parameters.Add((typeof(int), "maxLength", -1));
             parameters.Add((typeof(string), "afterTrimStr", Extensions.DefaultTrimStr));
+        }
+        il.Emit(OpCodes.Ret);
+        m.SetParameters(parameters.Select(t => t.Item1).ToArray());
+        int offset = 0;
+        foreach(var (_, name, constant) in parameters) {
+            var paramBuilder = m.DefineParameter(1 + offset++, ParameterAttributes.None, name);
+            if(constant != null) {
+                paramBuilder.SetConstant(constant);
+            }
+        }
+        m.SetReturnType(rt);
+        var createdType = t.CreateType();
+        if(target != null) {
+            createdType.GetField("target").SetValue(null, target);
+        }
+
+        return createdType.GetMethod("Getter", (BindingFlags)15420);
+    }
+    private static MethodInfo WrapRaw(MemberInfo fieldPropMethod, object target) {
+        if(fieldPropMethod == null) {
+            throw new NullReferenceException(nameof(fieldPropMethod));
+        }
+
+        if(fieldPropMethod is MethodInfo meth) {
+            return meth;
+        }
+
+        TypeBuilder t = mod.DefineType($"RawProcessor_{fieldPropMethod?.Name}${uniqueNum++}", TypeAttributes.Public);
+        MethodBuilder m = t.DefineMethod("Getter", MethodAttributes.Public | MethodAttributes.Static);
+        FieldBuilder targetField = t.DefineField("target", target?.GetType() ?? typeof(object), FieldAttributes.Public | FieldAttributes.Static);
+        ILGenerator il = m.GetILGenerator();
+        Type rt = null;
+        List<(Type, string, object)> parameters = [];
+        if(fieldPropMethod is FieldInfo field) {
+            if(!field.IsStatic && target == null) {
+                throw new InvalidOperationException($"Field '{field.Name}' Cannot Get Instance Member Without Target!!");
+            }
+
+            if(!field.IsStatic && target != null) {
+                il.Emit(OpCodes.Ldsfld, targetField);
+            }
+
+            il.Emit(OpCodes.Ldsfld, field);
+            rt = field.FieldType;
+        }
+        if(fieldPropMethod is PropertyInfo property) {
+            MethodInfo getter = property.GetGetMethod() ?? throw new InvalidOperationException($"Property '{property.Name}' Getter Is Not Exist Or Not Public!");
+
+            fieldPropMethod = getter;
+        }
+        if(fieldPropMethod is MethodInfo method) {
+            if(method.GetParameters().Length > 0) {
+                throw new InvalidOperationException($"Method '{method.Name}' Has Parameter!!");
+            }
+
+            if(!method.IsStatic && target == null) {
+                throw new InvalidOperationException($"Method '{method.Name}' Cannot Call Instance Member Without Target!!");
+            }
+
+            if(!method.IsStatic && target != null) {
+                il.Emit(OpCodes.Ldsfld, targetField);
+            }
+
+            il.Emit(OpCodes.Call, method);
+            rt = method.ReturnType;
         }
         il.Emit(OpCodes.Ret);
         m.SetParameters(parameters.Select(t => t.Item1).ToArray());
@@ -276,10 +341,9 @@ public class OverlayerTag {
         return dm;
     }
     private static int uniqueNum = 0;
-    private static MethodInfo round;
-    private static MethodInfo trim;
-    private static MethodInfo toString;
-    private static MethodInfo runtimeAccessor;
+    public static MethodInfo round;
+    public static MethodInfo trim;
+    public static MethodInfo runtimeAccessor;
     private static AssemblyBuilder ass;
     private static ModuleBuilder mod;
     private static Dictionary<string, Func<object, object>> accessorCache = [];
@@ -289,6 +353,5 @@ public class OverlayerTag {
         ], null);
         round = typeof(Extensions).GetMethod("Round", [typeof(double), typeof(int)]);
         trim = typeof(Extensions).GetMethod("Trim", [typeof(string), typeof(int), typeof(string)]);
-        toString = typeof(Extensions).GetMethod("ToString", [typeof(double), typeof(string)]);
     }
 }

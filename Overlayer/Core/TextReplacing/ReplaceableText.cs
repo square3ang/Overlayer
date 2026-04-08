@@ -1,5 +1,4 @@
-﻿using Overlayer.Core.TextReplacing.Lexing;
-using Overlayer.Core.TextReplacing.Parsing;
+﻿using Overlayer.Core.TextReplacing.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +31,7 @@ public class ReplaceableText : IDisposable {
             }).ToString();
     }
     public static object InvokeTag(Tag tag, params string[] args) => tag.Getter.Invoke(null, args);
-    public static ReplaceableText Create(string source, IEnumerable<Tag> tags) => new(Parser.Parse(Lexer.Lex(source), tags.ToList()));
+    public static ReplaceableText Create(string source, IEnumerable<Tag> tags) => new(Parser.Parse(source, [.. tags]));
     public void Dispose() {
         if(disposed) {
             return;
