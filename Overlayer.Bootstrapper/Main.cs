@@ -11,6 +11,7 @@ public static class Main {
     private static readonly string[] requiredDlls = [
         "System.Memory",
         "System.Runtime.CompilerServices.Unsafe",
+        "System.Numerics.Vectors",
         "Jint",
         "Acornima",
         "NCalc",
