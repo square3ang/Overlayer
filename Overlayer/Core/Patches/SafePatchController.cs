@@ -20,4 +20,20 @@ public static class SafePatchController {
             patch.Remove();
         }
     }
+
+    public static void ApplyPatch<T>() where T : SafeConditionalPatch {
+        foreach(var patch in patches) {
+            if(patch is T) {
+                patch.Apply();
+            }
+        }
+    }
+
+    public static void RemovePatch<T>() where T : SafeConditionalPatch {
+        foreach(var patch in patches) {
+            if(patch is T) {
+                patch.Remove();
+            }
+        }
+    }
 }

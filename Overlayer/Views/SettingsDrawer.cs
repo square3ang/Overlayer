@@ -212,9 +212,19 @@ public class SettingsDrawer : ModelDrawable<Settings> {
                 Drawer.HoverTooltip(Main.Lang.Get("SAFE_COMMAND_PARSE_DESC", "Parses commands safely by catching errors.\nReturns a default value instead of throwing exceptions on failure.\n\nMay hide underlying errors"));
                 if(Drawer.DrawBool(string.Format(Main.Lang.Get("USE_THIS", "Use {0}"), string.Format(Main.Lang.Get("FILE_ATTEMPT", "File Attempt"))), ref model.FileAttempt)) {
                     if(model.FileAttempt) {
-                        SafePatchManager.ApplyPatch(typeof(FileAttempt));
+                        Main.FileAttempt ??= new FileAttempt();
+                        SafePatchController.ApplyPatch<FileAttemptLoadPatch>();
+                        SafePatchController.ApplyPatch<FileAttemptSavePatch>();
+                        if(scnGame.instance is not null) {
+                            Main.FileAttempt.Load();
+                        }
                     } else {
-                        SafePatchManager.RemovePatch(typeof(FileAttempt));
+                        if(scnGame.instance is not null) {
+                            Main.FileAttempt.Save();
+                        }
+                        SafePatchController.RemovePatch<FileAttemptSavePatch>();
+                        SafePatchController.RemovePatch<FileAttemptLoadPatch>();
+                        Main.FileAttempt = null;
                     }
                 }
                 Drawer.HoverTooltip(Main.Lang.Get("FILE_ATTEMPT_DESC", "You can use FileAttempts & FileTileAttempts Tags when enabled"));
