@@ -9,15 +9,13 @@ public static class ResourceImageManager {
 
         string fullName = $"Overlayer.MiscFiles.images.{path}";
 
-        using(Stream stream = assembly.GetManifestResourceStream(fullName)) {
-            if(stream == null) {
-                return null;
-            }
-
-            using(MemoryStream ms = new()) {
-                stream.CopyTo(ms);
-                return ms.ToArray();
-            }
+        using Stream stream = assembly.GetManifestResourceStream(fullName);
+        if(stream == null) {
+            return null;
         }
+
+        using MemoryStream ms = new();
+        stream.CopyTo(ms);
+        return ms.ToArray();
     }
 }
