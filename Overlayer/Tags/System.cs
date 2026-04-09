@@ -1,4 +1,5 @@
-﻿using Overlayer.Tags.Attributes;
+﻿using LibreHardwareMonitor.Hardware;
+using Overlayer.Tags.Attributes;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -10,53 +11,75 @@ namespace Overlayer.Tags;
 
 public static class System {
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double GCMemUsage;
+    public static float GCMemUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double GCMemUsageGB;
+    public static float GCMemUsageGB;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double GCMemUsageKB;
+    public static float GCMemUsageKB;
 
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double GCMemAllocRate;
+    public static float GCMemAllocRate;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double GCMemAllocRateGB;
+    public static float GCMemAllocRateGB;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double GCMemAllocRateKB;
+    public static float GCMemAllocRateKB;
 
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double UnityMemUsage;
+    public static float UnityMemUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double UnityMemUsageGB;
+    public static float UnityMemUsageGB;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double UnityMemUsageKB;
+    public static float UnityMemUsageKB;
 
     [Tag(NotPlaying = true)]
     public static int ProcessorCount;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static float CpuUsage;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static float TotalCpuUsage;
+
     [Tag(NotPlaying = true)]
-    public static double MemoryGBytes;
-    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double CpuUsage;
-    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double TotalCpuUsage;
-    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double MemoryUsage;
-    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    public static double TotalMemoryUsage;
+    public static float Memory;
     [Tag(NotPlaying = true)]
-    public static double MemoryUsageGBytes;
+    public static float MemoryGBytes;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static float MemoryUsage;
     [Tag(NotPlaying = true)]
-    public static double TotalMemoryUsageGBytes;
+    public static float MemoryUsageGBytes;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static float TotalMemoryUsage;
+    [Tag(NotPlaying = true)]
+    public static float TotalMemoryUsageGBytes;
+
+    [Tag(NotPlaying = true)]
+    public static int GpuUsage;
+
+    [Tag(NotPlaying = true)]
+    public static float GpuMemory;
+    [Tag(NotPlaying = true)]
+    public static float GpuMemoryGBytes;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static float GpuMemoryUsage;
+    [Tag(NotPlaying = true)]
+    public static float GpuMemoryUsageGBytes;
+
+    [Tag(NotPlaying = true)]
+    public static float GpuSharedMemory;
+    [Tag(NotPlaying = true)]
+    public static float GpuSharedMemoryGBytes;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    public static float GpuSharedMemoryUsage;
+    [Tag(NotPlaying = true)]
+    public static float GpuSharedMemoryUsageGBytes;
 
     private static long lastGCAllocatedMemory;
     private static Thread updateThread;
+    private static Computer computer;
     private static volatile bool running;
-
     private static bool inited;
 
     public static void Init() {
-        if(inited) {
-            return;
-        }
+        if(inited) { return; }
 
         ProcessorCount = Environment.ProcessorCount;
         lastGCAllocatedMemory = GC.GetTotalMemory(false);
@@ -69,47 +92,111 @@ public static class System {
 
         if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
             var proc = Process.GetCurrentProcess();
+
             totalMemMB = MemoryStatus.GetMemoryStatus().TotalPhysicalMemorySize / 1048576;
+            Memory = totalMemMB;
+            MemoryGBytes = totalMemMB / 1024f;
 
             cpu = PerformanceCounterFactory.Default.CreateCounter("Process", "% Processor Time", proc.ProcessName);
             mem = PerformanceCounterFactory.Default.CreateCounter("Process", "Working Set", proc.ProcessName);
             totCpu = PerformanceCounterFactory.Default.CreateCounter("Processor", "% Processor Time", "_Total");
             totMem = PerformanceCounterFactory.Default.CreateCounter("Memory", "Available MBytes");
+
+            computer = new Computer {
+                IsGpuEnabled = true
+            };
+            computer.Open();
         }
 
         running = true;
         updateThread = new Thread(() => {
             while(running) {
                 long gc = GC.GetTotalMemory(false);
-                GCMemUsage = gc / 1024d / 1024d;
-                GCMemUsageGB = gc / 1024d / 1024d / 1024d;
-                GCMemUsageKB = gc / 1024d;
+                GCMemUsage = gc / 1024f / 1024f;
+                GCMemUsageGB = gc / 1024f / 1024f / 1024f;
+                GCMemUsageKB = gc / 1024f;
 
                 long delta = gc - lastGCAllocatedMemory;
                 lastGCAllocatedMemory = gc;
-                GCMemAllocRate = delta / 1024d / 1024d;
-                GCMemAllocRateGB = delta / 1024d / 1024d / 1024d;
-                GCMemAllocRateKB = delta / 1024d;
+                GCMemAllocRate = delta / 1024f / 1024f;
+                GCMemAllocRateGB = delta / 1024f / 1024f / 1024f;
+                GCMemAllocRateKB = delta / 1024f;
 
-                double unity = Profiler.GetTotalAllocatedMemoryLong();
-                UnityMemUsage = unity / 1024d / 1024d;
-                UnityMemUsageGB = unity / 1024d / 1024d / 1024d;
-                UnityMemUsageKB = unity / 1024d;
+                float unity = Profiler.GetTotalAllocatedMemoryLong();
+                UnityMemUsage = unity / 1024f / 1024f;
+                UnityMemUsageGB = unity / 1024f / 1024f / 1024f;
+                UnityMemUsageKB = unity / 1024f;
 
                 if(cpu != null) {
-                    CpuUsage = cpu.Observe() / ProcessorCount;
-                    TotalCpuUsage = totCpu.Observe();
+                    CpuUsage = (float)cpu.Observe() / ProcessorCount;
+                    TotalCpuUsage = (float)totCpu.Observe();
                 }
 
                 if(mem != null) {
-                    var memUsage = mem.Observe() / 1048576;
-                    var usedTotal = totalMemMB - totMem.Observe();
+                    float memUsage = (float)mem.Observe() / 1048576;
+                    float usedTotal = totalMemMB - (float)totMem.Observe();
 
-                    MemoryUsage = memUsage / totalMemMB * 100d;
-                    TotalMemoryUsage = usedTotal / totalMemMB * 100d;
+                    MemoryUsage = memUsage / totalMemMB * 100f;
+                    TotalMemoryUsage = usedTotal / totalMemMB * 100f;
 
-                    MemoryUsageGBytes = memUsage / 1024d;
-                    TotalMemoryUsageGBytes = usedTotal / 1024d;
+                    MemoryUsageGBytes = memUsage / 1024f;
+                    TotalMemoryUsageGBytes = usedTotal / 1024f;
+                }
+
+                if(computer != null) {
+                    int gpuMax = 0;
+
+                    float dUsed = 0, dTotal = 0;
+                    float sUsed = 0, sTotal = 0;
+
+                    foreach(var hw in computer.Hardware) {
+                        hw.Update();
+
+                        int localUsage = 0;
+                        float ldUsed = 0, ldTotal = 0;
+                        float lsUsed = 0, lsTotal = 0;
+
+                        foreach(var s in hw.Sensors) {
+                            if(s.Value == null) { continue; }
+
+                            if(s.SensorType == SensorType.Load && s.Name.Contains("Core")) {
+                                localUsage = Math.Max(localUsage, (int)s.Value.Value);
+                            }
+
+                            if(s.SensorType == SensorType.SmallData) {
+                                if(s.Name.Contains("Dedicated Memory Used")) { ldUsed = s.Value.Value; }
+                                if(s.Name.Contains("Dedicated Memory Total")) { ldTotal = s.Value.Value; }
+                                if(s.Name.Contains("Shared Memory Used")) { lsUsed = s.Value.Value; }
+                                if(s.Name.Contains("Shared Memory Total")) { lsTotal = s.Value.Value; }
+                            }
+                        }
+
+                        if(localUsage > gpuMax) {
+                            gpuMax = localUsage;
+                            dUsed = ldUsed;
+                            dTotal = ldTotal;
+                            sUsed = lsUsed;
+                            sTotal = lsTotal;
+                        }
+                    }
+
+                    GpuUsage = gpuMax;
+
+                    if(dTotal > 0) {
+                        GpuMemoryUsage = dUsed / dTotal * 100f;
+                    }
+
+                    if(sTotal > 0) {
+                        GpuSharedMemoryUsage = sUsed / sTotal * 100f;
+                    }
+
+                    GpuMemory = dTotal;
+                    GpuMemoryGBytes = dTotal / 1024f;
+                    GpuMemoryUsageGBytes = dUsed / 1024f;
+
+                    GpuSharedMemory = sTotal;
+                    GpuSharedMemoryGBytes = sTotal / 1024f;
+                    GpuSharedMemoryUsageGBytes = sUsed / 1024f;
                 }
 
                 Thread.Sleep(Main.Settings.SystemTagUpdateRate);

@@ -15,7 +15,8 @@ public static class Main {
         "Jint",
         "Acornima",
         "NCalc",
-        "Vostok.Sys.Metrics.PerfCounters"
+        "Vostok.Sys.Metrics.PerfCounters",
+        "LibreHardwareMonitorLib"
     ];
     private static readonly string FailName = "Overlayer [FAIL]";
     public static void Load(ModEntry modEntry) {
