@@ -48,8 +48,6 @@ public static class System {
     public static float MemoryUsageGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float TotalMemoryUsage;
-    [Tag(NotPlaying = true)]
-    public static float TotalMemoryUsageGBytes;
 
     [Tag(NotPlaying = true)]
     public static int GpuUsage;
@@ -145,7 +143,6 @@ public static class System {
                     TotalMemoryUsage = usedTotal / totalMemMB * 100f;
 
                     MemoryUsageGBytes = memUsage / 1024f;
-                    TotalMemoryUsageGBytes = usedTotal / 1024f;
                 }
 
                 if(computer != null) {
