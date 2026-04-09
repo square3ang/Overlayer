@@ -27,15 +27,6 @@ namespace Overlayer;
 [UnityModManagerNet.EnableReloading]
 #endif
 public static class Main {
-    [Tag(NotPlaying = true)]
-    public static string Developer => Lang.Get("MISC_DEVELOPER", "Square3ang & Kkitut. Display everything as you wish. Thank you for being with Overlayer.");
-    [Tag(NotPlaying = true)]
-    public static string MipaNyang => "MipaNyang is God";
-    [Tag(NotPlaying = true)]
-    public static string Kyulio => "Kyulio is lazy";
-    [Tag("imBBBT", NotPlaying = true)]
-    public static string ImBBBT => "imBBBT is not beepbit futures";
-
     public static Assembly Ass { get; private set; }
     public static ModEntry Mod { get; private set; }
     public static string ProfilePath => Path.Combine(Mod.Path, "profiles");
