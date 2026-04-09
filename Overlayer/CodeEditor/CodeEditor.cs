@@ -105,7 +105,7 @@ public class CodeEditor {
         highlighter = code => code;
     }
 
-    private string selectedtag = "Developer";
+    private string selectedtag = nameof(Developers.Developer);
 
     internal Dictionary<string, UndoRedoManager> undoRedoManagers = [];
 
