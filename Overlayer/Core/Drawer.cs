@@ -534,7 +534,7 @@ public static class Drawer {
 
         var tooltip = new Dictionary<string, string>();
         foreach(var tag in tags) {
-            tooltip[tag] = TagDesc.GetTagDesc(tag);
+            tooltip[tag] = Main.Lang.Get($"TAG_DESC_{tag.ToUpper()}", TagDesc.GetTagDesc(tag));
         }
 
         SelectionPopupWithTooltip(ref selected, tags.ToArray(), "", tooltip);
