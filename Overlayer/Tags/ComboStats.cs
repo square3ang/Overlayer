@@ -8,31 +8,42 @@ namespace Overlayer.Tags;
 
 public static class ComboStats {
     [Tag]
+    [TagDesc("Combo count")]
     public static int Combo;
     [Tag]
+    [TagDesc("Maximum Combo")]
     public static int MaxCombo;
 
     #region MarginCombo
     [Tag]
+    [TagDesc("Lenient judgment of MarginCombo")]
     public static int LMarginCombo(HitMargin margin) => Combos[(int)Difficulty.Lenient][(int)margin];
     [Tag]
+    [TagDesc("Normal judgment of MarginCombo")]
     public static int NMarginCombo(HitMargin margin) => Combos[(int)Difficulty.Normal][(int)margin];
     [Tag]
+    [TagDesc("Strict judgment of MarginCombo")]
     public static int SMarginCombo(HitMargin margin) => Combos[(int)Difficulty.Strict][(int)margin];
     [Tag]
+    [TagDesc("Displays the combo for a single judgment\n(ex: {MarginCombo:VeryLate})")]
     public static int MarginCombo(HitMargin margin) => Combos[(int)GCS.difficulty][(int)margin];
     #endregion
 
     #region MarginCombos
     [Tag]
+    [TagDesc("Lenient judgment of MarginCombos")]
     public static int LMarginCombos(string margins) => MarginCombos_Internal(Difficulty.Lenient, margins);
     [Tag]
+    [TagDesc("Normal judgment of MarginMaxCombo")]
     public static int NMarginCombos(string margins) => MarginCombos_Internal(Difficulty.Normal, margins);
     [Tag]
+    [TagDesc("Strict judgment of MarginCombos")]
     public static int SMarginCombos(string margins) => MarginCombos_Internal(Difficulty.Strict, margins);
     [Tag]
+    [TagDesc("Displays all combos for multiple judgments\n(ex: {MarginCombos:VeryLate|VeryEarly})")]
     public static int MarginCombos(string margins) => MarginCombos_Internal(GCS.difficulty, margins);
     [Tag]
+    [TagDesc("Displays a special mark based on your play performance:\nPP = perfect  FC+ = no miss\nFC = full combo  XX = no special mark")]
     public static string SpecialPlayMark(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
         var seqID = scrController.instance.currentSeqID;
         var ppCombo = MarginCombos_Internal(GCS.difficulty, "Perfect");
@@ -63,12 +74,16 @@ public static class ComboStats {
 
     #region MarginMaxCombo
     [Tag]
+    [TagDesc("Lenient judgment of MarginMaxCombo")]
     public static int LMarginMaxCombo(HitMargin margin) => MaxCombos[(int)Difficulty.Lenient][(int)margin];
     [Tag]
+    [TagDesc("Normal judgment of MarginMaxCombos")]
     public static int NMarginMaxCombo(HitMargin margin) => MaxCombos[(int)Difficulty.Normal][(int)margin];
     [Tag]
+    [TagDesc("Strict judgment of MarginMaxCombo")]
     public static int SMarginMaxCombo(HitMargin margin) => MaxCombos[(int)Difficulty.Strict][(int)margin];
     [Tag]
+    [TagDesc("Displays the maximum combo for a single judgment\n(ex: {MarginMaxCombo:VeryLate})")]
     public static int MarginMaxCombo(HitMargin margin) => MaxCombos[(int)GCS.difficulty][(int)margin];
     #endregion
 
@@ -92,12 +107,16 @@ public static class ComboStats {
 
     #region MarginMaxCombos
     [Tag]
+    [TagDesc("Lenient judgment of MarginMaxCombos")]
     public static int LMarginMaxCombos(string margins) => MarginMaxCombos_Internal(Difficulty.Lenient, margins);
     [Tag]
+    [TagDesc("Normal judgment of MarginMaxCombos")]
     public static int NMarginMaxCombos(string margins) => MarginMaxCombos_Internal(Difficulty.Normal, margins);
     [Tag]
+    [TagDesc("Strict judgment of MarginMaxCombos")]
     public static int SMarginMaxCombos(string margins) => MarginMaxCombos_Internal(Difficulty.Strict, margins);
     [Tag]
+    [TagDesc("Displays all maximum combos for multiple judgments\n(ex: {MarginMaxCombos:VeryLate|VeryEarly})")]
     public static int MarginMaxCombos(string margins) => MarginMaxCombos_Internal(GCS.difficulty, margins);
 
     public static int MarginMaxCombos_Internal(Difficulty diff, string margins) {

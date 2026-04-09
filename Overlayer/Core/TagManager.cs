@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Overlayer.Tags;
+namespace Overlayer.Core;
 
 public static class TagManager {
     public static bool Initialized { get; private set; }
@@ -91,4 +91,15 @@ public static class TagManager {
         tags = null;
         Initialized = false;
     }
+
+#if DEBUG
+    public static void CheckAllDesc() {
+        foreach(var tag in All.OrderBy(x => x.Name)) {
+            string name = tag.Name.ToUpper();
+            if(!TagDesc.Desc.ContainsKey(name)) {
+                Main.Logger.Log($"Tag {name} does not exist in tooltip dictionary.");
+            }
+        }
+    }
+#endif
 }

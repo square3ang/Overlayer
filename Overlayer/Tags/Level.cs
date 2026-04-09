@@ -16,8 +16,10 @@ public static class Level {
     private static string _defaultTextColorAlpha;
     private static string _defaultTextShadowColorAlpha;
     [Tag]
+    [TagDesc("The name text displayed at the top of the level.")]
     public static string LevelNameText;
     [Tag]
+    [TagDesc("The name text displayed at the top of the level. (with rich tags)")]
     public static string LevelNameTextRaw;
 
     public static void Init() {
@@ -66,33 +68,43 @@ public static class Level {
     public static void UpdateLevelNameTextRaw() => LevelNameTextRaw = ADOBase.controller.txtLevelName.text.FuckingAdofaiMapRichTagFixer();
 
     [Tag]
+    [TagDesc("Title of the song")]
     public static string Title(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
         => string.IsNullOrEmpty(_title) ? "" : _title.Trim(maxLength, afterTrimStr);
     [Tag]
+    [TagDesc("Level creator")]
     public static string Author(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
         => string.IsNullOrEmpty(_author) ? "" : _author.Trim(maxLength, afterTrimStr);
     [Tag]
+    [TagDesc("Composer of the song")]
     public static string Artist(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
         => string.IsNullOrEmpty(_artist) ? "" : _artist.Trim(maxLength, afterTrimStr);
     [Tag]
+    [TagDesc("Title of the song (with rich tags)")]
     public static string TitleRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
         => string.IsNullOrEmpty(_titleRaw) ? "" : _titleRaw.Trim(maxLength, afterTrimStr);
     [Tag]
+    [TagDesc("Level creator (with rich tags)")]
     public static string AuthorRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
         => string.IsNullOrEmpty(_authorRaw) ? "" : _authorRaw.Trim(maxLength, afterTrimStr);
     [Tag]
+    [TagDesc("Composer of the song (with rich tags)")]
     public static string ArtistRaw(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr)
         => string.IsNullOrEmpty(_artistRaw) ? "" : _artistRaw.Trim(maxLength, afterTrimStr);
     [Tag]
+    [TagDesc("Default text color of the level")]
     public static string DefaultTextColor(bool noAlpha = false)
         => noAlpha ? _defaultTextColor : _defaultTextColorAlpha;
     [Tag]
+    [TagDesc("Default text shadow color of the level")]
     public static string DefaultTextShadowColor(bool noAlpha = false)
         => noAlpha ? _defaultTextShadowColor : _defaultTextShadowColorAlpha;
     [Tag]
+    [TagDesc("The color of the text displayed at the top of the level.")]
     public static string LevelNameTextColor(bool noAlpha = false)
         => scrVfx.instance.currentColourScheme.colourText.ToHex(!noAlpha);
     [Tag]
+    [TagDesc("The shadow color of the text displayed at the top of the level.")]
     public static string LevelNameTextShadowColor(bool noAlpha = false)
         => scrVfx.instance.currentColourScheme.colourTextShadow.ToHex(!noAlpha);
 }

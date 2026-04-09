@@ -238,7 +238,16 @@ public static class Main {
             GUILayout.Space(30);
         }
 
-        tooltip = null;
+#if DEBUG
+        GUILayout.BeginHorizontal();
+        if(Drawer.Button("CHKALL TAGDESC")) {
+            TagManager.CheckAllDesc();
+        }
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+#endif
+
+    tooltip = null;
         tooltipImage = null;
 
         GUI.Draw();

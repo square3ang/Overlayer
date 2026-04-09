@@ -6,8 +6,10 @@ namespace Overlayer.Tags;
 
 public static class ProgressStats {
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Current progress")]
     public static double Progress => (scrController.instance?.percentComplete * 100) ?? 0;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Current Actual Progress based on time")]
     public static double ActualProgress() {
         var listFloors = scrLevelMaker.instance?.listFloors;
         if(listFloors == null || listFloors.Count == 0) {
@@ -19,6 +21,7 @@ public static class ProgressStats {
         return actualProgress == null ? 0 : (double)Mathf.Clamp((float)actualProgress, 0, 100);
     }
     [Tag]
+    [TagDesc("Best progress of the level")]
     public static double BestProgress;
 
     public static void BestProgress_Reset() => BestProgress = 0;

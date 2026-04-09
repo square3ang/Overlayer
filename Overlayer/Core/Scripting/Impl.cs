@@ -11,7 +11,6 @@ using Overlayer.Core.Patches;
 using Overlayer.Core.Scripting.JSNet.API;
 using Overlayer.Core.Scripting.JSNet.Utils;
 using Overlayer.Models;
-using Overlayer.Tags;
 using Overlayer.Tags.Attributes;
 using Overlayer.Unity;
 using Overlayer.Utils;
@@ -254,7 +253,7 @@ public static class Impl {
         StaticCoroutine.Queue(StaticCoroutine.SyncRunner(ProfileManager.Refresh));
         registeredCustomTags.Add(name);
         if(tooltip != null) {
-            Tooltip.tooltip[name] = tooltip;
+            TagDesc.Desc[name] = tooltip;
         }
         Main.Logger.Log($"Registered Tag \"{name}\" (NotPlaying:{notplaying})");
     }
@@ -263,7 +262,7 @@ public static class Impl {
         Scripting.JSApi.Methods.RemoveAll(t => t.Item1.Name == name);
         Expression.expressions.Clear();
         TagManager.RemoveTag(name);
-        Tooltip.tooltip.Remove(name);
+        TagDesc.Desc.Remove(name);
         StaticCoroutine.Queue(StaticCoroutine.SyncRunner(ProfileManager.Refresh));
     }
     /*[Api("prefix")]

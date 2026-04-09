@@ -11,24 +11,33 @@ namespace Overlayer.Tags;
 
 public static class System {
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the total memory used by the Garbage Collector in MB")]
     public static float GCMemUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the total memory used by the Garbage Collector in GB")]
     public static float GCMemUsageGB;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the total memory used by the Garbage Collector in KB")]
     public static float GCMemUsageKB;
 
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the allocation rate of memory by the Garbage Collector in MB per tick")]
     public static float GCMemAllocRate;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the allocation rate of memory by the Garbage Collector in GB per tick")]
     public static float GCMemAllocRateGB;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the allocation rate of memory by the Garbage Collector in KB per tick")]
     public static float GCMemAllocRateKB;
 
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the total memory used by Unity, not including the entire process memory")]
     public static float UnityMemUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the total memory used by Unity in GB, not including the entire process memory")]
     public static float UnityMemUsageGB;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the total memory used by Unity in KB, not including the entire process memory")]
     public static float UnityMemUsageKB;
 
     [Tag(NotPlaying = true)]

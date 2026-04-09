@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
+using Overlayer.Core;
 using Overlayer.Core.Interfaces;
 using Overlayer.Core.TextReplacing;
-using Overlayer.Tags;
 using System;
 using System.Linq;
 

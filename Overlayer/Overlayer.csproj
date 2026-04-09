@@ -476,6 +476,7 @@
     <Compile Include="Core\Scripting\JSNet\Utils\JSUtils.cs" />
     <Compile Include="Core\Scripting\JSNet\Utils\Type.cs" />
     <Compile Include="Core\Scripting\Scripting.cs" />
+    <Compile Include="Core\TagDesc.cs" />
     <Compile Include="Core\TextReplacing\Parsing\ParsedFormatTag.cs" />
     <Compile Include="Models\TileAttempt.cs" />
     <Compile Include="Models\FileAttempt.cs" />
@@ -607,7 +608,7 @@
     <Compile Include="Tags\Song.cs" />
     <Compile Include="Tags\Status.cs" />
     <Compile Include="Tags\System.cs" />
-    <Compile Include="Tags\TagManager.cs" />
+    <Compile Include="Core\TagManager.cs" />
     <Compile Include="Tags\Tile.cs" />
     <Compile Include="Tags\Time.cs" />
     <Compile Include="Tags\HitTiming.cs" />
@@ -615,7 +616,6 @@
     <Compile Include="Unity\OverlayerObject.cs" />
     <Compile Include="Unity\OverlayerProfile.cs" />
     <Compile Include="Unity\StaticCoroutine.cs" />
-    <Compile Include="Utils\Tooltip.cs" />
     <Compile Include="Unity\OverlayerText.cs" />
     <Compile Include="Utils\ADOUtils.cs" />
     <Compile Include="Utils\AutoUpdater.cs" />

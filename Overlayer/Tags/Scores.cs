@@ -4,12 +4,16 @@ namespace Overlayer.Tags;
 
 public static class Scores {
     [Tag]
+    [TagDesc("Lenient difficulty score")]
     public static int LScore;
     [Tag]
+    [TagDesc("Normal difficulty score")]
     public static int NScore;
     [Tag]
+    [TagDesc("Strict difficulty score")]
     public static int SScore;
     [Tag]
+    [TagDesc("Current difficulty score")]
     public static int Score;
 
     public static void SetScores(HitMargin l, HitMargin n, HitMargin s, HitMargin c) {

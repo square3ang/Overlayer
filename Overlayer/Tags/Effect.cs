@@ -12,6 +12,7 @@ namespace Overlayer.Tags;
 public static class Effect {
     [JSImplementedBy("Discord@kkitut")]
     [Tag(NotPlaying = true)]
+    [TagDesc("You can adjust the color from any color to any color you want based on a specific tag. Use with <color>.")]
     public static string ColorRange(string rawFunc, double valueMin, double valueMax, string colorMinHex, string colorMaxHex, Ease ease = Ease.Linear, int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) {
         OverlayerTag ovTag = TagManager.GetTag(rawFunc);
         if(ovTag == null) {
@@ -88,6 +89,7 @@ public static class Effect {
     static Dictionary<string, long> movingMan_tagStartTimeCache = [];
     [JSImplementedBy("Discord@kkitut")]
     [Tag(NotPlaying = true)]
+    [TagDesc("You can animate text on criterion certain tags. Used with <size>.")]
     public static double MovingMan(string rawFunc = nameof(ComboStats.Combo), double startSize = 30, double endSize = 80, double defaultSize = 30, double speed = 800, bool invert = false, Ease ease = Ease.OutExpo) {
         OverlayerTag ovTag = TagManager.GetTag(rawFunc);
         if(ovTag == null || (!ovTag.NotPlaying && !Main.IsPlaying)) {
@@ -129,6 +131,7 @@ public static class Effect {
 
     [JSImplementedBy("Discord@wsbimango")]
     [Tag(NotPlaying = true)]
+    [TagDesc("When the target tag value changes, the tag value changes according to the speed.")]
     public static double EasedValue(string rawFunc = nameof(Bpm.TileBpm), int digits = -1, double speed = 500, Ease ease = Ease.Linear) {
         OverlayerTag ovTag = TagManager.GetTag(rawFunc);
         if(ovTag == null || (!ovTag.NotPlaying && !Main.IsPlaying)) {
@@ -154,6 +157,7 @@ public static class Effect {
     }
 
     [Tag(NotPlaying = true)]
+    [TagDesc("Rainbow")]
     public static string Rainbow(double speed = 18) {
         double hue = Environment.TickCount % (int)(360 * speed) / speed;
 

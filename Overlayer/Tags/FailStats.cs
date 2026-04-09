@@ -5,6 +5,7 @@ namespace Overlayer.Tags;
 public static class FailStats {
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("The percentage of the overload gauge.")]
     public static float OverloadCounter() {
         var controller = scrController.instance;
         return controller == null
@@ -15,6 +16,7 @@ public static class FailStats {
     }
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("The percentage of the multipress gauge.")]
     public static float MultipressCounter() {
         var controller = scrController.instance;
         return !controller
@@ -31,7 +33,9 @@ public static class FailStats {
         => value > 1f ? 0f : (1f - value) * 100f;
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("The raw internal value of the overload gauge in the game.")]
     public static float OverloadCounterRaw => scrController.instance?.failbar?.overloadCounter ?? float.NaN;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("The raw internal value of the multipress gauge in the game.")]
     public static float MultipressCounterRaw => scrController.instance?.failbar?.multipressCounter ?? float.NaN;
 }

@@ -5,6 +5,7 @@ namespace Overlayer.Tags;
 public static class Developers {
     // US
     [Tag(NotPlaying = true)]
+    [TagDesc("modlist.org")]
     public static string Developer => Main.Lang.Get("MISC_DEVELOPER", "modlist.org. Display everything as you wish. Thank you for being with Overlayer.");
 
     // MAIN LEADER
@@ -15,6 +16,7 @@ public static class Developers {
 
     // OTHER
     [Tag(NotPlaying = true)]
+    [TagDesc("Goodbye, Forever.")]
     public static string MipaNyang => "MipaNyang is God";
     [Tag(NotPlaying = true)]
     public static string Kyulio => "Kyulio is lazy";

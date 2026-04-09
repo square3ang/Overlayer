@@ -6,10 +6,13 @@ namespace Overlayer.Tags;
 
 public static class CheckPointStats {
     [Tag]
+    [TagDesc("Number of checkpoints used")]
     public static int CheckPointUsed => scrController.checkpointsUsed;
     [Tag]
+    [TagDesc("Current checkpoint number")]
     public static int CurCheckPoint;
     [Tag]
+    [TagDesc("Total number of checkpoints")]
     public static int TotalCheckPoints;
 
     public static void TotalCheckPoients_Update() => TotalCheckPoints = scrLevelMaker.instance.listFloors.Count(f => f.GetComponent<ffxCheckpoint>() != null);

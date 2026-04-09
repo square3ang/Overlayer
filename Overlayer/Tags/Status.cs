@@ -4,20 +4,27 @@ namespace Overlayer.Tags;
 
 public static class Status {
     [Tag]
+    [TagDesc("Displays true if auto is enabled, false otherwise")]
     public static bool IsAutoEnabled => ADOFAI.RDC?.auto ?? false;
     [Tag]
     public static bool IsAutoTile => scrLevelMaker.instance?.listFloors[Tile.CurTile]?.auto ?? false;
     [Tag]
+    [TagDesc("Displays true if Old Auto is enabled, false if disabled")]
     public static bool IsOldAutoEnabled => ADOFAI.RDC?.useOldAuto ?? false;
     [Tag]
+    [TagDesc("Displays true if practice mode is enabled, false otherwise")]
     public static bool IsPracticeModeEnabled => ADOFAI.RDC?.practice ?? false;
     [Tag]
+    [TagDesc("Displays true if No-fail Mode is enabled, false if disabled")]
     public static bool IsNoFailEnabled => ADOFAI.Controller?.noFail ?? GCS.useNoFail;
     [Tag]
+    [TagDesc("Displays true if Speed Trial Mode is enabled, false otherwise.\nOnly works on CLS and official levels.")]
     public static bool IsSpeedTrialEnabled => GCS.speedTrialMode;
     [Tag(NotPlaying = true)]
+    [TagDesc("The total number of planet explosions on the current map")]
     public static int Deaths => scrController.deaths;
     [Tag]
+    [TagDesc("Shows Attempts. Only effective at CLS and official levels.")]
     public static int Attempts;
 
     public static void Attempts_Update() {
@@ -60,7 +67,9 @@ public static class Status {
     public static int FileTileAttempts(int tile) => Main.FileAttempt?.GetTileAttempts(tile) ?? -1;
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Speed set in CLS (displayed as 1 when at 1x speed)")]
     public static double Pitch => GCS.currentSpeedTrial;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Pitch set in the LevelEditor (displayed as 1 when 100%)")]
     public static double EditorPitch => (ADOFAI.LevelData?.pitch ?? 0) / 100.0;
 }

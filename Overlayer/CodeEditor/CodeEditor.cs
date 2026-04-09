@@ -345,7 +345,7 @@ public class CodeEditor {
                     var pars = match.Groups[1].Value.Split('(')[0]
                                      .Split([':', ';'], 2)[0];
                     Main.tooltip = TagManager.tags.ContainsKey(pars)
-                                   ? Tooltip.GetTagDescription(pars)
+                                   ? TagDesc.GetTagDesc(pars)
                                    : Main.Lang.Get("NOT_EXIST_TAG", "This tag does not exist");
                 }
 

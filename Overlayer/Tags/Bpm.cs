@@ -4,18 +4,25 @@ namespace Overlayer.Tags;
 
 public static class Bpm {
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Tile BPM")]
     public static double TileBpm;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("The highest BPM in the level")]
     public static double MaxTileBpm => scnGame.instance.highestBPM;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Current BPM")]
     public static double CurBpm;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Recommended KPS")]
     public static double RecKPS;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Tile BPM (without pitch)")]
     public static double TileBpmWithoutPitch;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Current BPM (without pitch)")]
     public static double CurBpmWithoutPitch;
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Recommended KPS (without pitch)")]
     public static double RecKPSWithoutPitch;
 
     public static float bpm, pitch, bpmwithoutpitch, playbackSpeed = 1;

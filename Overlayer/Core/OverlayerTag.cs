@@ -25,6 +25,7 @@ public class OverlayerTag {
         Attributes = attr;
         NotPlaying = attr.NotPlaying;
         DeclaringType = method.DeclaringType;
+        RegisterDesc(method, Name);
     }
     public OverlayerTag(FieldInfo field, TagAttribute attr, object target = null) {
         Tag = new Tag(Name = attr.Name ?? field.Name);
@@ -33,6 +34,7 @@ public class OverlayerTag {
         Attributes = attr;
         NotPlaying = attr.NotPlaying;
         DeclaringType = field.DeclaringType;
+        RegisterDesc(field, Name);
     }
     public OverlayerTag(PropertyInfo prop, TagAttribute attr, object target = null) {
         Tag = new Tag(Name = attr.Name ?? prop.Name);
@@ -41,6 +43,7 @@ public class OverlayerTag {
         Attributes = attr;
         NotPlaying = attr.NotPlaying;
         DeclaringType = prop.DeclaringType;
+        RegisterDesc(prop, Name);
     }
     public OverlayerTag(string name, Delegate del, bool notPlaying, ValueProcessing flags = ValueProcessing.None) {
         var attr = new TagAttribute(Name = name) {
@@ -51,6 +54,15 @@ public class OverlayerTag {
         Attributes = attr;
         NotPlaying = notPlaying;
         DeclaringType = del.Method.DeclaringType;
+        RegisterDesc(del.Method, name);
+    }
+    private static void RegisterDesc(MemberInfo member, string name) {
+        var attr = member.GetCustomAttribute<TagDesc>();
+        if(attr == null) {
+            return;
+        }
+
+        TagDesc.Desc[name.ToUpperInvariant()] = attr.Value;
     }
     private static MethodInfo WrapProcessor(MemberInfo fieldPropMethod, object target, ValueProcessing flags) {
         if(fieldPropMethod == null) {
