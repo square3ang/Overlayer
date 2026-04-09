@@ -72,6 +72,11 @@ public static class System {
     [Tag(NotPlaying = true)]
     public static float GpuSharedMemoryUsageGBytes;
 
+    const int GPU_HISTORY = 16;
+    static int[] gpuHistory = new int[GPU_HISTORY];
+    static int gpuIndex = 0;
+    static int gpuCount = 0;
+
     private static long lastGCAllocatedMemory;
     private static Thread updateThread;
     private static Computer computer;
@@ -144,7 +149,7 @@ public static class System {
                 }
 
                 if(computer != null) {
-                    int gpuMax = 0;
+                    int rawMax = 0;
 
                     float dUsed = 0, dTotal = 0;
                     float sUsed = 0, sTotal = 0;
@@ -171,8 +176,8 @@ public static class System {
                             }
                         }
 
-                        if(localUsage > gpuMax) {
-                            gpuMax = localUsage;
+                        if(localUsage > rawMax) {
+                            rawMax = localUsage;
                             dUsed = ldUsed;
                             dTotal = ldTotal;
                             sUsed = lsUsed;
@@ -180,7 +185,21 @@ public static class System {
                         }
                     }
 
-                    GpuUsage = gpuMax;
+                    gpuHistory[gpuIndex] = rawMax;
+                    gpuIndex = (gpuIndex + 1) % GPU_HISTORY;
+
+                    if(gpuCount < GPU_HISTORY) {
+                        gpuCount++;
+                    }
+
+                    int sum = 0;
+                    for(int i = 0; i < gpuCount; i++) {
+                        sum += gpuHistory[i];
+                    }
+
+                    int avg = sum / gpuCount;
+
+                    GpuUsage = avg;
 
                     if(dTotal > 0) {
                         GpuMemoryUsage = dUsed / dTotal * 100f;
