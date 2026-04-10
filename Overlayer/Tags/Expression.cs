@@ -13,6 +13,7 @@ public static class Expression {
     public static readonly Dictionary<string, ExprContext> expressions = [];
 
     [Tag("Expression", NotPlaying = true)]
+    [TagDesc("Parses a JavaScript expression and outputs the result.\nThis is one of the most important tags for customization, allowing arithmetic, comparisons, and most basic JS operations on tag values.\nDue to the tag parsing structure, variables are not supported; only simple constructs like the ternary operator are recommended.\nTo access tag values, they must be called as functions (e.g., Tag()).\nFor complex logic, using a separate scripting file is recommended.")]
     public static object Expr(string expr) {
         if(expressions.TryGetValue(expr, out var res)) {
             return res.IsFaulted || !res.prepared.IsValid ? null : (object)res.Run();

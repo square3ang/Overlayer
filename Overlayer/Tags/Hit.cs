@@ -30,18 +30,99 @@ public static class Hit {
     [Tag]
     [TagDesc("Current Hit")]
     public static string CHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Current).Trim(maxLength, afterTrimStr);
+    
+    // Lenient
+    [Tag]
+    [TagDesc("Lenient Too Late - Too Early")]
+    public static int LTE;
+    [Tag]
+    [TagDesc("Lenient Very Early")]
+    public static int LVE;
+    [Tag]
+    [TagDesc("Lenient Early Perfect")]
+    public static int LEP;
+    [Tag]
+    [TagDesc("Lenient Perfect")]
+    public static int LP;
+    [Tag]
+    [TagDesc("Lenient Late Perfect")]
+    public static int LLP;
+    [Tag]
+    [TagDesc("Lenient Very Late")]
+    public static int LVL;
     [Tag]
     [TagDesc("Lenient Too Late")]
-    public static int LTE, LVE, LEP, LP, LLP, LVL, LTL;
+    public static int LTL;
+
+    // Normal
+    [Tag]
+    [TagDesc("Normal Too Late - Too Early")]
+    public static int NTE;
+    [Tag]
+    [TagDesc("Normal Very Early")]
+    public static int NVE;
+    [Tag]
+    [TagDesc("Normal Early Perfect")]
+    public static int NEP;
+    [Tag]
+    [TagDesc("Normal Perfect")]
+    public static int NP;
+    [Tag]
+    [TagDesc("Normal Late Perfect")]
+    public static int NLP;
+    [Tag]
+    [TagDesc("Normal Very Late")]
+    public static int NVL;
     [Tag]
     [TagDesc("Normal Too Late")]
-    public static int NTE, NVE, NEP, NP, NLP, NVL, NTL;
+    public static int NTL;
+
+    // Strict
+    [Tag]
+    [TagDesc("Strict Too Late - Too Early")]
+    public static int STE;
+    [Tag]
+    [TagDesc("Strict Very Early")]
+    public static int SVE;
+    [Tag]
+    [TagDesc("Strict Early Perfect")]
+    public static int SEP;
+    [Tag]
+    [TagDesc("Strict Perfect")]
+    public static int SP;
+    [Tag]
+    [TagDesc("Strict Late Perfect")]
+    public static int SLP;
+    [Tag]
+    [TagDesc("Strict Very Late")]
+    public static int SVL;
     [Tag]
     [TagDesc("Strict Too Late")]
-    public static int STE, SVE, SEP, SP, SLP, SVL, STL;
+    public static int STL;
+
+    // Current
+    [Tag]
+    [TagDesc("Current Too Late - Too Early")]
+    public static int CTE;
+    [Tag]
+    [TagDesc("Current Very Early")]
+    public static int CVE;
+    [Tag]
+    [TagDesc("Current Early Perfect")]
+    public static int CEP;
+    [Tag]
+    [TagDesc("Current Perfect")]
+    public static int CP;
+    [Tag]
+    [TagDesc("Current Late Perfect")]
+    public static int CLP;
+    [Tag]
+    [TagDesc("Current Very Late")]
+    public static int CVL;
     [Tag]
     [TagDesc("Current Too Late")]
-    public static int CTE, CVE, CEP, CP, CLP, CVL, CTL;
+    public static int CTL;
+
     [Tag]
     [TagDesc("Fast judgment in Lenient difficulty")]
     public static int LFast => LTE + LVE + LEP;
@@ -79,6 +160,7 @@ public static class Hit {
     [TagDesc("Current Early Perfect + Late Perfect")]
     public static int CELP => CEP + CLP;
     [Tag]
+    [TagDesc("Lenient Very Early + Lenient Very Late")]
     public static int LV => LVE + LVL;
     [Tag]
     [TagDesc("Normal Very Early + Normal Very Late")]
@@ -90,6 +172,7 @@ public static class Hit {
     [TagDesc("Current Very Early + Current Very Late")]
     public static int CV => CVE + CVL;
     [Tag]
+    [TagDesc("Lenient Too Early + Lenient Too Late")]
     public static int LT => LTE + LTL;
     [Tag]
     [TagDesc("Normal Too Early + Normal Too Late")]
@@ -142,6 +225,7 @@ public static class Hit {
     [Tag]
     [TagDesc("Official Too Early + Official Too Late")]
     public static int OT => OTE + OTL;
+
     [Tag]
     [TagDesc("Number of Misses")]
     public static int MissCount => scrController.instance?.mistakesManager?.GetHits(HitMargin.FailMiss) ?? 0;
@@ -154,6 +238,7 @@ public static class Hit {
     [Tag]
     [TagDesc("Number of Multipresses")]
     public static int Multipress;
+
     [Tag]
     [TagDesc("Current Difficulty")]
     public static string Difficulty(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("enum.Difficulty." + GCS.difficulty).Trim(maxLength, afterTrimStr);

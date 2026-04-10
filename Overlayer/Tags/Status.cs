@@ -7,6 +7,7 @@ public static class Status {
     [TagDesc("Displays true if auto is enabled, false otherwise")]
     public static bool IsAutoEnabled => ADOFAI.RDC?.auto ?? false;
     [Tag]
+    [TagDesc("Displays true if the current tile is an autotile, false otherwise")]
     public static bool IsAutoTile => scrLevelMaker.instance?.listFloors[Tile.CurTile]?.auto ?? false;
     [Tag]
     [TagDesc("Displays true if Old Auto is enabled, false if disabled")]
@@ -62,8 +63,10 @@ public static class Status {
     }
 
     [Tag]
+    [TagDesc("Current attempt count.\nRequires File Attempt setting to be enabled.")]
     public static int FileAttempts() => Main.FileAttempt?.GetAttempts() ?? -1;
     [Tag]
+    [TagDesc("Current attempt count for the start tile.\nRequires File Attempt setting to be enabled.")]
     public static int FileTileAttempts(int tile) => Main.FileAttempt?.GetTileAttempts(tile) ?? -1;
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]

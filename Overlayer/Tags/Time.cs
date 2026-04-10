@@ -42,6 +42,7 @@ public static class Time {
     [TagDesc("Total milliseconds so far")]
     public static double MilliSeconds => TimeSpan.FromTicks(FastDateTime.Now.Ticks).TotalMilliseconds;
     [Tag(NotPlaying = true)]
+    [TagDesc("Current DateTime ticks (100ns units)")]
     public static long Ticks => FastDateTime.Now.Ticks;
     public static void Reset() { }
 }
