@@ -44,7 +44,7 @@ public static class System {
     [TagDesc("Shows the number of CPU processors available on the system")]
     public static int ProcessorCount;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the current CPU usage percentage of the ADOFAI process.\nOnly Windows Available")]
+    [TagDesc("Average CPU usage per core of the process.\nOnly Windows Available")]
     public static float CpuUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     [TagDesc("Shows the total CPU usage percentage of the entire system.\nOnly Windows Available")]
@@ -83,7 +83,7 @@ public static class System {
     [TagDesc("Shows the total GPU memory usage on the system in GB.\nOnly Windows Available")]
     public static float GpuMemoryUsageGBytes;
     [Tag(NotPlaying = true)]
-    [TagDesc("Average CPU usage per core of the process.\nOnly Windows Available")]
+    [TagDesc("Shows the current GPU usage as a percentage of total GPU capacity.\nOnly Windows Available")]
     public static int GpuUsage;
 
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
@@ -229,11 +229,11 @@ public static class System {
                     GpuUsage = avg;
 
                     if(dTotal > 0) {
-                        GpuMemoryUsage = dUsed / dTotal * 100f;
+                        GpuMemoryUsage = dUsed;
                     }
 
                     if(sTotal > 0) {
-                        GpuSharedMemoryUsage = sUsed / sTotal * 100f;
+                        GpuSharedMemoryUsage = sUsed;
                     }
 
                     GpuMemory = dTotal;
