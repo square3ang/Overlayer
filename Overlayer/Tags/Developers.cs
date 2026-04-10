@@ -11,7 +11,6 @@ public static class Developers {
     [TagDesc("Us.")]
     public static string Modlist => "We Still Alive!";
 
-
     // MAIN LEADER
     [Tag(NotPlaying = true)]
     [TagDesc("Main Leader")]
@@ -25,5 +24,6 @@ public static class Developers {
     [TagDesc("Goodbye, Forever.")]
     public static string MipaNyang => "MipaNyang is God";
     [Tag("imBBBT", NotPlaying = true)]
+    //[TagDesc("")]
     public static string ImBBBT => "imBBBT is not beepbit futures";
 }
