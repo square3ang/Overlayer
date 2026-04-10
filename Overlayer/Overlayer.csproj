@@ -589,6 +589,7 @@
     <Compile Include="Tags\Hit.cs" />
     <Compile Include="Tags\Level.cs" />
     <Compile Include="Core\OverlayerTag.cs" />
+    <Compile Include="Tags\Mod.cs" />
     <Compile Include="Tags\Patches\M_MonsterLove.cs" />
     <Compile Include="Tags\Patches\PatchBase.cs" />
     <Compile Include="Tags\Patches\P_ffxSetDefaultText.cs" />
