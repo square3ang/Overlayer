@@ -8,7 +8,7 @@ public static class Developers {
     [TagDesc("modlist.org")]
     public static string Developer => Main.Lang.Get("MISC_DEVELOPER", "modlist.org. Display everything as you wish. Thank you for being with Overlayer.");
     [Tag(NotPlaying = true)]
-    [TagDesc("Us.")]
+    [TagDesc("Us")]
     public static string Modlist => "We Still Alive!";
 
     // MAIN LEADER
