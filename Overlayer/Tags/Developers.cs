@@ -10,16 +10,16 @@ public static class Developers {
 
     // MAIN LEADER
     [Tag(NotPlaying = true)]
+    [TagDesc("Main Leader")]
     public static string Kkitut => "Thank you all.";
     [Tag(NotPlaying = true)]
+    [TagDesc("Old Leader")]
     public static string Square3ang => "triangle <b>square</b> pentagon....";
 
     // OTHER
     [Tag(NotPlaying = true)]
     [TagDesc("Goodbye, Forever.")]
     public static string MipaNyang => "MipaNyang is God";
-    [Tag(NotPlaying = true)]
-    public static string Kyulio => "Kyulio is lazy";
     [Tag("imBBBT", NotPlaying = true)]
     public static string ImBBBT => "imBBBT is not beepbit futures";
 }

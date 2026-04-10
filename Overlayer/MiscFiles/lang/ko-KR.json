@@ -216,7 +216,6 @@
     "TAG_DESC_ISPRACTICEMODEENABLED": "연습 모드가 활성화되었으면 true, 그렇지 않으면 false를 표시",
     "TAG_DESC_ISSPEEDTRIALENABLED": "배속 도전이 활성화되었으면 true, 그렇지 않으면 false를 표시\nCLS와 공식 레벨에서만 동작합니다.",
     "TAG_DESC_ISSTARTED": "시작하지 않았으면 false, 아무 키나 눌러 시작했으면 true를 표시",
-    "TAG_DESC_KYULIO": "그는 매우 매혹적인",
     "TAG_DESC_LEFTTILE": "남은 타일 수",
     "TAG_DESC_LELP": "느슨 빠름 + 느슨 느림",
     "TAG_DESC_LEP": "느슨 빠름",
