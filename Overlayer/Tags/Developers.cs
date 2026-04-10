@@ -11,8 +11,8 @@ public static class Developers {
     // MAIN LEADER
     [Tag(NotPlaying = true)]
     public static string Kkitut => "Thank you all.";
-    //[Tag(NotPlaying = true)]
-    //public static string Square3ang => "";
+    [Tag(NotPlaying = true)]
+    public static string Square3ang => "triangle <b>square</b> pentagon....";
 
     // OTHER
     [Tag(NotPlaying = true)]
