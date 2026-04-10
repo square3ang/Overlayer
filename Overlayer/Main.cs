@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -240,7 +241,23 @@ public static class Main {
 #if DEBUG
         GUILayout.BeginHorizontal();
         if(Drawer.Button("CHKALL TAGDESC")) {
-            TagManager.CheckAllDesc();
+            foreach(var tag in TagManager.All.OrderBy(x => x.Name)) {
+                string name = tag.Name.ToUpper();
+                if(!TagDesc.Desc.ContainsKey(name)) {
+                    Logger.Log($"Tag {name} does not exist in tooltip dictionary.");
+                }
+            }
+        }
+        foreach(var lang in Lang.GetLanguages()) {
+            if(Drawer.Button($"CHK {lang} DESC")) {
+                foreach(var tag in TagManager.All.OrderBy(x => x.Name)) {
+                    string name = tag.Name;
+                    string key = "TAG_DESC_"+name.ToUpper();
+                    if(!Lang.HasKeyForLanguage(key, Lang.Language)) {
+                        Logger.Log($"Tag {name} does not exist in language {lang} : {key}.");
+                    }
+                }
+            }
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();

@@ -91,15 +91,4 @@ public static class TagManager {
         tags = null;
         Initialized = false;
     }
-
-#if DEBUG
-    public static void CheckAllDesc() {
-        foreach(var tag in All.OrderBy(x => x.Name)) {
-            string name = tag.Name.ToUpper();
-            if(!TagDesc.Desc.ContainsKey(name)) {
-                Main.Logger.Log($"Tag {name} does not exist in tooltip dictionary.");
-            }
-        }
-    }
-#endif
 }
