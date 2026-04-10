@@ -31,68 +31,72 @@ public static class System {
     public static float GCMemAllocRateKB;
 
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total memory used by Unity, not including the entire process memory")]
+    [TagDesc("Shows the total memory used by Unity, not including the entire process memory.\nOnly Windows Available")]
     public static float UnityMemUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total memory used by Unity in GB, not including the entire process memory")]
+    [TagDesc("Shows the total memory used by Unity in GB, not including the entire process memory.\nOnly Windows Available")]
     public static float UnityMemUsageGB;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total memory used by Unity in KB, not including the entire process memory")]
+    [TagDesc("Shows the total memory used by Unity in KB, not including the entire process memory.\nOnly Windows Available")]
     public static float UnityMemUsageKB;
 
     [Tag(NotPlaying = true)]
-    [TagDesc("Shows the number of CPU cores available on the system")]
+    [TagDesc("Shows the number of CPU processors available on the system")]
     public static int ProcessorCount;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the current CPU usage of the ADOFAI process as a percentage of total CPU capacity")]
+    [TagDesc("Shows the current CPU usage percentage of the ADOFAI process.\nOnly Windows Available")]
     public static float CpuUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total CPU usage of the system as a percentage of total CPU capacity")]
+    [TagDesc("Shows the total CPU usage percentage of the entire system.\nOnly Windows Available")]
     public static float TotalCpuUsage;
 
     [Tag(NotPlaying = true)]
-    [TagDesc("Shows the total physical memory (RAM) available on the system in MB")]
+    [TagDesc("Shows the total physical memory (RAM) available on the system in MB.\nOnly Windows Available")]
     public static float Memory;
     [Tag(NotPlaying = true)]
-    [TagDesc("Shows the total physical memory (RAM) available on the system in GB")]
+    [TagDesc("Shows the total physical memory (RAM) available on the system in GB.\nOnly Windows Available")]
     public static float MemoryGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total memory usage of the system in MB")]
+    [TagDesc("Shows the current memory usage of the ADOFAI process in MB.\nOnly Windows Available")]
     public static float MemoryUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total memory usage of the system in GB")]
+    [TagDesc("Shows the current memory usage of the ADOFAI process in GB\nOnly Windows Available")]
     public static float MemoryUsageGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total memory usage of the system as a percentage of total physical memory")]
+    [TagDesc("Shows the total memory usage of the system in MB.\nOnly Windows Available")]
     public static float TotalMemoryUsage;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Shows the total memory usage of the system in GB.\nOnly Windows Available")]
+    public static float TotalMemoryUsageGBytes;
+
 
     [Tag(NotPlaying = true)]
-    [TagDesc("Shows the total GPU memory available on the system in MB")]
+    [TagDesc("Shows the total GPU memory available on the system in MB.\nOnly Windows Available")]
     public static float GpuMemory;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total GPU memory available on the system in GB")]
+    [TagDesc("Shows the total GPU memory available on the system in GB.\nOnly Windows Available")]
     public static float GpuMemoryGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total GPU memory usage on the system in MB")]
+    [TagDesc("Shows the total GPU memory usage on the system in MB.\nOnly Windows Available")]
     public static float GpuMemoryUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total GPU memory usage on the system in GB")]
+    [TagDesc("Shows the total GPU memory usage on the system in GB.\nOnly Windows Available")]
     public static float GpuMemoryUsageGBytes;
     [Tag(NotPlaying = true)]
-    [TagDesc("Shows the current GPU usage as a percentage of total GPU capacity")]
+    [TagDesc("Average CPU usage per core of the process.\nOnly Windows Available")]
     public static int GpuUsage;
 
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total shared GPU memory available on the system in MB")]
+    [TagDesc("Shows the total shared GPU memory available on the system in MB.\nOnly Windows Available")]
     public static float GpuSharedMemory;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total shared GPU memory available on the system in GB")]
+    [TagDesc("Shows the total shared GPU memory available on the system in GB.\nOnly Windows Available")]
     public static float GpuSharedMemoryGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total shared GPU memory usage on the system in MB")]
+    [TagDesc("Shows the total shared GPU memory usage on the system in MB.\nOnly Windows Available")]
     public static float GpuSharedMemoryUsage;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
-    [TagDesc("Shows the total shared GPU memory usage on the system in GB")]
+    [TagDesc("Shows the total shared GPU memory usage on the system in GB.\nOnly Windows Available")]
     public static float GpuSharedMemoryUsageGBytes;
 
     const int GPU_HISTORY = 16;
@@ -161,13 +165,14 @@ public static class System {
                 }
 
                 if(mem != null) {
-                    float memUsage = (float)mem.Observe() / 1048576;
-                    float usedTotal = totalMemMB - (float)totMem.Observe();
+                    float memUsageMB = (float)mem.Observe() / 1048576f;
+                    float usedTotalMB = totalMemMB - (float)totMem.Observe();
 
-                    MemoryUsage = memUsage / totalMemMB * 100f;
-                    TotalMemoryUsage = usedTotal / totalMemMB * 100f;
+                    MemoryUsage = memUsageMB;
+                    TotalMemoryUsage = usedTotalMB;
 
-                    MemoryUsageGBytes = memUsage / 1024f;
+                    MemoryUsageGBytes = memUsageMB / 1024f;
+                    TotalMemoryUsageGBytes = usedTotalMB / 1024f;
                 }
 
                 if(computer != null) {
