@@ -316,6 +316,65 @@ public class Translator {
             // Set loading state to false.
             IsLoading = false;
         }
+    } 
+
+    /// <summary>
+    /// Determines whether the current translations contain the specified key for the active language.
+    /// Checks both string and array translation maps.
+    /// Returns false if translator is in default/fallback mode.
+    /// </summary>
+    /// <param name="key">Translation key to check.</param>
+    /// <returns>True if the key exists for the current language; otherwise false.</returns>
+    public bool HasKey(string key) {
+        if(IsDefault) {
+            return false;
+        }
+
+        if(string.IsNullOrEmpty(key)) {
+            return false;
+        }
+
+        if(translations.TryGetValue(Language, out var langDict) && langDict.ContainsKey(key)) {
+            return true;
+        }
+
+        if(translationsArr.TryGetValue(Language, out var langArr) && langArr.ContainsKey(key)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether the specified language contains the given translation key.
+    /// Checks both string and array translation maps. If language is null/empty or fallback, returns false.
+    /// </summary>
+    /// <param name="key">Translation key to check.</param>
+    /// <param name="language">Language code to check.</param>
+    /// <returns>True if the key exists for the specified language; otherwise false.</returns>
+    public bool HasKeyForLanguage(string key, string language) {
+        // If the specified language is null, empty, or the fallback language, return false.
+        if(string.IsNullOrEmpty(language) || language == FALLBACK_LANGUAGE) {
+            return false;
+        }
+
+        // Check if the translations contain the specified language and key.
+        if(string.IsNullOrEmpty(key)) {
+            return false;
+        }
+
+        // Check string translations first, then array translations for the specified language.
+        if(translations.TryGetValue(language, out var langDict) && langDict.ContainsKey(key)) {
+            return true;
+        }
+
+        // Check array translations for the specified language.
+        if(translationsArr.TryGetValue(language, out var langArr) && langArr.ContainsKey(key)) {
+            return true;
+        }
+
+        // If the key was not found in either map, return false.
+        return false;
     }
 
     /// <summary>
