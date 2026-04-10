@@ -1,10 +1,18 @@
 ﻿[ Add ]
-Advanced Format Number
-- Just use ; (semicolon) in a Tag.
+{ Tag }
+GPU Tags
+- GpuMemory
+- GpuMemoryGBytes
+- GpuMemoryUsage
+- GpuMemoryUsageGBytes
+- GpuSharedMemory
+- GpuSharedMemoryGBytes
+- GpuSharedMemoryUsage
+- GpuSharedMemoryUsageGBytes
+- GpuUsage
 
 [ Change ]
-Tag Parser (Legex)
+Some SystemTag Descriptions
 
 [ Fix ]
-System.Numerics.Vectors dependencies
-Restore {MemoryUsageGBytes} and {TotalMemoryUsageGBytes} Tags
+FileAttempt System

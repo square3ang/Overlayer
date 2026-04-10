@@ -2,7 +2,7 @@
   "Id": "Overlayer",
   "DisplayName": "Overlayer",
   "Author": "modlist.org",
-  "Version": "3.48.0",
+  "Version": "3.49.0",
   "AssemblyName": "Overlayer.Bootstrapper.dll",
   "EntryMethod": "Overlayer.Bootstrapper.Main.Load"
 }
