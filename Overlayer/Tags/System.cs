@@ -53,7 +53,7 @@ public static class System {
     public static float MemoryGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float MemoryUsage;
-    [Tag(NotPlaying = true)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float MemoryUsageGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float TotalMemoryUsage;
@@ -63,20 +63,21 @@ public static class System {
 
     [Tag(NotPlaying = true)]
     public static float GpuMemory;
-    [Tag(NotPlaying = true)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float GpuMemoryGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float GpuMemoryUsage;
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     [Tag(NotPlaying = true)]
     public static float GpuMemoryUsageGBytes;
 
-    [Tag(NotPlaying = true)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float GpuSharedMemory;
-    [Tag(NotPlaying = true)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float GpuSharedMemoryGBytes;
     [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float GpuSharedMemoryUsage;
-    [Tag(NotPlaying = true)]
+    [Tag(NotPlaying = true, ProcessingFlags = ValueProcessing.RoundNumber)]
     public static float GpuSharedMemoryUsageGBytes;
 
     const int GPU_HISTORY = 16;
