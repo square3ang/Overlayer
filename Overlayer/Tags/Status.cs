@@ -67,7 +67,12 @@ public static class Status {
     public static int FileAttempts() => Main.FileAttempt?.GetAttempts() ?? -1;
     [Tag]
     [TagDesc("Current attempt count for the start tile.\nRequires File Attempt setting to be enabled.")]
-    public static int FileTileAttempts(int tile) => Main.FileAttempt?.GetTileAttempts(tile) ?? -1;
+    public static int FileTileAttempts(int tile = -1) {
+        if(tile < 0) {
+            tile = Tile.StartTile;
+        }
+        return Main.FileAttempt?.GetTileAttempts(tile) ?? -1;
+    }
 
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     [TagDesc("Speed set in CLS (displayed as 1 when at 1x speed)")]
