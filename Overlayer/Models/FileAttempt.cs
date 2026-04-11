@@ -7,69 +7,46 @@ namespace Overlayer.Models;
 
 public class FileAttempt : IModel, ICopyable<FileAttempt> {
     private int Attempts = 0;
-    private List<int[]> TileAttempts = [];
+    private Dictionary<int, int> TileAttempts = [];
 
     public int GetAttempts() => Attempts;
 
     public int GetTileAttempts(int tile) {
-        foreach(var t in TileAttempts) {
-            if(t[0] == tile) {
-                return t[1];
-            }
+        if(TileAttempts.TryGetValue(tile, out var count)) {
+            return count;
         }
-
         return 0;
     }
 
-    public void IncreaseAttempts() => Attempts++;
+    public void IncreaseAttempts() {
+        Attempts++;
+    }
+
     public void IncreaseTileAttempts(int tile) {
-        foreach(var t in TileAttempts) {
-            if(t[0] == tile) {
-                t[1]++;
-                return;
-            }
+        if(TileAttempts.ContainsKey(tile)) {
+            TileAttempts[tile]++;
+        } else {
+            TileAttempts[tile] = 1;
         }
-        TileAttempts.Add([tile, 1]);
     }
 
     public JToken Serialize() {
         return new JObject {
             [nameof(Attempts)] = Attempts,
-            [nameof(TileAttempts)] = JArray.FromObject(TileAttempts)
+            [nameof(TileAttempts)] = JToken.FromObject(TileAttempts)
         };
     }
 
     public void Deserialize(JToken node) {
         Attempts = node[nameof(Attempts)]?.Value<int>() ?? 0;
-        TileAttempts = [];
-        if(node[nameof(TileAttempts)] is not JArray arr) {
-            return;
-        }
-        foreach(var item in arr) {
-            if(item is not JArray pair) {
-                continue;
-            }
-            if(pair.Count != 2) {
-                continue;
-            }
-            if(pair[0]?.Type != JTokenType.Integer || pair[1]?.Type != JTokenType.Integer) {
-                continue;
-            }
-            TileAttempts.Add([
-                pair[0]!.Value<int>(),
-                pair[1]!.Value<int>()
-            ]);
-        }
+        TileAttempts = node[nameof(TileAttempts)]?.ToObject<Dictionary<int, int>>() ?? new();
     }
 
     public FileAttempt Copy() {
-        var copy = new FileAttempt {
-            Attempts = Attempts
+        return new FileAttempt {
+            Attempts = Attempts,
+            TileAttempts = new Dictionary<int, int>(TileAttempts)
         };
-        foreach(var t in TileAttempts) {
-            copy.TileAttempts.Add([t[0], t[1]]);
-        }
-        return copy;
     }
 
     const string FileAttemptsFileName = "Overlayer_Attempts.json";
