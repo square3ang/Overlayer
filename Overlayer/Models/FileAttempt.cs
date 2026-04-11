@@ -7,7 +7,7 @@ namespace Overlayer.Models;
 
 public class FileAttempt : IModel, ICopyable<FileAttempt> {
     private int Attempts = 0;
-    private Dictionary<int, int> TileAttempts = [];
+    private Dictionary<int, int> TileAttempts = new();
 
     public int GetAttempts() => Attempts;
 
@@ -23,8 +23,8 @@ public class FileAttempt : IModel, ICopyable<FileAttempt> {
     }
 
     public void IncreaseTileAttempts(int tile) {
-        if(TileAttempts.ContainsKey(tile)) {
-            TileAttempts[tile]++;
+        if(TileAttempts.TryGetValue(tile, out var count)) {
+            TileAttempts[tile] = count + 1;
         } else {
             TileAttempts[tile] = 1;
         }
