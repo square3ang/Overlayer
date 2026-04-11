@@ -194,7 +194,7 @@ public static class Hit {
     public static int OEP => scrMistakesManager.hitMarginsCount[2];
     [Tag]
     [TagDesc("Official Perfect")]
-    public static int OP => scrMistakesManager.hitMarginsCount[3] + scrMistakesManager.hitMarginsCount[10];
+    public static int OP => OPP + OA;
     [Tag]
     [TagDesc("Official Late Perfect")]
     public static int OLP => scrMistakesManager.hitMarginsCount[4];
