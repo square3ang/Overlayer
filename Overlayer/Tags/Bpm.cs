@@ -24,6 +24,9 @@ public static class Bpm {
     [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
     [TagDesc("Recommended KPS (without pitch)")]
     public static double RecKPSWithoutPitch;
+    [Tag(ProcessingFlags = ValueProcessing.RoundNumber)]
+    [TagDesc("Number of beats in the current tile")]
+    public static double Beat => TileBpm / CurBpm;
 
     public static float bpm, pitch, bpmwithoutpitch, playbackSpeed = 1;
 

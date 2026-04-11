@@ -154,6 +154,7 @@
     "TAG_DESC_ATTEMPTS": "显示尝试次数.\n仅适用于 CLS 和官方关卡.",
     "TAG_DESC_AUTHOR": "谱面的谱师",
     "TAG_DESC_AUTHORRAW": "富文本下的谱面的谱师",
+    "TAG_DESC_BEAT": "当前瓦片的节拍数",
     "TAG_DESC_BESTPROGRESS": "当前关卡的最佳成绩",
     "TAG_DESC_CELP": "当前判定下稍快!数 + 当前判定下稍慢!数",
     "TAG_DESC_CEP": "当前判定下稍慢数",

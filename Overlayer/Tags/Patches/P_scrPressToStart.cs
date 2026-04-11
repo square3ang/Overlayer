@@ -5,7 +5,7 @@ namespace Overlayer.Tags.Patches;
 public class P_scrPressToStart : PatchBase<P_scrPressToStart> {
     [LazyPatch("Tags.P_scrPressToStart.Bpm__ShowText", "scrPressToStart", "ShowText", Triggers =
     [
-        nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.RecKPS),
+        nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.Beat), nameof(Bpm.RecKPS),
         nameof(Bpm.TileBpmWithoutPitch), nameof(Bpm.CurBpmWithoutPitch), nameof(Bpm.RecKPSWithoutPitch)
     ])]
     public static class Bpm__ShowText {

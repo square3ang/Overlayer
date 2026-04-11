@@ -13,7 +13,7 @@ public class P_scnGame : PatchBase<P_scnGame> {
 
     [LazyPatch("Tags.P_scnGame.Bpm__Play", "scnGame", "Play", Triggers =
     [
-        nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.RecKPS),
+        nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.Beat), nameof(Bpm.RecKPS),
         nameof(Bpm.TileBpmWithoutPitch), nameof(Bpm.CurBpmWithoutPitch), nameof(Bpm.RecKPSWithoutPitch)
     ])]
     public static class Bpm__Play {

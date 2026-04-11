@@ -7,7 +7,7 @@ namespace Overlayer.Tags.Patches;
 public class P_scrPlanet : PatchBase<P_scrPlanet> {
     [LazyPatch("Tags.P_scrPlanet.Bpm__MoveToNextFloor", "scrPlanet", "MoveToNextFloor", Triggers =
     [
-        nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.RecKPS),
+        nameof(Bpm.TileBpm), nameof(Bpm.CurBpm), nameof(Bpm.Beat), nameof(Bpm.RecKPS),
         nameof(Bpm.TileBpmWithoutPitch), nameof(Bpm.CurBpmWithoutPitch), nameof(Bpm.RecKPSWithoutPitch)
     ])]
     public static class Bpm__MoveToNextFloor {

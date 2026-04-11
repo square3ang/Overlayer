@@ -153,6 +153,7 @@
     "TAG_DESC_ATTEMPTS": "시도 횟수를 보여줍니다\nCLS와 공식 레벨에서만 동작합니다.",
     "TAG_DESC_AUTHOR": "레벨 제작자",
     "TAG_DESC_AUTHORRAW": "레벨 제작자 (리치 태그 포함)",
+    "TAG_DESC_BEAT": "현재 타일의 비트 수",
     "TAG_DESC_BESTPROGRESS": "레벨의 최고 진행도",
     "TAG_DESC_CELP": "현재 빠름 + 현재 느림",
     "TAG_DESC_CEP": "현재 빠름",

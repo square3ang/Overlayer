@@ -153,6 +153,7 @@
     "TAG_DESC_ATTEMPTS": "Shows Attempts.\nOnly works on CLS and official levels.",
     "TAG_DESC_AUTHOR": "Level creator",
     "TAG_DESC_AUTHORRAW": "Level creator (with rich tags)",
+    "TAG_DESC_BEAT": "Number of beats in the current tile",
     "TAG_DESC_BESTPROGRESS": "Best progress of the level",
     "TAG_DESC_CELP": "Current Early Perfect + Late Perfect",
     "TAG_DESC_CEP": "Current Early Perfect",
