@@ -30,11 +30,13 @@ public static class ProgressStats {
         if(scrLevelMaker.instance == null) {
             return;
         }
-        BestProgress = Math.Max(BestProgress, scrController.instance.percentComplete * 100);
+        if(!Status.IsAutoEnabled && !Status.IsNoFailEnabled && Tile.StartTile == 0) {
+            BestProgress = Math.Max(BestProgress, scrController.instance.percentComplete * 100);
+        }
     }
 
     public static void BestProgress_Fix() {
-        if(scrController.instance.gameworld) {
+        if(scrController.instance.gameworld && !Status.IsAutoEnabled && !Status.IsNoFailEnabled && Tile.StartTile == 0) {
             BestProgress = 100;
         }
     }
