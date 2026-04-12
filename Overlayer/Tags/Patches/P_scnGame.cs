@@ -51,7 +51,7 @@ public class P_scnGame : PatchBase<P_scnGame> {
 
         // Dependency
         nameof(AccuracyStats.MaxXAccuracy), nameof(AccuracyStats.AbsMaxXAccuracy),
-        nameof(Status.FileTileAttempts), nameof(Status.IsAutoTile)
+        nameof(Status.FileTileAttempts), nameof(Status.IsAutoTile), nameof(ProgressStats.BestProgress)
     ])]
     public static class Play {
         public static void Postfix(int seqID = 0) {
