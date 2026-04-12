@@ -39,13 +39,31 @@ public class CodeEditor {
             var highlighted = new List<string>();
 
             foreach(Match match in tagRegex.Matches(str)) {
-                if(highlighted.Contains(match.Groups[1].Value)) {
+                var fullTag = match.Groups[1].Value;
+
+                if(highlighted.Contains(fullTag)) {
                     continue;
                 }
 
-                var fullTag = match.Groups[1].Value;
-                var splitChar = fullTag.Contains(':') ? ':' : (fullTag.Contains(';') ? ';' : '\0');
-                var name = splitChar != '\0' ? fullTag.Split(splitChar)[0] : fullTag;
+                char splitChar = '\0';
+
+                if(fullTag.Contains(':')) {
+                    splitChar = ':';
+                } else if(fullTag.Contains(';')) {
+                    splitChar = ';';
+                } else if(fullTag.Contains('(')) {
+                    splitChar = '(';
+                }
+
+                var name = fullTag;
+
+                if(splitChar != '\0') {
+                    name = fullTag.Split(splitChar)[0];
+                }
+
+                if(name.EndsWith("()")) {
+                    name = name.Substring(0, name.Length - 2);
+                }
 
                 if(TagManager.tags.ContainsKey(name)) {
                     if(splitChar == ';') {
@@ -58,6 +76,7 @@ public class CodeEditor {
                         try {
                             var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
                                 new object[] { "-1", Overlayer.Utils.Extensions.DefaultTrimStr });
+
                             str = str.Replace("{" + fullTag + "}", "<color=#" + val + ">{" + fullTag + "}</color>");
                         } catch {
                             str = str.Replace("{" + fullTag + "}", "<color=lightblue>{" + fullTag + "}</color>");
