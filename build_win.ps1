@@ -1,229 +1,343 @@
 [CmdletBinding()]
 param(
-    [string] $Configuration = 'Release',
-    [switch] $Force
+    [string] $Configuration = 'Release'
 )
 
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Definition
 Set-Location $scriptRoot
 
-$buildDir = Join-Path $scriptRoot 'build'
-$libDir = Join-Path $buildDir 'lib'
-$langDir = Join-Path $buildDir 'lang'
-
-if(Test-Path $buildDir) {
-    if($Force) {
-        Remove-Item $buildDir -Recurse -Force -ErrorAction SilentlyContinue
-    } else {
-        Write-Host "Build folder already exists. Rerun with -Force to recreate." -ForegroundColor Yellow
-        return
+# -----------------------------
+# Logger
+# -----------------------------
+function Log($type, $msg) {
+    switch($type) {
+        "INFO" { Write-Host "[IN] $msg" -ForegroundColor DarkCyan }
+        "COPY" { Write-Host "[->] $msg" -ForegroundColor Blue }
+        "PLAN" { Write-Host "[>>] $msg" -ForegroundColor Cyan }
+        "SKIP" { Write-Host "[..] $msg" -ForegroundColor DarkGray }
+        "HINT" { Write-Host "[TI] $msg" -ForegroundColor Magenta }
+        "WARN" { Write-Host "[.!] $msg" -ForegroundColor Yellow }
+        "OK"   { Write-Host "[OK] $msg" -ForegroundColor Green }
+        "ERR"  { Write-Host "[!!] $msg" -ForegroundColor Red }
+        default { Write-Host "[--] $msg" }
     }
 }
 
-New-Item -ItemType Directory -Path $libDir -Force | Out-Null
-New-Item -ItemType Directory -Path $langDir -Force | Out-Null
+function Ask($msg) {
+    Write-Host "[??] $msg"
+    Write-Host "<< " -NoNewline
+    return Read-Host
+}
 
-# Prompt whether to auto-overwrite the built files into a game folder
-$autoChoice = Read-Host "Auto-overwrite to game folder? (y/N)"
-$AutoOverwrite = $false
-if($autoChoice -match '^[yY]') { $AutoOverwrite = $true }
+# First log
+Log INFO "Initializing..."
 
-# If user requested auto-overwrite, ask for destination; empty means try to infer from project PostBuildEvent
+# -----------------------------
+# Paths
+# -----------------------------
+$buildRoot = Join-Path $scriptRoot 'build'
+
+$resultRoot = Join-Path $buildRoot 'result'
+$buildDir   = Join-Path $resultRoot 'win64'
+$libDir     = Join-Path $buildDir 'lib'
+$langDir    = Join-Path $buildDir 'lang'
+
+$zipRoot = Join-Path $buildRoot 'zip'
+$zipDir  = Join-Path $zipRoot 'win64'
+$zipFile = Join-Path $zipDir 'Overlayer.zip'
+
+$settingsFile = Join-Path $scriptRoot 'build_settings.json'
+
+# -----------------------------
+# Load / Init Settings
+# -----------------------------
+$AutoOverwrite = $null
 $DestPathInput = $null
-if($AutoOverwrite) {
-    $DestPathInput = Read-Host "Enter game folder path (leave empty to infer from project's post-build event)"
-}
+$DoZip = $null
 
-function Find-And-Copy($namePatterns, $destFolder) {
-    foreach($pat in $namePatterns) {
-        $found = Get-ChildItem -Path $scriptRoot -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -like $pat } | Select-Object -First 1
+# -----------------------------
+# Utils
+# -----------------------------
+function Find-And-Copy($patterns, $dest) {
+    foreach($pat in $patterns) {
+        $found = Get-ChildItem $scriptRoot -Recurse -File -ErrorAction SilentlyContinue |
+                 Where-Object { $_.Name -like $pat } | Select-Object -First 1
         if($found) {
-            Copy-Item -Path $found.FullName -Destination $destFolder -Force
-            Write-Host "Copied $($found.Name) -> $destFolder"
-            return $true
+            Copy-Item $found.FullName $dest -Force
+            Log COPY "$($found.FullName) -> $dest"
+            return
         }
     }
-    Write-Host "Warning: Could not find $($namePatterns -join ', ')" -ForegroundColor Yellow
-    return $false
+    Log WARN "Lib not found: $patterns"
 }
 
-# Copy main DLLs into build root
-$mainDlls = @(
-    @{name='Overlayer.dll'; patterns=@('Overlayer.dll')},
-    @{name='Overlayer.Bootstrapper.dll'; patterns=@('Overlayer.Bootstrapper.dll')}
-)
-
-foreach($entry in $mainDlls) {
-    $name = $entry.name
-    $found = Get-ChildItem -Path $scriptRoot -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -ieq $name } | Select-Object -First 1
-    if($found) {
-        Copy-Item -Path $found.FullName -Destination $buildDir -Force
-        Write-Host "Copied $name -> $buildDir"
-    } else {
-        Write-Host "Warning: $name not found." -ForegroundColor Yellow
+function Invoke-Step([string] $name, [scriptblock] $action) {
+    try {
+        & $action
+        Log OK $name
+    } catch {
+        Log ERR "$name -> $($_.Exception.Message)"
     }
 }
 
-# Copy ov3_logo.png and info.json
-$filesToRoot = @('ov3_logo.png', 'info.json')
-foreach($f in $filesToRoot) {
-    $found = Get-ChildItem -Path $scriptRoot -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -ieq $f } | Select-Object -First 1
-    if($found) {
-        Copy-Item -Path $found.FullName -Destination $buildDir -Force
-        Write-Host "Copied $($found.Name) -> $buildDir"
-    } else {
-        Write-Host "Warning: $f not found." -ForegroundColor Yellow
+if(Test-Path $settingsFile) {
+    try {
+        $saved = Get-Content $settingsFile | ConvertFrom-Json
+
+        if($saved.PSObject.Properties.Name -contains 'AutoOverwrite') {
+            $AutoOverwrite = $saved.AutoOverwrite
+        }
+
+        if($saved.PSObject.Properties.Name -contains 'Destination') {
+            $DestPathInput = $saved.Destination
+        }
+
+        if($saved.PSObject.Properties.Name -contains 'DoZip') {
+            $DoZip = $saved.DoZip
+        }
+
+        Log OK "Loaded settings"
+    } catch {
+        Log WARN "Failed to load settings"
     }
 }
 
-# Copy lang folder (prefer Overlayer\MiscFiles\lang)
-$possibleLangSources = @(Join-Path $scriptRoot 'Overlayer\MiscFiles\lang', Join-Path $scriptRoot 'MiscFiles\lang', Join-Path $scriptRoot 'Overlayer\MiscFiles')
-$copiedLang = $false
-foreach($src in $possibleLangSources) {
-    if(Test-Path $src) {
-        # if src is directory and contains 'lang' subfolder
-        if((Get-Item $src).PSIsContainer -and (Test-Path (Join-Path $src 'lang'))) {
-            Copy-Item -Path (Join-Path $src 'lang') -Destination $langDir -Recurse -Force
-            Write-Host "Copied lang -> $langDir"
-            $copiedLang = $true
+# -----------------------------
+# Ask missing settings
+# -----------------------------
+if($null -eq $AutoOverwrite) {
+    $AutoOverwrite = (Ask "Overwrite the built files to the Mods/Overlayer folder in ADOFAI? (y/N)") -match '^[yY]'
+}
+
+if($AutoOverwrite -and [string]::IsNullOrWhiteSpace($DestPathInput)) {
+    $defaultPath = "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\Mods\Overlayer"
+
+    Log HINT "Enter the ADOFAI game folder (where the .exe is located)"
+    Log HINT "Example: C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice"
+    Log HINT "Mods\\Overlayer will be appended automatically"
+
+    $_input = Ask "Enter game folder path (empty = default)"
+
+    if([string]::IsNullOrWhiteSpace($_input)) {
+        $DestPathInput = $defaultPath
+        Log HINT "Using default Mods/Overlayer path"
+    } else {
+        $DestPathInput = Join-Path $_input "Mods\Overlayer"
+    }
+
+    Log PLAN "Destination -> $DestPathInput"
+
+    if(Test-Path $DestPathInput) {
+        Log OK "Path exists"
+    } else {
+        Log WARN "Path does not exist"
+    }
+}
+
+if($null -eq $DoZip) {
+    $DoZip = -not ((Ask "Create zip? (Y/n)") -match '^[nN]')
+}
+
+# -----------------------------
+# Clean
+# -----------------------------
+Log PLAN "Cleaning build directory..."
+
+Invoke-Step "Remove previous build" {
+    Remove-Item $buildRoot -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+Invoke-Step "Recreate directories" {
+    New-Item -ItemType Directory -Path $libDir -Force | Out-Null
+    New-Item -ItemType Directory -Path $langDir -Force | Out-Null
+    New-Item -ItemType Directory -Path $zipDir -Force | Out-Null
+}
+
+Log OK "Build directory ready"
+
+# -----------------------------
+# Build
+# -----------------------------
+Log PLAN "Building project..."
+
+Invoke-Step "Build" {
+    $projects = Get-ChildItem $scriptRoot -Recurse -Filter *.csproj |
+                Where-Object {
+                    $_.Name -like 'Overlayer*.csproj' -or
+                    $_.Name -like '*Bootstrapper*.csproj'
+                }
+
+    foreach($p in $projects)
+    {
+        dotnet build $p.FullName -c $Configuration -v minimal
+
+        if($LASTEXITCODE -ne 0)
+        {
+            throw "Build failed: $($p.Name)"
+        }
+    }
+}
+
+# -----------------------------
+# Copy Overlayer DLLs
+# -----------------------------
+Log PLAN "Copying Overlayer DLLs..."
+
+Invoke-Step "Copy Overlayer DLLs" {
+    foreach($name in @('Overlayer.dll','Overlayer.Bootstrapper.dll')) {
+        $found = Get-ChildItem $scriptRoot -Recurse -File |
+                 Where-Object { $_.Name -ieq $name } |
+                 Select-Object -First 1
+
+        if($found) {
+            Copy-Item $found.FullName $buildDir -Force
+            Log COPY "$($found.FullName) -> $buildDir"
+        }
+        else {
+            Log WARN "Missing DLL: $name"
+        }
+    }
+}
+
+# -----------------------------
+# Root files
+# -----------------------------
+Log PLAN "Copying root files..."
+
+Invoke-Step "Copy root files" {
+    foreach($f in @('info.json','ov3_logo.png','update.txt')) {
+        $found = Get-ChildItem $scriptRoot -Recurse -File |
+                 Where-Object { $_.Name -ieq $f } |
+                 Select-Object -First 1
+
+        if($found) {
+            Copy-Item $found.FullName $buildDir -Force
+            Log COPY "$($found.FullName) -> $buildDir"
+        }
+        else {
+            Log WARN "$f not found"
+        }
+    }
+}
+
+# -----------------------------
+# Lang
+# -----------------------------
+Log PLAN "Copying language files..."
+
+Invoke-Step "Copy language files" {
+    $copied = $false
+
+    foreach($src in @(
+        (Join-Path $scriptRoot 'Overlayer\MiscFiles\lang'),
+        (Join-Path $scriptRoot 'MiscFiles\lang')
+    )) {
+        if(Test-Path $src) {
+            Copy-Item "$src\*" $langDir -Recurse -Force
+            Log COPY "$src -> $langDir"
+            $copied = $true
             break
         }
-        # if src itself is the lang folder
-        if((Get-Item $src).PSIsContainer -and (Get-ChildItem $src -ErrorAction SilentlyContinue)) {
-            Copy-Item -Path $src -Destination $langDir -Recurse -Force
-            Write-Host "Copied $src -> $langDir"
-            $copiedLang = $true
-            break
-        }
     }
-}
-if(-not $copiedLang) {
-    # fallback: try to find a folder named 'lang'
-    $foundLang = Get-ChildItem -Path $scriptRoot -Recurse -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -ieq 'lang' } | Select-Object -First 1
-    if($foundLang) {
-        Copy-Item -Path $foundLang.FullName -Destination $langDir -Recurse -Force
-        Write-Host "Copied lang -> $langDir"
-    } else {
-        Write-Host "Warning: lang folder not found (expected under Overlayer\\MiscFiles\\lang)." -ForegroundColor Yellow
+
+    if(-not $copied) {
+        Log WARN "No lang directory copied"
     }
 }
 
-# Libraries to copy into lib
+# -----------------------------
+# Libs
+# -----------------------------
+Log PLAN "Copying libraries..."
+
 $libs = @(
-    'Acornima',
-    'Jint',
-    'LibreHardwareMonitorLib',
-    'NCalc',
-    'System.Memory',
-    'System.Numerics.Vectors',
-    'System.Runtime.CompilerServices.Unsafe',
-    'Vostok.Sys.Metrics.PerfCounters'
+    'Acornima','Jint','LibreHardwareMonitorLib','NCalc',
+    'System.Memory','System.Numerics.Vectors',
+    'System.Runtime.CompilerServices.Unsafe','Vostok.Sys.Metrics.PerfCounters'
 )
 
-foreach($lib in $libs) {
-    $patterns = @("$lib.dll", "$lib.*.dll", "*$lib*.dll")
-    Find-And-Copy $patterns $libDir | Out-Null
+Invoke-Step "Copy libraries" {
+    foreach($lib in $libs) {
+
+        $found = $null
+
+        foreach($pat in @("$lib.dll","*$lib*.dll")) {
+            $found = Get-ChildItem -Path $scriptRoot -Recurse -File -ErrorAction SilentlyContinue |
+                     Where-Object { $_.Name -like $pat } |
+                     Select-Object -First 1
+
+            if($found) { break }
+        }
+
+        if($null -ne $found) {
+            Copy-Item $found.FullName $libDir -Force
+            Log COPY "$($found.Name) -> $libDir"
+        } else {
+            Log WARN "Missing Lib: $lib"
+        }
+    }
 }
 
-Write-Host "Build tree created at: $buildDir" -ForegroundColor Green
-Write-Host "Contents:"
-Get-ChildItem -Path $buildDir -Recurse | ForEach-Object { Write-Host $_.FullName }
+# -----------------------------
+# Auto overwrite
+# -----------------------------
+if($AutoOverwrite -and $DestPathInput) {
+    Log PLAN "Applying auto overwrite..."
 
-# If requested, attempt to copy build contents into the game folder (inferred or explicit)
-$buildSettings = [ordered]@{
+    Invoke-Step "Auto overwrite" {
+        Copy-Item (Join-Path $buildDir '*') $DestPathInput -Recurse -Force
+        Log COPY "Build -> $DestPathInput"
+    }
+}
+else {
+    Log SKIP "Auto-overwrite disabled"
+}
+
+# -----------------------------
+# Zip
+# -----------------------------
+if($DoZip) {
+    Log PLAN "Creating archive zip..."
+
+    Invoke-Step "zip archive" {
+        $zipSource = Join-Path $buildDir '*'
+
+        if(Test-Path $zipFile) {
+            Log SKIP "Removing existing archive"
+            Remove-Item $zipFile -Force -ErrorAction Stop
+        }
+
+        Log PLAN "Compressing files..."
+        Compress-Archive -Path $zipSource -DestinationPath $zipFile -Force -ErrorAction Stop
+
+        # -----------------------------
+        # Size info
+        # -----------------------------
+        $sourceSize = (Get-ChildItem $buildDir -Recurse -File |
+                      Measure-Object -Property Length -Sum).Sum
+
+        $zipSize = (Get-Item $zipFile).Length
+
+        $saved = $sourceSize - $zipSize
+        $ratio = if($sourceSize -ne 0) { [math]::Round(($zipSize / $sourceSize) * 100, 2) } else { 0 }
+
+        Log INFO ("{0:N2} MB -> {1:N2} MB ({2}% kept, saved {3:N2} MB)" -f `
+            ($sourceSize / 1MB), ($zipSize / 1MB), $ratio, ($saved / 1MB))
+    }
+
+    Log OK "Zip complete"
+} else {
+    Log SKIP "Zip disabled"
+}
+
+# -----------------------------
+# Save settings
+# -----------------------------
+[ordered]@{
     AutoOverwrite = $AutoOverwrite
-    Destination = $null
-    InferredFrom = $null
-    FilesCopied = @()
+    Destination = $DestPathInput
+    DoZip = $DoZip
     Timestamp = (Get-Date).ToString('o')
-}
+} | ConvertTo-Json -Depth 3 | Out-File $settingsFile -Encoding utf8
 
-if($AutoOverwrite) {
-    $dest = $null
-    if([string]::IsNullOrWhiteSpace($DestPathInput)) {
-        # Try to infer from a .csproj PostBuildEvent or OutputPath
-        $proj = Get-ChildItem -Path $scriptRoot -Recurse -Filter *.csproj -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -like 'Overlayer*.csproj' } | Select-Object -First 1
-        if(-not $proj) {
-            $proj = Get-ChildItem -Path $scriptRoot -Recurse -Filter *.csproj -ErrorAction SilentlyContinue | Select-Object -First 1
-        }
-
-        if($proj) {
-            try {
-                $xml = [xml](Get-Content $proj.FullName -ErrorAction Stop)
-                # Try to collect PostBuildEvent nodes
-                $postNodes = $xml.Project.PropertyGroup | ForEach-Object { $_.PostBuildEvent } | Where-Object { $_ -ne $null }
-                $postText = $postNodes -join "`n"
-                $buildSettings.InferredFrom = $proj.FullName
-
-                if(-not [string]::IsNullOrWhiteSpace($postText)) {
-                    $matches = [regex]::Matches($postText, '"([^"]+)"') | ForEach-Object { $_.Groups[1].Value }
-                    if($matches.Count -gt 0) {
-                        # Choose last quoted value as likely destination and try to expand common MSBuild macros
-                        $candidate = $matches[-1]
-                        $projDir = Split-Path -Parent $proj.FullName
-                        $outPathNode = $xml.Project.PropertyGroup | Where-Object { $_.OutputPath } | Select-Object -First 1
-                        $outPath = $null
-                        if($outPathNode) { $outPath = $outPathNode.OutputPath }
-                        if(-not $outPath) { $outPath = "bin\\$Configuration\\" }
-
-                        $candidate = $candidate -replace '\$\((ProjectDir|MSBuildProjectDirectory)\)', [regex]::Escape($projDir)
-                        $candidate = $candidate -replace '\$\((SolutionDir)\)', [regex]::Escape($scriptRoot)
-                        $candidate = $candidate -replace '\$\((Configuration)\)', $Configuration
-                        $candidate = $candidate -replace '\$\((TargetDir|OutDir)\)', (Join-Path $projDir $outPath)
-
-                        # If relative, make absolute relative to project dir
-                        if(-not [System.IO.Path]::IsPathRooted($candidate)) {
-                            $candidate = Join-Path $projDir $candidate
-                        }
-                        $dest = $candidate
-                    }
-                }
-
-                if(-not $dest) {
-                    # Fallback to project's output path
-                    $projDir = Split-Path -Parent $proj.FullName
-                    $outPathNode = $xml.Project.PropertyGroup | Where-Object { $_.OutputPath } | Select-Object -First 1
-                    $outPath = $outPathNode.OutputPath -replace '\$\((Configuration)\)', $Configuration
-                    if(-not [System.IO.Path]::IsPathRooted($outPath)) {
-                        $dest = Join-Path $projDir $outPath
-                    } else {
-                        $dest = $outPath
-                    }
-                }
-            } catch {
-                Write-Host "Warning: Failed to parse project file to infer destination: $($_.Exception.Message)" -ForegroundColor Yellow
-            }
-        }
-    } else {
-        $dest = $DestPathInput
-    }
-
-    if($dest) {
-        # Ensure destination exists
-        try {
-            New-Item -ItemType Directory -Path $dest -Force | Out-Null
-            # Copy build contents to destination
-            Copy-Item -Path (Join-Path $buildDir '*') -Destination $dest -Recurse -Force -ErrorAction Stop
-            $files = Get-ChildItem -Path $buildDir -Recurse | ForEach-Object { $_.FullName }
-            $buildSettings.Destination = $dest
-            $buildSettings.FilesCopied = $files
-            Write-Host "Copied build contents -> $dest" -ForegroundColor Green
-        } catch {
-            Write-Host "Warning: Failed to copy build contents to $dest: $($_.Exception.Message)" -ForegroundColor Yellow
-        }
-    } else {
-        Write-Host "No destination could be inferred and none supplied; skipping auto-overwrite." -ForegroundColor Yellow
-    }
-}
-
-# Write build settings artifact
-$settingsFile = Join-Path $buildDir 'build_settings.json'
-try {
-    $buildSettings | ConvertTo-Json -Depth 5 | Out-File -FilePath $settingsFile -Encoding utf8
-    Write-Host "Wrote build settings -> $settingsFile" -ForegroundColor Green
-} catch {
-    Write-Host "Warning: Failed to write build settings: $($_.Exception.Message)" -ForegroundColor Yellow
-}
-
-Write-Host "Done." -ForegroundColor Green
+Log OK "Done!"
