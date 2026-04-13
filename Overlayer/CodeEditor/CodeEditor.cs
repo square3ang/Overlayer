@@ -1,5 +1,6 @@
 ﻿using Overlayer.CodeEditor.Impl;
 using Overlayer.Core;
+using Overlayer.Core.TextReplacing;
 using Overlayer.Tags;
 using System;
 using System.Collections.Generic;
@@ -67,7 +68,11 @@ public class CodeEditor(string controlName, CodeTheme theme) {
 
                 if(TagManager.tags.ContainsKey(name)) {
                     if(splitChar == ';') {
-                        str = str.Replace("{" + fullTag + "}", "<color=blue>{" + fullTag + "}</color>");
+                        if((TagManager.GetTag(name)?.Tag.FormattingType ?? Tag.FormatType.None) == Tag.FormatType.None) {
+                            str = str.Replace("{" + fullTag + "}", "<color=red>{" + fullTag + "}</color>");
+                        } else {
+                            str = str.Replace("{" + fullTag + "}", "<color=blue>{" + fullTag + "}</color>");
+                        }
                     } else if((Main.Settings.MovingManEditor && name == nameof(Effect.MovingMan)) ||
                               (Main.Settings.ColorRangeEditor && name == nameof(Effect.ColorRange)) ||
                               (Main.Settings.EasedValueEditor && name == nameof(Effect.EasedValue))) {
