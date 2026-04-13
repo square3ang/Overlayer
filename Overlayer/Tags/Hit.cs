@@ -30,7 +30,7 @@ public static class Hit {
     [Tag]
     [TagDesc("Current Hit")]
     public static string CHit(int maxLength = -1, string afterTrimStr = Extensions.DefaultTrimStr) => RDString.Get("HitMargin." + Current).Trim(maxLength, afterTrimStr);
-    
+
     // Lenient
     [Tag]
     [TagDesc("Lenient Too Late - Too Early")]

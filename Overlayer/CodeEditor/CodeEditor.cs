@@ -375,7 +375,7 @@ public class CodeEditor(string controlName, CodeTheme theme) {
         return code;
     }
 
-    private static T CreateEditor<T>(string tag, string codesBefore, string codesAfter, out T instance )where T : EffectEditor {
+    private static T CreateEditor<T>(string tag, string codesBefore, string codesAfter, out T instance) where T : EffectEditor {
         var go = new GameObject(typeof(T).Name);
         var editor = go.AddComponent<T>();
 

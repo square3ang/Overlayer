@@ -1,5 +1,4 @@
-﻿using Overlayer.Tags;
-using Overlayer.Tags.Attributes;
+﻿using Overlayer.Tags.Attributes;
 using System;
 using System.IO;
 using System.Reflection;

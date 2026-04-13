@@ -3,8 +3,7 @@ using System.Reflection;
 
 namespace Overlayer.Core;
 
-public static class ResourceManager
-{
+public static class ResourceManager {
     public static byte[] GetResourceBytes(string resourceName) {
         Assembly assembly = typeof(ResourceManager).Assembly;
         string fullName = $"Overlayer.MiscFiles.res.{resourceName}";
@@ -19,8 +18,6 @@ public static class ResourceManager
         return ms.ToArray();
     }
 
-    public static byte[] GetImageBytes(string path) {
-        return GetResourceBytes($"images.{path}");
-    }
+    public static byte[] GetImageBytes(string path) => GetResourceBytes($"images.{path}");
 
 }

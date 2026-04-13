@@ -7,7 +7,6 @@ using Overlayer.Core.Translation;
 using Overlayer.Models;
 using Overlayer.Patches;
 using Overlayer.Tags;
-using Overlayer.Tags.Attributes;
 using Overlayer.Unity;
 using Overlayer.Utils;
 using Overlayer.Views;
@@ -16,7 +15,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -263,7 +261,7 @@ public static class Main {
         GUILayout.EndHorizontal();
 #endif
 
-    tooltip = null;
+        tooltip = null;
         tooltipImage = null;
 
         GUI.Draw();

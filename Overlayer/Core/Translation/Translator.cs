@@ -316,7 +316,7 @@ public class Translator {
             // Set loading state to false.
             IsLoading = false;
         }
-    } 
+    }
 
     /// <summary>
     /// Determines whether the current translations contain the specified key for the active language.

@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using HarmonyLib;
 using Overlayer.Models;
-using Overlayer.Tags;
 using Overlayer.Utils;
 using RapidGUI;
 using SFB;
@@ -9,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;

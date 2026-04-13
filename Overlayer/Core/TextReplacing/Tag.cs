@@ -126,9 +126,7 @@ public class Tag(string name) {
         }
         return this;
     }
-    public void SetRaw(MethodInfo method) {
-        GetterRaw = method;
-    }
+    public void SetRaw(MethodInfo method) => GetterRaw = method;
     public Tag SetGetter(Delegate del) {
         if(Getter != null) {
             return null;

@@ -4,7 +4,6 @@ using Overlayer.Tags;
 using Overlayer.Utils;
 using RapidGUI;
 using UnityEngine;
-using Vostok.Sys.Metrics.PerfCounters;
 
 namespace Overlayer.CodeEditor.Impl;
 

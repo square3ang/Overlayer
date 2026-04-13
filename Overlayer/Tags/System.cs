@@ -69,7 +69,6 @@ public static class System {
     [TagDesc("Shows the total memory usage of the system in GB.\nOnly Windows Available")]
     public static float TotalMemoryUsageGBytes;
 
-
     [Tag(NotPlaying = true)]
     [TagDesc("Shows the total GPU memory available on the system in MB.\nOnly Windows Available")]
     public static float GpuMemory;

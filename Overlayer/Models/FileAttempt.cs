@@ -37,7 +37,7 @@ public class FileAttempt : IModel, ICopyable<FileAttempt> {
 
     public void Deserialize(JToken node) {
         Attempts = node[nameof(Attempts)]?.Value<int>() ?? 0;
-        TileAttempts = node[nameof(TileAttempts)]?.ToObject<Dictionary<int, int>>() ?? new();
+        TileAttempts = node[nameof(TileAttempts)]?.ToObject<Dictionary<int, int>>() ?? [];
     }
 
     public FileAttempt Copy() {

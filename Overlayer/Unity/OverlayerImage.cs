@@ -1,7 +1,6 @@
 ﻿using Overlayer.Core;
 using Overlayer.Core.TextReplacing;
 using Overlayer.Models;
-using Overlayer.Tags;
 using Overlayer.Utils;
 using System.Collections.Generic;
 using System.Linq;
