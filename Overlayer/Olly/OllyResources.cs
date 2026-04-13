@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Overlayer.Core;
+using System;
 using System.IO;
 using System.IO.Compression;
 using UnityEngine;
@@ -27,17 +28,15 @@ public static class OllyResources {
     public static Texture2D[] EffectForwards { get; private set; }
 
     public static bool Loaded { get; private set; } = false;
-    public static bool LoadAll(UnityModManager.ModEntry modEntry) {
+    public static bool LoadAll() {
         if(Loaded) {
             return true;
         }
-        string path = Path.Combine(modEntry.Path, "eg.res");
 
-        if(!File.Exists(path)) {
-            return false;
-        }
+        var archiveBytes = ResourceManager.GetResourceBytes("eg.res");
 
-        using var zip = ZipFile.OpenRead(path);
+        using var ms = new MemoryStream(archiveBytes);
+        using var zip = new ZipArchive(ms, ZipArchiveMode.Read);
 
         Eyebrows = new Texture2D[Enum.GetValues(typeof(Eyebrow)).Length - 1];
         Eyes = new (Texture2D left, Texture2D right)[Enum.GetValues(typeof(Eye)).Length - 1];
@@ -47,93 +46,95 @@ public static class OllyResources {
         EffectForwards = new Texture2D[Enum.GetValues(typeof(EffectForward)).Length - 1];
 
         foreach(var entry in zip.Entries) {
-            if(entry.FullName.EndsWith(".png", System.StringComparison.OrdinalIgnoreCase)) {
-                using var stream = entry.Open();
-                using var ms = new MemoryStream();
-                stream.CopyTo(ms);
-                var bytes = ms.ToArray();
+            if(!entry.FullName.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) {
+                continue;
+            }
 
-                var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-                if(ImageConversion.LoadImage(tex, bytes)) {
-                    var fileNameWithoutExt = Path.GetFileNameWithoutExtension(entry.Name);
+            using var stream = entry.Open();
 
-                    if(string.Equals(fileNameWithoutExt, "BASE", StringComparison.OrdinalIgnoreCase)) {
-                        Base = tex;
-                    } else if(string.Equals(fileNameWithoutExt, "BG", StringComparison.OrdinalIgnoreCase)) {
-                        BG = tex;
-                    } else if(string.Equals(fileNameWithoutExt, "HAIR", StringComparison.OrdinalIgnoreCase)) {
-                        Hair = tex;
-                    } else if(string.Equals(fileNameWithoutExt, "HAIRBG", StringComparison.OrdinalIgnoreCase)) {
-                        HairBG = tex;
-                    } else if(string.Equals(fileNameWithoutExt, "ELU", StringComparison.OrdinalIgnoreCase)) {
-                        EyelidUp = tex;
-                    } else if(string.Equals(fileNameWithoutExt, "ELD", StringComparison.OrdinalIgnoreCase)) {
-                        EyelidDown = tex;
-                    } else if(string.Equals(fileNameWithoutExt, "ELBG", StringComparison.OrdinalIgnoreCase)) {
-                        EyelidBG = tex;
-                    } else if(string.Equals(fileNameWithoutExt, "NOSE", StringComparison.OrdinalIgnoreCase)) {
-                        Nose = tex;
-                    } else if(fileNameWithoutExt.StartsWith("B_", StringComparison.OrdinalIgnoreCase)) {
-                        var enumName = fileNameWithoutExt.Substring(2);
-                        if(Enum.TryParse(enumName, true, out Eyebrow brow)) {
-                            Eyebrows[(int)brow - 1] = tex;
-                        } else {
-                            DestroyImmediate(tex);
-                        }
-                    } else if(fileNameWithoutExt.StartsWith("EL_", StringComparison.OrdinalIgnoreCase)) {
-                        var enumName = fileNameWithoutExt.Substring(3);
-                        if(Enum.TryParse(enumName, true, out Eye eye)) {
-                            int index = (int)eye - 1;
-                            Eyes[index] = (tex, Eyes[index].right);
-                        } else {
-                            DestroyImmediate(tex);
-                        }
-                    } else if(fileNameWithoutExt.StartsWith("ER_", StringComparison.OrdinalIgnoreCase)) {
-                        var enumName = fileNameWithoutExt.Substring(3);
-                        if(Enum.TryParse(enumName, true, out Eye eye)) {
-                            int index = (int)eye - 1;
-                            Eyes[index] = (Eyes[index].left, tex);
-                        } else {
-                            DestroyImmediate(tex);
-                        }
-                    } else if(fileNameWithoutExt.StartsWith("M_", StringComparison.OrdinalIgnoreCase)) {
-                        var enumName = fileNameWithoutExt.Substring(2);
-                        if(Enum.TryParse(enumName, true, out Mouth mouth)) {
-                            Mouths[(int)mouth - 1] = tex;
-                        } else {
-                            DestroyImmediate(tex);
-                        }
-                    } else if(fileNameWithoutExt.StartsWith("ES_", StringComparison.OrdinalIgnoreCase)) {
-                        var enumName = fileNameWithoutExt.Substring(3);
-                        if(Enum.TryParse(enumName, true, out EyeSpecial special)) {
-                            EyeSpecials[(int)special - 1] = tex;
-                        } else {
-                            DestroyImmediate(tex);
-                        }
-                    } else if(fileNameWithoutExt.StartsWith("EHL", StringComparison.OrdinalIgnoreCase)) {
-                        EyeHighlightLeft = tex;
-                    } else if(fileNameWithoutExt.StartsWith("EHR", StringComparison.OrdinalIgnoreCase)) {
-                        EyeHighlightRight = tex;
-                    } else if(fileNameWithoutExt.StartsWith("FX_", StringComparison.OrdinalIgnoreCase)) {
-                        var enumName = fileNameWithoutExt.Substring(3);
-                        if(Enum.TryParse(enumName, true, out Effect effect)) {
-                            Effects[(int)effect - 1] = tex;
-                        } else {
-                            DestroyImmediate(tex);
-                        }
-                    } else if(fileNameWithoutExt.StartsWith("FXF_", StringComparison.OrdinalIgnoreCase)) {
-                        var enumName = fileNameWithoutExt.Substring(4);
-                        if(Enum.TryParse(enumName, true, out EffectForward forward)) {
-                            EffectForwards[(int)forward - 1] = tex;
-                        } else {
-                            DestroyImmediate(tex);
-                        }
+            var bytes = new byte[entry.Length];
+            stream.Read(bytes, 0, bytes.Length);
+
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            if(ImageConversion.LoadImage(tex, bytes)) {
+                var fileNameWithoutExt = Path.GetFileNameWithoutExtension(entry.Name);
+
+                if(string.Equals(fileNameWithoutExt, "BASE", StringComparison.OrdinalIgnoreCase)) {
+                    Base = tex;
+                } else if(string.Equals(fileNameWithoutExt, "BG", StringComparison.OrdinalIgnoreCase)) {
+                    BG = tex;
+                } else if(string.Equals(fileNameWithoutExt, "HAIR", StringComparison.OrdinalIgnoreCase)) {
+                    Hair = tex;
+                } else if(string.Equals(fileNameWithoutExt, "HAIRBG", StringComparison.OrdinalIgnoreCase)) {
+                    HairBG = tex;
+                } else if(string.Equals(fileNameWithoutExt, "ELU", StringComparison.OrdinalIgnoreCase)) {
+                    EyelidUp = tex;
+                } else if(string.Equals(fileNameWithoutExt, "ELD", StringComparison.OrdinalIgnoreCase)) {
+                    EyelidDown = tex;
+                } else if(string.Equals(fileNameWithoutExt, "ELBG", StringComparison.OrdinalIgnoreCase)) {
+                    EyelidBG = tex;
+                } else if(string.Equals(fileNameWithoutExt, "NOSE", StringComparison.OrdinalIgnoreCase)) {
+                    Nose = tex;
+                } else if(fileNameWithoutExt.StartsWith("B_", StringComparison.OrdinalIgnoreCase)) {
+                    var enumName = fileNameWithoutExt.Substring(2);
+                    if(Enum.TryParse(enumName, true, out Eyebrow brow)) {
+                        Eyebrows[(int)brow - 1] = tex;
+                    } else {
+                        DestroyImmediate(tex);
+                    }
+                } else if(fileNameWithoutExt.StartsWith("EL_", StringComparison.OrdinalIgnoreCase)) {
+                    var enumName = fileNameWithoutExt.Substring(3);
+                    if(Enum.TryParse(enumName, true, out Eye eye)) {
+                        int index = (int)eye - 1;
+                        Eyes[index] = (tex, Eyes[index].right);
+                    } else {
+                        DestroyImmediate(tex);
+                    }
+                } else if(fileNameWithoutExt.StartsWith("ER_", StringComparison.OrdinalIgnoreCase)) {
+                    var enumName = fileNameWithoutExt.Substring(3);
+                    if(Enum.TryParse(enumName, true, out Eye eye)) {
+                        int index = (int)eye - 1;
+                        Eyes[index] = (Eyes[index].left, tex);
+                    } else {
+                        DestroyImmediate(tex);
+                    }
+                } else if(fileNameWithoutExt.StartsWith("M_", StringComparison.OrdinalIgnoreCase)) {
+                    var enumName = fileNameWithoutExt.Substring(2);
+                    if(Enum.TryParse(enumName, true, out Mouth mouth)) {
+                        Mouths[(int)mouth - 1] = tex;
+                    } else {
+                        DestroyImmediate(tex);
+                    }
+                } else if(fileNameWithoutExt.StartsWith("ES_", StringComparison.OrdinalIgnoreCase)) {
+                    var enumName = fileNameWithoutExt.Substring(3);
+                    if(Enum.TryParse(enumName, true, out EyeSpecial special)) {
+                        EyeSpecials[(int)special - 1] = tex;
+                    } else {
+                        DestroyImmediate(tex);
+                    }
+                } else if(fileNameWithoutExt.StartsWith("EHL", StringComparison.OrdinalIgnoreCase)) {
+                    EyeHighlightLeft = tex;
+                } else if(fileNameWithoutExt.StartsWith("EHR", StringComparison.OrdinalIgnoreCase)) {
+                    EyeHighlightRight = tex;
+                } else if(fileNameWithoutExt.StartsWith("FX_", StringComparison.OrdinalIgnoreCase)) {
+                    var enumName = fileNameWithoutExt.Substring(3);
+                    if(Enum.TryParse(enumName, true, out Effect effect)) {
+                        Effects[(int)effect - 1] = tex;
+                    } else {
+                        DestroyImmediate(tex);
+                    }
+                } else if(fileNameWithoutExt.StartsWith("FXF_", StringComparison.OrdinalIgnoreCase)) {
+                    var enumName = fileNameWithoutExt.Substring(4);
+                    if(Enum.TryParse(enumName, true, out EffectForward forward)) {
+                        EffectForwards[(int)forward - 1] = tex;
                     } else {
                         DestroyImmediate(tex);
                     }
                 } else {
                     DestroyImmediate(tex);
                 }
+            } else {
+                DestroyImmediate(tex);
             }
         }
         Loaded =

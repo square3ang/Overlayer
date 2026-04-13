@@ -54,7 +54,7 @@ public static class Main {
         set {
             if(_egEnabled != value) {
                 if(value) {
-                    if(Olly.OllyResources.LoadAll(Mod)) {
+                    if(Olly.OllyResources.LoadAll()) {
                         Eg = new GameObject().AddComponent<Olly.Olly>();
                         UnityEngine.Object.DontDestroyOnLoad(Eg);
                         Eg.Init();
