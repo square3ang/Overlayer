@@ -3,6 +3,11 @@ using RapidGUI;
 using UnityEngine;
 using static Overlayer.Olly.OllyRender;
 
+#if DEBUG
+using System;
+using static Overlayer.Olly.OllyState;
+#endif
+
 namespace Overlayer.Olly;
 
 public partial class Olly : MonoBehaviour {
@@ -217,7 +222,6 @@ public partial class Olly : MonoBehaviour {
         DrawEffectForwardButtons("Forwards", ref fefb);
         face.EffectForwardBit = (EffectForwardBit)fefb;
 
-
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
     }
@@ -226,8 +230,9 @@ public partial class Olly : MonoBehaviour {
         GUILayout.Label($"<b>{label}</b>");
 
         foreach(EffectBit bitValue in Enum.GetValues(typeof(EffectBit))) {
-            if(bitValue == EffectBit.None)
+            if(bitValue == EffectBit.None) {
                 continue;
+            }
 
             uint bit = (uint)bitValue;
             bool isActive = (currentBit & bit) != 0;

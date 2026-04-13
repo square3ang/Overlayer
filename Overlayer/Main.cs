@@ -23,7 +23,7 @@ using static UnityModManagerNet.UnityModManager.ModEntry;
 
 namespace Overlayer;
 #if DEBUG
-[UnityModManagerNet.EnableReloading]
+using System.Linq;
 #endif
 public static class Main {
     public static Assembly Ass { get; private set; }
