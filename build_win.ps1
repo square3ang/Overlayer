@@ -117,7 +117,7 @@ if($AutoOverwrite -and [string]::IsNullOrWhiteSpace($DestPathInput)) {
 
     Log HINT "Enter the ADOFAI game folder (where the .exe is located)"
     Log HINT "Example: C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice"
-    Log HINT "Mods\\Overlayer will be appended automatically"
+    Log HINT "Mods\Overlayer will be appended automatically"
 
     $_input = Ask "Enter game folder path (empty = default)"
 
