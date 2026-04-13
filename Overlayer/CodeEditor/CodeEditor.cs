@@ -1,6 +1,6 @@
-﻿using Overlayer.Core;
+﻿using Overlayer.CodeEditor.Impl;
+using Overlayer.Core;
 using Overlayer.Tags;
-using Overlayer.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using Object = UnityEngine.Object;
 
 namespace Overlayer.CodeEditor;
 
-public class CodeEditor {
+public class CodeEditor(string controlName, CodeTheme theme) {
     public static CodeEditor instance = new("OverlayerCodeEditor", new CodeTheme {
         background = "#333333",
         linenumbg = "#222222",
@@ -24,7 +24,7 @@ public class CodeEditor {
     public static Regex color = new("<<b></b>color=(.*?)>", RegexOptions.Compiled);
 
     public static void Initialize() {
-        instance.highlighter = str => {
+        instance.Highlighter = str => {
             str = str.Replace("<", "<<b></b>");
 
             var colorHighlighted = new List<string>();
@@ -38,7 +38,7 @@ public class CodeEditor {
 
             var highlighted = new List<string>();
 
-            foreach(Match match in tagRegex.Matches(str)) {
+            foreach(Match match in TagRegex.Matches(str)) {
                 var fullTag = match.Groups[1].Value;
 
                 if(highlighted.Contains(fullTag)) {
@@ -75,7 +75,7 @@ public class CodeEditor {
                     } else if(name.EndsWith("Hex")) {
                         try {
                             var val = (string)TagManager.tags[name].Tag.Getter.Invoke(null,
-                                new object[] { "-1", Overlayer.Utils.Extensions.DefaultTrimStr });
+                                ["-1", Overlayer.Utils.Extensions.DefaultTrimStr]);
 
                             str = str.Replace("{" + fullTag + "}", "<color=#" + val + ">{" + fullTag + "}</color>");
                         } catch {
@@ -95,34 +95,28 @@ public class CodeEditor {
         };
     }
 
-    public string controlName { get; set; }
-    public System.Action onValueChange;
-    public int tabSpaces = 2;
-    public System.Func<string, string> highlighter { get; set; }
+    public string ControlName { get; set; } = controlName;
+    public Action OnValueChange;
+    public const int TabSpaces = 2;
+    public Func<string, string> Highlighter { get; set; } = code => code;
 
-    private string cachedCode { get; set; }
-    private string cachedHighlightedCode { get; set; }
+    private string CachedCode { get; set; }
+    private string CachedHighlightedCode { get; set; }
 
-    private CodeTheme theme;
+    private readonly CodeTheme Theme = theme;
 
-    private int charWidth = 11;
-    private bool pressedTab = false;
-    private bool pressedShift = false;
+    private const int CharWidth = 11;
+    private bool PressedTab = false;
+    private bool PressedShift = false;
 
-    private MovingManEditor movingManEditor;
-    private ColorRangeEditor colorRangeEditor;
-    private EasedValueEditor easedValueEditor;
-    private int editingHash;
+    private MovingManEditor MovingManEditor;
+    private ColorRangeEditor ColorRangeEditor;
+    private EasedValueEditor EasedValueEditor;
+    private int EditingHash;
 
-    private static Regex tagRegex = new(@"{(.*?)}", RegexOptions.Compiled);
+    private static readonly Regex TagRegex = new(@"{(.*?)}", RegexOptions.Compiled);
 
-    public bool isFocused => GUI.GetNameOfFocusedControl() == controlName;
-
-    public CodeEditor(string controlName, CodeTheme theme) {
-        this.controlName = controlName;
-        this.theme = theme;
-        highlighter = code => code;
-    }
+    public bool IsFocused => GUI.GetNameOfFocusedControl() == ControlName;
 
     private string selectedtag = nameof(Developers.Developer);
 
@@ -134,36 +128,36 @@ public class CodeEditor {
             undoRedoManagers[id].SaveState(code);
         }
 
-        controlName = id;
+        ControlName = id;
         var oldEvent = new Event(Event.current);
-        if(movingManEditor) {
-            if(editingHash == code.GetHashCode()) {
-                code = movingManEditor.codesBefore + nameof(Effect.MovingMan) + "(" + movingManEditor.targetTag + "," +
-                       movingManEditor.startSize + "," + movingManEditor.endSize + "," +
-                       movingManEditor.defaultSize + "," + movingManEditor.speed + "," +
-                       movingManEditor.invert + "," + movingManEditor.ease + ")" + movingManEditor.codesAfter;
-                editingHash = code.GetHashCode();
+        if(MovingManEditor) {
+            if(EditingHash == code.GetHashCode()) {
+                code = MovingManEditor.CodesBefore + nameof(Effect.MovingMan) + "(" + MovingManEditor.TargetTag + "," +
+                       MovingManEditor.StartSize + "," + MovingManEditor.EndSize + "," +
+                       MovingManEditor.DefaultSize + "," + MovingManEditor.Speed + "," +
+                       MovingManEditor.Invert + "," + MovingManEditor.Ease + ")" + MovingManEditor.CodesAfter;
+                EditingHash = code.GetHashCode();
             }
         }
 
-        if(colorRangeEditor) {
-            if(editingHash == code.GetHashCode()) {
-                code = colorRangeEditor.codesBefore + nameof(Effect.ColorRange) + "(" + colorRangeEditor.targetTag + "," +
-                       colorRangeEditor.valueMin + "," + colorRangeEditor.valueMax + "," +
-                       ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMin) + "," +
-                       ColorUtility.ToHtmlStringRGBA(colorRangeEditor.colorMax) + "," +
-                       colorRangeEditor.ease + "," + colorRangeEditor.maxLength +
-                       ")" + colorRangeEditor.codesAfter;
-                editingHash = code.GetHashCode();
+        if(ColorRangeEditor) {
+            if(EditingHash == code.GetHashCode()) {
+                code = ColorRangeEditor.CodesBefore + nameof(Effect.ColorRange) + "(" + ColorRangeEditor.TargetTag + "," +
+                       ColorRangeEditor.ValueMin + "," + ColorRangeEditor.ValueMax + "," +
+                       ColorUtility.ToHtmlStringRGBA(ColorRangeEditor.ColorMin) + "," +
+                       ColorUtility.ToHtmlStringRGBA(ColorRangeEditor.ColorMax) + "," +
+                       ColorRangeEditor.Ease + "," + ColorRangeEditor.MaxLength +
+                       ")" + ColorRangeEditor.CodesAfter;
+                EditingHash = code.GetHashCode();
             }
         }
 
-        if(easedValueEditor) {
-            if(editingHash == code.GetHashCode()) {
-                code = easedValueEditor.codesBefore + nameof(Effect.EasedValue) + "(" + easedValueEditor.targetTag + "," +
-                       easedValueEditor.digits + "," + easedValueEditor.speed + "," +
-                       easedValueEditor.ease + ")" + easedValueEditor.codesAfter;
-                editingHash = code.GetHashCode();
+        if(EasedValueEditor) {
+            if(EditingHash == code.GetHashCode()) {
+                code = EasedValueEditor.CodesBefore + nameof(Effect.EasedValue) + "(" + EasedValueEditor.TargetTag + "," +
+                       EasedValueEditor.Digits + "," + EasedValueEditor.Speed + "," +
+                       EasedValueEditor.Ease + ")" + EasedValueEditor.CodesAfter;
+                EditingHash = code.GetHashCode();
             }
         }
 
@@ -182,17 +176,17 @@ public class CodeEditor {
         GUILayout.FlexibleSpace();
 
         GUILayout.EndHorizontal();
-        float lineCountWidth = code.Split('\n').Length.ToString().Length * charWidth;
+        float lineCountWidth = code.Split('\n').Length.ToString().Length * CharWidth;
         var preBackgroundColor = GUI.backgroundColor;
         var preColor = GUI.color;
         Color preSelection = GUI.skin.settings.selectionColor;
         Color preCursor = GUI.skin.settings.cursorColor;
         float preFlashSpeed = GUI.skin.settings.cursorFlashSpeed;
 
-        GUI.backgroundColor = GetColor(theme.background);
-        GUI.color = GetColor(theme.color);
-        GUI.skin.settings.selectionColor = GetColor(theme.selection);
-        GUI.skin.settings.cursorColor = GetColor(theme.cursor);
+        GUI.backgroundColor = GetColor(Theme.background);
+        GUI.color = GetColor(Theme.color);
+        GUI.skin.settings.selectionColor = GetColor(Theme.selection);
+        GUI.skin.settings.cursorColor = GetColor(Theme.cursor);
         GUI.skin.settings.cursorFlashSpeed = 0;
 
         var backStyle = new GUIStyle(style) {
@@ -212,25 +206,22 @@ public class CodeEditor {
 
         GUILayout.BeginHorizontal();
 
-        // Line numbers
         DrawLineNumbers(code, style);
 
-        // Handle tab key
         bool usedTab = Event.current.type != EventType.Layout
-                       && (Event.current.keyCode == KeyCode.Tab || Event.current.character == '\t');
+            && (Event.current.keyCode == KeyCode.Tab || Event.current.character == '\t');
 
-        pressedTab = usedTab && Event.current.type == EventType.KeyDown;
-        pressedShift = Event.current.shift;
+        PressedTab = usedTab && Event.current.type == EventType.KeyDown;
+        PressedShift = Event.current.shift;
 
         if(usedTab) {
             Event.current.Use();
         }
 
-        // Drawing the text area using GUILayout
-        GUI.SetNextControlName(controlName);
+        GUI.SetNextControlName(ControlName);
         var editorw = 700;
 
-        if(isFocused) {
+        if(IsFocused) {
             if(Event.current.type == EventType.KeyDown) {
                 var oldcode = code;
                 if(Event.current.keyCode == KeyCode.Z && Event.current.control) {
@@ -258,26 +249,25 @@ public class CodeEditor {
             }
         }
 
-        if(!movingManEditor && !colorRangeEditor && !easedValueEditor) {
+        if(!MovingManEditor && !ColorRangeEditor && !EasedValueEditor) {
             GUI.SetNextControlName(id);
             string editedCode = GUILayout.TextArea(code, backStyle, GUILayout.ExpandHeight(true),
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
             if(editedCode != code) {
                 code = editedCode;
                 undoRedoManagers[id].SaveState(code);
-                onValueChange?.Invoke();
+                OnValueChange?.Invoke();
             }
         } else {
             GUILayout.Box(code, backStyle, GUILayout.ExpandHeight(true),
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
         }
 
-        if(cachedCode != code) {
-            cachedCode = code;
-            cachedHighlightedCode = highlighter(code);
+        if(CachedCode != code) {
+            CachedCode = code;
+            CachedHighlightedCode = Highlighter(code);
         }
 
-        // Render syntax highlighting
         GUI.backgroundColor = Color.clear;
 
         var foreStyle = new GUIStyle(style) {
@@ -290,16 +280,12 @@ public class CodeEditor {
         foreStyle.focused.textColor = GUI.color;
         foreStyle.padding.left = 5;
 
-        // Render highlighted text
-        GUI.Label(GUILayoutUtility.GetLastRect(), cachedHighlightedCode, foreStyle);
-
-        var i = 0;
+        GUI.Label(GUILayoutUtility.GetLastRect(), CachedHighlightedCode, foreStyle);
         var bak = Event.current;
         Event.current = oldEvent;
 
-        if(!movingManEditor && !colorRangeEditor && !easedValueEditor) {
-            // Get Tags
-            foreach(Match match in tagRegex.Matches(code)) {
+        if(!MovingManEditor && !ColorRangeEditor && !EasedValueEditor) {
+            foreach(Match match in TagRegex.Matches(code)) {
                 var tag = match.Groups[1].Value;
                 var start = match.Groups[1].Index;
                 var end = start + match.Groups[1].Length;
@@ -308,58 +294,30 @@ public class CodeEditor {
                 var lines = codesBefore.Split('\n');
                 var lastline = lines[lines.Length - 1];
                 var height = style.lineHeight;
-
                 var len = lines.Length - 1;
-                /*var xc = 0f;
-                foreach (var l in lines)
-                {
-                    xc = style.CalcSize(new GUIContent(l)).x;
-                    while (xc >= editorw - 5)
-                    {
-                        xc -= editorw - 5;
-                        len++;
-                    }
-                }*/
-
                 var width = style.CalcSize(new GUIContent(lastline)).x;
-
-                /*while (width >= editorw - 5)
-                {
-                    width -= editorw - 5;
-                }*/
-
                 var y = len * height;
-
                 var x = width + 5;
-
                 var rect = GUILayoutUtility.GetLastRect();
                 rect.x += x;
                 rect.y += y;
-
                 rect.width = style.CalcSize(new GUIContent(match.Groups[1].Value)).x;
-
                 rect.height = height;
 
                 var mvm = match.Groups[1].Value.StartsWith(nameof(Effect.MovingMan));
-
                 var cr = match.Groups[1].Value.StartsWith(nameof(Effect.ColorRange));
-
                 var ev = match.Groups[1].Value.StartsWith(nameof(Effect.EasedValue));
-
                 var special = mvm || cr || ev;
 
                 if(mvm && !Main.Settings.MovingManEditor) {
                     special = false;
                 }
-
                 if(cr && !Main.Settings.ColorRangeEditor) {
                     special = false;
                 }
-
                 if(ev && !Main.Settings.EasedValueEditor) {
                     special = false;
                 }
-
                 if(rect.Contains(Event.current.mousePosition)) {
                     var pars = match.Groups[1].Value.Split('(')[0]
                                      .Split([':', ';'], 2)[0];
@@ -371,20 +329,29 @@ public class CodeEditor {
                 if(special) {
                     if(GUI.Button(rect, "")) {
                         if(cr) {
-                            colorRangeEditor = new GameObject().AddComponent<ColorRangeEditor>();
-                            Object.DontDestroyOnLoad(colorRangeEditor);
-                            colorRangeEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                            CreateEditor(
+                                match.Groups[1].Value,
+                                codesBefore,
+                                codesAfter,
+                                out ColorRangeEditor
+                            );
                         } else if(mvm) {
-                            movingManEditor = new GameObject().AddComponent<MovingManEditor>();
-                            Object.DontDestroyOnLoad(movingManEditor);
-                            movingManEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                            CreateEditor(
+                                match.Groups[1].Value,
+                                codesBefore,
+                                codesAfter,
+                                out MovingManEditor
+                            );
                         } else if(ev) {
-                            easedValueEditor = new GameObject().AddComponent<EasedValueEditor>();
-                            Object.DontDestroyOnLoad(easedValueEditor);
-                            easedValueEditor.Initialize(match.Groups[1].Value, codesBefore, codesAfter);
+                            CreateEditor(
+                                match.Groups[1].Value,
+                                codesBefore,
+                                codesAfter,
+                                out EasedValueEditor
+                            );
                         }
 
-                        editingHash = code.GetHashCode();
+                        EditingHash = code.GetHashCode();
                     }
                 }
             }
@@ -403,26 +370,34 @@ public class CodeEditor {
         return code;
     }
 
-    private string UpdateEditorTabs(string content, bool shift) {
-        // Custom tab handling logic for runtime
-        string tabrep = new(' ', tabSpaces);
+    private static T CreateEditor<T>(string tag, string codesBefore, string codesAfter, out T instance )where T : EffectEditor {
+        var go = new GameObject(typeof(T).Name);
+        var editor = go.AddComponent<T>();
 
-        // Normal case
+        Object.DontDestroyOnLoad(go);
+        editor.Init(tag, codesBefore, codesAfter);
+
+        instance = editor;
+
+        return editor;
+    }
+
+    private string UpdateEditorTabs(string content, bool shift) {
+        string tabrep = new(' ', TabSpaces);
+
         if(!shift) {
             content += tabrep;
-        } else if(content.Length >= tabSpaces) {
-            content = content.Remove(content.Length - tabSpaces, tabSpaces);
+        } else if(content.Length >= TabSpaces) {
+            content = content.Remove(content.Length - TabSpaces, TabSpaces);
         }
 
         return content;
     }
 
     private void DrawLineNumbers(string code, GUIStyle baseStyle) {
-        float lineCountWidth = code.Split('\n').Length.ToString().Length * charWidth;
+        float lineCountWidth = code.Split('\n').Length.ToString().Length * CharWidth;
 
-        // Reserve space
-        Rect rect = GUILayoutUtility.GetRect(lineCountWidth, 100, GUILayout.ExpandHeight(true),
-            GUILayout.ExpandWidth(false));
+        Rect rect = GUILayoutUtility.GetRect(lineCountWidth, 100, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(false));
 
         string lineString = "";
         var i = 0;
@@ -432,11 +407,6 @@ public class CodeEditor {
             lineString += ++i + "\n";
             foreach(var ch in st) {
                 curwidth += baseStyle.CalcSize(new GUIContent(ch.ToString())).x;
-                /*if (curwidth >= editorw - 5)
-                {
-                    lineString += "\n";
-                    curwidth -= editorw - 5;
-                }*/
             }
         }
 
@@ -450,11 +420,11 @@ public class CodeEditor {
 
         style.alignment = TextAnchor.UpperCenter;
 
-        GUI.backgroundColor = GetColor(theme.linenumbg);
+        GUI.backgroundColor = GetColor(Theme.linenumbg);
 
         GUI.Label(rect, new GUIContent(lineString), style);
 
-        GUI.backgroundColor = GetColor(theme.background);
+        GUI.backgroundColor = GetColor(Theme.background);
     }
 
     private Color GetColor(string colorCode) {

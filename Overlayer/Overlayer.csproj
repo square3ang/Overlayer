@@ -438,6 +438,7 @@
   <ItemGroup>
     <Compile Include="CodeEditor\CodeEditor.cs" />
     <Compile Include="CodeEditor\CodeTheme.cs" />
+    <Compile Include="CodeEditor\EffectEditor.cs" />
     <Compile Include="Controllers\GUIController.cs" />
     <Compile Include="Core\Drawer.cs" />
     <Compile Include="Core\EventEase.cs" />
@@ -620,14 +621,14 @@
     <Compile Include="Unity\OverlayerText.cs" />
     <Compile Include="Utils\ADOUtils.cs" />
     <Compile Include="Utils\AutoUpdater.cs" />
-    <Compile Include="CodeEditor\ColorRangeEditor.cs" />
+    <Compile Include="CodeEditor\Impl\ColorRangeEditor.cs" />
     <Compile Include="Utils\DeletePopup.cs" />
-    <Compile Include="CodeEditor\EasedValueEditor.cs" />
+    <Compile Include="CodeEditor\Impl\EasedValueEditor.cs" />
     <Compile Include="Utils\EnumHelper.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\MiscUtils.cs" />
     <Compile Include="Models\ModelUtils.cs" />
-    <Compile Include="CodeEditor\MovingManEditor.cs" />
+    <Compile Include="CodeEditor\Impl\MovingManEditor.cs" />
     <Compile Include="Utils\UpdatePopup.cs" />
     <Compile Include="Utils\StringConverter.cs" />
     <Compile Include="Utils\StringUtils.cs" />
