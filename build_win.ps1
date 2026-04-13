@@ -79,6 +79,7 @@ function Invoke-Step([string] $name, [scriptblock] $action) {
         Log OK $name
     } catch {
         Log ERR "$name -> $($_.Exception.Message)"
+        exit 1
     }
 }
 
