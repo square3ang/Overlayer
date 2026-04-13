@@ -171,6 +171,7 @@ Invoke-Step "Build" {
                 }
 
     foreach($p in $projects) {
+        Log PLAN "Building $($p.Name)..."
         dotnet build $p.FullName -c $Configuration -v minimal
 
         if($LASTEXITCODE -ne 0) {
@@ -299,18 +300,11 @@ else {
 # -----------------------------
 # Zip
 # -----------------------------
+Log PLAN "Creating zip archive..."
+
 if($DoZip) {
-    Log PLAN "Creating archive zip..."
-
-    Invoke-Step "zip archive" {
+    Invoke-Step "Zip archive" {
         $zipSource = Join-Path $buildDir '*'
-
-        if(Test-Path $zipFile) {
-            Log SKIP "Removing existing archive"
-            Remove-Item $zipFile -Force -ErrorAction Stop
-        }
-
-        Log PLAN "Compressing files..."
         Compress-Archive -Path $zipSource -DestinationPath $zipFile -Force -ErrorAction Stop
 
         # -----------------------------
@@ -324,11 +318,9 @@ if($DoZip) {
         $saved = $sourceSize - $zipSize
         $ratio = if($sourceSize -ne 0) { [math]::Round(($zipSize / $sourceSize) * 100, 2) } else { 0 }
 
-        Log INFO ("{0:N2} MB -> {1:N2} MB ({2}% kept, saved {3:N2} MB)" -f `
+        Log INFO ("{0:N2} MB -> {1:N2} MB ({2}% compressed, saved {3:N2} MB)" -f `
             ($sourceSize / 1MB), ($zipSize / 1MB), $ratio, ($saved / 1MB))
     }
-
-    Log OK "Zip complete"
 } else {
     Log SKIP "Zip disabled"
 }
