@@ -1,9 +1,9 @@
 ﻿namespace Overlayer.CodeEditor;
 
 public class CodeTheme {
-    public string background { get; set; }
-    public string linenumbg { get; set; }
-    public string color { get; set; }
-    public string selection { get; set; }
-    public string cursor { get; set; }
+    public string Background { get; set; }
+    public string Linenumbg { get; set; }
+    public string Color { get; set; }
+    public string Selection { get; set; }
+    public string Cursor { get; set; }
 }

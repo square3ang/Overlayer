@@ -13,18 +13,18 @@ using Object = UnityEngine.Object;
 namespace Overlayer.CodeEditor;
 
 public class CodeEditor(string controlName, CodeTheme theme) {
-    public static CodeEditor instance = new("OverlayerCodeEditor", new CodeTheme {
-        background = "#333333",
-        linenumbg = "#222222",
-        color = "#FFFFFF",
-        selection = "#264F78",
-        cursor = "#D4D4D4"
+    public static CodeEditor Instance = new("OverlayerCodeEditor", new CodeTheme {
+        Background = "#333333",
+        Linenumbg = "#222222",
+        Color = "#FFFFFF",
+        Selection = "#264F78",
+        Cursor = "#D4D4D4"
     });
 
     public static Regex color = new("<<b></b>color=(.*?)>", RegexOptions.Compiled);
 
     public static void Initialize() {
-        instance.Highlighter = str => {
+        Instance.Highlighter = str => {
             str = str.Replace("<", "<<b></b>");
 
             var colorHighlighted = new List<string>();
@@ -118,14 +118,14 @@ public class CodeEditor(string controlName, CodeTheme theme) {
 
     public bool IsFocused => GUI.GetNameOfFocusedControl() == ControlName;
 
-    private string selectedtag = nameof(Developers.Developer);
+    private string Selectedtag = nameof(Developers.Developer);
 
-    internal Dictionary<string, UndoRedoManager> undoRedoManagers = [];
+    internal Dictionary<string, UndoRedoManager> UndoRedoManagers = [];
 
     public string Draw(string code, GUIStyle style, string id, params GUILayoutOption[] options) {
-        if(!undoRedoManagers.ContainsKey(id)) {
-            undoRedoManagers[id] = new UndoRedoManager();
-            undoRedoManagers[id].SaveState(code);
+        if(!UndoRedoManagers.ContainsKey(id)) {
+            UndoRedoManagers[id] = new UndoRedoManager();
+            UndoRedoManagers[id].SaveState(code);
         }
 
         ControlName = id;
@@ -164,12 +164,12 @@ public class CodeEditor(string controlName, CodeTheme theme) {
         GUILayout.BeginHorizontal();
         GUILayout.Label(Drawer.Icon_Parse);
         GUILayout.Space(2);
-        Drawer.DrawTags(ref selectedtag);
+        Drawer.DrawTags(ref Selectedtag);
 
         if(Drawer.Button(Main.Lang.Get("INSERT", "Insert"))) {
             TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
             var sb = new StringBuilder(code);
-            sb.Insert(editor.selectIndex, "{" + selectedtag + "}");
+            sb.Insert(editor.selectIndex, "{" + Selectedtag + "}");
             code = sb.ToString();
         }
 
@@ -183,10 +183,10 @@ public class CodeEditor(string controlName, CodeTheme theme) {
         Color preCursor = GUI.skin.settings.cursorColor;
         float preFlashSpeed = GUI.skin.settings.cursorFlashSpeed;
 
-        GUI.backgroundColor = GetColor(Theme.background);
-        GUI.color = GetColor(Theme.color);
-        GUI.skin.settings.selectionColor = GetColor(Theme.selection);
-        GUI.skin.settings.cursorColor = GetColor(Theme.cursor);
+        GUI.backgroundColor = GetColor(Theme.Background);
+        GUI.color = GetColor(Theme.Color);
+        GUI.skin.settings.selectionColor = GetColor(Theme.Selection);
+        GUI.skin.settings.cursorColor = GetColor(Theme.Cursor);
         GUI.skin.settings.cursorFlashSpeed = 0;
 
         var backStyle = new GUIStyle(style) {
@@ -226,18 +226,18 @@ public class CodeEditor(string controlName, CodeTheme theme) {
                 var oldcode = code;
                 if(Event.current.keyCode == KeyCode.Z && Event.current.control) {
                     if(Event.current.shift) {
-                        var tx = undoRedoManagers[id].Redo();
+                        var tx = UndoRedoManagers[id].Redo();
                         if(tx != null) {
                             code = tx;
                         }
                     } else {
-                        var tx = undoRedoManagers[id].Undo();
+                        var tx = UndoRedoManagers[id].Undo();
                         if(tx != null) {
                             code = tx;
                         }
                     }
                 } else if((Event.current.keyCode == KeyCode.Y && Event.current.control) || (Event.current.shift && Event.current.keyCode == KeyCode.Z)) {
-                    var tx = undoRedoManagers[id].Redo();
+                    var tx = UndoRedoManagers[id].Redo();
                     if(tx != null) {
                         code = tx;
                     }
@@ -255,7 +255,7 @@ public class CodeEditor(string controlName, CodeTheme theme) {
                 GUILayout.Width(Math.Max(editorw, style.CalcSize(new GUIContent(code)).x + 5)));
             if(editedCode != code) {
                 code = editedCode;
-                undoRedoManagers[id].SaveState(code);
+                UndoRedoManagers[id].SaveState(code);
                 OnValueChange?.Invoke();
             }
         } else {
@@ -420,11 +420,11 @@ public class CodeEditor(string controlName, CodeTheme theme) {
 
         style.alignment = TextAnchor.UpperCenter;
 
-        GUI.backgroundColor = GetColor(Theme.linenumbg);
+        GUI.backgroundColor = GetColor(Theme.Linenumbg);
 
         GUI.Label(rect, new GUIContent(lineString), style);
 
-        GUI.backgroundColor = GetColor(Theme.background);
+        GUI.backgroundColor = GetColor(Theme.Background);
     }
 
     private Color GetColor(string colorCode) {

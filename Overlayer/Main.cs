@@ -321,7 +321,7 @@ public static class Main {
     public static void OnHideGUI(ModEntry modEntry) {
         IsShowGUI = false;
         //CodeEditor.CodeEditor.ignoreTextAreaNext.Clear();
-        CodeEditor.CodeEditor.instance.undoRedoManagers.Clear();
+        CodeEditor.CodeEditor.Instance.UndoRedoManagers.Clear();
         GUI.Flush();
     }
 

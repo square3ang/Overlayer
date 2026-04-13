@@ -573,7 +573,7 @@ public static class Drawer {
             wordWrap = false,
             richText = false
         };
-        value = CodeEditor.CodeEditor.instance.Draw(value, sk, id);
+        value = CodeEditor.CodeEditor.Instance.Draw(value, sk, id);
         return prev != value;
     }
 
@@ -591,7 +591,7 @@ public static class Drawer {
             wordWrap = false,
             richText = false
         };
-        value = CodeEditor.CodeEditor.instance.Draw(value, sk, id);
+        value = CodeEditor.CodeEditor.Instance.Draw(value, sk, id);
         return prev != value;
     }
 
