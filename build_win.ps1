@@ -1,5 +1,6 @@
 [CmdletBinding()]
 param(
+    [ValidateSet("Release", "Debug")]
     [string] $Configuration = 'Release'
 )
 
@@ -31,6 +32,7 @@ function Ask($msg) {
 
 # First log
 Log INFO "Initializing..."
+Log INFO "Configuration: $Configuration"
 
 # -----------------------------
 # Paths
@@ -167,12 +169,10 @@ Invoke-Step "Build" {
                     $_.Name -like '*Bootstrapper*.csproj'
                 }
 
-    foreach($p in $projects)
-    {
+    foreach($p in $projects) {
         dotnet build $p.FullName -c $Configuration -v minimal
 
-        if($LASTEXITCODE -ne 0)
-        {
+        if($LASTEXITCODE -ne 0) {
             throw "Build failed: $($p.Name)"
         }
     }
@@ -186,7 +186,9 @@ Log PLAN "Copying Overlayer DLLs..."
 Invoke-Step "Copy Overlayer DLLs" {
     foreach($name in @('Overlayer.dll','Overlayer.Bootstrapper.dll')) {
         $found = Get-ChildItem $scriptRoot -Recurse -File |
-                 Where-Object { $_.Name -ieq $name } |
+                 Where-Object {
+                     $_.Name -ieq $name -and $_.FullName -like "*\bin\$Configuration\*"
+                 } |
                  Select-Object -First 1
 
         if($found) {
