@@ -14,6 +14,7 @@ public class OverlayerTag {
     public static bool Initialized { get; private set; }
     public string Name { get; }
     public bool NotPlaying { get; }
+    public bool Hide { get; }
     public bool Referenced => Tag.Referenced;
     public Tag Tag { get; }
     public TagAttribute Attributes { get; }
@@ -24,6 +25,7 @@ public class OverlayerTag {
         Tag.SetRaw(WrapRaw(method, target));
         Attributes = attr;
         NotPlaying = attr.NotPlaying;
+        Hide = attr.Hide;
         DeclaringType = method.DeclaringType;
         RegisterDesc(method, Name);
     }
@@ -33,6 +35,7 @@ public class OverlayerTag {
         Tag.SetRaw(WrapRaw(field, target));
         Attributes = attr;
         NotPlaying = attr.NotPlaying;
+        Hide = attr.Hide;
         DeclaringType = field.DeclaringType;
         RegisterDesc(field, Name);
     }
@@ -42,6 +45,7 @@ public class OverlayerTag {
         Tag.SetRaw(WrapRaw(prop, target));
         Attributes = attr;
         NotPlaying = attr.NotPlaying;
+        Hide = attr.Hide;
         DeclaringType = prop.DeclaringType;
         RegisterDesc(prop, Name);
     }
@@ -53,6 +57,7 @@ public class OverlayerTag {
         Tag.SetGetter(del);
         Attributes = attr;
         NotPlaying = notPlaying;
+        Hide = attr.Hide;
         DeclaringType = del.Method.DeclaringType;
         RegisterDesc(del.Method, name);
     }

@@ -526,7 +526,11 @@ public static class Drawer {
     }
 
     public static bool DrawTags(ref string value) {
-        var tags = TagManager.tags.Keys.ToList();
+        var tags = TagManager.tags
+            .Where(kv => !kv.Value.Hide)
+            .Select(kv => kv.Key)
+            .ToList();
+
         tags.Sort();
         var selected = tags.IndexOf(value);
 
