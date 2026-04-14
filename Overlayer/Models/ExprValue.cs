@@ -7,9 +7,13 @@ using System.Linq;
 
 namespace Overlayer.Models;
 
-public class ExprValue<T>(T defaultValue) : ICopyable<ExprValue<T>> {
-    public readonly T DefaultValue = defaultValue;
-    public T Value = defaultValue;
+public class ExprValue<T> : ICopyable<ExprValue<T>> {
+    public ExprValue(T defaultValue) {
+        DefaultValue = defaultValue;
+        Value = defaultValue;
+    }
+    public readonly T DefaultValue;
+    public T Value;
 
     public bool IsExpr { get; private set; } = false;
     public bool HasExpr { get; private set; } = false;
@@ -66,7 +70,7 @@ public class ExprValue<T>(T defaultValue) : ICopyable<ExprValue<T>> {
         if(node.Type == JTokenType.Object && node[nameof(Playing)] != null) {
             Playing = node[nameof(Playing)].Value<string>();
             NotPlaying = node[nameof(NotPlaying)]?.Value<string>() ?? "";
-            HasExpr = IsExpr = true;
+            HasExpr = true;
             return true;
         }
 
@@ -75,8 +79,8 @@ public class ExprValue<T>(T defaultValue) : ICopyable<ExprValue<T>> {
         return false;
     }
 
-    public void Init() {
-        if(!HasExpr || IsExpr) {
+    public void Init(bool force = false) {
+        if((!HasExpr || IsExpr) && !force) {
             return;
         }
 
@@ -104,6 +108,9 @@ public class ExprValue<T>(T defaultValue) : ICopyable<ExprValue<T>> {
     }
 
     public void ApplyConfig() {
+        if(!IsExpr) {
+            return;
+        }
         PlayingReplacer.Source = Playing;
         NotPlayingReplacer.Source = NotPlaying;
         PlayingReplacer.UpdateTags(TagManager.All.Select(ot => ot.Tag));

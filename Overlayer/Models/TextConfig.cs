@@ -143,37 +143,37 @@ public class TextConfig : ObjectConfig, ICopyable<TextConfig> {
     }
 
     public void ExprApplyConfig() {
-        FontSize.Init();
-        OutlineWidth.Init();
-        LineSpacing.Init();
-        LineSpacingAdj.Init();
-        ShadowDilate.Init();
-        ShadowSoftness.Init();
-        TextColor.Init();
-        OutlineColor.Init();
-        ShadowColor.Init();
-        Scale.Init();
-        Position.Init();
-        Pivot.Init();
-        ShadowOffset.Init();
-        Rotation.Init();
+        FontSize.ApplyConfig();
+        OutlineWidth.ApplyConfig();
+        LineSpacing.ApplyConfig();
+        LineSpacingAdj.ApplyConfig();
+        ShadowDilate.ApplyConfig();
+        ShadowSoftness.ApplyConfig();
+        TextColor.ApplyConfig();
+        OutlineColor.ApplyConfig();
+        ShadowColor.ApplyConfig();
+        Scale.ApplyConfig();
+        Position.ApplyConfig();
+        Pivot.ApplyConfig();
+        ShadowOffset.ApplyConfig();
+        Rotation.ApplyConfig();
     }
 
     public void Release() {
         TagManager.OnLoadUnload -= ExprApplyConfig;
-        FontSize.Init();
-        OutlineWidth.Init();
-        LineSpacing.Init();
-        LineSpacingAdj.Init();
-        ShadowDilate.Init();
-        ShadowSoftness.Init();
-        TextColor.Init();
-        OutlineColor.Init();
-        ShadowColor.Init();
-        Scale.Init();
-        Position.Init();
-        Pivot.Init();
-        ShadowOffset.Init();
-        Rotation.Init();
+        FontSize.Dispose();
+        OutlineWidth.Dispose();
+        LineSpacing.Dispose();
+        LineSpacingAdj.Dispose();
+        ShadowDilate.Dispose();
+        ShadowSoftness.Dispose();
+        TextColor.Dispose();
+        OutlineColor.Dispose();
+        ShadowColor.Dispose();
+        Scale.Dispose();
+        Position.Dispose();
+        Pivot.Dispose();
+        ShadowOffset.Dispose();
+        Rotation.Dispose();
     }
 }

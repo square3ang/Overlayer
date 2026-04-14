@@ -89,19 +89,19 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
     }
 
     public void ExprApplyConfig() {
-        if(Color.IsExpr) { Color.ApplyConfig(); }
-        if(Scale.IsExpr) { Scale.ApplyConfig(); }
-        if(Position.IsExpr) { Position.ApplyConfig(); }
-        if(Pivot.IsExpr) { Pivot.ApplyConfig(); }
-        if(Rotation.IsExpr) { Rotation.ApplyConfig(); }
+        Color.ApplyConfig();
+        Scale.ApplyConfig();
+        Position.ApplyConfig();
+        Pivot.ApplyConfig();
+        Rotation.ApplyConfig();
     }
 
     public void Release() {
         TagManager.OnLoadUnload -= ExprApplyConfig;
-        if(Color.IsExpr) { Color.Dispose(); }
-        if(Scale.IsExpr) { Scale.Dispose(); }
-        if(Position.IsExpr) { Position.Dispose(); }
-        if(Pivot.IsExpr) { Pivot.Dispose(); }
-        if(Rotation.IsExpr) { Rotation.Dispose(); }
+        Color.Dispose();
+        Scale.Dispose();
+        Position.Dispose();
+        Pivot.Dispose();
+        Rotation.Dispose();
     }
 }

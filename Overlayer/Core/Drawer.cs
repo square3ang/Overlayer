@@ -618,7 +618,7 @@ public static class Drawer {
             }
             if(Button(label)) {
                 if(!isExpr) {
-                    value.Init();
+                    value.Init(true);
                 } else {
                     value.Dispose();
                     changed = true;
