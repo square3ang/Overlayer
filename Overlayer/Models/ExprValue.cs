@@ -7,13 +7,9 @@ using System.Linq;
 
 namespace Overlayer.Models;
 
-public class ExprValue<T> : ICopyable<ExprValue<T>> {
-    public ExprValue(T defaultValue) {
-        DefaultValue = defaultValue;
-        Value = defaultValue;
-    }
-    public readonly T DefaultValue;
-    public T Value;
+public class ExprValue<T>(T defaultValue) : ICopyable<ExprValue<T>> {
+    public readonly T DefaultValue = defaultValue;
+    public T Value = defaultValue;
 
     public bool IsExpr { get; private set; } = false;
     public bool HasExpr { get; private set; } = false;
@@ -70,7 +66,7 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
         if(node.Type == JTokenType.Object && node[nameof(Playing)] != null) {
             Playing = node[nameof(Playing)].Value<string>();
             NotPlaying = node[nameof(NotPlaying)]?.Value<string>() ?? "";
-            HasExpr = true;
+            HasExpr = IsExpr = true;
             return true;
         }
 
@@ -80,7 +76,7 @@ public class ExprValue<T> : ICopyable<ExprValue<T>> {
     }
 
     public void Init() {
-        if(IsExpr) {
+        if(!HasExpr || IsExpr) {
             return;
         }
 
