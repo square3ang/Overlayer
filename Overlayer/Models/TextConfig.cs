@@ -126,54 +126,54 @@ public class TextConfig : ObjectConfig, ICopyable<TextConfig> {
     }
 
     public void Init() {
-        if(FontSize.HasExpr) { FontSize.Init(); }
-        if(OutlineWidth.HasExpr) { OutlineWidth.Init(); }
-        if(LineSpacing.HasExpr) { LineSpacing.Init(); }
-        if(LineSpacingAdj.HasExpr) { LineSpacingAdj.Init(); }
-        if(ShadowDilate.HasExpr) { ShadowDilate.Init(); }
-        if(ShadowSoftness.HasExpr) { ShadowSoftness.Init(); }
-        if(TextColor.HasExpr) { TextColor.Init(); }
-        if(OutlineColor.HasExpr) { OutlineColor.Init(); }
-        if(ShadowColor.HasExpr) { ShadowColor.Init(); }
-        if(Scale.HasExpr) { Scale.Init(); }
-        if(Position.HasExpr) { Position.Init(); }
-        if(Pivot.HasExpr) { Pivot.Init(); }
-        if(ShadowOffset.HasExpr) { ShadowOffset.Init(); }
-        if(Rotation.HasExpr) { Rotation.Init(); }
+        FontSize.Init();
+        OutlineWidth.Init();
+        LineSpacing.Init();
+        LineSpacingAdj.Init();
+        ShadowDilate.Init();
+        ShadowSoftness.Init();
+        TextColor.Init();
+        OutlineColor.Init();
+        ShadowColor.Init();
+        Scale.Init();
+        Position.Init();
+        Pivot.Init();
+        ShadowOffset.Init();
+        Rotation.Init();
     }
 
     public void ExprApplyConfig() {
-        if(FontSize.IsExpr) { FontSize.ApplyConfig(); }
-        if(OutlineWidth.IsExpr) { OutlineWidth.ApplyConfig(); }
-        if(LineSpacing.IsExpr) { LineSpacing.ApplyConfig(); }
-        if(LineSpacingAdj.IsExpr) { LineSpacingAdj.ApplyConfig(); }
-        if(ShadowDilate.IsExpr) { ShadowDilate.ApplyConfig(); }
-        if(ShadowSoftness.IsExpr) { ShadowSoftness.ApplyConfig(); }
-        if(TextColor.IsExpr) { TextColor.ApplyConfig(); }
-        if(OutlineColor.IsExpr) { OutlineColor.ApplyConfig(); }
-        if(ShadowColor.IsExpr) { ShadowColor.ApplyConfig(); }
-        if(Scale.IsExpr) { Scale.ApplyConfig(); }
-        if(Position.IsExpr) { Position.ApplyConfig(); }
-        if(Pivot.IsExpr) { Pivot.ApplyConfig(); }
-        if(ShadowOffset.IsExpr) { ShadowOffset.ApplyConfig(); }
-        if(Rotation.IsExpr) { Rotation.ApplyConfig(); }
+        FontSize.Init();
+        OutlineWidth.Init();
+        LineSpacing.Init();
+        LineSpacingAdj.Init();
+        ShadowDilate.Init();
+        ShadowSoftness.Init();
+        TextColor.Init();
+        OutlineColor.Init();
+        ShadowColor.Init();
+        Scale.Init();
+        Position.Init();
+        Pivot.Init();
+        ShadowOffset.Init();
+        Rotation.Init();
     }
 
     public void Release() {
         TagManager.OnLoadUnload -= ExprApplyConfig;
-        if(FontSize.IsExpr) { FontSize.Dispose(); }
-        if(OutlineWidth.IsExpr) { OutlineWidth.Dispose(); }
-        if(LineSpacing.IsExpr) { LineSpacing.Dispose(); }
-        if(LineSpacingAdj.IsExpr) { LineSpacingAdj.Dispose(); }
-        if(ShadowDilate.IsExpr) { ShadowDilate.Dispose(); }
-        if(ShadowSoftness.IsExpr) { ShadowSoftness.Dispose(); }
-        if(TextColor.IsExpr) { TextColor.Dispose(); }
-        if(OutlineColor.IsExpr) { OutlineColor.Dispose(); }
-        if(ShadowColor.IsExpr) { ShadowColor.Dispose(); }
-        if(Scale.IsExpr) { Scale.Dispose(); }
-        if(Position.IsExpr) { Position.Dispose(); }
-        if(Pivot.IsExpr) { Pivot.Dispose(); }
-        if(ShadowOffset.IsExpr) { ShadowOffset.Dispose(); }
-        if(Rotation.IsExpr) { Rotation.Dispose(); }
+        FontSize.Init();
+        OutlineWidth.Init();
+        LineSpacing.Init();
+        LineSpacingAdj.Init();
+        ShadowDilate.Init();
+        ShadowSoftness.Init();
+        TextColor.Init();
+        OutlineColor.Init();
+        ShadowColor.Init();
+        Scale.Init();
+        Position.Init();
+        Pivot.Init();
+        ShadowOffset.Init();
+        Rotation.Init();
     }
 }

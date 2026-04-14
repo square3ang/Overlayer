@@ -81,11 +81,11 @@ public class ImageConfig : ObjectConfig, ICopyable<ImageConfig> {
     }
 
     public void Init() {
-        if(Color.IsExpr) { Color.Init(); }
-        if(Scale.IsExpr) { Scale.Init(); }
-        if(Position.IsExpr) { Position.Init(); }
-        if(Pivot.IsExpr) { Pivot.Init(); }
-        if(Rotation.IsExpr) { Rotation.Init(); }
+        Color.Init();
+        Scale.Init();
+        Position.Init();
+        Pivot.Init();
+        Rotation.Init();
     }
 
     public void ExprApplyConfig() {
