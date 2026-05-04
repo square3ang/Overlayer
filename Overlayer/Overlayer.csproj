@@ -588,6 +588,7 @@
     <Compile Include="Tags\FrameRate.cs" />
     <Compile Include="Tags\Hex.cs" />
     <Compile Include="Tags\Hit.cs" />
+    <Compile Include="Tags\InternalProfile.cs" />
     <Compile Include="Tags\Level.cs" />
     <Compile Include="Core\OverlayerTag.cs" />
     <Compile Include="Tags\Mod.cs" />
